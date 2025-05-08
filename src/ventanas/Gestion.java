@@ -1,0 +1,404 @@
+package ventanas;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTabbedPane;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+import logica.*;
+
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Vector;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+
+public class Gestion extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTable tableClientes;
+	private JTable tableJuegos;
+	private DefaultTableModel modeloClientes;
+	private DefaultTableModel modeloJuegos;
+	
+	private MenuPrincipal menu;
+	private FormularioCliente formularioCliente;
+	private FormularioClienteEditar formularioClienteEditar;
+	private FormularioJuego formularioJuego;
+	private Modelo modelo;
+	private Controlador controlador;
+	
+	private JButton btnEditarClientes;
+	private JButton btnBorrarClientes;
+	private JButton btnEditarJuegos;
+	private JButton btnBorrarJuegos;
+
+	/**
+	 * Create the frame.
+	 * @param menuPrincipal 
+	 * @param modelo 
+	 * @param controlador2 
+	 */
+	public Gestion(MenuPrincipal menu, Modelo modelo, Controlador controlador) {
+		
+		this.menu = menu;
+		this.modelo = modelo;
+		this.controlador = controlador;
+		
+		formularioCliente  = new FormularioCliente(this, controlador, modelo);
+		formularioClienteEditar = new FormularioClienteEditar(this, controlador, modelo);
+		formularioJuego  = new FormularioJuego(this, controlador, modelo);
+		
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);		
+		setBounds(100, 100, 802, 399);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(0, 0, 788, 362);
+		contentPane.add(tabbedPane);
+		
+		JPanel panelUsuarios = new JPanel();
+		tabbedPane.addTab("Usuarios", null, panelUsuarios, "Gestión de usuarios");
+		panelUsuarios.setLayout(null);
+		
+		JLabel lblMisUsuarios = new JLabel("Mis Usuarios", SwingConstants.CENTER);
+		lblMisUsuarios.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblMisUsuarios.setBounds(10, 11, 248, 36);
+		panelUsuarios.add(lblMisUsuarios);
+		
+		JScrollPane scrollPaneUsuarios = new JScrollPane();
+		scrollPaneUsuarios.setBounds(256, 66, 491, 241);
+		panelUsuarios.add(scrollPaneUsuarios);
+		
+		modeloClientes = new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+					"ID", "Nombre", "Edad", "Género", "Baja", "Saldo"
+				}
+			) {
+				Class[] columnTypes = new Class[] {
+					Integer.class, String.class, Integer.class, Character.class, Character.class, Double.class
+				};
+			    boolean[] columnEditables = new boolean[] {
+			            false, false, false, false, false, false  // todas las columnas NO editables
+		        };
+				public Class getColumnClass(int columnIndex) {
+					return columnTypes[columnIndex];
+				}
+			    @Override
+			    public boolean isCellEditable(int row, int column) {
+			        return columnEditables[column];
+			    }
+			};	
+			
+		tableClientes = new JTable();
+		tableClientes.setModel(modeloClientes);
+		scrollPaneUsuarios.setViewportView(tableClientes);
+		
+		JButton btnAnadirUsuario = new JButton("Añadir usuario");
+		btnAnadirUsuario.setBounds(60, 94, 132, 36);
+		panelUsuarios.add(btnAnadirUsuario);
+		
+		btnEditarClientes = new JButton("Editar usuario");
+		btnEditarClientes.setEnabled(false);
+		btnEditarClientes.setBounds(60, 141, 132, 36);
+		panelUsuarios.add(btnEditarClientes);
+		
+		btnBorrarClientes = new JButton("Borrar usuario");
+		btnBorrarClientes.setEnabled(false);
+		btnBorrarClientes.setBounds(60, 188, 132, 36);
+		panelUsuarios.add(btnBorrarClientes);
+		
+		JButton btnVolverUsuario = new JButton("Volver");
+		btnVolverUsuario.setBounds(60, 235, 132, 36);
+		panelUsuarios.add(btnVolverUsuario);
+		
+		JPanel panelJuegos = new JPanel();
+		panelJuegos.setLayout(null);
+		tabbedPane.addTab("Juegos", null, panelJuegos, "Gestión de juegos");
+		
+		JLabel lblMisJuegos = new JLabel("Mis Juegos", SwingConstants.CENTER);
+		lblMisJuegos.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblMisJuegos.setBounds(10, 11, 248, 36);
+		panelJuegos.add(lblMisJuegos);
+		
+		JScrollPane scrollPaneJuegos = new JScrollPane();
+		scrollPaneJuegos.setBounds(256, 66, 491, 241);
+		panelJuegos.add(scrollPaneJuegos);
+		
+		modeloJuegos = new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+					"ID", "Tipo", "Activo", "Dinero"
+				}
+			) {
+				Class[] columnTypes = new Class[] {
+					Integer.class, String.class, Character.class, Double.class
+				};
+				public Class getColumnClass(int columnIndex) {
+					return columnTypes[columnIndex];
+				}
+				boolean[] columnEditables = new boolean[] {
+					true, false
+				};
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}
+			};
+		tableJuegos = new JTable();
+		tableJuegos.setModel(modeloJuegos);
+		scrollPaneJuegos.setViewportView(tableJuegos);
+		
+		JButton btnAnadirJuego = new JButton("Añadir juego");
+		btnAnadirJuego.setBounds(60, 94, 132, 36);
+		panelJuegos.add(btnAnadirJuego);
+		
+		btnEditarJuegos = new JButton("Editar juego");
+		btnEditarJuegos.setEnabled(false);
+		btnEditarJuegos.setBounds(60, 141, 132, 36);
+		panelJuegos.add(btnEditarJuegos);
+		
+		btnBorrarJuegos = new JButton("Borrar juego");
+		btnBorrarJuegos.setEnabled(false);
+		btnBorrarJuegos.setBounds(60, 188, 132, 36);
+		panelJuegos.add(btnBorrarJuegos);
+		
+		JButton btnVolverJuego = new JButton("Volver");
+		btnVolverJuego.setBounds(60, 235, 132, 36);
+		panelJuegos.add(btnVolverJuego);
+		
+		
+		addWindowListener(new WindowAdapter() {
+			// Al cerrar la ventana mediante la X
+			@Override
+			public void windowClosing(WindowEvent e) {
+				btnEditarClientes.setEnabled(false);
+				btnBorrarClientes.setEnabled(false);
+				controlador.cerrarVentana(Gestion.this, menu, false);
+				tabbedPane.setSelectedIndex(0);
+				
+			}
+		});
+		
+		
+		// Al cargar la ventana
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				
+				actualizarTablaClientes();
+				actualizarTablaJuegos();
+			}
+		});
+		
+		
+		// Clic fila de la tabla clientes
+		tableClientes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int fila = tableClientes.getSelectedRow();
+				
+				if (fila == -1 ) {
+					btnEditarClientes.setEnabled(false);
+					btnBorrarClientes.setEnabled(false);
+					return;
+				}	
+				
+				btnEditarClientes.setEnabled(true);
+				btnBorrarClientes.setEnabled(true);
+			}
+		});
+		
+
+		// Clic boton añadir cliente
+		btnAnadirUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				formularioCliente.setVisible(true);
+			}
+		});
+		
+		
+		// Clic boton editar cliente
+		btnEditarClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				formularioClienteEditar.cargarClienteOriginal(tableClientes.getSelectedRow());
+				formularioClienteEditar.setVisible(true);
+			}
+		});
+		
+		
+		// Clic boton borrar cliente
+		btnBorrarClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int fila = tableClientes.getSelectedRow();
+				if (fila == -1 ) return;
+				
+				String id = (String) tableClientes.getValueAt(fila, 0);
+				modelo.borrarDatos(id, "clientes");
+		
+				actualizarTablaClientes();
+				btnEditarClientes.setEnabled(false);
+				btnBorrarClientes.setEnabled(false);
+			}
+		});
+		
+		
+		// Clic boton volver (cliente)
+		btnVolverUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnEditarClientes.setEnabled(false);
+				btnBorrarClientes.setEnabled(false);
+				controlador.cerrarVentana(Gestion.this, menu, false);
+				tabbedPane.setSelectedIndex(0);
+			}
+		});
+		
+		
+		// Clic fila de la tabla juegos
+		tableJuegos.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int fila = tableJuegos.getSelectedRow();
+				
+				if (fila == -1 ) {
+					btnEditarJuegos.setEnabled(false);
+					btnBorrarJuegos.setEnabled(false);
+					return;
+				}	
+				
+				btnEditarJuegos.setEnabled(true);
+				btnBorrarJuegos.setEnabled(true);
+			}
+		});
+		
+		
+		// Clic boton añadir juego
+		btnAnadirJuego.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				formularioJuego.setVisible(true);
+			}
+		});
+		
+		
+		// Clic boton borrar juego
+		btnBorrarJuegos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int fila = tableJuegos.getSelectedRow();
+				if (fila == -1 ) return;
+				
+				String id = (String) tableJuegos.getValueAt(fila, 0);
+				modelo.borrarDatos(id, "juegos");
+		
+				actualizarTablaJuegos();
+				btnEditarJuegos.setEnabled(false);
+				btnBorrarJuegos.setEnabled(false);
+			}
+		});
+		
+		
+		// Clic boton volver (Juego)
+		btnVolverJuego.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnEditarClientes.setEnabled(false);
+				btnBorrarClientes.setEnabled(false);
+				controlador.cerrarVentana(Gestion.this, menu, false);
+				tabbedPane.setSelectedIndex(0);
+			}
+		});
+	
+	}
+	
+	
+	public void actualizarTablaClientes() {
+		
+		modeloClientes.setRowCount(0);
+		
+		ResultSet rset = modelo.consultarDatos("clientes");
+		
+		try {		
+			boolean hayDatos = rset.next();
+			
+			if (!hayDatos) {
+	            btnEditarClientes.setEnabled(false);
+	            btnBorrarClientes.setEnabled(false);
+			} else {
+				do {
+					// "ID", "Nombre", "Edad", "Género", "Baja", "Saldo"
+			        Object[] clienteLista = new Object[6];
+			        clienteLista[0] = rset.getInt(1);
+			        clienteLista[1] = rset.getString(2);
+			        clienteLista[2] = rset.getInt(3);
+			        clienteLista[3] = rset.getString(4);
+			        clienteLista[4] = (rset.getBoolean(5) == true ? "SI" : "NO");
+			        clienteLista[5] = rset.getDouble(6);
+			        
+			        modeloClientes.addRow(clienteLista);
+			        
+				} while (rset.next());
+			}
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void actualizarTablaJuegos() {
+		
+		modeloJuegos.setRowCount(0);
+		ResultSet rset = modelo.consultarDatos("juegos");
+		
+		try {
+			boolean hayDatos = rset.next();
+			
+			if (!hayDatos) {
+	            btnEditarJuegos.setEnabled(false);
+	            btnBorrarJuegos.setEnabled(false);
+	            
+			} else {
+				do {
+					// "ID", "Tipo", "Activo", "Dinero"
+			        Object[] juegoLista = new Object[4];
+			        juegoLista[0] = rset.getInt(1);
+			        juegoLista[1] = rset.getString(2);
+			        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
+			        juegoLista[3] = rset.getDouble(4);
+			        
+			        modeloJuegos.addRow(juegoLista);
+				} while (rset.next());
+			}
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}	
+	}
+}
