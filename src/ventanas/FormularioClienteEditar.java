@@ -22,6 +22,8 @@ import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
@@ -55,9 +57,6 @@ public class FormularioClienteEditar extends JFrame {
 	private JLabel lblErrorEdad;
 	private JLabel lblErrorSaldo;
 	private JTextField textId;
-	
-	// Constantes del cliente original
-	private Cliente clienteOriginal;
 	private JCheckBox chckbxBaja;
 	
 
@@ -171,7 +170,7 @@ public class FormularioClienteEditar extends JFrame {
 		contentPane.add(textId);
 		textId.setColumns(10);
 		
-		chckbxBaja = new JCheckBox("De baja");
+		chckbxBaja = new JCheckBox("Activo");
 		chckbxBaja.setBounds(317, 139, 76, 23);
 		contentPane.add(chckbxBaja);
 		
@@ -254,17 +253,15 @@ public class FormularioClienteEditar extends JFrame {
 		// Clic boton modificar
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// ! MODIFICAR ESTO PARA QUE ACTUALIZE EL USUARIO QUE TENGA 
 				String nombre = textNombre.getText();
 				int edad = Integer.parseInt(textEdad.getText());
 				char genero = obtenerGenero();
 				double saldo = Double.parseDouble(textSaldo.getText());
+				int id = Integer.parseInt(textId.getText());
+				boolean activo = chckbxBaja.isSelected() ? true : false;
 				
-				ArrayList<Cliente> clientesOriginal = modelo.getClientes();
+				modelo.modificarDato(new Cliente (nombre, edad, genero, saldo, id, activo));
 				
-				clientesOriginal.add(new Cliente(nombre, edad, genero, false, saldo));
-				
-				modelo.setClientes(clientesOriginal);
 				limpiarCampos();
 				controlador.cerrarVentana(FormularioClienteEditar.this, gestion, true);
 			}
@@ -323,25 +320,34 @@ public class FormularioClienteEditar extends JFrame {
 	
 	
 	public void cargarClienteOriginal(int id) {	    
-	    clienteOriginal = modelo.getClientes().get(id);
+
+		ResultSet rset = modelo.consultarDatoUnico("clientes", id);
+	    String genero = "";
 	    
-	    textId.setText(String.valueOf(id + 1));
-	    textNombre.setText(clienteOriginal.getNombre()) ;
-	    textEdad.setText( String.valueOf(clienteOriginal.getEdad() ) ) ;
-	    textSaldo.setText( String.valueOf(clienteOriginal.getSaldo() ) ) ;
-	    if (clienteOriginal.isBaja() ) chckbxBaja.doClick();
+	    try {
+		    textId.setText(String.valueOf(id));
+		    textNombre.setText(rset.getString(2)) ;
+		    textEdad.setText( String.valueOf(rset.getString(3) ) ) ;
+		    genero =  rset.getString(4);
+			if (rset.getBoolean(5) ) chckbxBaja.doClick();
+		    textSaldo.setText( String.valueOf(rset.getString(6) ) ) ;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	   
 	    
-	    switch (clienteOriginal.getGenero() ) {
-		    case 'M':
+	    switch ( genero ) {
+		    case "M":
 		    	rdbtnMasculino.doClick();
 		    	break;
-		    case 'F':
+		    case "F":
 		    	rdbtnFemenino.doClick();
 		    	break;
-		    case 'O':
+		    case "O":
 		    	rdbtnOtro.doClick();
 		    	break;
 	    }
+	    
 	    edadValida = true;
 	    saldoValido = true;
 	    nombreValido = true;

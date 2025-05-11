@@ -14,15 +14,15 @@ public class Controlador {
 	private static final double dineroMax = 999999;
 	
 	
-	public void cerrarVentana(JFrame ventanaActual, JFrame ventanaAnterior, boolean cerrar) {
+	public void cerrarVentana(JFrame ventanaActual, JFrame ventanaNueva, boolean cerrar) {
 		
 		if (cerrar) {
 			ventanaActual.dispose();
-			ventanaAnterior.setVisible(true);
+			ventanaNueva.setVisible(true);
 			
 		} else {
 			ventanaActual.setVisible(false);
-			ventanaAnterior.setVisible(true);
+			ventanaNueva.setVisible(true);
 		}
 	}
 	

@@ -242,7 +242,7 @@ public class FormularioCliente extends JFrame {
 				double saldo = Double.parseDouble(textSaldo.getText());
 				
 				Cliente cliente = new Cliente(nombre, edad, genero, saldo);
-				modelo.agregarDato("juegos", cliente);
+				modelo.agregarDato(cliente);
 				
 				limpiarCampos();
 				controlador.cerrarVentana(FormularioCliente.this, gestion, true);

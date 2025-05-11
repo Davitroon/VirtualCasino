@@ -6,37 +6,54 @@ package logica;
  */
 public class Cliente {
 	
+	private int id;
 	private String nombre;
 	private int edad;
 	private char genero;
-	private boolean baja;
+	private boolean activo;
 	private double saldo;
 	
 	
 	/**
-	 * Constructor de los clientes, recibe datos validados.
+	 * Constructor de los clientes para modificar, recibe datos validados.
 	 * @param nombre Nombre completo del cliente (nombre y apellido).
 	 * @param edad Edad del cliente (con rango de edad válido establecido).
 	 * @param genero Género del cliente.
-	 * @param baja El cliente esta de baja o no.
+	 * @param saldo Saldo del cliente.
+	 */
+	public Cliente(String nombre, int edad, char genero, double saldo, int id, boolean activo) {
+		this.id = id;
+		this.nombre = nombre;
+		this.edad = edad;
+		this.genero = genero;
+		this.activo = activo;
+		this.saldo = saldo;
+	}
+
+	
+	/**
+	 * Constructor de los clientes para agregar, recibe datos validados.
+	 * @param nombre Nombre completo del cliente (nombre y apellido).
+	 * @param edad Edad del cliente (con rango de edad válido establecido).
+	 * @param genero Género del cliente.
 	 * @param saldo Saldo del cliente.
 	 */
 	public Cliente(String nombre, int edad, char genero, double saldo) {
 		this.nombre = nombre;
 		this.edad = edad;
 		this.genero = genero;
-		baja = false;
+		activo = true;
 		this.saldo = saldo;
 	}
 
-	
+
 	/**
 	 * Imprime los datos del cliente.
 	 * @param id ID del cliente.
 	 * @return Información acerca del cliente.
 	 */
 	public String imprimirCliente(int id) {
-		return String.format("%-5s|%-24s|%-6d|%-7c|%-6b|%10.2f $", id + 1, nombre, edad, genero, baja, saldo);
+		return String.format("%-5s|%-24s|%-6d|%-7c|%-6b|%10.2f $", id + 1, nombre, edad, genero, activo, saldo);
 		
 	}
 
@@ -56,8 +73,8 @@ public class Cliente {
 	}
 
 
-	public boolean isBaja() {
-		return baja;
+	public boolean isActivo() {
+		return activo;
 	}
 
 
@@ -81,8 +98,8 @@ public class Cliente {
 	}
 
 
-	public void setBaja(boolean baja) {
-		this.baja = baja;
+	public void setActivo(boolean baja) {
+		this.activo = baja;
 	}
 
 
@@ -91,11 +108,11 @@ public class Cliente {
 	}
 
 
-	@Override
-	public String toString() {
-		return "Cliente [nombre=" + nombre + ", edad=" + edad + ", genero=" + genero + ", baja=" + baja + ", saldo="
-				+ saldo + "]";
+	public int getId() {
+		return id;
 	}
+	
+	
 	
 	
 	

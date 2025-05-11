@@ -1,4 +1,6 @@
+DROP DATABASE IF EXISTS casino25;
 create database casino25;
+use casino25;
 
 CREATE TABLE clientes (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -16,11 +18,11 @@ CREATE TABLE juegos (
     dinero DECIMAL(6,2) NOT NULL
 );
 
-select * from clientes;
+/*select * from clientes;
 select * from juegos;
 
 insert into clientes (nombre, edad, genero, baja, saldo) values("prueba", 19, "H", false, 300);
 insert into juegos (tipo, activo, dinero) values("Blackjack", true , 3000);
 
 delete from clientes;
-delete from juegos;
+delete from juegos;*/

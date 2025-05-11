@@ -7,6 +7,7 @@ package logica;
  */
 public abstract class Juego {
 	
+	private int id;
 	private String tipo;
 	private boolean activo = true;
 	private double dinero;
@@ -19,6 +20,15 @@ public abstract class Juego {
 	 */
 	public Juego(double dinero, String tipo) {
 		this.dinero = dinero;
+		this.tipo = tipo;
+	}
+	
+	
+	// Constructor para editar juegos
+	public Juego(int id, String tipo, boolean activo, double dinero) {
+		this.id = id;
+		this.dinero = dinero;
+		this.activo = activo;
 		this.tipo = tipo;
 	}
 
@@ -65,6 +75,13 @@ public abstract class Juego {
 	public boolean isActivo() {
 		return activo;
 	}
+
+
+	public int getId() {
+		return id;
+	}
+	
+	
 	
 	
 }

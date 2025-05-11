@@ -25,6 +25,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
@@ -43,15 +45,17 @@ public class FormularioJuegoEditar extends JFrame {
 	private Gestion gestion;
 	private Controlador controlador;
 	private JTextField textDinero;
-	
 	private boolean dineroValido;
-	private JButton btnAnadir;
+	private JButton btnModificar;
 	
 	private Modelo modelo;
 	
 
 	private JLabel lblErrorDinero;
 	private JComboBox comboTipo;
+	private JTextField textId;
+	private JLabel lblId;
+	private JCheckBox chckbxActivo;
 	
 
 	/**
@@ -73,30 +77,30 @@ public class FormularioJuegoEditar extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblAnadirJuego = new JLabel("Añadir juego", SwingConstants.CENTER);
-		lblAnadirJuego.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAnadirJuego.setBounds(10, 11, 387, 39);
-		contentPane.add(lblAnadirJuego);
+		JLabel lblEditarJuego = new JLabel("Editar juego", SwingConstants.CENTER);
+		lblEditarJuego.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblEditarJuego.setBounds(10, 11, 387, 39);
+		contentPane.add(lblEditarJuego);
 		
-		btnAnadir = new JButton("Añadir");
-		btnAnadir.setEnabled(false);
-		btnAnadir.setBounds(286, 228, 111, 32);
-		contentPane.add(btnAnadir);
+		btnModificar = new JButton("Modificar");
+		btnModificar.setEnabled(false);
+		btnModificar.setBounds(286, 228, 111, 32);
+		contentPane.add(btnModificar);
 		
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.setBounds(165, 228, 111, 32);
 		contentPane.add(btnVolver);
 		
 		JLabel lblTipo = new JLabel("Tipo");
-		lblTipo.setBounds(40, 84, 49, 14);
+		lblTipo.setBounds(40, 122, 49, 14);
 		contentPane.add(lblTipo);
 		
 		JLabel lblDinero = new JLabel("Dinero");
-		lblDinero.setBounds(215, 84, 49, 14);
+		lblDinero.setBounds(215, 122, 49, 14);
 		contentPane.add(lblDinero);
 		
 		textDinero = new JTextField();
-		textDinero.setBounds(215, 109, 182, 20);
+		textDinero.setBounds(215, 143, 182, 20);
 		contentPane.add(textDinero);
 		textDinero.setColumns(10);
 		
@@ -108,8 +112,22 @@ public class FormularioJuegoEditar extends JFrame {
 		
 		comboTipo = new JComboBox();
 		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Blackjack", "Tragaperras"}));
-		comboTipo.setBounds(40, 108, 111, 22);
+		comboTipo.setBounds(40, 141, 111, 22);
 		contentPane.add(comboTipo);
+		
+		lblId = new JLabel("ID");
+		lblId.setBounds(40, 84, 26, 14);
+		contentPane.add(lblId);
+		
+		textId = new JTextField();
+		textId.setEditable(false);
+		textId.setBounds(65, 81, 38, 20);
+		contentPane.add(textId);
+		textId.setColumns(10);
+		
+		chckbxActivo = new JCheckBox("Activo");
+		chckbxActivo.setBounds(215, 80, 97, 23);
+		contentPane.add(chckbxActivo);
 		
 		
 		// Al escribir en el campo saldo
@@ -138,25 +156,23 @@ public class FormularioJuegoEditar extends JFrame {
 		});
 		
 		
-		// Clic boton añadir
-		btnAnadir.addActionListener(new ActionListener() {
+		// Clic boton modificar
+		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				Double dinero = Double.parseDouble(textDinero.getText());
+				int id = Integer.parseInt(textId.getText());
 				String tipo = String.valueOf(comboTipo.getSelectedItem());
-				
-				
-				ArrayList<Juego> juegosOriginal = modelo.getJuegos();
+				boolean activo = chckbxActivo.isSelected() ? true : false;
+				Double dinero = Double.parseDouble(textDinero.getText());
 				
 				if (tipo.equalsIgnoreCase("Blackjack")) {
-					juegosOriginal.add(new Blackjack(dinero));
+					modelo.modificarDato(new Blackjack(id, tipo, activo, dinero));
 				}
 				
 				if (tipo.equalsIgnoreCase("Tragaperras")) {
-					juegosOriginal.add(new Tragaperras(dinero));
-				}
+					modelo.modificarDato(new Tragaperras(id, tipo, activo, dinero));
+				}	
 				
-				modelo.setJuegos(juegosOriginal);
 				limpiarCampos();
 				controlador.cerrarVentana(FormularioJuegoEditar.this, gestion, true);
 			}
@@ -177,18 +193,47 @@ public class FormularioJuegoEditar extends JFrame {
 	public void revisarFormulario() {
 		
 		if (dineroValido) {
-			btnAnadir.setEnabled(true);
+			btnModificar.setEnabled(true);
 			return;
 		}
 		
-		btnAnadir.setEnabled(false);
+		btnModificar.setEnabled(false);
 	}
 	
 	
 	public void limpiarCampos() {
-		btnAnadir.setEnabled(false);
+		btnModificar.setEnabled(false);
 		textDinero.setText("");
 		comboTipo.setSelectedIndex(0);
 		lblErrorDinero.setText("");
+	}
+	
+	
+	public void cargarJuegoOriginal(int id) {	    
+
+		ResultSet rset = modelo.consultarDatoUnico("juegos", id);
+	    
+	    try {
+		    textId.setText(String.valueOf(id));
+		    
+		    switch (rset.getString(2)) {
+			    case "Blackjack":
+			    	comboTipo.setSelectedIndex(0);
+			    	break;
+			    
+			    case "Tragaperras":
+			    	comboTipo.setSelectedIndex(1);
+			    	break;
+		    }
+		    
+			if (rset.getBoolean(3) ) chckbxActivo.doClick();
+		    textDinero.setText( String.valueOf(rset.getString(4) ) ) ;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	    
+	    dineroValido = true;
+	    revisarFormulario();
 	}
 }

@@ -44,6 +44,7 @@ public class Gestion extends JFrame {
 	private FormularioCliente formularioCliente;
 	private FormularioClienteEditar formularioClienteEditar;
 	private FormularioJuego formularioJuego;
+	private FormularioJuegoEditar formularioJuegoEditar;
 	private Modelo modelo;
 	private Controlador controlador;
 	
@@ -51,6 +52,7 @@ public class Gestion extends JFrame {
 	private JButton btnBorrarClientes;
 	private JButton btnEditarJuegos;
 	private JButton btnBorrarJuegos;
+	private JTabbedPane tabbedPane;
 
 	/**
 	 * Create the frame.
@@ -67,6 +69,7 @@ public class Gestion extends JFrame {
 		formularioCliente  = new FormularioCliente(this, controlador, modelo);
 		formularioClienteEditar = new FormularioClienteEditar(this, controlador, modelo);
 		formularioJuego  = new FormularioJuego(this, controlador, modelo);
+		formularioJuegoEditar = new FormularioJuegoEditar(this, controlador, modelo);
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);		
 		setBounds(100, 100, 802, 399);
@@ -76,7 +79,7 @@ public class Gestion extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 0, 788, 362);
 		contentPane.add(tabbedPane);
 		
@@ -97,11 +100,11 @@ public class Gestion extends JFrame {
 				new Object[][] {
 				},
 				new String[] {
-					"ID", "Nombre", "Edad", "Género", "Baja", "Saldo"
+					"ID", "Nombre", "Edad", "Género", "Activo", "Saldo"
 				}
 			) {
 				Class[] columnTypes = new Class[] {
-					Integer.class, String.class, Integer.class, Character.class, Character.class, Double.class
+					Integer.class, String.class, Integer.class, Character.class, String.class, Double.class
 				};
 			    boolean[] columnEditables = new boolean[] {
 			            false, false, false, false, false, false  // todas las columnas NO editables
@@ -158,13 +161,13 @@ public class Gestion extends JFrame {
 				}
 			) {
 				Class[] columnTypes = new Class[] {
-					Integer.class, String.class, Character.class, Double.class
+					Integer.class, String.class, String.class, Double.class
 				};
 				public Class getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
 				boolean[] columnEditables = new boolean[] {
-					true, false
+					false, false, false, false
 				};
 				public boolean isCellEditable(int row, int column) {
 					return columnEditables[column];
@@ -197,8 +200,7 @@ public class Gestion extends JFrame {
 			// Al cerrar la ventana mediante la X
 			@Override
 			public void windowClosing(WindowEvent e) {
-				btnEditarClientes.setEnabled(false);
-				btnBorrarClientes.setEnabled(false);
+				reiniciarBotones();
 				controlador.cerrarVentana(Gestion.this, menu, false);
 				tabbedPane.setSelectedIndex(0);
 				
@@ -224,8 +226,7 @@ public class Gestion extends JFrame {
 				int fila = tableClientes.getSelectedRow();
 				
 				if (fila == -1 ) {
-					btnEditarClientes.setEnabled(false);
-					btnBorrarClientes.setEnabled(false);
+					reiniciarBotones();
 					return;
 				}	
 				
@@ -238,8 +239,8 @@ public class Gestion extends JFrame {
 		// Clic boton añadir cliente
 		btnAnadirUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				formularioCliente.setVisible(true);
+				controlador.cerrarVentana(Gestion.this, formularioCliente, false);
+				reiniciarBotones();
 			}
 		});
 		
@@ -247,9 +248,10 @@ public class Gestion extends JFrame {
 		// Clic boton editar cliente
 		btnEditarClientes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				formularioClienteEditar.cargarClienteOriginal(tableClientes.getSelectedRow());
-				formularioClienteEditar.setVisible(true);
+				int id = Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString());
+				formularioClienteEditar.cargarClienteOriginal(id);
+				controlador.cerrarVentana(Gestion.this, formularioClienteEditar, false);
+				reiniciarBotones();
 			}
 		});
 		
@@ -260,12 +262,11 @@ public class Gestion extends JFrame {
 				int fila = tableClientes.getSelectedRow();
 				if (fila == -1 ) return;
 				
-				String id = (String) tableClientes.getValueAt(fila, 0);
+				String id = String.valueOf(tableClientes.getValueAt(fila, 0)) ;
 				modelo.borrarDatos(id, "clientes");
 		
 				actualizarTablaClientes();
-				btnEditarClientes.setEnabled(false);
-				btnBorrarClientes.setEnabled(false);
+				reiniciarBotones();
 			}
 		});
 		
@@ -273,8 +274,7 @@ public class Gestion extends JFrame {
 		// Clic boton volver (cliente)
 		btnVolverUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnEditarClientes.setEnabled(false);
-				btnBorrarClientes.setEnabled(false);
+				reiniciarBotones();
 				controlador.cerrarVentana(Gestion.this, menu, false);
 				tabbedPane.setSelectedIndex(0);
 			}
@@ -302,8 +302,19 @@ public class Gestion extends JFrame {
 		// Clic boton añadir juego
 		btnAnadirJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				formularioJuego.setVisible(true);
+				controlador.cerrarVentana(Gestion.this, formularioJuego, false);
+				reiniciarBotones();
+			}
+		});
+		
+		
+		// Clic boton editar juego
+		btnEditarJuegos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int id = Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString());
+				formularioJuegoEditar.cargarJuegoOriginal(id);
+				controlador.cerrarVentana(Gestion.this, formularioJuegoEditar, false);
+				reiniciarBotones();
 			}
 		});
 		
@@ -314,12 +325,11 @@ public class Gestion extends JFrame {
 				int fila = tableJuegos.getSelectedRow();
 				if (fila == -1 ) return;
 				
-				String id = (String) tableJuegos.getValueAt(fila, 0);
+				String id = String.valueOf(tableJuegos.getValueAt(fila, 0)) ;
 				modelo.borrarDatos(id, "juegos");
 		
 				actualizarTablaJuegos();
-				btnEditarJuegos.setEnabled(false);
-				btnBorrarJuegos.setEnabled(false);
+				reiniciarBotones();
 			}
 		});
 		
@@ -327,8 +337,7 @@ public class Gestion extends JFrame {
 		// Clic boton volver (Juego)
 		btnVolverJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnEditarClientes.setEnabled(false);
-				btnBorrarClientes.setEnabled(false);
+				reiniciarBotones();
 				controlador.cerrarVentana(Gestion.this, menu, false);
 				tabbedPane.setSelectedIndex(0);
 			}
@@ -347,8 +356,7 @@ public class Gestion extends JFrame {
 			boolean hayDatos = rset.next();
 			
 			if (!hayDatos) {
-	            btnEditarClientes.setEnabled(false);
-	            btnBorrarClientes.setEnabled(false);
+				reiniciarBotones();
 			} else {
 				do {
 					// "ID", "Nombre", "Edad", "Género", "Baja", "Saldo"
@@ -380,8 +388,7 @@ public class Gestion extends JFrame {
 			boolean hayDatos = rset.next();
 			
 			if (!hayDatos) {
-	            btnEditarJuegos.setEnabled(false);
-	            btnBorrarJuegos.setEnabled(false);
+				reiniciarBotones();
 	            
 			} else {
 				do {
@@ -400,5 +407,13 @@ public class Gestion extends JFrame {
 			
 			e.printStackTrace();
 		}	
+	}
+	
+	
+	public void reiniciarBotones() {
+		btnEditarClientes.setEnabled(false);
+		btnBorrarClientes.setEnabled(false);
+		btnEditarJuegos.setEnabled(false);
+		btnBorrarJuegos.setEnabled(false);
 	}
 }

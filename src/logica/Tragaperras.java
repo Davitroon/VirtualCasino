@@ -18,6 +18,11 @@ public class Tragaperras extends Juego {
 		super(dinero, "Tragaperras");
 	}
 
+	
+	// Constructor editar tragaperras
+	public Tragaperras(int id, String tipo, boolean activo, double dinero) {
+		super(id, tipo, activo, dinero);
+	}
 
 	/**
 	 * Comprueba el número de casillas que esten repetidas.<br>

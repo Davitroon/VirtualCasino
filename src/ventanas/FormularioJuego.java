@@ -147,12 +147,12 @@ public class FormularioJuego extends JFrame {
 				
 				if (tipo.equalsIgnoreCase("Blackjack")) {
 					Blackjack blackjack = new Blackjack(dinero);
-					modelo.agregarDato("juegos", blackjack);
+					modelo.agregarDato(blackjack);
 				}
 				
 				if (tipo.equalsIgnoreCase("Tragaperras")) {
 					Tragaperras tragaperras = new Tragaperras(dinero);
-					modelo.agregarDato("juegos", tragaperras);
+					modelo.agregarDato(tragaperras);
 				}		
 				
 				limpiarCampos();

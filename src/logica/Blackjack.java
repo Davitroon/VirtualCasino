@@ -20,6 +20,12 @@ public class Blackjack extends Juego {
 	public Blackjack(double dinero) {
 		super(dinero, "BlackJack");
 	}
+	
+	
+	// Constructor editar blackjack
+	public Blackjack(int id, String tipo, boolean activo, double dinero) {
+		super(id, tipo, activo, dinero);
+	}
 
 
 	/**

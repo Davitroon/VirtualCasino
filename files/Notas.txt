@@ -1,0 +1,1 @@
+- No se pueden manejar excepción al fallar los drivers, el código se comporta de manera muy extraña y parece ser es un error en la JVM más que en el código.
