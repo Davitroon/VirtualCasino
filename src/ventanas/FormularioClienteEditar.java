@@ -31,6 +31,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * Ventana para el formulario de editar clientes.
+ * @author David
+ * @since 3.0
+ */
 public class FormularioClienteEditar extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -263,7 +268,7 @@ public class FormularioClienteEditar extends JFrame {
 				modelo.modificarDato(new Cliente (nombre, edad, genero, saldo, id, activo));
 				
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioClienteEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioClienteEditar.this, gestion, true);
 			}
 		});
 		
@@ -272,7 +277,7 @@ public class FormularioClienteEditar extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioClienteEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioClienteEditar.this, gestion, true);
 			}
 		});
 		
@@ -282,12 +287,16 @@ public class FormularioClienteEditar extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioClienteEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioClienteEditar.this, gestion, true);
 			}
 		});
 	}
 	
 	
+	/**
+	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * @since 3.0
+	 */
 	public void revisarFormulario() {
 		
 		if (edadValida && saldoValido && nombreValido && obtenerGenero() != 0) {
@@ -299,6 +308,10 @@ public class FormularioClienteEditar extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para limpiar todos los campos del formulario.
+	 * @since 3.0
+	 */
 	public void limpiarCampos() {
 		btnModificar.setEnabled(false);
 		buttonGroup.clearSelection();
@@ -311,6 +324,11 @@ public class FormularioClienteEditar extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para obtener el género en base al radio button seleccionado.
+	 * @return Género en formato char.
+	 * @since 3.0
+	 */
 	public char obtenerGenero() {
 		if (rdbtnMasculino.isSelected()) return 'M';
 		if (rdbtnFemenino.isSelected()) return 'F';
@@ -319,6 +337,11 @@ public class FormularioClienteEditar extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para rellenar los campos del formulario con los datos del cliente que se vaya a modificar.
+	 * @param id Id del cliente a consultar por sus datos
+	 * @since 3.0
+	 */
 	public void cargarClienteOriginal(int id) {	    
 
 		ResultSet rset = modelo.consultarDatoUnico("clientes", id);

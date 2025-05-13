@@ -6,6 +6,7 @@ import java.util.Collections;
  * Juego BlackJack, hijo de juego.
  * Simula el funcionamiento del BlackJack real. 
  * @author David Forero
+ * @since 2.0
  */
 public class Blackjack extends Juego {
 
@@ -16,13 +17,21 @@ public class Blackjack extends Juego {
 	/**
 	 * Constructor del blackjack, envia al constructor de Juego su tipo.
 	 * @param dinero Dinero que contará el juego para las apuestas.
+	 * @since 2.0
 	 */
 	public Blackjack(double dinero) {
 		super(dinero, "BlackJack");
 	}
 	
 	
-	// Constructor editar blackjack
+	/**
+	 * Constructor completo (para ser editado) del blackjack, envia al constructor de Juego los parámetros.
+	 * @param id Id del juego
+	 * @param tipo Tipo del juego
+	 * @param activo Estado del juego
+	 * @param dinero Dinero del juego
+	 * @since 2.0
+	 */
 	public Blackjack(int id, String tipo, boolean activo, double dinero) {
 		super(id, tipo, activo, dinero);
 	}
@@ -62,6 +71,7 @@ public class Blackjack extends Juego {
 
 	/**
 	 * Baraja las cartas. Primero vacia todos los mazos de cartas, luego rellena el mazo de cartas total y finalmente las mezcla.
+	 * @since 2.0
 	 */
 	public void barajarCartas() {		
 
@@ -80,9 +90,10 @@ public class Blackjack extends Juego {
 	
 
 	/**
-	 * Reparte un numero de cartas al jugador indicado, eliminando las cartas del mazo total.
-	 * @param numCartas Número de cartas a repartir.
-	 * @param jugador Jugador al que se le repartirá.
+	 * Método que reparte un numero de cartas al jugador indicado, eliminando las cartas del mazo total.
+	 * @param numCartas Número de cartas a repartir
+	 * @param jugador Jugador al que se le repartirá
+	 * @since 2.0
 	 */
 	public void repartirCartas(int numCartas, String jugador) {
 	
@@ -104,8 +115,9 @@ public class Blackjack extends Juego {
 
 	/**
 	 * Muestra las cartas de cada jugador.
-	 * @param ocultarCarta Ocultar la 2º carta del crupier o no.
-	 * @return Cartas de cada jugador.
+	 * @param ocultarCarta Ocultar la 2º carta del crupier o no
+	 * @return Cartas de cada jugador
+	 * @since 2.0
 	 */
 	public String mostrarCartas(boolean ocultarCarta) {
 		
@@ -132,8 +144,9 @@ public class Blackjack extends Juego {
 	
 	/**
 	 * Lee una carta para traducirla a la baraja francesa.
-	 * @param carta Carta a leer.
-	 * @return Carta traducida.
+	 * @param carta Carta a leer
+	 * @return Carta traducida
+	 * @since 2.0
 	 */
 	private String leerCarta(Integer carta) {
 		
@@ -158,8 +171,9 @@ public class Blackjack extends Juego {
 
 	/**
 	 * Comprueba si el jugador se ha pasado de 21.
-	 * @param jugador Jugador a comprobar.
-	 * @return Se ha pasado de 21 o no.
+	 * @param jugador Jugador a comprobar
+	 * @return True si se ha pasado de 21, false en el caso contrario.
+	 * @since 2.0
 	 */
 	public boolean jugadorPierde(String jugador) {
 
@@ -171,8 +185,9 @@ public class Blackjack extends Juego {
 	
 	/**
 	 * Suma el valor de las cartas de cada jugador.
-	 * @param listaCartas Cartas del jugador.
-	 * @return La suma total, teniendo en cuenta los As.
+	 * @param listaCartas Cartas del jugador
+	 * @return La suma total, teniendo en cuenta los As
+	 * @since 2.0
 	 */
 	public int sumarCartas(ArrayList<Integer> listaCartas) {
 		
@@ -206,7 +221,8 @@ public class Blackjack extends Juego {
 
 	/**
 	 * Indica si el crupier debería pedir carta en situaciones diferentes.
-	 * @return Pide carta o no.
+	 * @return True si debe pedir carta, false en el caso contrario.
+	 * @since 2.0
 	 */
 	public boolean crupierDebePedir() {
 		

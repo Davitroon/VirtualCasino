@@ -34,6 +34,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
+/**
+ * Ventana para el formulario de juegos.
+ * @author David
+ * @since 3.0
+ */
 public class FormularioJuego extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -55,9 +60,10 @@ public class FormularioJuego extends JFrame {
 	
 
 	/**
-	 * Create the frame.
+	 * Constructor de la ventana formulario juego
 	 * @param controlador 
 	 * @param gestion2 
+	 * @since 3.0
 	 */
 	public FormularioJuego(Gestion gestion, Controlador controlador, Modelo modelo) {
 		
@@ -133,7 +139,7 @@ public class FormularioJuego extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioJuego.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuego.this, gestion, true);
 			}
 		});
 		
@@ -156,7 +162,7 @@ public class FormularioJuego extends JFrame {
 				}		
 				
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioJuego.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuego.this, gestion, true);
 			}
 		});
 		
@@ -166,12 +172,16 @@ public class FormularioJuego extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioJuego.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuego.this, gestion, true);
 			}
 		});
 	}
 	
 	
+	/**
+	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * @since 3.0
+	 */
 	public void revisarFormulario() {
 		
 		if (dineroValido) {
@@ -183,6 +193,10 @@ public class FormularioJuego extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para limpiar todos los campos del formulario.
+	 * @since 3.0
+	 */
 	public void limpiarCampos() {
 		btnAnadir.setEnabled(false);
 		textDinero.setText("");

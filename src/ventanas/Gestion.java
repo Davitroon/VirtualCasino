@@ -9,6 +9,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,7 +31,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-
+/**
+ * Ventana para la gestión de usuarios y juegos.
+ * @author David
+ * @since 3.0
+ */
 public class Gestion extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -65,11 +70,6 @@ public class Gestion extends JFrame {
 		this.menu = menu;
 		this.modelo = modelo;
 		this.controlador = controlador;
-		
-		formularioCliente  = new FormularioCliente(this, controlador, modelo);
-		formularioClienteEditar = new FormularioClienteEditar(this, controlador, modelo);
-		formularioJuego  = new FormularioJuego(this, controlador, modelo);
-		formularioJuegoEditar = new FormularioJuegoEditar(this, controlador, modelo);
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);		
 		setBounds(100, 100, 802, 399);
@@ -120,6 +120,7 @@ public class Gestion extends JFrame {
 			
 		tableClientes = new JTable();
 		tableClientes.setModel(modeloClientes);
+		tableClientes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
 		scrollPaneUsuarios.setViewportView(tableClientes);
 		
 		JButton btnAnadirUsuario = new JButton("Añadir usuario");
@@ -175,6 +176,7 @@ public class Gestion extends JFrame {
 			};
 		tableJuegos = new JTable();
 		tableJuegos.setModel(modeloJuegos);
+		tableJuegos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
 		scrollPaneJuegos.setViewportView(tableJuegos);
 		
 		JButton btnAnadirJuego = new JButton("Añadir juego");
@@ -201,7 +203,7 @@ public class Gestion extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				reiniciarBotones();
-				controlador.cerrarVentana(Gestion.this, menu, false);
+				controlador.cambiarVentana(Gestion.this, menu, false);
 				tabbedPane.setSelectedIndex(0);
 				
 			}
@@ -239,7 +241,11 @@ public class Gestion extends JFrame {
 		// Clic boton añadir cliente
 		btnAnadirUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controlador.cerrarVentana(Gestion.this, formularioCliente, false);
+				if (formularioCliente == null) {
+					formularioCliente  = new FormularioCliente(Gestion.this, controlador, modelo);
+				}
+				
+				controlador.cambiarVentana(Gestion.this, formularioCliente, false);
 				reiniciarBotones();
 			}
 		});
@@ -248,9 +254,13 @@ public class Gestion extends JFrame {
 		// Clic boton editar cliente
 		btnEditarClientes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (formularioClienteEditar == null) {
+					formularioClienteEditar = new FormularioClienteEditar(Gestion.this, controlador, modelo);
+				}
+				
 				int id = Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString());
 				formularioClienteEditar.cargarClienteOriginal(id);
-				controlador.cerrarVentana(Gestion.this, formularioClienteEditar, false);
+				controlador.cambiarVentana(Gestion.this, formularioClienteEditar, false);
 				reiniciarBotones();
 			}
 		});
@@ -263,7 +273,7 @@ public class Gestion extends JFrame {
 				if (fila == -1 ) return;
 				
 				String id = String.valueOf(tableClientes.getValueAt(fila, 0)) ;
-				modelo.borrarDatos(id, "clientes");
+				modelo.borrarDato(id, "clientes");
 		
 				actualizarTablaClientes();
 				reiniciarBotones();
@@ -275,7 +285,7 @@ public class Gestion extends JFrame {
 		btnVolverUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reiniciarBotones();
-				controlador.cerrarVentana(Gestion.this, menu, false);
+				controlador.cambiarVentana(Gestion.this, menu, false);
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
@@ -302,7 +312,11 @@ public class Gestion extends JFrame {
 		// Clic boton añadir juego
 		btnAnadirJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controlador.cerrarVentana(Gestion.this, formularioJuego, false);
+				if (formularioJuego == null) {
+					formularioJuego  = new FormularioJuego(Gestion.this, controlador, modelo);
+				}
+				
+				controlador.cambiarVentana(Gestion.this, formularioJuego, false);
 				reiniciarBotones();
 			}
 		});
@@ -311,9 +325,13 @@ public class Gestion extends JFrame {
 		// Clic boton editar juego
 		btnEditarJuegos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (formularioJuegoEditar == null) {
+					formularioJuegoEditar = new FormularioJuegoEditar(Gestion.this, controlador, modelo);
+				}
+				
 				int id = Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString());
 				formularioJuegoEditar.cargarJuegoOriginal(id);
-				controlador.cerrarVentana(Gestion.this, formularioJuegoEditar, false);
+				controlador.cambiarVentana(Gestion.this, formularioJuegoEditar, false);
 				reiniciarBotones();
 			}
 		});
@@ -326,7 +344,7 @@ public class Gestion extends JFrame {
 				if (fila == -1 ) return;
 				
 				String id = String.valueOf(tableJuegos.getValueAt(fila, 0)) ;
-				modelo.borrarDatos(id, "juegos");
+				modelo.borrarDato(id, "juegos");
 		
 				actualizarTablaJuegos();
 				reiniciarBotones();
@@ -338,7 +356,7 @@ public class Gestion extends JFrame {
 		btnVolverJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reiniciarBotones();
-				controlador.cerrarVentana(Gestion.this, menu, false);
+				controlador.cambiarVentana(Gestion.this, menu, false);
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
@@ -346,6 +364,9 @@ public class Gestion extends JFrame {
 	}
 	
 	
+	/**
+	 * Método que consulta a la tabla cliente en la BD para actualizar la tabla visual.
+	 */
 	public void actualizarTablaClientes() {
 		
 		modeloClientes.setRowCount(0);
@@ -379,6 +400,9 @@ public class Gestion extends JFrame {
 	}
 	
 	
+	/**
+	 * Método que consulta a la tabla juegos en la BD para actualizar la tabla visual.
+	 */
 	public void actualizarTablaJuegos() {
 		
 		modeloJuegos.setRowCount(0);
@@ -410,6 +434,9 @@ public class Gestion extends JFrame {
 	}
 	
 	
+	/**
+	 * Método que restablece los botones a su estado original.
+	 */
 	public void reiniciarBotones() {
 		btnEditarClientes.setEnabled(false);
 		btnBorrarClientes.setEnabled(false);

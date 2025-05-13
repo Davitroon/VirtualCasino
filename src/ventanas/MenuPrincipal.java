@@ -16,6 +16,11 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * Ventana del menú principal.
+ * @author David
+ * @since 3.0
+ */
 public class MenuPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -34,8 +39,6 @@ public class MenuPrincipal extends JFrame {
 	public MenuPrincipal(Modelo modelo, Controlador controlador) {
 		this.modelo = modelo;
 		this.controlador = controlador;
-		gestion = new Gestion(this, modelo, controlador);
-		jugar = new Jugar(this, controlador);
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,16 +84,21 @@ public class MenuPrincipal extends JFrame {
 		// Clic boton jugar
 		btnJugar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				jugar.setVisible(true);
+				if (jugar == null) {
+					jugar = new Jugar(MenuPrincipal.this, modelo, controlador);
+				}
+				controlador.cambiarVentana(MenuPrincipal.this, jugar, false);
 			}
 		});
 		
 		// Clic boton administración
 		btnAdministracion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				gestion.setVisible(true);
+				if (gestion == null) {
+					gestion = new Gestion(MenuPrincipal.this, modelo, controlador);
+				}			
+				controlador.cambiarVentana(MenuPrincipal.this, gestion, false);
+				
 			}
 		});
 		

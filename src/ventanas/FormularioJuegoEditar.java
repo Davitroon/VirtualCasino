@@ -36,6 +36,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
+/**
+ * Ventana para el formulario de editar juegos.
+ * @author David
+ * @since 3.0
+ */
 public class FormularioJuegoEditar extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -151,7 +156,7 @@ public class FormularioJuegoEditar extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioJuegoEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion, true);
 			}
 		});
 		
@@ -174,7 +179,7 @@ public class FormularioJuegoEditar extends JFrame {
 				}	
 				
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioJuegoEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion, true);
 			}
 		});
 		
@@ -184,12 +189,16 @@ public class FormularioJuegoEditar extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioJuegoEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion, true);
 			}
 		});
 	}
 	
 	
+	/**
+	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * @since 3.0
+	 */
 	public void revisarFormulario() {
 		
 		if (dineroValido) {
@@ -201,6 +210,10 @@ public class FormularioJuegoEditar extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para limpiar todos los campos del formulario.
+	 * @since 3.0
+	 */
 	public void limpiarCampos() {
 		btnModificar.setEnabled(false);
 		textDinero.setText("");
@@ -209,6 +222,11 @@ public class FormularioJuegoEditar extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para rellenar los campos del formulario con los datos del juego que se vaya a modificar.
+	 * @param id Id del juego a consultar por sus datos
+	 * @since 3.0
+	 */
 	public void cargarJuegoOriginal(int id) {	    
 
 		ResultSet rset = modelo.consultarDatoUnico("juegos", id);

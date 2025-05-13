@@ -29,6 +29,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+/**
+ * Ventana para el formulario de clientes.
+ * @author David
+ * @since 3.0
+ */
 public class FormularioCliente extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -245,7 +250,7 @@ public class FormularioCliente extends JFrame {
 				modelo.agregarDato(cliente);
 				
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioCliente.this, gestion, true);
+				controlador.cambiarVentana(FormularioCliente.this, gestion, true);
 			}
 		});
 		
@@ -254,7 +259,7 @@ public class FormularioCliente extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioCliente.this, gestion, true);
+				controlador.cambiarVentana(FormularioCliente.this, gestion, true);
 			}
 		});
 		
@@ -264,12 +269,16 @@ public class FormularioCliente extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				limpiarCampos();
-				controlador.cerrarVentana(FormularioCliente.this, gestion, true);
+				controlador.cambiarVentana(FormularioCliente.this, gestion, true);
 			}
 		});
 	}
 	
 	
+	/**
+	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * @since 3.0
+	 */
 	public void revisarFormulario() {
 		
 		if (edadValida && saldoValido && nombreValido && obtenerGenero() != 0) {
@@ -281,6 +290,10 @@ public class FormularioCliente extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para limpiar todos los campos del formulario.
+	 * @since 3.0
+	 */
 	public void limpiarCampos() {
 		btnAnadir.setEnabled(false);
 		buttonGroup.clearSelection();
@@ -293,6 +306,11 @@ public class FormularioCliente extends JFrame {
 	}
 	
 	
+	/**
+	 * Método para obtener el género en base al radio button seleccionado.
+	 * @return Género en formato char.
+	 * @since 3.0
+	 */
 	public char obtenerGenero() {
 		if (rdbtnMasculino.isSelected()) return 'M';
 		if (rdbtnFemenino.isSelected()) return 'F';

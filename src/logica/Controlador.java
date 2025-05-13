@@ -3,6 +3,11 @@ package logica;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/**
+ * Clase controlador del MVC. Gestiona intercambios, validaciones y lógica.
+ * @author David
+ * @since 3.0
+ */
 public class Controlador {
 
 	// Definición constantes
@@ -12,9 +17,18 @@ public class Controlador {
 	private static final int longitudNombreMax = 30;
 	private static final double dineroMin = 1000;
 	private static final double dineroMax = 999999;
+	private static final double apuestaMin = 2;
+	private static final double apuestaMax = 50000;
 	
 	
-	public void cerrarVentana(JFrame ventanaActual, JFrame ventanaNueva, boolean cerrar) {
+	/**
+	 * Método para ocultar una ventana y mostrar una nueva.
+	 * @param ventanaActual Ventana a cerrar
+	 * @param ventanaNueva Ventana a abrir
+	 * @param cerrar Si es true la ventana se cierra, si es false la ventana solo se oculta
+	 * @since 3.0
+	 */
+	public void cambiarVentana(JFrame ventanaActual, JFrame ventanaNueva, boolean cerrar) {
 		
 		if (cerrar) {
 			ventanaActual.dispose();
@@ -27,6 +41,13 @@ public class Controlador {
 	}
 	
 	
+	/**
+	 * Método para validar el nombre de un cliente.
+	 * @param texto Nombre del cliente
+	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
+	 * @return True si el nombre es válido, false si no lo es
+	 * @since 3.0
+	 */
 	public boolean validarNombreCliente(String texto, JLabel mensajeError) {
 		
 		if (texto.isBlank()) {
@@ -49,6 +70,13 @@ public class Controlador {
 	}
 	
 	
+	/**
+	 * Método para validar la edad de un cliente.
+	 * @param texto Edad del cliente
+	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
+	 * @return True si la edad es válida, false si no lo es
+	 * @since 3.0
+	 */
 	public boolean validarEdadCliente(String texto, JLabel mensajeError) {
 		
 		if (texto.isBlank()) {
@@ -78,6 +106,13 @@ public class Controlador {
 	}
 	
 	
+	/**
+	 * Método para validar el saldo de un cliente.
+	 * @param texto Saldo del cliente
+	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
+	 * @return True el saldo es válido, false si no lo es
+	 * @since 3.0
+	 */
 	public boolean validarSaldoCliente(String texto, JLabel mensajeError) {
 		
 		double saldo;
@@ -110,6 +145,13 @@ public class Controlador {
 	}
 	
 	
+	/**
+	 * Método para validar el dinero de un juego.
+	 * @param texto Dinero del juego
+	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
+	 * @return True el dinero es válido, false si no lo es
+	 * @since 3.0
+	 */
 	public boolean validarDineroJuego(String texto, JLabel mensajeError) {
 		
 		double saldo;
@@ -139,6 +181,34 @@ public class Controlador {
 		
 		mensajeError.setText("");
 		return true;
+	}
+	
+	
+	/**
+	 * Método para validar que una apuesta sea válida.
+	 * @param apuestaTxt Cantidad de la apuesta
+	 * @param saldoCliente Saldo del cliente
+	 * @param dineroJuego Dinero del juego
+	 * @return True si la apuesta es válida, false si no lo es
+	 */
+	public String validarApuesta (String apuestaTxt, double saldoCliente, double dineroJuego) {
+		
+		double apuesta = 0;
+		try {
+			apuesta = Double.parseDouble(apuestaTxt);
+			
+		} catch (NumberFormatException e) {
+			return "Ingresa una apuesta válida";
+		}	
+		
+		if (saldoCliente < apuestaMin) return "Cliente con saldo insuficiente";
+		if (dineroJuego < apuestaMin) return "Juego con dinero insuficiente";
+		if (apuesta > saldoCliente) return "La apuesta es mayor que el saldo del cliente";
+		if (apuesta > dineroJuego) return "La apuesta es mayor que el dinero en el juego";
+		if (apuesta < apuestaMin) return "La apuesta mínima son " + apuestaMin;
+		if (apuesta > apuestaMax) return "La apuesta máxima son " + apuestaMax;
+		
+		return null;		
 	}
 }
 

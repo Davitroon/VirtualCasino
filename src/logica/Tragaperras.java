@@ -4,6 +4,7 @@ package logica;
  * Juego tragaperras, hijo de clase Juego.
  * Simula el funcionamiento real de una máquina tragaperras.
  * @author David Forero
+ * @since 2.0
  */
 public class Tragaperras extends Juego {
 
@@ -13,13 +14,21 @@ public class Tragaperras extends Juego {
 	/**
 	 * Constructor de la tragaperras, envia al constructor de Juego su tipo.
 	 * @param dinero Dinero que contará el juego para las apuestas.
+	 * @since 2.0
 	 */
 	public Tragaperras(double dinero) {
 		super(dinero, "Tragaperras");
 	}
 
 	
-	// Constructor editar tragaperras
+	/**
+	 * Constructor completo (para ser editado) de la tragaperras, envia al constructor de Juego los parámetros.
+	 * @param id Id del juego
+	 * @param tipo Tipo del juego
+	 * @param activo Estado del juego
+	 * @param dinero Dinero del juego
+	 * @since 2.0
+	 */
 	public Tragaperras(int id, String tipo, boolean activo, double dinero) {
 		super(id, tipo, activo, dinero);
 	}
@@ -55,7 +64,8 @@ public class Tragaperras extends Juego {
 	
 	
 	/**
-	 * Rellena las 3 casillas con un número al azar del 1 al 9.
+	 * Método que rellena las 3 casillas con un número al azar del 1 al 9.
+	 * @since 2.0
 	 */
 	public void generarNumeros() {	
 	

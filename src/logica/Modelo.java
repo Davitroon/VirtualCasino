@@ -7,6 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
+/**
+ * Clase modelo del MVC. Conecta con la BD y gestiona la información.
+ * @author David
+ * @since 3.0
+ */
 public class Modelo {
 	
 	private String database = "casino25";
@@ -15,7 +20,12 @@ public class Modelo {
 	private String url = "jdbc:mysql://localhost/" + database;
 	private static Connection conexion;
 	
-	
+	/**
+	 * Constructor del modelo, dodne hace conexión a la base de datos.
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 * @since 3.0
+	 */
 	public Modelo() throws SQLException, ClassNotFoundException {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		conexion=DriverManager.getConnection(url,login,pwd);
@@ -23,6 +33,12 @@ public class Modelo {
 	}
 	
 	
+	/**
+	 * Método para realizar una consulta de todos los datos de una tabla a la base de datos.
+	 * @param tabla Tabla a consultar
+	 * @return ResultSet (Consulta SQL)
+	 * @since 3.0
+	 */
 	public ResultSet consultarDatos(String tabla) {
 		
 		String consulta = null;
@@ -43,7 +59,13 @@ public class Modelo {
 		return rset;
 	}
 	
-	
+	/**
+	 * Método para realizar una consulta de un único dato en una tabla a la base de datos.
+	 * @param tabla Tabla a consultar
+	 * @param id Id del elemento a consultar
+	 * @return ResultSet (Consulta SQL)
+	 * @since 3.0
+	 */
 	public ResultSet consultarDatoUnico(String tabla, int id) {
 		
 		String consulta = null;
@@ -66,7 +88,11 @@ public class Modelo {
 		return rset;
 	}
 	
-	
+	/**
+	 * Método para insertar un dato a la base de datos.
+	 * @param dato Dato a agregar (Juego, cliente...)
+	 * @since 3.0
+	 */
 	public void agregarDato(Object dato) {
 		String consulta = null;
 		
@@ -99,7 +125,11 @@ public class Modelo {
 	    }
 	}
 	
-	
+	/**
+	 * Método para modificar un dato de la base de datos.
+	 * @param dato Dato a modificar (Juego, cliente...)
+	 * @since 3.0
+	 */
 	public void modificarDato(Object dato) {
 		String consulta = null;
 		
@@ -136,8 +166,12 @@ public class Modelo {
 	    }
 	}
 	
-	
-	public void borrarDatos(String id, String tabla) {
+	/**
+	 * Método para borrar un dato de la base de datos.
+	 * @param dato Dato a agregar (Juego, cliente...)
+	 * @since 3.0
+	 */
+	public void borrarDato(String id, String tabla) {
 		
 		String consulta = null;
 		

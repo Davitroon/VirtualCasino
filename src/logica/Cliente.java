@@ -3,6 +3,7 @@ package logica;
 /**
  * Clase para los clientes del casino.
  * @author David Forero
+ * @since 2.0
  */
 public class Cliente {
 	
@@ -15,11 +16,12 @@ public class Cliente {
 	
 	
 	/**
-	 * Constructor de los clientes para modificar, recibe datos validados.
-	 * @param nombre Nombre completo del cliente (nombre y apellido).
-	 * @param edad Edad del cliente (con rango de edad válido establecido).
-	 * @param genero Género del cliente.
-	 * @param saldo Saldo del cliente.
+	 * Constructor completo (para ser editado) de los clientes.
+	 * @param nombre Nombre completo del cliente (nombre y apellido)
+	 * @param edad Edad del cliente (con rango de edad válido establecido)
+	 * @param genero Género del cliente
+	 * @param saldo Saldo del cliente
+	 * @since 2.0
 	 */
 	public Cliente(String nombre, int edad, char genero, double saldo, int id, boolean activo) {
 		this.id = id;
@@ -32,11 +34,12 @@ public class Cliente {
 
 	
 	/**
-	 * Constructor de los clientes para agregar, recibe datos validados.
-	 * @param nombre Nombre completo del cliente (nombre y apellido).
-	 * @param edad Edad del cliente (con rango de edad válido establecido).
-	 * @param genero Género del cliente.
-	 * @param saldo Saldo del cliente.
+	 * Constructor de los clientes.
+	 * @param nombre Nombre completo del cliente (nombre y apellido)
+	 * @param edad Edad del cliente (con rango de edad válido establecido)
+	 * @param genero Género del cliente
+	 * @param saldo Saldo del cliente
+	 * @since 2.0
 	 */
 	public Cliente(String nombre, int edad, char genero, double saldo) {
 		this.nombre = nombre;
@@ -49,8 +52,9 @@ public class Cliente {
 
 	/**
 	 * Imprime los datos del cliente.
-	 * @param id ID del cliente.
-	 * @return Información acerca del cliente.
+	 * @param id ID del cliente
+	 * @return Información acerca del cliente
+	 * @since 2.0
 	 */
 	public String imprimirCliente(int id) {
 		return String.format("%-5s|%-24s|%-6d|%-7c|%-6b|%10.2f $", id + 1, nombre, edad, genero, activo, saldo);

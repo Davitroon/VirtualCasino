@@ -1,16 +1,20 @@
 Posibles cambios Proyecto casino
 
 
+Cambios pendientes:
 - Crear una ventana de estadísticas (posiblemente en una clase nueva que guarde los datos).
 - Crear un sistema de login con diferentes perfiles.
 - Crear un apartado de logros.
 - Crear juegos nuevos (Ruleta rusa, ruleta, Poker…)
 
 - Ajustar los juegos para la interfaz gráfica
-- Organizar el código en 2 paquetes, ventanas y lógica.
-- Re ajustar validaciones para evitar SQLInjection
-- Usar excepciones (Pendiente por ver)
-- !! Eliminar campo de baja en formulario de registro de usuario !!
 
 - Eliminar gestión rápida, puedo juntar todo en la ventana de gestión
 - Eliminar posibilidad de editar el saldo de los jugadores y las maquinas (solo se podrá ajustar según juegue el jugador)
+
+
+Cambios hechos:
+- Organizar el código en 2 paquetes, ventanas y lógica.
+- Re ajustar validaciones para evitar SQLInjection
+- Usar excepciones
+- !! Eliminar campo de baja en formulario de registro de usuario !!
