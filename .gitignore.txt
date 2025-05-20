@@ -1,0 +1,8 @@
+# Ignorar todos los archivos .class
+*.class
+
+# Ignorar archivos con el patrón Jugar$*.class (clases internas de Jugar)
+Jugar$*
+
+# Ignorar todos los archivos generados con el patrón $<n>
+*$*
