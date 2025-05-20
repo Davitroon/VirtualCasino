@@ -250,7 +250,7 @@ public class FormularioCliente extends JFrame {
 				modelo.agregarDato(cliente);
 				
 				limpiarCampos();
-				controlador.cambiarVentana(FormularioCliente.this, gestion, true);
+				controlador.cambiarVentana(FormularioCliente.this, gestion);
 			}
 		});
 		
@@ -259,7 +259,7 @@ public class FormularioCliente extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpiarCampos();
-				controlador.cambiarVentana(FormularioCliente.this, gestion, true);
+				controlador.cambiarVentana(FormularioCliente.this, gestion);
 			}
 		});
 		
@@ -269,7 +269,7 @@ public class FormularioCliente extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				limpiarCampos();
-				controlador.cambiarVentana(FormularioCliente.this, gestion, true);
+				controlador.cambiarVentana(FormularioCliente.this, gestion);
 			}
 		});
 	}

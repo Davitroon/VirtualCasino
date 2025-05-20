@@ -1,4 +1,5 @@
 package logica;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -6,7 +7,6 @@ import java.util.Collections;
  * Juego BlackJack, hijo de juego.
  * Simula el funcionamiento del BlackJack real. 
  * @author David Forero
- * @since 2.0
  */
 public class Blackjack extends Juego {
 
@@ -30,22 +30,29 @@ public class Blackjack extends Juego {
 	 * @param tipo Tipo del juego
 	 * @param activo Estado del juego
 	 * @param dinero Dinero del juego
-	 * @since 2.0
+	 * @since 3.0
 	 */
 	public Blackjack(int id, String tipo, boolean activo, double dinero) {
 		super(id, tipo, activo, dinero);
 	}
 
+	
+	/**
+	 * Constructor de blackjack de datos necesarios (para guardar en el juego).
+	 * @param id Id del juego
+	 * @param dinero Dinero del juego
+	 * @since 3.0
+	 */
+	public Blackjack(int id, double dinero) {
+		super(id, dinero);
+	}
 
 	/**
 	 * Compara la suma de las cartas del cliente y del crupier.<br>
-	 * Si el cliente pierde, pierde su apuesta.<br>
-	 * Si hay un empate:<br>
-	 *  - Si el empate es con un blackjack, se multiplica la apuesta por 1.5.<br>
-	 *  - Si el empate es sin blackjack, se recupera la apuesta original.<br>
-	 * Si gana el cliente:<br>
-	 *  - Con blackjack, se multiplica la apuesta por 2.5.<br>
-	 *  - Sin blackjack, se multiplica la apuesta por 1.<br>
+	 * - Si gana el cliente con blackjack, se multiplica la apuesta por 2.5.<br>
+	 * - Si hay empate con un blackjack o el cliente gana con mano normal, se multiplica la apuesta por 1.5.<br>
+	 * - Si hay empate sin blackjack, se recupera la apuesta original.<br>
+	 * - Si el cliente pierde, pierde su apuesta.<br>
 	 */
 	@Override
 	public double jugar(double apuesta) {
@@ -53,25 +60,39 @@ public class Blackjack extends Juego {
 		int sumaCrupier = sumarCartas(cartasCrupier);
 		int sumaCliente = sumarCartas(cartasCliente);
 		
-		// Pierde el cliente
-		if (sumaCliente < sumaCrupier) {
-			return -apuesta;
-		} 
-		
-		// Empate con blackjack o normal
-		if (sumaCliente == sumaCrupier) {
-	        return (sumaCliente == 21) ? apuesta * 1.5 : apuesta; 
-		}
-		
-		// Gana con blackjack o normal
-		return (sumaCliente == 21) ? apuesta * 2.5 : apuesta * 2;
+	    // Cliente pierde
+	    if (sumaCliente > 21) {
+	        return -apuesta;
+	    }
+
+	    // Crupier se pasa y el cliente no
+	    if (sumaCrupier > 21) {
+	        return sumaCliente == 21 ? apuesta * 2.5 : apuesta * 1.5;
+	    }
+
+	    // Empate
+	    if (sumaCliente == sumaCrupier) {
+	        if (sumaCliente == 21) {
+	            return apuesta * 1.5;  // Empate con blackjack
+	            
+	        } else {
+	            return apuesta;        // Empate normal
+	        }
+	    }
+
+	    // Cliente gana
+	    if (sumaCliente > sumaCrupier) {
+	        return sumaCliente == 21 ? apuesta * 2.5 : apuesta * 1.5;
+	    }
+
+	    // Cliente pierde
+	    return -apuesta;
 	  
 	}
 	
 
 	/**
 	 * Baraja las cartas. Primero vacia todos los mazos de cartas, luego rellena el mazo de cartas total y finalmente las mezcla.
-	 * @since 2.0
 	 */
 	public void barajarCartas() {		
 
@@ -90,10 +111,9 @@ public class Blackjack extends Juego {
 	
 
 	/**
-	 * Método que reparte un numero de cartas al jugador indicado, eliminando las cartas del mazo total.
-	 * @param numCartas Número de cartas a repartir
-	 * @param jugador Jugador al que se le repartirá
-	 * @since 2.0
+	 * Reparte un numero de cartas al jugador indicado, eliminando las cartas del mazo total.
+	 * @param numCartas Número de cartas a repartir.
+	 * @param jugador Jugador al que se le repartirá.
 	 */
 	public void repartirCartas(int numCartas, String jugador) {
 	
@@ -115,27 +135,29 @@ public class Blackjack extends Juego {
 
 	/**
 	 * Muestra las cartas de cada jugador.
-	 * @param ocultarCarta Ocultar la 2º carta del crupier o no
-	 * @return Cartas de cada jugador
+	 * @param ocultarCarta Ocultar la 2º carta del crupier o no.
+	 * @return Cartas de cada jugador.
 	 * @since 2.0
 	 */
-	public String mostrarCartas(boolean ocultarCarta) {
+	public String mostrarCartas(boolean ocultarCarta, String jugador) {
 		
-		String cartas = "Cartas crupier:\n";
+		String cartas = "";
 		
-		for (Integer carta : cartasCrupier) {
-		    if (ocultarCarta && cartasCrupier.indexOf(carta) == 1) {
-		        cartas += "[?] ";
-		        
-		    } else {
-		        cartas += "[" + leerCarta(carta) + "] ";
-		    }
+		if (jugador.equals("cliente")) {
+			for (Integer carta : cartasCliente) {
+			    cartas += "[" + leerCarta(carta) + "] ";        
+			}
 		}
-
-		cartas += "\n\nCartas jugador: \n";
-
-		for (Integer carta : cartasCliente) {
-		    cartas += "[" + leerCarta(carta) + "] ";        
+		
+		if (jugador.equals("crupier")) {		
+			for (Integer carta : cartasCrupier) {
+			    if (ocultarCarta && cartasCrupier.indexOf(carta) == 1) {
+			        cartas += "[?] ";
+			        
+			    } else {
+			        cartas += "[" + leerCarta(carta) + "] ";
+			    }
+			}
 		}
 		
 		return cartas;
@@ -144,9 +166,8 @@ public class Blackjack extends Juego {
 	
 	/**
 	 * Lee una carta para traducirla a la baraja francesa.
-	 * @param carta Carta a leer
-	 * @return Carta traducida
-	 * @since 2.0
+	 * @param carta Carta a leer.
+	 * @return Carta traducida.
 	 */
 	private String leerCarta(Integer carta) {
 		
@@ -171,9 +192,8 @@ public class Blackjack extends Juego {
 
 	/**
 	 * Comprueba si el jugador se ha pasado de 21.
-	 * @param jugador Jugador a comprobar
-	 * @return True si se ha pasado de 21, false en el caso contrario.
-	 * @since 2.0
+	 * @param jugador Jugador a comprobar.
+	 * @return Se ha pasado de 21 o no.
 	 */
 	public boolean jugadorPierde(String jugador) {
 
@@ -185,9 +205,8 @@ public class Blackjack extends Juego {
 	
 	/**
 	 * Suma el valor de las cartas de cada jugador.
-	 * @param listaCartas Cartas del jugador
-	 * @return La suma total, teniendo en cuenta los As
-	 * @since 2.0
+	 * @param listaCartas Cartas del jugador.
+	 * @return La suma total, teniendo en cuenta los As.
 	 */
 	public int sumarCartas(ArrayList<Integer> listaCartas) {
 		
@@ -221,8 +240,7 @@ public class Blackjack extends Juego {
 
 	/**
 	 * Indica si el crupier debería pedir carta en situaciones diferentes.
-	 * @return True si debe pedir carta, false en el caso contrario.
-	 * @since 2.0
+	 * @return Pide carta o no.
 	 */
 	public boolean crupierDebePedir() {
 		

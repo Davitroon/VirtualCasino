@@ -43,6 +43,17 @@ public abstract class Juego {
 
 	
 	/**
+	 * Constructor minimo para jugar, solo se necesitará saber el dinero y el id.
+	 * @param id
+	 * @param dinero
+	 */
+	public Juego(int id, double dinero) {
+		this.id = id;
+		this.dinero = dinero;
+	}
+
+
+	/**
 	 * Método para jugar al juego. Cada tipo de juego calcula mediante sus propias reglas la modificación de la apuesta, en base si el cliente pierde o gana.
 	 * @param apuesta Apuesta del cliente.
 	 * @return Apuesta modificada.

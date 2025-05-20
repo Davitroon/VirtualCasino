@@ -168,7 +168,7 @@ public class Modelo {
 	
 	/**
 	 * Método para borrar un dato de la base de datos.
-	 * @param dato Dato a agregar (Juego, cliente...)
+	 * @param dato Dato a borrar (Juego, cliente...)
 	 * @since 3.0
 	 */
 	public void borrarDato(String id, String tabla) {

@@ -20,7 +20,6 @@ public class Lanzador {
 	private static Controlador controlador;
 	private static MenuPrincipal menu;
 	
-	private static String mensajeError;
 	
     public static void main(String[] args) {
         try {

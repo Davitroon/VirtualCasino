@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -197,13 +198,15 @@ public class Gestion extends JFrame {
 		btnVolverJuego.setBounds(60, 235, 132, 36);
 		panelJuegos.add(btnVolverJuego);
 		
+		String[] opciones = {"Pedir carta", "Plantarse"};
+		
 		
 		addWindowListener(new WindowAdapter() {
 			// Al cerrar la ventana mediante la X
 			@Override
 			public void windowClosing(WindowEvent e) {
 				reiniciarBotones();
-				controlador.cambiarVentana(Gestion.this, menu, false);
+				controlador.cambiarVentana(Gestion.this, menu);
 				tabbedPane.setSelectedIndex(0);
 				
 			}
@@ -245,7 +248,7 @@ public class Gestion extends JFrame {
 					formularioCliente  = new FormularioCliente(Gestion.this, controlador, modelo);
 				}
 				
-				controlador.cambiarVentana(Gestion.this, formularioCliente, false);
+				controlador.cambiarVentana(Gestion.this, formularioCliente);
 				reiniciarBotones();
 			}
 		});
@@ -260,7 +263,7 @@ public class Gestion extends JFrame {
 				
 				int id = Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString());
 				formularioClienteEditar.cargarClienteOriginal(id);
-				controlador.cambiarVentana(Gestion.this, formularioClienteEditar, false);
+				controlador.cambiarVentana(Gestion.this, formularioClienteEditar);
 				reiniciarBotones();
 			}
 		});
@@ -285,7 +288,7 @@ public class Gestion extends JFrame {
 		btnVolverUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reiniciarBotones();
-				controlador.cambiarVentana(Gestion.this, menu, false);
+				controlador.cambiarVentana(Gestion.this, menu);
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
@@ -316,7 +319,7 @@ public class Gestion extends JFrame {
 					formularioJuego  = new FormularioJuego(Gestion.this, controlador, modelo);
 				}
 				
-				controlador.cambiarVentana(Gestion.this, formularioJuego, false);
+				controlador.cambiarVentana(Gestion.this, formularioJuego);
 				reiniciarBotones();
 			}
 		});
@@ -331,7 +334,7 @@ public class Gestion extends JFrame {
 				
 				int id = Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString());
 				formularioJuegoEditar.cargarJuegoOriginal(id);
-				controlador.cambiarVentana(Gestion.this, formularioJuegoEditar, false);
+				controlador.cambiarVentana(Gestion.this, formularioJuegoEditar);
 				reiniciarBotones();
 			}
 		});
@@ -356,7 +359,7 @@ public class Gestion extends JFrame {
 		btnVolverJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reiniciarBotones();
-				controlador.cambiarVentana(Gestion.this, menu, false);
+				controlador.cambiarVentana(Gestion.this, menu);
 				tabbedPane.setSelectedIndex(0);
 			}
 		});

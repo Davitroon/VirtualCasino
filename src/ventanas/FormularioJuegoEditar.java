@@ -156,7 +156,7 @@ public class FormularioJuegoEditar extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				limpiarCampos();
-				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion);
 			}
 		});
 		
@@ -179,7 +179,7 @@ public class FormularioJuegoEditar extends JFrame {
 				}	
 				
 				limpiarCampos();
-				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion);
 			}
 		});
 		
@@ -189,7 +189,7 @@ public class FormularioJuegoEditar extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				limpiarCampos();
-				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion, true);
+				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion);
 			}
 		});
 	}

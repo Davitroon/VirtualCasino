@@ -28,16 +28,10 @@ public class Controlador {
 	 * @param cerrar Si es true la ventana se cierra, si es false la ventana solo se oculta
 	 * @since 3.0
 	 */
-	public void cambiarVentana(JFrame ventanaActual, JFrame ventanaNueva, boolean cerrar) {
-		
-		if (cerrar) {
-			ventanaActual.dispose();
-			ventanaNueva.setVisible(true);
-			
-		} else {
-			ventanaActual.setVisible(false);
-			ventanaNueva.setVisible(true);
-		}
+	public void cambiarVentana(JFrame ventanaActual, JFrame ventanaNueva) {	
+		ventanaActual.setVisible(false);
+		ventanaNueva.setVisible(true);
+
 	}
 	
 	

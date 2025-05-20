@@ -87,7 +87,7 @@ public class MenuPrincipal extends JFrame {
 				if (jugar == null) {
 					jugar = new Jugar(MenuPrincipal.this, modelo, controlador);
 				}
-				controlador.cambiarVentana(MenuPrincipal.this, jugar, false);
+				controlador.cambiarVentana(MenuPrincipal.this, jugar);
 			}
 		});
 		
@@ -97,7 +97,7 @@ public class MenuPrincipal extends JFrame {
 				if (gestion == null) {
 					gestion = new Gestion(MenuPrincipal.this, modelo, controlador);
 				}			
-				controlador.cambiarVentana(MenuPrincipal.this, gestion, false);
+				controlador.cambiarVentana(MenuPrincipal.this, gestion);
 				
 			}
 		});

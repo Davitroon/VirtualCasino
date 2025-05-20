@@ -48,6 +48,16 @@ public class Cliente {
 		activo = true;
 		this.saldo = saldo;
 	}
+	
+	/**
+	 * Constructor mínimo para jugar, solo se necesitará saber el saldo y el id.
+	 * @param id Id del cliente
+	 * @param saldo Saldo del cliente
+	 */
+	public Cliente(int id, double saldo) {
+		this.id = id;
+		this.saldo = saldo;
+	}
 
 
 	/**

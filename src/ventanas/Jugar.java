@@ -8,6 +8,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import logica.Blackjack;
+import logica.Cliente;
 import logica.Controlador;
 import logica.Modelo;
 
@@ -158,7 +160,7 @@ public class Jugar extends JFrame {
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controlador.cambiarVentana(Jugar.this, menu, true);
+				controlador.cambiarVentana(Jugar.this, menu);
 				btnJugar.setEnabled(false);
 			}
 		});
@@ -167,7 +169,7 @@ public class Jugar extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controlador.cambiarVentana(Jugar.this, menu, true);
+				controlador.cambiarVentana(Jugar.this, menu);
 				btnJugar.setEnabled(false);
 			}
 		});
@@ -189,11 +191,13 @@ public class Jugar extends JFrame {
 				
 				ResultSet rsetCliente = modelo.consultarDatoUnico("clientes", Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString()) );
 				ResultSet rsetJuego = modelo.consultarDatoUnico("juegos", Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString()) );
-				double saldoCliente = 0, dineroJuego = 0;
+				
+				Cliente cliente = null;
+				Blackjack blackjack = null;
 				
 				try {
-				    saldoCliente = rsetCliente.getDouble(6);
-				    dineroJuego = rsetJuego.getDouble(4);
+				   cliente = new Cliente (rsetCliente.getInt("id"), rsetCliente.getDouble("saldo"));
+				   blackjack = new Blackjack (rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
 				    
 				} catch (SQLException e1) {
 				    e1.printStackTrace();
@@ -204,17 +208,18 @@ public class Jugar extends JFrame {
 					if (apuesta == null) break;
 					String mensajeError = null;
 					
-					mensajeError = controlador.validarApuesta(apuesta, saldoCliente, dineroJuego);
+					mensajeError = controlador.validarApuesta(apuesta, cliente.getSaldo(), blackjack.getDinero());
 					
 					if (mensajeError != null) {
 						 JOptionPane.showMessageDialog(null, mensajeError, "Error", JOptionPane.ERROR_MESSAGE);
 						 
 					} else {
 						if (wndBlackjack == null) {
-							wndBlackjack = new WndBlackjack(controlador, Jugar.this);
-						}
+							wndBlackjack = new WndBlackjack(controlador, Jugar.this, cliente, blackjack, Double.parseDouble(apuesta));
+						}					
 						
-						controlador.cambiarVentana(Jugar.this, wndBlackjack, false);
+						wndBlackjack.iniciarJuego();
+						controlador.cambiarVentana(Jugar.this, wndBlackjack);
 						btnJugar.setEnabled(false);
 						break;
 					}
