@@ -62,7 +62,7 @@ public class FormularioClienteEditar extends JFrame {
 	private JLabel lblErrorEdad;
 	private JLabel lblErrorSaldo;
 	private JTextField textId;
-	private JCheckBox chckbxBaja;
+	private JCheckBox chckbxActivo;
 	
 
 	/**
@@ -78,7 +78,7 @@ public class FormularioClienteEditar extends JFrame {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);	
-		setBounds(100, 100, 451, 376);
+		setBounds(100, 100, 499, 403);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -86,98 +86,104 @@ public class FormularioClienteEditar extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblEditarCliente = new JLabel("Editar cliente", SwingConstants.CENTER);
-		lblEditarCliente.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblEditarCliente.setBounds(10, 11, 404, 39);
+		lblEditarCliente.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblEditarCliente.setBounds(10, 25, 463, 39);
 		contentPane.add(lblEditarCliente);
 		
 		textNombre = new JTextField();
-		textNombre.setBounds(177, 81, 204, 20);
+		textNombre.setBounds(189, 100, 167, 32);
 		contentPane.add(textNombre);
 		textNombre.setColumns(10);
 		
 		textEdad = new JTextField();
-		textEdad.setBounds(76, 140, 70, 20);
+		textEdad.setBounds(76, 165, 133, 32);
 		contentPane.add(textEdad);
 		textEdad.setColumns(10);
 		
 		rdbtnMasculino = new JRadioButton("Masculino");
 		buttonGroup.add(rdbtnMasculino);
-		rdbtnMasculino.setBounds(76, 216, 99, 23);
+		rdbtnMasculino.setBounds(110, 246, 99, 23);
 		contentPane.add(rdbtnMasculino);
 		
 		rdbtnFemenino = new JRadioButton("Femenino");
 		buttonGroup.add(rdbtnFemenino);
-		rdbtnFemenino.setBounds(177, 216, 86, 23);
+		rdbtnFemenino.setBounds(214, 246, 86, 23);
 		contentPane.add(rdbtnFemenino);
 		
 		rdbtnOtro = new JRadioButton("Otro");
 		buttonGroup.add(rdbtnOtro);
-		rdbtnOtro.setBounds(275, 216, 64, 23);
+		rdbtnOtro.setBounds(302, 246, 64, 23);
 		contentPane.add(rdbtnOtro);
 		
 		textSaldo = new JTextField();
-		textSaldo.setBounds(194, 140, 111, 20);
+		textSaldo.setBounds(280, 165, 151, 32);
 		contentPane.add(textSaldo);
 		textSaldo.setColumns(10);
 		
 		JLabel lblNombre = new JLabel("Nombre");
+		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblNombre.setLabelFor(textNombre);
-		lblNombre.setBounds(126, 83, 64, 17);
+		lblNombre.setBounds(126, 107, 64, 17);
 		contentPane.add(lblNombre);
 		
 		JLabel lblEdad = new JLabel("Edad");
+		lblEdad.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblEdad.setLabelFor(textEdad);
-		lblEdad.setBounds(40, 142, 64, 17);
+		lblEdad.setBounds(37, 172, 64, 17);
 		contentPane.add(lblEdad);
 		
 		JLabel lblSaldo = new JLabel("Saldo");
+		lblSaldo.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblSaldo.setLabelFor(textSaldo);
-		lblSaldo.setBounds(156, 142, 36, 17);
+		lblSaldo.setBounds(229, 172, 36, 17);
 		contentPane.add(lblSaldo);
 		
 		JLabel lblGenero = new JLabel("Género", SwingConstants.CENTER);
-		lblGenero.setBounds(40, 195, 341, 14);
+		lblGenero.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblGenero.setBounds(52, 225, 379, 14);
 		contentPane.add(lblGenero);
 		
 		btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(282, 283, 111, 32);
+		btnModificar.setBounds(333, 307, 111, 32);
 		contentPane.add(btnModificar);
 		
 		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBounds(152, 283, 111, 32);
+		btnVolver.setBounds(202, 307, 111, 32);
 		contentPane.add(btnVolver);
 		
 		lblErrorNombre = new JLabel("");
-		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorNombre.setForeground(new Color(255, 0, 0));
-		lblErrorNombre.setBounds(126, 109, 255, 14);
+		lblErrorNombre.setBounds(126, 134, 267, 14);
 		contentPane.add(lblErrorNombre);
 		
 		lblErrorEdad = new JLabel("");
-		lblErrorEdad.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorEdad.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorEdad.setForeground(new Color(255, 0, 0));
-		lblErrorEdad.setBounds(37, 171, 109, 14);
+		lblErrorEdad.setBounds(37, 200, 172, 14);
 		contentPane.add(lblErrorEdad);
 		
 		lblErrorSaldo = new JLabel("");
-		lblErrorSaldo.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorSaldo.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorSaldo.setForeground(new Color(255, 0, 0));
-		lblErrorSaldo.setBounds(156, 171, 149, 14);
+		lblErrorSaldo.setBounds(236, 200, 195, 14);
 		contentPane.add(lblErrorSaldo);
 		
 		JLabel lblId = new JLabel("ID");
-		lblId.setBounds(40, 84, 26, 14);
+		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblId.setBounds(37, 108, 26, 14);
 		contentPane.add(lblId);
 		
 		textId = new JTextField();
+		textId.setEnabled(false);
 		textId.setEditable(false);
-		textId.setBounds(65, 81, 44, 20);
+		textId.setBounds(57, 100, 44, 32);
 		contentPane.add(textId);
 		textId.setColumns(10);
 		
-		chckbxBaja = new JCheckBox("Activo");
-		chckbxBaja.setBounds(317, 139, 76, 23);
-		contentPane.add(chckbxBaja);
+		chckbxActivo = new JCheckBox("Activo");
+		chckbxActivo.setBounds(368, 105, 76, 23);
+		contentPane.add(chckbxActivo);
 		
 		
 		// Al escribir en el campo nombre
@@ -263,7 +269,7 @@ public class FormularioClienteEditar extends JFrame {
 				char genero = obtenerGenero();
 				double saldo = Double.parseDouble(textSaldo.getText());
 				int id = Integer.parseInt(textId.getText());
-				boolean activo = chckbxBaja.isSelected() ? true : false;
+				boolean activo = chckbxActivo.isSelected() ? true : false;
 				
 				modelo.modificarCliente(new Cliente (nombre, edad, genero, saldo, id, activo));
 				
@@ -352,7 +358,7 @@ public class FormularioClienteEditar extends JFrame {
 		    textNombre.setText(rset.getString(2)) ;
 		    textEdad.setText( String.valueOf(rset.getString(3) ) ) ;
 		    genero =  rset.getString(4);
-			if (rset.getBoolean(5) ) chckbxBaja.doClick();
+			if (rset.getBoolean(5) ) chckbxActivo.setSelected(true);
 		    textSaldo.setText( String.valueOf(rset.getString(6) ) ) ;
 			
 		} catch (SQLException e) {

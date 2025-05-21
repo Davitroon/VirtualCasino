@@ -89,8 +89,8 @@ public class Gestion extends JFrame {
 		panelUsuarios.setLayout(null);
 		
 		JLabel lblMisUsuarios = new JLabel("Mis Usuarios", SwingConstants.CENTER);
-		lblMisUsuarios.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblMisUsuarios.setBounds(10, 11, 248, 36);
+		lblMisUsuarios.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblMisUsuarios.setBounds(6, 26, 248, 36);
 		panelUsuarios.add(lblMisUsuarios);
 		
 		JScrollPane scrollPaneUsuarios = new JScrollPane();
@@ -147,8 +147,8 @@ public class Gestion extends JFrame {
 		tabbedPane.addTab("Juegos", null, panelJuegos, "Gestión de juegos");
 		
 		JLabel lblMisJuegos = new JLabel("Mis Juegos", SwingConstants.CENTER);
-		lblMisJuegos.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblMisJuegos.setBounds(10, 11, 248, 36);
+		lblMisJuegos.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblMisJuegos.setBounds(6, 27, 248, 36);
 		panelJuegos.add(lblMisJuegos);
 		
 		JScrollPane scrollPaneJuegos = new JScrollPane();

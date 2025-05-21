@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import logica.Blackjack;
@@ -18,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class BlackjackVentana extends JFrame {
 
@@ -63,39 +65,43 @@ public class BlackjackVentana extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblBlackjack = new JLabel("Blackjack");
-		lblBlackjack.setBounds(48, 11, 473, 30);
+		lblBlackjack.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblBlackjack.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBlackjack.setBounds(48, 36, 473, 30);
 		contentPane.add(lblBlackjack);
 		
-		lblCartasCrupier = new JLabel("");
-		lblCartasCrupier.setBounds(48, 65, 142, 14);
+		lblCartasCrupier = new JLabel("lorem");
+		lblCartasCrupier.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblCartasCrupier.setBounds(48, 88, 473, 21);
 		contentPane.add(lblCartasCrupier);
 		
-		lblTusCartas = new JLabel("Tus cartas");
-		lblTusCartas.setBounds(48, 200, 142, 14);
+		lblTusCartas = new JLabel("lorem");
+		lblTusCartas.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblTusCartas.setBounds(48, 189, 473, 21);
 		contentPane.add(lblTusCartas);
 		
-		lblCartasCrupierList = new JLabel("");
-		lblCartasCrupierList.setBounds(48, 90, 473, 30);
+		lblCartasCrupierList = new JLabel("lorem");
+		lblCartasCrupierList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
+		lblCartasCrupierList.setBounds(48, 120, 473, 30);
 		contentPane.add(lblCartasCrupierList);
 		
-		lblTusCartasList = new JLabel("");
-		lblTusCartasList.setBounds(48, 225, 473, 30);
+		lblTusCartasList = new JLabel("lorem");
+		lblTusCartasList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
+		lblTusCartasList.setBounds(48, 221, 473, 30);
 		contentPane.add(lblTusCartasList);
 		
 		btnPedir = new JButton("Pedir");
-		btnPedir.setBounds(297, 318, 108, 38);
+		btnPedir.setBounds(297, 331, 108, 38);
 		contentPane.add(btnPedir);
 		
 		btnPlantarse = new JButton("Plantarse");
-		btnPlantarse.setBounds(150, 318, 108, 38);
+		btnPlantarse.setBounds(151, 331, 108, 38);
 		contentPane.add(btnPlantarse);
 		
-		JLabel lblResultado = new JLabel("");
-		lblResultado.setBounds(48, 151, 473, 38);
-		contentPane.add(lblResultado);
-		
-		lblApuestaActual = new JLabel("");
-		lblApuestaActual.setBounds(48, 266, 179, 14);
+		lblApuestaActual = new JLabel("lorem");
+		lblApuestaActual.setHorizontalAlignment(SwingConstants.CENTER);
+		lblApuestaActual.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
+		lblApuestaActual.setBounds(48, 273, 473, 21);
 		contentPane.add(lblApuestaActual);
 		
 		addWindowListener(new WindowAdapter() {
@@ -145,7 +151,7 @@ public class BlackjackVentana extends JFrame {
 				if (controlador.blackjackPedirCarta(blackjack)) {
 					finJuego(false);
 				}
-				lblTusCartasList.setText(blackjack.mostrarCartas(false, "cliente") + " (" + blackjack.sumarCartas(blackjack.getCartasCliente()) + ")");
+				lblTusCartasList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCliente()) + ") " + blackjack.mostrarCartas(false, "cliente"));
 
 				if (blackjack.sumarCartas(blackjack.getCartasCliente()) == 21) finJuego(true);
 			}
@@ -165,10 +171,10 @@ public class BlackjackVentana extends JFrame {
 		
 		controlador.actualizarSaldos(cliente, blackjack, apuestaResultado);
 		
-		lblCartasCrupierList.setText(blackjack.mostrarCartas(false, "crupier") + " (" + blackjack.sumarCartas(blackjack.getCartasCrupier()) + ")");
-		lblTusCartasList.setText(blackjack.mostrarCartas(false, "cliente") + " (" + blackjack.sumarCartas(blackjack.getCartasCliente()) + ")");
-		lblCartasCrupier.setText("Baraja crupier (" + blackjack.getDinero() + "$)");
-		lblTusCartas.setText("Baraja " + cliente.getNombre() + "(" + cliente.getSaldo() + "$)");
+		lblCartasCrupierList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCrupier()) + ") " + blackjack.mostrarCartas(false, "crupier"));
+		lblTusCartasList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCliente()) + ") " + blackjack.mostrarCartas(false, "cliente"));
+		lblCartasCrupier.setText("Baraja del crupier (" + blackjack.getDinero() + "$)");
+		lblTusCartas.setText("Baraja de " + cliente.getNombre() + " (" + cliente.getSaldo() + "$)");
 		
 		btnPedir.setEnabled(false);
 		btnPlantarse.setEnabled(false);
@@ -219,10 +225,10 @@ public class BlackjackVentana extends JFrame {
 		int barajaCliente = blackjack.sumarCartas(blackjack.getCartasCliente());
 		partidaTerminada = false;
 		
-		lblCartasCrupier.setText("Cartas crupier (" + blackjack.getDinero() + "$)");
-		lblTusCartas.setText("Cartas " + cliente.getNombre() + "(" + cliente.getSaldo() + "$)");		
-		lblCartasCrupierList.setText(blackjack.mostrarCartas(true, "crupier") + " (" + (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : blackjack.getCartasCrupier().get(0)) + ")");
-		lblTusCartasList.setText(blackjack.mostrarCartas(false, "cliente") + " (" + barajaCliente + ")");
+		lblCartasCrupier.setText("Baraja del crupier (" + blackjack.getDinero() + "$)");
+		lblTusCartas.setText("Baraja de " + cliente.getNombre() + " (" + cliente.getSaldo() + "$)");		
+		lblCartasCrupierList.setText("(" + (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : blackjack.getCartasCrupier().get(0)) + ") " + blackjack.mostrarCartas(true, "crupier"));
+		lblTusCartasList.setText("(" + barajaCliente + ") " + blackjack.mostrarCartas(false, "cliente"));
 		lblApuestaActual.setText("Apuesta actual: " + apuesta + "$");
 		
 		btnPedir.setEnabled(true);

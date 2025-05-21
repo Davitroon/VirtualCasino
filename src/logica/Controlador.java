@@ -126,7 +126,7 @@ public class Controlador {
 		}
 		
 		try {
-			saldo = Integer.parseInt(texto);
+			saldo = Double.parseDouble(texto);
 		
 		} catch (NumberFormatException ee) {
 			mensajeError.setText("Ingresa únicamente números");

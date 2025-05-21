@@ -74,7 +74,7 @@ public class FormularioCliente extends JFrame {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);	
-		setBounds(100, 100, 438, 376);
+		setBounds(100, 100, 496, 397);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -82,84 +82,88 @@ public class FormularioCliente extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblAnadirCliente = new JLabel("Añadir cliente", SwingConstants.CENTER);
-		lblAnadirCliente.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAnadirCliente.setBounds(10, 11, 404, 39);
+		lblAnadirCliente.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblAnadirCliente.setBounds(10, 21, 460, 39);
 		contentPane.add(lblAnadirCliente);
 		
 		textNombre = new JTextField();
-		textNombre.setBounds(126, 81, 249, 20);
+		textNombre.setBounds(122, 84, 321, 32);
 		contentPane.add(textNombre);
 		textNombre.setColumns(10);
 		
 		textEdad = new JTextField();
-		textEdad.setBounds(126, 140, 79, 20);
+		textEdad.setBounds(105, 149, 129, 32);
 		contentPane.add(textEdad);
 		textEdad.setColumns(10);
 		
 		rdbtnMasculino = new JRadioButton("Masculino");
 		buttonGroup.add(rdbtnMasculino);
-		rdbtnMasculino.setBounds(76, 216, 99, 23);
+		rdbtnMasculino.setBounds(100, 246, 99, 23);
 		contentPane.add(rdbtnMasculino);
 		
 		rdbtnFemenino = new JRadioButton("Femenino");
 		buttonGroup.add(rdbtnFemenino);
-		rdbtnFemenino.setBounds(177, 216, 86, 23);
+		rdbtnFemenino.setBounds(211, 246, 86, 23);
 		contentPane.add(rdbtnFemenino);
 		
 		rdbtnOtro = new JRadioButton("Otro");
 		buttonGroup.add(rdbtnOtro);
-		rdbtnOtro.setBounds(275, 216, 64, 23);
+		rdbtnOtro.setBounds(309, 246, 64, 23);
 		contentPane.add(rdbtnOtro);
 		
 		textSaldo = new JTextField();
-		textSaldo.setBounds(279, 140, 96, 20);
+		textSaldo.setBounds(290, 149, 153, 32);
 		contentPane.add(textSaldo);
 		textSaldo.setColumns(10);
 		
 		JLabel lblNombre = new JLabel("Nombre");
+		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblNombre.setLabelFor(textNombre);
-		lblNombre.setBounds(52, 81, 64, 17);
+		lblNombre.setBounds(52, 92, 64, 17);
 		contentPane.add(lblNombre);
 		
 		JLabel lblEdad = new JLabel("Edad");
+		lblEdad.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblEdad.setLabelFor(textEdad);
-		lblEdad.setBounds(52, 142, 64, 17);
+		lblEdad.setBounds(52, 157, 64, 17);
 		contentPane.add(lblEdad);
 		
 		JLabel lblSaldo = new JLabel("Saldo");
+		lblSaldo.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblSaldo.setLabelFor(textSaldo);
-		lblSaldo.setBounds(226, 142, 53, 17);
+		lblSaldo.setBounds(244, 157, 53, 17);
 		contentPane.add(lblSaldo);
 		
 		JLabel lblGenero = new JLabel("Género", SwingConstants.CENTER);
-		lblGenero.setBounds(40, 195, 341, 14);
+		lblGenero.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblGenero.setBounds(34, 220, 409, 14);
 		contentPane.add(lblGenero);
 		
 		btnAnadir = new JButton("Añadir");
 		btnAnadir.setEnabled(false);
-		btnAnadir.setBounds(282, 283, 111, 32);
+		btnAnadir.setBounds(359, 295, 111, 32);
 		contentPane.add(btnAnadir);
 		
 		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBounds(152, 283, 111, 32);
+		btnVolver.setBounds(230, 295, 111, 32);
 		contentPane.add(btnVolver);
 		
 		lblErrorNombre = new JLabel("");
 		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 8));
 		lblErrorNombre.setForeground(new Color(255, 0, 0));
-		lblErrorNombre.setBounds(54, 109, 321, 14);
+		lblErrorNombre.setBounds(54, 121, 389, 14);
 		contentPane.add(lblErrorNombre);
 		
 		lblErrorEdad = new JLabel("");
-		lblErrorEdad.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorEdad.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorEdad.setForeground(new Color(255, 0, 0));
-		lblErrorEdad.setBounds(52, 170, 153, 14);
+		lblErrorEdad.setBounds(52, 186, 182, 14);
 		contentPane.add(lblErrorEdad);
 		
 		lblErrorSaldo = new JLabel("");
 		lblErrorSaldo.setFont(new Font("Tahoma", Font.PLAIN, 8));
 		lblErrorSaldo.setForeground(new Color(255, 0, 0));
-		lblErrorSaldo.setBounds(215, 170, 160, 14);
+		lblErrorSaldo.setBounds(244, 186, 199, 17);
 		contentPane.add(lblErrorSaldo);
 		
 		

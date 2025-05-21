@@ -42,7 +42,7 @@ public class MenuPrincipal extends JFrame {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 627, 435);
+		setBounds(100, 100, 530, 370);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -50,35 +50,39 @@ public class MenuPrincipal extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblTitulo = new JLabel("Simulador casino", SwingConstants.CENTER);
-		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblTitulo.setBounds(0, 11, 613, 59);
+		lblTitulo.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblTitulo.setBounds(10, 21, 492, 59);
 		contentPane.add(lblTitulo);
 		
 		JButton btnJugar = new JButton("Jugar");
-		btnJugar.setBounds(64, 121, 124, 32);
+		btnJugar.setBounds(193, 101, 124, 40);
 		contentPane.add(btnJugar);
 		
 		JButton btnAdministracion = new JButton("Administracion");
-		btnAdministracion.setBounds(64, 164, 124, 32);
+		btnAdministracion.setBounds(193, 152, 124, 40);
 		contentPane.add(btnAdministracion);
 		
 		JButton btnEstadisticas = new JButton("Estadisticas");
+		btnEstadisticas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnEstadisticas.setEnabled(false);
-		btnEstadisticas.setBounds(64, 207, 124, 32);
+		btnEstadisticas.setBounds(193, 203, 124, 40);
 		contentPane.add(btnEstadisticas);
 		
 		JButton btnSalir = new JButton("Salir");
-		btnSalir.setBounds(64, 250, 124, 32);
+		btnSalir.setBounds(193, 254, 124, 42);
 		contentPane.add(btnSalir);
 		
 		JButton btnLogros = new JButton("Logros");
 		btnLogros.setEnabled(false);
-		btnLogros.setBounds(484, 338, 55, 49);
+		btnLogros.setBounds(437, 214, 65, 49);
 		contentPane.add(btnLogros);
 		
 		JButton btnNewButton = new JButton("Info");
 		btnNewButton.setEnabled(false);
-		btnNewButton.setBounds(549, 338, 54, 49);
+		btnNewButton.setBounds(437, 271, 65, 49);
 		contentPane.add(btnNewButton);
 		
 		// Clic boton jugar

@@ -72,7 +72,7 @@ public class FormularioJuego extends JFrame {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);	
-		setBounds(100, 100, 440, 314);
+		setBounds(100, 100, 414, 314);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -80,41 +80,43 @@ public class FormularioJuego extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblAnadirJuego = new JLabel("Añadir juego", SwingConstants.CENTER);
-		lblAnadirJuego.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAnadirJuego.setBounds(10, 11, 387, 39);
+		lblAnadirJuego.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblAnadirJuego.setBounds(10, 21, 387, 39);
 		contentPane.add(lblAnadirJuego);
 		
 		btnAnadir = new JButton("Añadir");
 		btnAnadir.setEnabled(false);
-		btnAnadir.setBounds(286, 228, 111, 32);
+		btnAnadir.setBounds(270, 228, 111, 32);
 		contentPane.add(btnAnadir);
 		
 		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBounds(165, 228, 111, 32);
+		btnVolver.setBounds(147, 228, 111, 32);
 		contentPane.add(btnVolver);
 		
 		JLabel lblTipo = new JLabel("Tipo");
-		lblTipo.setBounds(40, 84, 49, 14);
+		lblTipo.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTipo.setBounds(36, 84, 49, 14);
 		contentPane.add(lblTipo);
 		
 		JLabel lblDinero = new JLabel("Dinero");
-		lblDinero.setBounds(215, 84, 49, 14);
+		lblDinero.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblDinero.setBounds(36, 146, 49, 14);
 		contentPane.add(lblDinero);
 		
 		textDinero = new JTextField();
-		textDinero.setBounds(215, 109, 182, 20);
+		textDinero.setBounds(97, 137, 182, 32);
 		contentPane.add(textDinero);
 		textDinero.setColumns(10);
 		
 		lblErrorDinero = new JLabel("");
 		lblErrorDinero.setForeground(new Color(255, 0, 0));
-		lblErrorDinero.setFont(new Font("Tahoma", Font.PLAIN, 8));
-		lblErrorDinero.setBounds(215, 137, 182, 14);
+		lblErrorDinero.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorDinero.setBounds(36, 172, 233, 14);
 		contentPane.add(lblErrorDinero);
 		
 		comboTipo = new JComboBox();
 		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Blackjack", "Tragaperras"}));
-		comboTipo.setBounds(40, 108, 111, 22);
+		comboTipo.setBounds(97, 80, 111, 22);
 		contentPane.add(comboTipo);
 		
 		

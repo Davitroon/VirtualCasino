@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
@@ -25,6 +26,7 @@ public class Lanzador {
         try {
             modelo = new Modelo();
             controlador = new Controlador(modelo);
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
             menu = new MenuPrincipal(modelo, controlador);
             menu.setVisible(true);
             

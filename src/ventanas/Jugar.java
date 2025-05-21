@@ -67,7 +67,7 @@ public class Jugar extends JFrame {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 623, 435);
+		setBounds(100, 100, 681, 435);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -75,16 +75,17 @@ public class Jugar extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblJuego = new JLabel("Jugar", SwingConstants.CENTER);
-		lblJuego.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblJuego.setBounds(40, 11, 536, 31);
+		lblJuego.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblJuego.setBounds(28, 28, 616, 31);
 		contentPane.add(lblJuego);
 		
 		JLabel lblClientes = new JLabel("Clientes", SwingConstants.CENTER);
-		lblClientes.setBounds(40, 82, 248, 31);
+		lblClientes.setFont(new Font("SansSerif", Font.BOLD, 16));
+		lblClientes.setBounds(28, 82, 287, 31);
 		contentPane.add(lblClientes);
 		
 		JScrollPane scrollPaneCliente = new JScrollPane();
-		scrollPaneCliente.setBounds(40, 124, 248, 166);
+		scrollPaneCliente.setBounds(28, 124, 287, 166);
 		contentPane.add(scrollPaneCliente);
 		
 		modeloClientes = new DefaultTableModel(
@@ -114,11 +115,12 @@ public class Jugar extends JFrame {
 		scrollPaneCliente.setViewportView(tableClientes);
 		
 		JLabel lblJuegos = new JLabel("Juegos", SwingConstants.CENTER);
-		lblJuegos.setBounds(328, 86, 248, 23);
+		lblJuegos.setFont(new Font("SansSerif", Font.BOLD, 16));
+		lblJuegos.setBounds(357, 86, 287, 23);
 		contentPane.add(lblJuegos);
 		
 		JScrollPane scrollPaneJuegos = new JScrollPane();
-		scrollPaneJuegos.setBounds(328, 124, 248, 166);
+		scrollPaneJuegos.setBounds(357, 124, 287, 166);
 		contentPane.add(scrollPaneJuegos);
 		
 		modeloJuegos = new DefaultTableModel(
@@ -148,11 +150,11 @@ public class Jugar extends JFrame {
 		
 		btnJugar = new JButton("Jugar");
 		btnJugar.setEnabled(false);
-		btnJugar.setBounds(473, 327, 103, 31);
+		btnJugar.setBounds(541, 327, 103, 31);
 		contentPane.add(btnJugar);
 		
 		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBounds(360, 327, 103, 31);
+		btnVolver.setBounds(428, 327, 103, 31);
 		contentPane.add(btnVolver);
 		
 		actualizarTablas();

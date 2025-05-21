@@ -83,8 +83,8 @@ public class FormularioJuegoEditar extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblEditarJuego = new JLabel("Editar juego", SwingConstants.CENTER);
-		lblEditarJuego.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblEditarJuego.setBounds(10, 11, 387, 39);
+		lblEditarJuego.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblEditarJuego.setBounds(6, 21, 412, 39);
 		contentPane.add(lblEditarJuego);
 		
 		btnModificar = new JButton("Modificar");
@@ -97,41 +97,45 @@ public class FormularioJuegoEditar extends JFrame {
 		contentPane.add(btnVolver);
 		
 		JLabel lblTipo = new JLabel("Tipo");
-		lblTipo.setBounds(40, 122, 49, 14);
+		lblTipo.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblTipo.setBounds(129, 84, 49, 14);
 		contentPane.add(lblTipo);
 		
 		JLabel lblDinero = new JLabel("Dinero");
-		lblDinero.setBounds(215, 122, 49, 14);
+		lblDinero.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblDinero.setBounds(40, 152, 49, 14);
 		contentPane.add(lblDinero);
 		
 		textDinero = new JTextField();
-		textDinero.setBounds(215, 143, 182, 20);
+		textDinero.setBounds(101, 143, 236, 32);
 		contentPane.add(textDinero);
 		textDinero.setColumns(10);
 		
 		lblErrorDinero = new JLabel("");
 		lblErrorDinero.setForeground(new Color(255, 0, 0));
-		lblErrorDinero.setFont(new Font("Tahoma", Font.PLAIN, 8));
-		lblErrorDinero.setBounds(215, 137, 182, 14);
+		lblErrorDinero.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorDinero.setBounds(40, 178, 297, 14);
 		contentPane.add(lblErrorDinero);
 		
 		comboTipo = new JComboBox();
 		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Blackjack", "Tragaperras"}));
-		comboTipo.setBounds(40, 141, 111, 22);
+		comboTipo.setBounds(172, 80, 111, 22);
 		contentPane.add(comboTipo);
 		
 		lblId = new JLabel("ID");
+		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblId.setBounds(40, 84, 26, 14);
 		contentPane.add(lblId);
 		
 		textId = new JTextField();
+		textId.setEnabled(false);
 		textId.setEditable(false);
-		textId.setBounds(65, 81, 38, 20);
+		textId.setBounds(64, 77, 38, 29);
 		contentPane.add(textId);
 		textId.setColumns(10);
 		
 		chckbxActivo = new JCheckBox("Activo");
-		chckbxActivo.setBounds(215, 80, 97, 23);
+		chckbxActivo.setBounds(304, 80, 89, 23);
 		contentPane.add(chckbxActivo);
 		
 		
@@ -244,7 +248,7 @@ public class FormularioJuegoEditar extends JFrame {
 			    	break;
 		    }
 		    
-			if (rset.getBoolean(3) ) chckbxActivo.doClick();
+			if (rset.getBoolean(3)) chckbxActivo.setSelected(true);
 		    textDinero.setText( String.valueOf(rset.getString(4) ) ) ;
 			
 		} catch (SQLException e) {
