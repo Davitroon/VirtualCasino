@@ -374,7 +374,7 @@ public class Gestion extends JFrame {
 		
 		modeloClientes.setRowCount(0);
 		
-		ResultSet rset = modelo.consultarDatos("clientes");
+		ResultSet rset = modelo.consultarDatos("clientes", false);
 		
 		try {		
 			boolean hayDatos = rset.next();
@@ -383,7 +383,7 @@ public class Gestion extends JFrame {
 				reiniciarBotones();
 			} else {
 				do {
-					// "ID", "Nombre", "Edad", "Género", "Baja", "Saldo"
+					// "ID", "Nombre", "Edad", "Género", "Activo", "Saldo"
 			        Object[] clienteLista = new Object[6];
 			        clienteLista[0] = rset.getInt(1);
 			        clienteLista[1] = rset.getString(2);
@@ -409,7 +409,7 @@ public class Gestion extends JFrame {
 	public void actualizarTablaJuegos() {
 		
 		modeloJuegos.setRowCount(0);
-		ResultSet rset = modelo.consultarDatos("juegos");
+		ResultSet rset = modelo.consultarDatos("juegos", false);
 		
 		try {
 			boolean hayDatos = rset.next();

@@ -265,7 +265,7 @@ public class FormularioClienteEditar extends JFrame {
 				int id = Integer.parseInt(textId.getText());
 				boolean activo = chckbxBaja.isSelected() ? true : false;
 				
-				modelo.modificarDato(new Cliente (nombre, edad, genero, saldo, id, activo));
+				modelo.modificarCliente(new Cliente (nombre, edad, genero, saldo, id, activo));
 				
 				limpiarCampos();
 				controlador.cambiarVentana(FormularioClienteEditar.this, gestion);

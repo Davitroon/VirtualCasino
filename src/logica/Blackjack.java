@@ -2,6 +2,7 @@ package logica;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * Juego BlackJack, hijo de juego.
@@ -10,7 +11,7 @@ import java.util.Collections;
  */
 public class Blackjack extends Juego {
 
-	private ArrayList<Integer> cartasTotales = new ArrayList<>();
+	private LinkedList<Integer> cartasTotales = new LinkedList<>();
 	private ArrayList<Integer> cartasCliente = new ArrayList<>();
 	private ArrayList<Integer> cartasCrupier= new ArrayList<>();
 	
@@ -67,7 +68,7 @@ public class Blackjack extends Juego {
 
 	    // Crupier se pasa y el cliente no
 	    if (sumaCrupier > 21) {
-	        return sumaCliente == 21 ? apuesta * 2.5 : apuesta * 1.5;
+	    	return apuesta * 1.75;
 	    }
 
 	    // Empate
@@ -80,9 +81,9 @@ public class Blackjack extends Juego {
 	        }
 	    }
 
-	    // Cliente gana
+	    // Cliente gana (Blackjack o normal)
 	    if (sumaCliente > sumaCrupier) {
-	        return sumaCliente == 21 ? apuesta * 2.5 : apuesta * 1.5;
+	        return (sumaCliente == 21 && cartasCliente.size() == 2) ? apuesta * 2.5 : apuesta * 1.5;
 	    }
 
 	    // Cliente pierde
@@ -150,12 +151,11 @@ public class Blackjack extends Juego {
 		}
 		
 		if (jugador.equals("crupier")) {		
-			for (Integer carta : cartasCrupier) {
-			    if (ocultarCarta && cartasCrupier.indexOf(carta) == 1) {
+			for (int i = 0; i < cartasCrupier.size(); i++) {
+			    if (ocultarCarta && i == 1) {
 			        cartas += "[?] ";
-			        
 			    } else {
-			        cartas += "[" + leerCarta(carta) + "] ";
+			        cartas += "[" + leerCarta(cartasCrupier.get(i)) + "] ";
 			    }
 			}
 		}
@@ -264,6 +264,10 @@ public class Blackjack extends Juego {
 
 	public ArrayList<Integer> getCartasCliente() {
 		return cartasCliente;
+	}
+	
+	public ArrayList<Integer> getCartasCrupier() {
+		return cartasCrupier;
 	}
 }
 

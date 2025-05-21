@@ -52,7 +52,7 @@ public class Jugar extends JFrame {
 	private Controlador controlador;
 	private JButton btnJugar;
 	
-	private WndBlackjack wndBlackjack;
+	private BlackjackVentana wndBlackjack;
 
 	/**
 	 * Create the frame.
@@ -196,33 +196,24 @@ public class Jugar extends JFrame {
 				Blackjack blackjack = null;
 				
 				try {
-				   cliente = new Cliente (rsetCliente.getInt("id"), rsetCliente.getDouble("saldo"));
+				   cliente = new Cliente (rsetCliente.getInt("id"), rsetCliente.getString("nombre"), rsetCliente.getDouble("saldo"));
 				   blackjack = new Blackjack (rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
 				    
 				} catch (SQLException e1) {
 				    e1.printStackTrace();
 				}
 				
-				while (true) {
-					String apuesta = JOptionPane.showInputDialog("Ingresa una apuesta");
-					if (apuesta == null) break;
-					String mensajeError = null;
-					
-					mensajeError = controlador.validarApuesta(apuesta, cliente.getSaldo(), blackjack.getDinero());
-					
-					if (mensajeError != null) {
-						 JOptionPane.showMessageDialog(null, mensajeError, "Error", JOptionPane.ERROR_MESSAGE);
-						 
-					} else {
-						if (wndBlackjack == null) {
-							wndBlackjack = new WndBlackjack(controlador, Jugar.this, cliente, blackjack, Double.parseDouble(apuesta));
-						}					
-						
-						wndBlackjack.iniciarJuego();
-						controlador.cambiarVentana(Jugar.this, wndBlackjack);
-						btnJugar.setEnabled(false);
-						break;
+				double apuesta = controlador.alertaApuesta(cliente, blackjack);
+				
+				if (apuesta != 0) {
+					if (wndBlackjack == null) {
+						wndBlackjack = null;
 					}
+					
+					wndBlackjack = new BlackjackVentana(controlador, modelo, Jugar.this, cliente, blackjack, apuesta);
+					controlador.cambiarVentana(Jugar.this, wndBlackjack);
+					wndBlackjack.iniciarJuego();
+					btnJugar.setEnabled(false);
 				}
 
 			}
@@ -253,8 +244,8 @@ public class Jugar extends JFrame {
 	 */
 	public void actualizarTablas() {
 		
-		ResultSet rset1 = modelo.consultarDatos("clientes");		
-		ResultSet rset2 = modelo.consultarDatos("juegos");		
+		ResultSet rset1 = modelo.consultarDatos("clientes", true);		
+		ResultSet rset2 = modelo.consultarDatos("juegos", true);		
 		
 		modeloClientes.setRowCount(0);
 		modeloJuegos.setRowCount(0);

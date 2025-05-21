@@ -171,11 +171,11 @@ public class FormularioJuegoEditar extends JFrame {
 				Double dinero = Double.parseDouble(textDinero.getText());
 				
 				if (tipo.equalsIgnoreCase("Blackjack")) {
-					modelo.modificarDato(new Blackjack(id, tipo, activo, dinero));
+					modelo.modificarJuego(new Blackjack(id, tipo, activo, dinero));
 				}
 				
 				if (tipo.equalsIgnoreCase("Tragaperras")) {
-					modelo.modificarDato(new Tragaperras(id, tipo, activo, dinero));
+					modelo.modificarJuego(new Tragaperras(id, tipo, activo, dinero));
 				}	
 				
 				limpiarCampos();

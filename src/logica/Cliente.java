@@ -50,12 +50,13 @@ public class Cliente {
 	}
 	
 	/**
-	 * Constructor mínimo para jugar, solo se necesitará saber el saldo y el id.
+	 * Constructor mínimo para jugar, solo se necesitará saber el nombre, saldo y el id.
 	 * @param id Id del cliente
 	 * @param saldo Saldo del cliente
 	 */
-	public Cliente(int id, double saldo) {
+	public Cliente(int id, String nombre, double saldo) {
 		this.id = id;
+		this.nombre = nombre;
 		this.saldo = saldo;
 	}
 

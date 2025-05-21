@@ -24,7 +24,7 @@ public class Lanzador {
     public static void main(String[] args) {
         try {
             modelo = new Modelo();
-            controlador = new Controlador();
+            controlador = new Controlador(modelo);
             menu = new MenuPrincipal(modelo, controlador);
             menu.setVisible(true);
             

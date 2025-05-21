@@ -7,16 +7,20 @@ CREATE TABLE clientes (
     nombre VARCHAR(30) NOT NULL,
     edad INT NOT NULL,
     genero CHAR(1) NOT NULL,
-    baja BOOLEAN NOT NULL,
-    saldo DECIMAL(6,2) NOT NULL
+    activo BOOLEAN NOT NULL,
+    saldo DECIMAL(8,2) NOT NULL
 );
 
 CREATE TABLE juegos (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     tipo ENUM("Blackjack", "Tragaperras") NOT NULL,
     activo BOOLEAN NOT NULL,
-    dinero DECIMAL(6,2) NOT NULL
+    dinero DECIMAL(8,2) NOT NULL
 );
+
+INSERT INTO clientes (nombre, edad, genero, activo, saldo) VALUES ('Pepe', 32, 'H', true, 2030.0);
+INSERT INTO juegos (tipo, activo, dinero) VALUES ('Tragaperras', true, 50000.0);
+INSERT INTO juegos (tipo, activo, dinero) VALUES ('Blackjack', true, 50000.0);
 
 /*select * from clientes;
 select * from juegos;

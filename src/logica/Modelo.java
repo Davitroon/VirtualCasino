@@ -35,17 +35,19 @@ public class Modelo {
 	
 	/**
 	 * Método para realizar una consulta de todos los datos de una tabla a la base de datos.
-	 * @param tabla Tabla a consultar
+	 * @param tabla Tabla a consultar.
+	 * @param soloActivos Mostrar datos que únicamente esten activos.
 	 * @return ResultSet (Consulta SQL)
 	 * @since 3.0
 	 */
-	public ResultSet consultarDatos(String tabla) {
+	public ResultSet consultarDatos(String tabla, boolean soloActivos) {
 		
 		String consulta = null;
 		ResultSet rset = null;
 		
 		if (tabla.equals("juegos")) consulta = "SELECT * FROM juegos";
 		if (tabla.equals("clientes")) consulta = "SELECT * FROM clientes";
+		if (soloActivos) consulta += " WHERE activo = 1";
 		
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
@@ -58,6 +60,8 @@ public class Modelo {
 	
 		return rset;
 	}
+	
+	
 	
 	/**
 	 * Método para realizar una consulta de un único dato en una tabla a la base de datos.
@@ -88,37 +92,44 @@ public class Modelo {
 		return rset;
 	}
 	
+	
 	/**
-	 * Método para insertar un dato a la base de datos.
-	 * @param dato Dato a agregar (Juego, cliente...)
+	 * Método para insertar un cliente en la base de datos.
+	 * @param cliente Cliente a agregar.
 	 * @since 3.0
 	 */
-	public void agregarDato(Object dato) {
-		String consulta = null;
-		
-		try {
-	        PreparedStatement stmt = null;
+	public void agregarCliente(Cliente cliente) {
+	    String consulta = "INSERT INTO clientes (nombre, edad, genero, activo, saldo) VALUES (?, ?, ?, true, ?);";
 
-	        if (dato instanceof Juego juego) {
-	            consulta = "INSERT INTO juegos (tipo, activo, dinero) VALUES (?, true, ?);";
-	            stmt = conexion.prepareStatement(consulta);
-	            stmt.setString(1, juego.getTipo());
-	            stmt.setDouble(2, juego.getDinero()); 
-	        }
-
-	        if (dato instanceof Cliente cliente) {
-	            consulta = "INSERT INTO clientes (nombre, edad, genero, baja, saldo) VALUES (?, ?, ?, true, ?);";
-	            stmt = conexion.prepareStatement(consulta);
-	            stmt.setString(1, cliente.getNombre());
-	            stmt.setInt(2, cliente.getEdad());
-	            stmt.setString(3, String.valueOf(cliente.getGenero()));
-	            stmt.setDouble(4, cliente.getSaldo());
-	        }
+	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+	        stmt.setString(1, cliente.getNombre());
+	        stmt.setInt(2, cliente.getEdad());
+	        stmt.setString(3, String.valueOf(cliente.getGenero()));
+	        stmt.setDouble(4, cliente.getSaldo());
 
 	        System.out.println("Consulta BBDD: " + stmt.toString());
-            stmt.executeUpdate();
-            stmt.close();
-	        
+	        stmt.executeUpdate();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	/**
+	 * Método para insertar un juego en la base de datos.
+	 * @param juego Juego a agregar.
+	 * @since 3.0
+	 */
+	public void agregarJuego(Juego juego) {
+	    String consulta = "INSERT INTO juegos (tipo, activo, dinero) VALUES (?, true, ?);";
+
+	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+	        stmt.setString(1, juego.getTipo());
+	        stmt.setDouble(2, juego.getDinero());
+
+	        System.out.println("Consulta BBDD: " + stmt.toString());
+	        stmt.executeUpdate();
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -126,49 +137,97 @@ public class Modelo {
 	}
 	
 	/**
-	 * Método para modificar un dato de la base de datos.
-	 * @param dato Dato a modificar (Juego, cliente...)
+	 * Método para modificar un cliente en la base de datos.
+	 * @param cliente Cliente a modificar.
 	 * @since 3.0
 	 */
-	public void modificarDato(Object dato) {
-		String consulta = null;
-		
-		try {
-	        PreparedStatement stmt = null;
-
-	        if (dato instanceof Juego juego) {
-	            consulta = "UPDATE juegos SET tipo = ?, activo = ?, dinero = ? WHERE id = ?;";
-	            stmt = conexion.prepareStatement(consulta);
-	            stmt.setString(1, juego.getTipo());
-	            stmt.setBoolean(2, juego.isActivo()); 
-	            stmt.setDouble(3, juego.getDinero());
-	            stmt.setInt(4, juego.getId());
-	        }
-
-	        if (dato instanceof Cliente cliente) {
-	            consulta = "UPDATE clientes SET nombre = ?, edad = ?, genero = ?, baja = ?, saldo = ? WHERE id = ?;";
-	            stmt = conexion.prepareStatement(consulta);
-	            stmt.setString(1, cliente.getNombre());
-	            stmt.setInt(2, cliente.getEdad());
-	            stmt.setString(3, String.valueOf(cliente.getGenero()));
-	            stmt.setBoolean(4, cliente.isActivo());
-	            stmt.setDouble(5, cliente.getSaldo());
-	            stmt.setInt(6, cliente.getId());
-	        }
+	public void modificarCliente(Cliente cliente) {
+	    String consulta = "UPDATE clientes SET nombre = ?, edad = ?, genero = ?, activo = ?, saldo = ? WHERE id = ?;";
+	    
+	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+	        stmt.setString(1, cliente.getNombre());
+	        stmt.setInt(2, cliente.getEdad());
+	        stmt.setString(3, String.valueOf(cliente.getGenero()));
+	        stmt.setBoolean(4, cliente.isActivo());
+	        stmt.setDouble(5, cliente.getSaldo());
+	        stmt.setInt(6, cliente.getId());
 
 	        System.out.println("Consulta BBDD: " + stmt.toString());
-            stmt.executeUpdate();
-            stmt.close();
+	        stmt.executeUpdate();
 	        
-
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
 	}
+	
+	/**
+	 * Método para modificar únicamente el saldo de un cliente en la base de datos.
+	 * @param cliente Cliente a modificar.
+	 * @since 3.0
+	 */
+	public void modificarSaldoCliente(Cliente cliente) {
+	    String consulta = "UPDATE clientes SET saldo = ? WHERE id = ?;";
+	    
+	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+	        stmt.setDouble(1, cliente.getSaldo());
+	        stmt.setInt(2, cliente.getId());
+
+	        System.out.println("Consulta BBDD: " + stmt.toString());
+	        stmt.executeUpdate();
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	/**
+	 * Método para modificar un juego en la base de datos.
+	 * @param juego Juego a modificar.
+	 * @since 3.0
+	 */
+	public void modificarJuego(Juego juego) {
+	    String consulta = "UPDATE juegos SET tipo = ?, activo = ?, dinero = ? WHERE id = ?;";
+	    
+	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+	        stmt.setString(1, juego.getTipo());
+	        stmt.setBoolean(2, juego.isActivo());
+	        stmt.setDouble(3, juego.getDinero());
+	        stmt.setInt(4, juego.getId());
+
+	        System.out.println("Consulta BBDD: " + stmt.toString());
+	        stmt.executeUpdate();
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	/**
+	 * Método para modificar el dinero de un juego en la base de datos.
+	 * @param juego Juego a modificar.
+	 * @since 3.0
+	 */
+	public void modificarDineroJuego(Juego juego) {
+	    String consulta = "UPDATE juegos SET dinero = ? WHERE id = ?;";
+	    
+	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+	        stmt.setDouble(1, juego.getDinero());
+	        stmt.setInt(2, juego.getId());
+
+	        System.out.println("Consulta BBDD: " + stmt.toString());
+	        stmt.executeUpdate();
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	
 	/**
 	 * Método para borrar un dato de la base de datos.
-	 * @param dato Dato a borrar (Juego, cliente...)
+	 * @param id Id del dato a borrar.
+	 * @param tabla Tabla de donde se borrará el dato.
 	 * @since 3.0
 	 */
 	public void borrarDato(String id, String tabla) {
