@@ -1,8 +1,12 @@
 package logica;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 import ventanas.BlackjackVentana;
 import ventanas.Jugar;
@@ -374,25 +378,31 @@ public class Controlador {
 	 * @param jugarVentana Ventana "Jugar" desde donde se debería llamar a este método.
 	 * @param cliente Cliente a jugar.
 	 * @param apuesta Cantidad de la apuesta.
-	 * @param wndBlackjack Ventana de Blackjack.
-	 * @param wndTragaperras Ventana de Tragaperras.
+	 * @param ventanaJuego Ventana del juego.
 	 * @since 3.0
 	 */
-	public void abrirJuegoVentana(Juego juego, Jugar jugarVentana, Cliente cliente, double apuesta, BlackjackVentana wndBlackjack, TragaperrasVentana wndTragaperras) {
+	public void abrirJuegoVentana(Juego juego, Jugar jugarVentana, Cliente cliente, double apuesta) {
 		if (juego instanceof Blackjack) {						
-			wndBlackjack = new BlackjackVentana(this, modelo, jugarVentana, cliente, juego, apuesta);
-			cambiarVentana(jugarVentana, wndBlackjack);
-			wndBlackjack.iniciarJuego();
+			BlackjackVentana blackjackVentana = new BlackjackVentana(this, modelo, jugarVentana, cliente, juego, apuesta);
+			cambiarVentana(jugarVentana, blackjackVentana);
+			blackjackVentana.iniciarJuego();
 		}
 		
 		if (juego instanceof Tragaperras ) {
-			wndTragaperras = new TragaperrasVentana(this, modelo, jugarVentana, cliente, juego, apuesta);
-			cambiarVentana(jugarVentana, wndTragaperras);
-			wndTragaperras.iniciarJuego();
+			TragaperrasVentana tragaperrasVentana = new TragaperrasVentana(this, modelo, jugarVentana, cliente, juego, apuesta);
+			cambiarVentana(jugarVentana, tragaperrasVentana);
+			tragaperrasVentana.iniciarJuego();
 		}
 	}
 
 
+	/**
+	 * Muestra un el resultado final de una partida de tragaperras.
+	 * @param cliente Cliente jugando.
+	 * @param tragaperras Objeto de clase tragaperras jugando.
+	 * @param apuestaResultado Resultado de la apuesta.
+	 * @return Mensaje del resultado de la partida.
+	 */
 	public String tragaperrasEstadoFin(Cliente cliente, Tragaperras tragaperras, double apuestaResultado) {
 		int [] numeros = tragaperras.getNumeros();
 		if (numeros[0] == 7 && numeros[1] == 7 && numeros[2] == 7) {
@@ -411,6 +421,13 @@ public class Controlador {
 	}
 
 
+	/**
+	 * Método que mostrará al usuario un aviso si intenta cerrar una partida sin haberla terminado.
+	 * @param cliente Cliente jugando.
+	 * @param juego Juego jugando.
+	 * @param apuesta Apuesta de la partida.
+	 * @return True si ha confirmado salir, false si no.
+	 */
 	public boolean avisoCerrarJuego(Cliente cliente, Juego juego, double apuesta) {
 		int respuesta = JOptionPane.showConfirmDialog(
 			    null,
@@ -425,37 +442,123 @@ public class Controlador {
 			return true;
 		}
 			
-		return false;
+		return false;	
+	}
+
+
+	/**
+	 * Método que rellena la tabla de clientes en la ventana Juegos
+	 * @param rset Resultado de la consulta a la BD.
+	 * @param modeloClientes Tabla de clientes.
+	 */
+	public void rellenarTablaClientes(ResultSet rset, DefaultTableModel modeloClientes) {
+		try {
+			do {
+				// "ID", "Nombre", "Activo", "Saldo"
+		        Object[] clienteLista = new Object[4];
+		        clienteLista[0] = rset.getInt(1);
+		        clienteLista[1] = rset.getString(2);
+		        clienteLista[2] = (rset.getBoolean(5) == true ? "SI" : "NO");
+		        clienteLista[3] = rset.getDouble(6);
+		        
+		        modeloClientes.addRow(clienteLista);
+			} while (rset.next());
+			
+		} catch (SQLException e) {	
+			e.printStackTrace();
+		}			
+	}
+	
+	/**
+	 * Método que rellena la tabla de clientes en la ventana Juegos
+	 * @param rset Resultado de la consulta a la BD.
+	 * @param modeloJuegos Tabla de juegos.
+	 */
+	public void rellenarTablaJuegos(ResultSet rset, DefaultTableModel modeloJuegos) {
+		try {
+			do {
+				// "ID", "Tipo", "Activo", "Dinero"
+		        Object[] juegoLista = new Object[4];
+		        juegoLista[0] = rset.getInt(1);
+		        juegoLista[1] = rset.getString(2);
+		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
+		        juegoLista[3] = rset.getDouble(4);
+		        
+		        modeloJuegos.addRow(juegoLista);
+			} while (rset.next());
+			
+		} catch (SQLException e) {	
+			e.printStackTrace();
+		}			
+	}
+	
+	
+	/**
+	 * Método que mostrará una ventana de fin génerica para los juegos.
+	 * @param mensajeEstado Mensaje personalizado dependiendo del contexto del fin de partida.
+	 * @return Elección del jugador (Volver / Apostar de nuevo).
+	 */
+	public int juegosEstadoFin(String mensajeEstado) {
+		String[] opciones = {"Volver", "Apostar de nuevo"};
+		int eleccion = JOptionPane.showOptionDialog(
+			    null,
+			    mensajeEstado +  " ¿Qué deseas hacer?",
+			    "Fin de partida",
+			    JOptionPane.DEFAULT_OPTION,
+			    JOptionPane.QUESTION_MESSAGE,
+			    null,
+			    opciones,
+			    opciones[0]
+			);
 		
+		return eleccion;
+	}
+	
+	
+	/**
+	 * Método que rellena la tabla de juegos en la ventana Gestion, con todos los campos
+	 * @param rset Resultado de la consulta a la BD.
+	 * @param modeloJuegos Tabla de juegos.
+	 */
+	public void rellenarTablaJuegosCompleto(ResultSet rset, DefaultTableModel modeloJuegos) {
+		try {
+			do {
+				// "ID", "Tipo", "Activo", "Dinero"
+		        Object[] juegoLista = new Object[4];
+		        juegoLista[0] = rset.getInt(1);
+		        juegoLista[1] = rset.getString(2);
+		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
+		        juegoLista[3] = rset.getDouble(4);
+		        
+		        modeloJuegos.addRow(juegoLista);
+			} while (rset.next());
+			
+		} catch (SQLException e) {	
+			e.printStackTrace();
+		}			
+	}
+	
+	
+	/**
+	 * Método que rellena la tabla de clientes en la ventana Gestion, con todos los campos
+	 * @param rset Resultado de la consulta a la BD.
+	 * @param modeloJuegos Tabla de juegos.
+	 */
+	public void rellenarTablaClientesCompleto(ResultSet rset, DefaultTableModel modeloJuegos) {
+		try {
+			do {
+				// "ID", "Tipo", "Activo", "Dinero"
+		        Object[] juegoLista = new Object[4];
+		        juegoLista[0] = rset.getInt(1);
+		        juegoLista[1] = rset.getString(2);
+		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
+		        juegoLista[3] = rset.getDouble(4);
+		        
+		        modeloJuegos.addRow(juegoLista);
+			} while (rset.next());
+			
+		} catch (SQLException e) {	
+			e.printStackTrace();
+		}			
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

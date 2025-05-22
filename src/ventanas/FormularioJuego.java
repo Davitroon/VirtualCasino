@@ -117,14 +117,12 @@ public class FormularioJuego extends JFrame {
 		comboTipo = new JComboBox();
 		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Blackjack", "Tragaperras"}));
 		comboTipo.setBounds(97, 80, 111, 22);
-		contentPane.add(comboTipo);
-		
+		contentPane.add(comboTipo);		
 		
 		// Al escribir en el campo saldo
 		textDinero.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-			
+			public void keyReleased(KeyEvent e) {			
 				dineroValido = false;				
 				String texto = textDinero.getText();
 				
@@ -134,8 +132,7 @@ public class FormularioJuego extends JFrame {
 				
 				revisarFormulario();
 			}
-		});
-		
+		});		
 		
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
@@ -148,8 +145,7 @@ public class FormularioJuego extends JFrame {
 		
 		// Clic boton añadir
 		btnAnadir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+			public void actionPerformed(ActionEvent e) {				
 				Double dinero = Double.parseDouble(textDinero.getText());
 				String tipo = String.valueOf(comboTipo.getSelectedItem());
 				
@@ -167,8 +163,7 @@ public class FormularioJuego extends JFrame {
 				controlador.cambiarVentana(FormularioJuego.this, gestion);
 			}
 		});
-		
-		
+				
 		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -184,8 +179,7 @@ public class FormularioJuego extends JFrame {
 	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
 	 * @since 3.0
 	 */
-	public void revisarFormulario() {
-		
+	public void revisarFormulario() {	
 		if (dineroValido) {
 			btnAnadir.setEnabled(true);
 			return;

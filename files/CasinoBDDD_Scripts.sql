@@ -25,9 +25,12 @@ CREATE TABLE partidas (
     resultado_apuesta DECIMAL(8,2) NOT NULL,
     cliente_gana BOOLEAN NOT NULL,
     fecha DATETIME,
-    FOREIGN KEY (id_cliente) REFERENCES clientes(id),
-	FOREIGN KEY (id_juegos) REFERENCES juegos(id)
+	FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE CASCADE,
+	FOREIGN KEY (id_juego) REFERENCES juegos(id) ON DELETE CASCADE
 );
+
+
+
 
 INSERT INTO clientes (nombre, edad, genero, activo, saldo) VALUES ('Pepe', 32, 'H', true, 2030.0);
 INSERT INTO juegos (tipo, activo, dinero) VALUES ('Tragaperras', true, 50000.0);

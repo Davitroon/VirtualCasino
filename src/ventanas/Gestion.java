@@ -196,22 +196,19 @@ public class Gestion extends JFrame {
 		
 		JButton btnVolverJuego = new JButton("Volver");
 		btnVolverJuego.setBounds(60, 235, 132, 36);
-		panelJuegos.add(btnVolverJuego);
-		
-		String[] opciones = {"Pedir carta", "Plantarse"};
-		
+		panelJuegos.add(btnVolverJuego);				
 		
 		addWindowListener(new WindowAdapter() {
 			// Al cerrar la ventana mediante la X
 			@Override
 			public void windowClosing(WindowEvent e) {
 				reiniciarBotones();
+				menu.comprobarPartidas();
 				controlador.cambiarVentana(Gestion.this, menu);
 				tabbedPane.setSelectedIndex(0);
 				
 			}
-		});
-		
+		});		
 		
 		// Al cargar la ventana
 		addComponentListener(new ComponentAdapter() {
@@ -221,8 +218,7 @@ public class Gestion extends JFrame {
 				actualizarTablaClientes();
 				actualizarTablaJuegos();
 			}
-		});
-		
+		});	
 		
 		// Clic fila de la tabla clientes
 		tableClientes.addMouseListener(new MouseAdapter() {
@@ -238,8 +234,7 @@ public class Gestion extends JFrame {
 				btnEditarClientes.setEnabled(true);
 				btnBorrarClientes.setEnabled(true);
 			}
-		});
-		
+		});		
 
 		// Clic boton añadir cliente
 		btnAnadirUsuario.addActionListener(new ActionListener() {
@@ -251,8 +246,7 @@ public class Gestion extends JFrame {
 				controlador.cambiarVentana(Gestion.this, formularioCliente);
 				reiniciarBotones();
 			}
-		});
-		
+		});		
 		
 		// Clic boton editar cliente
 		btnEditarClientes.addActionListener(new ActionListener() {
@@ -267,8 +261,7 @@ public class Gestion extends JFrame {
 				reiniciarBotones();
 			}
 		});
-		
-		
+			
 		// Clic boton borrar cliente
 		btnBorrarClientes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -281,8 +274,7 @@ public class Gestion extends JFrame {
 				actualizarTablaClientes();
 				reiniciarBotones();
 			}
-		});
-		
+		});	
 		
 		// Clic boton volver (cliente)
 		btnVolverUsuario.addActionListener(new ActionListener() {
@@ -291,8 +283,7 @@ public class Gestion extends JFrame {
 				controlador.cambiarVentana(Gestion.this, menu);
 				tabbedPane.setSelectedIndex(0);
 			}
-		});
-		
+		});		
 		
 		// Clic fila de la tabla juegos
 		tableJuegos.addMouseListener(new MouseAdapter() {
@@ -310,8 +301,7 @@ public class Gestion extends JFrame {
 				btnBorrarJuegos.setEnabled(true);
 			}
 		});
-		
-		
+				
 		// Clic boton añadir juego
 		btnAnadirJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -322,8 +312,7 @@ public class Gestion extends JFrame {
 				controlador.cambiarVentana(Gestion.this, formularioJuego);
 				reiniciarBotones();
 			}
-		});
-		
+		});		
 		
 		// Clic boton editar juego
 		btnEditarJuegos.addActionListener(new ActionListener() {
@@ -338,8 +327,7 @@ public class Gestion extends JFrame {
 				reiniciarBotones();
 			}
 		});
-		
-		
+			
 		// Clic boton borrar juego
 		btnBorrarJuegos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -353,12 +341,12 @@ public class Gestion extends JFrame {
 				reiniciarBotones();
 			}
 		});
-		
-		
+				
 		// Clic boton volver (Juego)
 		btnVolverJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reiniciarBotones();
+				menu.comprobarPartidas();
 				controlador.cambiarVentana(Gestion.this, menu);
 				tabbedPane.setSelectedIndex(0);
 			}
@@ -377,27 +365,15 @@ public class Gestion extends JFrame {
 		ResultSet rset = modelo.consultarDatos("clientes", false);
 		
 		try {		
-			boolean hayDatos = rset.next();
-			
+			boolean hayDatos = rset.next();			
 			if (!hayDatos) {
 				reiniciarBotones();
+				
 			} else {
-				do {
-					// "ID", "Nombre", "Edad", "Género", "Activo", "Saldo"
-			        Object[] clienteLista = new Object[6];
-			        clienteLista[0] = rset.getInt(1);
-			        clienteLista[1] = rset.getString(2);
-			        clienteLista[2] = rset.getInt(3);
-			        clienteLista[3] = rset.getString(4);
-			        clienteLista[4] = (rset.getBoolean(5) == true ? "SI" : "NO");
-			        clienteLista[5] = rset.getDouble(6);
-			        
-			        modeloClientes.addRow(clienteLista);
-			        
-				} while (rset.next());
+				controlador.rellenarTablaClientesCompleto(rset, modeloJuegos);
 			}
-		} catch (SQLException e) {
 			
+		} catch (SQLException e) {		
 			e.printStackTrace();
 		}
 	}
@@ -412,26 +388,15 @@ public class Gestion extends JFrame {
 		ResultSet rset = modelo.consultarDatos("juegos", false);
 		
 		try {
-			boolean hayDatos = rset.next();
-			
+			boolean hayDatos = rset.next();		
 			if (!hayDatos) {
 				reiniciarBotones();
 	            
 			} else {
-				do {
-					// "ID", "Tipo", "Activo", "Dinero"
-			        Object[] juegoLista = new Object[4];
-			        juegoLista[0] = rset.getInt(1);
-			        juegoLista[1] = rset.getString(2);
-			        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
-			        juegoLista[3] = rset.getDouble(4);
-			        
-			        modeloJuegos.addRow(juegoLista);
-				} while (rset.next());
+				controlador.rellenarTablaJuegosCompleto(rset, modeloJuegos);
 			}
 			
-		} catch (SQLException e) {
-			
+		} catch (SQLException e) {			
 			e.printStackTrace();
 		}	
 	}

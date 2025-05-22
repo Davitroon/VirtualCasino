@@ -184,13 +184,11 @@ public class FormularioClienteEditar extends JFrame {
 		chckbxActivo = new JCheckBox("Activo");
 		chckbxActivo.setBounds(368, 105, 76, 23);
 		contentPane.add(chckbxActivo);
-		
-		
+				
 		// Al escribir en el campo nombre
 		textNombre.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-				
+			public void keyReleased(KeyEvent e) {			
 				nombreValido = false;
 				String texto = textNombre.getText();
 				
@@ -200,14 +198,12 @@ public class FormularioClienteEditar extends JFrame {
 				
 				revisarFormulario();
 			}
-		});
-		
+		});		
 		
 		// Al escribir en el campo edad
 		textEdad.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-			
+			public void keyReleased(KeyEvent e) {			
 				edadValida = false;
 				String texto = textEdad.getText();
 				
@@ -217,14 +213,12 @@ public class FormularioClienteEditar extends JFrame {
 				
 				revisarFormulario();
 			}
-		});	
-		
+		});			
 		
 		// Al escribir en el campo saldo
 		textSaldo.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-			
+			public void keyReleased(KeyEvent e) {			
 				saldoValido = false;				
 				String texto = textSaldo.getText();
 				
@@ -235,31 +229,27 @@ public class FormularioClienteEditar extends JFrame {
 				revisarFormulario();
 			}
 		});
-		
-		
+				
 		// Elegir genero masculino
 		rdbtnMasculino.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				revisarFormulario();
 			}
-		});
+		});		
 		
-		
-		// Elegir genero masculino
+		// Elegir genero femenino
 		rdbtnFemenino.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				revisarFormulario();
 			}
-		});
+		});		
 		
-		
-		// Elegir genero masculino
+		// Elegir genero otro
 		rdbtnOtro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				revisarFormulario();
 			}
-		});
-		
+		});		
 		
 		// Clic boton modificar
 		btnModificar.addActionListener(new ActionListener() {
@@ -276,8 +266,7 @@ public class FormularioClienteEditar extends JFrame {
 				limpiarCampos();
 				controlador.cambiarVentana(FormularioClienteEditar.this, gestion);
 			}
-		});
-		
+		});		
 		
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
@@ -285,8 +274,7 @@ public class FormularioClienteEditar extends JFrame {
 				limpiarCampos();
 				controlador.cambiarVentana(FormularioClienteEditar.this, gestion);
 			}
-		});
-		
+		});		
 		
 		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {

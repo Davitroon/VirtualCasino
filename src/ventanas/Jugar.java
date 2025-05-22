@@ -60,8 +60,9 @@ public class Jugar extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @param modelo 
-	 * @param controlador 
+	 * @param menu
+	 * @param modelo
+	 * @param controlador
 	 */
 	public Jugar(MenuPrincipal menu, Modelo modelo, Controlador controlador) {
 		
@@ -166,6 +167,7 @@ public class Jugar extends JFrame {
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				menu.comprobarPartidas();
 				controlador.cambiarVentana(Jugar.this, menu);
 				btnJugar.setEnabled(false);
 			}
@@ -175,6 +177,7 @@ public class Jugar extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				menu.comprobarPartidas();
 				controlador.cambiarVentana(Jugar.this, menu);
 				btnJugar.setEnabled(false);
 			}
@@ -218,7 +221,7 @@ public class Jugar extends JFrame {
 				double apuesta = controlador.alertaApuesta(cliente, juego);		
 				
 				if (apuesta != 0) {					
-					controlador.abrirJuegoVentana(juego, Jugar.this, cliente, apuesta, wndBlackjack, wndTragaperras);
+					controlador.abrirJuegoVentana(juego, Jugar.this, cliente, apuesta);
 					btnJugar.setEnabled(false);
 				}
 
@@ -252,51 +255,32 @@ public class Jugar extends JFrame {
 		
 		ResultSet rset1 = modelo.consultarDatos("clientes", true);		
 		ResultSet rset2 = modelo.consultarDatos("juegos", true);		
+		boolean hayDatos = false;
 		
 		modeloClientes.setRowCount(0);
 		modeloJuegos.setRowCount(0);
 		
 		// Tabla clientes
 		try {
-			boolean hayDatos = rset1.next();
-			
+			hayDatos = rset1.next();
 			if (hayDatos) {
-				do {
-					// "ID", "Nombre", "Activo", "Saldo"
-			        Object[] clienteLista = new Object[4];
-			        clienteLista[0] = rset1.getInt(1);
-			        clienteLista[1] = rset1.getString(2);
-			        clienteLista[2] = (rset1.getBoolean(5) == true ? "SI" : "NO");
-			        clienteLista[3] = rset1.getDouble(6);
-			        
-			        modeloClientes.addRow(clienteLista);
-				} while (rset1.next());
+				controlador.rellenarTablaClientes(rset1, modeloClientes);
 			}
+			rset1.close();
 			
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
-		}	
+		}			
 				
 		// Tabla juegos
 		try {
-			boolean hayDatos = rset2.next();
-			
+			hayDatos = rset2.next();
 			if (hayDatos) {
-				do {
-					// "ID", "Tipo", "Activo", "Dinero"
-			        Object[] juegoLista = new Object[4];
-			        juegoLista[0] = rset2.getInt(1);
-			        juegoLista[1] = rset2.getString(2);
-			        juegoLista[2] = (rset2.getBoolean(3) == true ? "SI" : "NO");
-			        juegoLista[3] = rset2.getDouble(4);
-			        
-			        modeloJuegos.addRow(juegoLista);
-				} while (rset2.next());
+				controlador.rellenarTablaJuegos(rset2, modeloJuegos);
 			}
+			rset2.close();
 			
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
 		}	
 	}

@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,6 +28,16 @@ public class Estadisticas extends JFrame {
 	private MenuPrincipal menuPrincipal;
 	private Modelo modelo;
 	private Controlador controlador;
+	private JLabel lblPartidasJugadasVal;
+	private JLabel lblPartidasGanadasVal;
+	private JLabel lblPartidasPerdidasVal;
+	private JLabel lblPartidasBlackjackVal;
+	private JLabel lblPartidasTragaperrasVal;
+	private JLabel lblUltimaPartidaVal;
+	private JLabel lblDineroJuegoVal;
+	private JLabel lblDineroPerdidoVal;
+	private JLabel lblClienteSaldoVal;
+	private JLabel lblDineroGanadoVal;
 
 	/**
 	 * Create the frame.
@@ -73,12 +85,12 @@ public class Estadisticas extends JFrame {
 		
 		JLabel lblClienteSaldo = new JLabel("Cliente con más saldo:");
 		lblClienteSaldo.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblClienteSaldo.setBounds(314, 192, 178, 24);
+		lblClienteSaldo.setBounds(314, 192, 170, 24);
 		contentPane.add(lblClienteSaldo);
 		
 		JLabel lblJuegoDinero = new JLabel("Juego con más dinero:");
 		lblJuegoDinero.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblJuegoDinero.setBounds(314, 227, 178, 24);
+		lblJuegoDinero.setBounds(314, 227, 162, 24);
 		contentPane.add(lblJuegoDinero);
 		
 		JLabel lblPartidasBlackjack = new JLabel("Partidas de blackjack:");
@@ -93,18 +105,68 @@ public class Estadisticas extends JFrame {
 		
 		JLabel lblDineroPerdido = new JLabel("Dinero perdido:");
 		lblDineroPerdido.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblDineroPerdido.setBounds(314, 162, 178, 24);
+		lblDineroPerdido.setBounds(314, 162, 120, 24);
 		contentPane.add(lblDineroPerdido);
 		
 		JLabel lblDineroGanado = new JLabel("Dinero ganado:");
 		lblDineroGanado.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblDineroGanado.setBounds(314, 127, 178, 24);
+		lblDineroGanado.setBounds(314, 122, 120, 24);
 		contentPane.add(lblDineroGanado);
 		
 		JLabel lblUltimaPartida = new JLabel("Última partida jugada:");
 		lblUltimaPartida.setFont(new Font("SimSun", Font.BOLD, 14));
 		lblUltimaPartida.setBounds(314, 262, 178, 24);
 		contentPane.add(lblUltimaPartida);
+		
+		lblPartidasJugadasVal = new JLabel("lorem");
+		lblPartidasJugadasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasJugadasVal.setBounds(155, 128, 141, 14);
+		contentPane.add(lblPartidasJugadasVal);
+		
+		lblPartidasGanadasVal = new JLabel("lorem");
+		lblPartidasGanadasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasGanadasVal.setBounds(155, 163, 149, 14);
+		contentPane.add(lblPartidasGanadasVal);
+		
+		lblPartidasPerdidasVal = new JLabel("lorem");
+		lblPartidasPerdidasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasPerdidasVal.setBounds(164, 197, 140, 14);
+		contentPane.add(lblPartidasPerdidasVal);
+		
+		lblPartidasBlackjackVal = new JLabel("lorem");
+		lblPartidasBlackjackVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasBlackjackVal.setBounds(197, 233, 108, 14);
+		contentPane.add(lblPartidasBlackjackVal);
+		
+		lblPartidasTragaperrasVal = new JLabel("lorem");
+		lblPartidasTragaperrasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasTragaperrasVal.setBounds(211, 268, 93, 14);
+		contentPane.add(lblPartidasTragaperrasVal);
+		
+		lblDineroGanadoVal = new JLabel("lorem");
+		lblDineroGanadoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblDineroGanadoVal.setBounds(433, 127, 225, 14);
+		contentPane.add(lblDineroGanadoVal);
+		
+		lblDineroPerdidoVal = new JLabel("lorem");
+		lblDineroPerdidoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblDineroPerdidoVal.setBounds(439, 167, 219, 14);
+		contentPane.add(lblDineroPerdidoVal);
+		
+		lblClienteSaldoVal = new JLabel("lorem");
+		lblClienteSaldoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblClienteSaldoVal.setBounds(488, 197, 170, 14);
+		contentPane.add(lblClienteSaldoVal);
+		
+		lblDineroJuegoVal = new JLabel("lorem");
+		lblDineroJuegoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblDineroJuegoVal.setBounds(480, 232, 178, 14);
+		contentPane.add(lblDineroJuegoVal);
+		
+		lblUltimaPartidaVal = new JLabel("lorem");
+		lblUltimaPartidaVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblUltimaPartidaVal.setBounds(490, 267, 168, 14);
+		contentPane.add(lblUltimaPartidaVal);
 		
 		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {
@@ -122,6 +184,60 @@ public class Estadisticas extends JFrame {
 		});
 		
 		
+	}
+	
+	
+	/**
+	 * Actualizar las estadisticas consultando a la BD.
+	 */
+	public void actualizarDatos() {
+		ResultSet rset = null;
+		try {
+			// Partidas jugadas
+			rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas;");
+			lblPartidasJugadasVal.setText(rset.getString(1));
+			
+			// Partidas ganadas
+			rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = TRUE;");
+			lblPartidasGanadasVal.setText(rset.getString(1));
+			
+			// Partidas perdidas
+			rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = FALSE;");
+			lblPartidasPerdidasVal.setText(rset.getString(1));
+			
+			// Partidas blackjack
+			rset = modelo.consultaEspecifica("SELECT count(*) FROM partidas p JOIN juegos j ON (p.id_juego = j.id) WHERE j.tipo LIKE \"Blackjack\";");
+			lblPartidasBlackjackVal.setText(rset.getString(1));
+			
+			// Partidas tragaperras
+			rset = modelo.consultaEspecifica("SELECT count(*) FROM partidas p JOIN juegos j ON (p.id_juego = j.id) WHERE j.tipo LIKE \"Tragaperras\";");
+			lblPartidasTragaperrasVal.setText(rset.getString(1));
+			
+			// Dinero ganado
+			rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta > 0;");
+			lblDineroGanadoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+			
+			// Dinero perdido
+			rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta < 0;");
+			lblDineroPerdidoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+			
+			// Cliente con mas saldo
+			rset = modelo.consultaEspecifica("SELECT nombre, saldo FROM clientes ORDER BY saldo DESC LIMIT 1;");
+			lblClienteSaldoVal.setText(String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
+			
+			// Juego con mas dinero
+			rset = modelo.consultaEspecifica("SELECT id, dinero FROM juegos ORDER BY dinero DESC LIMIT 1;");
+			lblDineroJuegoVal.setText(String.format("Juego %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
+			
+			// Última partida jugada
+			rset = modelo.consultaEspecifica("SELECT fecha FROM partidas ORDER BY fecha DESC LIMIT 1;");
+			lblUltimaPartidaVal.setText(rset.getString(1));
+			
+			rset.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

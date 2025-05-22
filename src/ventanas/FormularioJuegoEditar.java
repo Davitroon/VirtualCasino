@@ -137,13 +137,11 @@ public class FormularioJuegoEditar extends JFrame {
 		chckbxActivo = new JCheckBox("Activo");
 		chckbxActivo.setBounds(304, 80, 89, 23);
 		contentPane.add(chckbxActivo);
-		
-		
+				
 		// Al escribir en el campo saldo
 		textDinero.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-			
+			public void keyReleased(KeyEvent e) {			
 				dineroValido = false;				
 				String texto = textDinero.getText();
 				
@@ -153,8 +151,7 @@ public class FormularioJuegoEditar extends JFrame {
 				
 				revisarFormulario();
 			}
-		});
-		
+		});		
 		
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
@@ -163,12 +160,10 @@ public class FormularioJuegoEditar extends JFrame {
 				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion);
 			}
 		});
-		
-		
+			
 		// Clic boton modificar
 		btnModificar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+			public void actionPerformed(ActionEvent e) {				
 				int id = Integer.parseInt(textId.getText());
 				String tipo = String.valueOf(comboTipo.getSelectedItem());
 				boolean activo = chckbxActivo.isSelected() ? true : false;
@@ -185,8 +180,7 @@ public class FormularioJuegoEditar extends JFrame {
 				limpiarCampos();
 				controlador.cambiarVentana(FormularioJuegoEditar.this, gestion);
 			}
-		});
-		
+		});		
 		
 		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {
@@ -203,8 +197,7 @@ public class FormularioJuegoEditar extends JFrame {
 	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
 	 * @since 3.0
 	 */
-	public void revisarFormulario() {
-		
+	public void revisarFormulario() {	
 		if (dineroValido) {
 			btnModificar.setEnabled(true);
 			return;
@@ -232,7 +225,6 @@ public class FormularioJuegoEditar extends JFrame {
 	 * @since 3.0
 	 */
 	public void cargarJuegoOriginal(int id) {	    
-
 		ResultSet rset = modelo.consultarDatoUnico("juegos", id);
 	    
 	    try {

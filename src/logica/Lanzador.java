@@ -28,6 +28,7 @@ public class Lanzador {
             controlador = new Controlador(modelo);
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
             menu = new MenuPrincipal(modelo, controlador);
+            menu.comprobarPartidas();
             menu.setVisible(true);
             
         } catch (SQLSyntaxErrorException e) {

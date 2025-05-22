@@ -1,33 +1,27 @@
 package ventanas;
 
-import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import logica.Cliente;
 import logica.Controlador;
 import logica.Modelo;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.JRadioButton;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.ButtonGroup;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 /**
  * Ventana para el formulario de clientes.
@@ -164,14 +158,12 @@ public class FormularioCliente extends JFrame {
 		lblErrorSaldo.setFont(new Font("Tahoma", Font.PLAIN, 8));
 		lblErrorSaldo.setForeground(new Color(255, 0, 0));
 		lblErrorSaldo.setBounds(244, 186, 199, 17);
-		contentPane.add(lblErrorSaldo);
-		
+		contentPane.add(lblErrorSaldo);		
 		
 		// Al escribir en el campo nombre
 		textNombre.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-				
+			public void keyReleased(KeyEvent e) {			
 				nombreValido = false;
 				String texto = textNombre.getText();
 				
@@ -181,14 +173,12 @@ public class FormularioCliente extends JFrame {
 				
 				revisarFormulario();
 			}
-		});
-		
+		});		
 		
 		// Al escribir en el campo edad
 		textEdad.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-			
+			public void keyReleased(KeyEvent e) {		
 				edadValida = false;
 				String texto = textEdad.getText();
 				
@@ -199,13 +189,11 @@ public class FormularioCliente extends JFrame {
 				revisarFormulario();
 			}
 		});	
-		
-		
+				
 		// Al escribir en el campo saldo
 		textSaldo.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-			
+			public void keyReleased(KeyEvent e) {			
 				saldoValido = false;				
 				String texto = textSaldo.getText();
 				
@@ -215,32 +203,28 @@ public class FormularioCliente extends JFrame {
 				
 				revisarFormulario();
 			}
-		});
-		
+		});		
 		
 		// Elegir genero masculino
 		rdbtnMasculino.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				revisarFormulario();
 			}
-		});
+		});		
 		
-		
-		// Elegir genero masculino
+		// Elegir genero femenino
 		rdbtnFemenino.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				revisarFormulario();
 			}
-		});
+		});		
 		
-		
-		// Elegir genero masculino
+		// Elegir genero otro
 		rdbtnOtro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				revisarFormulario();
 			}
-		});
-		
+		});		
 		
 		// Clic boton añadir
 		btnAnadir.addActionListener(new ActionListener() {
@@ -256,8 +240,7 @@ public class FormularioCliente extends JFrame {
 				limpiarCampos();
 				controlador.cambiarVentana(FormularioCliente.this, gestion);
 			}
-		});
-		
+		});		
 		
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
@@ -265,8 +248,7 @@ public class FormularioCliente extends JFrame {
 				limpiarCampos();
 				controlador.cambiarVentana(FormularioCliente.this, gestion);
 			}
-		});
-		
+		});		
 		
 		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {

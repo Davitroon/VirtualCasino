@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 /**
@@ -32,6 +34,7 @@ public class MenuPrincipal extends JFrame {
 	
 	private Modelo modelo;
 	private Controlador controlador;
+	private JButton btnEstadisticas;
 
 	/**
 	 * Create the frame.
@@ -64,7 +67,7 @@ public class MenuPrincipal extends JFrame {
 		btnAdministracion.setBounds(193, 152, 124, 40);
 		contentPane.add(btnAdministracion);
 		
-		JButton btnEstadisticas = new JButton("Estadisticas");
+		btnEstadisticas = new JButton("Estadisticas");
 		btnEstadisticas.setBounds(193, 203, 124, 40);
 		contentPane.add(btnEstadisticas);
 		
@@ -109,7 +112,7 @@ public class MenuPrincipal extends JFrame {
 				if (estadisticas == null) {
 					estadisticas = new Estadisticas(MenuPrincipal.this, modelo, controlador);
 				}
-				
+				estadisticas.actualizarDatos();
 				controlador.cambiarVentana(MenuPrincipal.this, estadisticas);
 			}
 		});
@@ -121,6 +124,25 @@ public class MenuPrincipal extends JFrame {
 				System.exit(ABORT);
 			}
 		});
-
+	}
+	
+	/**
+	 * Método que comprueba si hay partidas registradas o no, para habilitar o deshabilitar el botón de Estadísticas.
+	 */
+	public void comprobarPartidas() {
+		ResultSet rset = modelo.consultarDatos("partidas", false);
+		
+		try {
+			if (!rset.next()) {
+				btnEstadisticas.setEnabled(false);
+				
+			} else {
+				btnEstadisticas.setEnabled(true);
+			}
+			rset.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

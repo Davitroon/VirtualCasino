@@ -183,7 +183,7 @@ public class BlackjackVentana extends JFrame {
 	 * @param clienteGana Verdadero si el cliente ha ganado y falso en el caso contrario.
 	 */
 	public void finJuego(boolean clienteGana) {
-		String[] opciones = {"Volver", "Apostar de nuevo"};
+		
 		double apuestaResultado = blackjack.jugar(apuesta);
 		boolean irMensajeFinal;
 		partidaTerminada = true;
@@ -202,16 +202,7 @@ public class BlackjackVentana extends JFrame {
 		
 		do {
 			irMensajeFinal = false;
-			int eleccion = JOptionPane.showOptionDialog(
-				    null,
-				    estadoFin +  " ¿Qué deseas hacer?",
-				    "Fin de partida",
-				    JOptionPane.DEFAULT_OPTION,
-				    JOptionPane.QUESTION_MESSAGE,
-				    null,
-				    opciones,
-				    opciones[0]
-				);
+			int eleccion = controlador.juegosEstadoFin(estadoFin);
 				
 			if (eleccion == 0) {
 				this.dispose();
@@ -219,10 +210,8 @@ public class BlackjackVentana extends JFrame {
 				break;
 			}
 			
-			if (eleccion == 1) {
-				
-				double apuestaNueva = controlador.alertaApuesta(cliente, blackjack);
-				
+			if (eleccion == 1) {			
+				double apuestaNueva = controlador.alertaApuesta(cliente, blackjack);				
 				if (apuestaNueva == 0) {
 					irMensajeFinal = true;
 					
@@ -268,6 +257,9 @@ public class BlackjackVentana extends JFrame {
 	}
 	
 	
+	/**
+	 * Método que llamará al controlador para mostrar un mensaje de aviso al intentar cerrar la ventana.
+	 */
 	public void avisoCerrar() {
 		if (!partidaTerminada) {
 			if (controlador.avisoCerrarJuego(cliente, blackjack, apuesta)) {

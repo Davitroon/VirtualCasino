@@ -47,12 +47,13 @@ public class Modelo {
 		
 		if (tabla.equals("juegos")) consulta = "SELECT * FROM juegos";
 		if (tabla.equals("clientes")) consulta = "SELECT * FROM clientes";
+		if (tabla.equals("partidas")) consulta = "SELECT * FROM partidas";
 		if (soloActivos) consulta += " WHERE activo = 1";
 		
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
 			rset = stmt.executeQuery();
-			stmt.close();
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -83,12 +84,29 @@ public class Modelo {
 			stmt.setInt(1, id);
 			rset = stmt.executeQuery();
 			rset.next();
-			stmt.close();
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	
+		return rset;
+	}
+	
+	
+	public ResultSet consultaEspecifica(String consulta) {
+		
+		ResultSet rset = null;
+		PreparedStatement stmt;
+		try {
+			stmt = conexion.prepareStatement(consulta);
+			rset = stmt.executeQuery();
+			rset.next();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		
 		return rset;
 	}
 	
@@ -108,7 +126,7 @@ public class Modelo {
 	        stmt.setDouble(4, cliente.getSaldo());
 
 	        stmt.executeUpdate();
-	        stmt.close();
+	        
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -129,7 +147,7 @@ public class Modelo {
 	        stmt.setDouble(2, juego.getDinero());
 
 	        stmt.executeUpdate();
-	        stmt.close();
+	        
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -153,7 +171,7 @@ public class Modelo {
 	        stmt.setInt(6, cliente.getId());
 
 	        stmt.executeUpdate();
-	        stmt.close();
+	        
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -173,7 +191,7 @@ public class Modelo {
 	        stmt.setInt(2, cliente.getId());
 
 	        stmt.executeUpdate();
-	        stmt.close();
+	        
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -195,7 +213,7 @@ public class Modelo {
 	        stmt.setInt(4, juego.getId());
 
 	        stmt.executeUpdate();
-	        stmt.close();
+	        
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -216,7 +234,7 @@ public class Modelo {
 	        stmt.setInt(2, juego.getId());
 
 	        stmt.executeUpdate();
-	        stmt.close();
+	        
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -242,7 +260,7 @@ public class Modelo {
 			stmt.setString(1, id);	
 			
 			stmt.executeUpdate();
-			stmt.close();
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -263,7 +281,7 @@ public class Modelo {
 			stmt.setBoolean(4, ( resultadoApusta > 0 ? true : false) );
 			
 			stmt.executeUpdate();
-			stmt.close();
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
