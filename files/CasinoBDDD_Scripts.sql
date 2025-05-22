@@ -18,6 +18,17 @@ CREATE TABLE juegos (
     dinero DECIMAL(8,2) NOT NULL
 );
 
+CREATE TABLE partidas (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	id_cliente INT NOT NULL,
+    id_juego INT NOT NULL,
+    resultado_apuesta DECIMAL(8,2) NOT NULL,
+    cliente_gana BOOLEAN NOT NULL,
+    fecha DATETIME,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id),
+	FOREIGN KEY (id_juegos) REFERENCES juegos(id)
+);
+
 INSERT INTO clientes (nombre, edad, genero, activo, saldo) VALUES ('Pepe', 32, 'H', true, 2030.0);
 INSERT INTO juegos (tipo, activo, dinero) VALUES ('Tragaperras', true, 50000.0);
 INSERT INTO juegos (tipo, activo, dinero) VALUES ('Blackjack', true, 50000.0);

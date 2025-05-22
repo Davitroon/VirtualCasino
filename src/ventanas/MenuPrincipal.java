@@ -28,6 +28,8 @@ public class MenuPrincipal extends JFrame {
 	
 	private Gestion gestion;
 	private Jugar jugar;
+	private Estadisticas estadisticas;
+	
 	private Modelo modelo;
 	private Controlador controlador;
 
@@ -63,11 +65,6 @@ public class MenuPrincipal extends JFrame {
 		contentPane.add(btnAdministracion);
 		
 		JButton btnEstadisticas = new JButton("Estadisticas");
-		btnEstadisticas.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnEstadisticas.setEnabled(false);
 		btnEstadisticas.setBounds(193, 203, 124, 40);
 		contentPane.add(btnEstadisticas);
 		
@@ -103,6 +100,17 @@ public class MenuPrincipal extends JFrame {
 				}			
 				controlador.cambiarVentana(MenuPrincipal.this, gestion);
 				
+			}
+		});
+		
+		// Clic boton estadisticas
+		btnEstadisticas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (estadisticas == null) {
+					estadisticas = new Estadisticas(MenuPrincipal.this, modelo, controlador);
+				}
+				
+				controlador.cambiarVentana(MenuPrincipal.this, estadisticas);
 			}
 		});
 		

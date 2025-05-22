@@ -230,20 +230,21 @@ public class Controlador {
 	 * Actualizar el saldo y el dinero de juego y cliente al terminar una partida.
 	 * @param cliente Cliente a actualizar.
 	 * @param juego Juego a actualizar.
-	 * @param resultado Resultado de la apuesta.
+	 * @param resultadoApuesta Resultado de la apuesta.
 	 * @param cerrarJuego Verdadero si se ha cerraro el juego antes de jugar, falso si la apuesta se terminó.
 	 */
-	public void actualizarSaldos(Cliente cliente, Juego juego, double resultado, boolean cerrarJuego) {
+	public void actualizarSaldos(Cliente cliente, Juego juego, double resultadoApuesta, boolean cerrarJuego) {
 	    if (cerrarJuego) {
-	    	cliente.setSaldo(cliente.getSaldo() - resultado);
-	    	juego.setDinero(juego.getDinero() + resultado);
+	    	cliente.setSaldo(cliente.getSaldo() - resultadoApuesta);
+	    	juego.setDinero(juego.getDinero() + resultadoApuesta);
 	    	
 	    } else {
-	    	cliente.setSaldo(cliente.getSaldo() + resultado);
-	    	juego.setDinero(juego.getDinero() - resultado);
+	    	cliente.setSaldo(cliente.getSaldo() + resultadoApuesta);
+	    	juego.setDinero(juego.getDinero() - resultadoApuesta);
 	    }		
 	    modelo.modificarSaldoCliente(cliente);
 	    modelo.modificarDineroJuego(juego);
+	    modelo.agregarPartida(cliente, juego, resultadoApuesta);
 	}
 	
 	

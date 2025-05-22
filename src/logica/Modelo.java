@@ -51,8 +51,8 @@ public class Modelo {
 		
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 			rset = stmt.executeQuery();
+			stmt.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -81,9 +81,9 @@ public class Modelo {
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
 			stmt.setInt(1, id);
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 			rset = stmt.executeQuery();
 			rset.next();
+			stmt.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -107,8 +107,8 @@ public class Modelo {
 	        stmt.setString(3, String.valueOf(cliente.getGenero()));
 	        stmt.setDouble(4, cliente.getSaldo());
 
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 	        stmt.executeUpdate();
+	        stmt.close();
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -128,8 +128,8 @@ public class Modelo {
 	        stmt.setString(1, juego.getTipo());
 	        stmt.setDouble(2, juego.getDinero());
 
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 	        stmt.executeUpdate();
+	        stmt.close();
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -152,8 +152,8 @@ public class Modelo {
 	        stmt.setDouble(5, cliente.getSaldo());
 	        stmt.setInt(6, cliente.getId());
 
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -172,8 +172,8 @@ public class Modelo {
 	        stmt.setDouble(1, cliente.getSaldo());
 	        stmt.setInt(2, cliente.getId());
 
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -194,8 +194,8 @@ public class Modelo {
 	        stmt.setDouble(3, juego.getDinero());
 	        stmt.setInt(4, juego.getId());
 
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -215,8 +215,8 @@ public class Modelo {
 	        stmt.setDouble(1, juego.getDinero());
 	        stmt.setInt(2, juego.getId());
 
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -241,13 +241,34 @@ public class Modelo {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
 			stmt.setString(1, id);	
 			
-	        System.out.println("Consulta BBDD: " + stmt.toString());
 			stmt.executeUpdate();
 			stmt.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	public void agregarPartida(Cliente cliente, Juego juego, double resultadoApusta) {
+		
+		String consulta = "INSERT INTO partidas(id_cliente, id_juego, resultado_apuesta, cliente_gana, fecha) "
+				+ "VALUES (?, ?, ?, ?, NOW())";
+		
+		try {
+			PreparedStatement stmt = conexion.prepareStatement(consulta);
+			stmt.setInt(1, cliente.getId());
+			stmt.setInt(2, juego.getId());
+			stmt.setDouble(3, resultadoApusta);
+			stmt.setBoolean(4, ( resultadoApusta > 0 ? true : false) );
+			
+			stmt.executeUpdate();
+			stmt.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 }
