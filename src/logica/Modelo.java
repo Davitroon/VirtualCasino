@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 
 
 /**
@@ -20,13 +21,18 @@ public class Modelo {
 	private String url = "jdbc:mysql://localhost/" + database;
 	private static Connection conexion;
 	
+	private MensajeExcepcion mensajeExcepcion;
+	
 	/**
 	 * Constructor del modelo, dodne hace conexión a la base de datos.
+	 * @param mensajeExcepcion Clase que maneja el aviso de las excepciones.
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 * @since 3.0
 	 */
-	public Modelo() throws SQLException, ClassNotFoundException {
+	public Modelo(MensajeExcepcion mensajeExcepcion) throws SQLException, ClassNotFoundException {
+		this.mensajeExcepcion = mensajeExcepcion;
+		if (database == "") throw new SQLSyntaxErrorException();
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		conexion=DriverManager.getConnection(url,login,pwd);
 		System.out.println (" - Conexión con BD establecida -");
@@ -45,9 +51,9 @@ public class Modelo {
 		String consulta = null;
 		ResultSet rset = null;
 		
-		if (tabla.equals("juegos")) consulta = "SELECT * FROM juegos";
-		if (tabla.equals("clientes")) consulta = "SELECT * FROM clientes";
-		if (tabla.equals("partidas")) consulta = "SELECT * FROM partidas";
+		if (tabla.equalsIgnoreCase("juegos")) consulta = "SELECT * FROM juegos";
+		if (tabla.equalsIgnoreCase("clientes")) consulta = "SELECT * FROM clientes";
+		if (tabla.equalsIgnoreCase("partidas")) consulta = "SELECT * FROM partidas";
 		if (soloActivos) consulta += " WHERE activo = 1";
 		
 		try {
@@ -56,7 +62,8 @@ public class Modelo {
 			
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+	        mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al consultar la tabla " + tabla + ".\nConsultar la consola para más información.");
+
 		}
 	
 		return rset;
@@ -76,8 +83,8 @@ public class Modelo {
 		String consulta = null;
 		ResultSet rset = null;
 		
-		if (tabla.equals("juegos")) consulta = "SELECT * FROM juegos WHERE id = ?;";
-		if (tabla.equals("clientes")) consulta = "SELECT * FROM clientes WHERE id = ?;";
+		if (tabla.equalsIgnoreCase("juegos")) consulta = "SELECT * FROM juegos WHERE id = ?;";
+		if (tabla.equalsIgnoreCase("clientes")) consulta = "SELECT * FROM clientes WHERE id = ?;";
 		
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
@@ -87,7 +94,7 @@ public class Modelo {
 			
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al consultar la tabla " + tabla + ".\nConsultar la consola para más información.");
 		}
 	
 		return rset;
@@ -104,7 +111,7 @@ public class Modelo {
 			rset.next();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido u nerror en la conexión con la BD al hacer una lectura.\nConsultar la consola para más información.");
 		}	
 		
 		return rset;
@@ -129,7 +136,7 @@ public class Modelo {
 	        
 
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al insertar un cliente.\nConsultar la consola para más información.");
 	    }
 	}
 	
@@ -150,7 +157,7 @@ public class Modelo {
 	        
 
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al insertar un juego.\nConsultar la consola para más información.");
 	    }
 	}
 	
@@ -170,11 +177,10 @@ public class Modelo {
 	        stmt.setDouble(5, cliente.getSaldo());
 	        stmt.setInt(6, cliente.getId());
 
-	        stmt.executeUpdate();
-	        
+	        stmt.executeUpdate();	        
 	        
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un cliente.\nConsultar la consola para más información.");
 	    }
 	}
 	
@@ -194,7 +200,7 @@ public class Modelo {
 	        
 	        
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar el saldo del cliente.\nConsultar la consola para más información.");
 	    }
 	}
 	
@@ -216,7 +222,7 @@ public class Modelo {
 	        
 	        
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un juego.\nConsultar la consola para más información.");
 	    }
 	}
 	
@@ -237,7 +243,7 @@ public class Modelo {
 	        
 	        
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar el dinero del juego.\nConsultar la consola para más información.");
 	    }
 	}
 	
@@ -252,8 +258,8 @@ public class Modelo {
 		
 		String consulta = null;
 		
-		if (tabla.equals("juegos")) consulta = "DELETE FROM juegos WHERE id = ?;";
-		if (tabla.equals("clientes")) consulta = "DELETE FROM clientes WHERE id = ?;";
+		if (tabla.equalsIgnoreCase("juegos")) consulta = "DELETE FROM juegos WHERE id = ?;";
+		if (tabla.equalsIgnoreCase("clientes")) consulta = "DELETE FROM clientes WHERE id = ?;";
 		
 		try {		
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
@@ -263,7 +269,7 @@ public class Modelo {
 			
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al borrar un dato.\nConsultar la consola para más información.");
 		}
 	}
 
@@ -284,9 +290,7 @@ public class Modelo {
 			
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al insertar una partida.\nConsultar la consola para más información.");
+		}		
+	}	
 }
