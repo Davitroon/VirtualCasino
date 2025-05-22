@@ -60,6 +60,7 @@ public class TragaperrasVentana extends JFrame {
 		
 		setResizable(false);
 		setBounds(100, 100, 523, 421);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

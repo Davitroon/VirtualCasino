@@ -516,45 +516,23 @@ public class Controlador {
 	
 	
 	/**
-	 * Método que rellena la tabla de juegos en la ventana Gestion, con todos los campos
-	 * @param rset Resultado de la consulta a la BD.
-	 * @param modeloJuegos Tabla de juegos.
-	 */
-	public void rellenarTablaJuegosCompleto(ResultSet rset, DefaultTableModel modeloJuegos) {
-		try {
-			do {
-				// "ID", "Tipo", "Activo", "Dinero"
-		        Object[] juegoLista = new Object[4];
-		        juegoLista[0] = rset.getInt(1);
-		        juegoLista[1] = rset.getString(2);
-		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
-		        juegoLista[3] = rset.getDouble(4);
-		        
-		        modeloJuegos.addRow(juegoLista);
-			} while (rset.next());
-			
-		} catch (SQLException e) {	
-			e.printStackTrace();
-		}			
-	}
-	
-	
-	/**
 	 * Método que rellena la tabla de clientes en la ventana Gestion, con todos los campos
 	 * @param rset Resultado de la consulta a la BD.
 	 * @param modeloJuegos Tabla de juegos.
 	 */
-	public void rellenarTablaClientesCompleto(ResultSet rset, DefaultTableModel modeloJuegos) {
+	public void rellenarTablaClientesCompleto(ResultSet rset, DefaultTableModel modeloClientes) {
 		try {
 			do {
-				// "ID", "Tipo", "Activo", "Dinero"
-		        Object[] juegoLista = new Object[4];
-		        juegoLista[0] = rset.getInt(1);
-		        juegoLista[1] = rset.getString(2);
-		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
-		        juegoLista[3] = rset.getDouble(4);
+				// "ID", "Nombre", "Activo", "Saldo"
+		        Object[] clienteLista = new Object[6];
+		        clienteLista[0] = rset.getInt(1);
+		        clienteLista[1] = rset.getString(2);
+		        clienteLista[2] = rset.getInt(3);
+		        clienteLista[3] = rset.getString(4);
+		        clienteLista[4] = (rset.getBoolean(5) == true ? "SI" : "NO");
+		        clienteLista[5] = rset.getDouble(6);
 		        
-		        modeloJuegos.addRow(juegoLista);
+		        modeloClientes.addRow(clienteLista);
 			} while (rset.next());
 			
 		} catch (SQLException e) {	

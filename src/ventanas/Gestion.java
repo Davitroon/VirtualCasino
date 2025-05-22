@@ -67,6 +67,7 @@ public class Gestion extends JFrame {
 	 * @param controlador2 
 	 */
 	public Gestion(MenuPrincipal menu, Modelo modelo, Controlador controlador) {
+		setResizable(false);
 		
 		this.menu = menu;
 		this.modelo = modelo;
@@ -74,6 +75,7 @@ public class Gestion extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);		
 		setBounds(100, 100, 802, 399);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -370,7 +372,7 @@ public class Gestion extends JFrame {
 				reiniciarBotones();
 				
 			} else {
-				controlador.rellenarTablaClientesCompleto(rset, modeloJuegos);
+				controlador.rellenarTablaClientesCompleto(rset, modeloClientes);
 			}
 			
 		} catch (SQLException e) {		
@@ -393,7 +395,7 @@ public class Gestion extends JFrame {
 				reiniciarBotones();
 	            
 			} else {
-				controlador.rellenarTablaJuegosCompleto(rset, modeloJuegos);
+				controlador.rellenarTablaJuegos(rset, modeloJuegos);
 			}
 			
 		} catch (SQLException e) {			

@@ -48,6 +48,8 @@ public class BlackjackVentana extends JFrame {
 
 
 	public BlackjackVentana(Controlador controlador, Modelo modelo, Jugar jugar, Cliente cliente, Juego juego, double apuesta) {
+		setResizable(false);
+		
 		
 		this.controlador = controlador;
 		this.modelo = modelo;
@@ -57,9 +59,8 @@ public class BlackjackVentana extends JFrame {
 		this.blackjack = (Blackjack) juego;
 		
 		this.apuesta = apuesta;
-		
-		setResizable(false);
 		setBounds(100, 100, 577, 442);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
