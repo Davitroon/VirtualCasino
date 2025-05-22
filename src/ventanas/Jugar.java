@@ -11,7 +11,9 @@ import javax.swing.table.DefaultTableModel;
 import logica.Blackjack;
 import logica.Cliente;
 import logica.Controlador;
+import logica.Juego;
 import logica.Modelo;
+import logica.Tragaperras;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -53,6 +55,8 @@ public class Jugar extends JFrame {
 	private JButton btnJugar;
 	
 	private BlackjackVentana wndBlackjack;
+	private TragaperrasVentana wndTragaperras;
+	
 
 	/**
 	 * Create the frame.
@@ -67,7 +71,7 @@ public class Jugar extends JFrame {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 681, 435);
+		setBounds(100, 100, 716, 435);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -76,7 +80,7 @@ public class Jugar extends JFrame {
 		
 		JLabel lblJuego = new JLabel("Jugar", SwingConstants.CENTER);
 		lblJuego.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblJuego.setBounds(28, 28, 616, 31);
+		lblJuego.setBounds(28, 28, 652, 31);
 		contentPane.add(lblJuego);
 		
 		JLabel lblClientes = new JLabel("Clientes", SwingConstants.CENTER);
@@ -116,11 +120,11 @@ public class Jugar extends JFrame {
 		
 		JLabel lblJuegos = new JLabel("Juegos", SwingConstants.CENTER);
 		lblJuegos.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblJuegos.setBounds(357, 86, 287, 23);
+		lblJuegos.setBounds(357, 86, 323, 23);
 		contentPane.add(lblJuegos);
 		
 		JScrollPane scrollPaneJuegos = new JScrollPane();
-		scrollPaneJuegos.setBounds(357, 124, 287, 166);
+		scrollPaneJuegos.setBounds(357, 124, 323, 166);
 		contentPane.add(scrollPaneJuegos);
 		
 		modeloJuegos = new DefaultTableModel(
@@ -150,11 +154,11 @@ public class Jugar extends JFrame {
 		
 		btnJugar = new JButton("Jugar");
 		btnJugar.setEnabled(false);
-		btnJugar.setBounds(541, 327, 103, 31);
+		btnJugar.setBounds(577, 327, 103, 31);
 		contentPane.add(btnJugar);
 		
 		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBounds(428, 327, 103, 31);
+		btnVolver.setBounds(464, 327, 103, 31);
 		contentPane.add(btnVolver);
 		
 		actualizarTablas();
@@ -195,26 +199,26 @@ public class Jugar extends JFrame {
 				ResultSet rsetJuego = modelo.consultarDatoUnico("juegos", Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString()) );
 				
 				Cliente cliente = null;
-				Blackjack blackjack = null;
+				Juego juego = null;
 				
 				try {
-				   cliente = new Cliente (rsetCliente.getInt("id"), rsetCliente.getString("nombre"), rsetCliente.getDouble("saldo"));
-				   blackjack = new Blackjack (rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
-				    
-				} catch (SQLException e1) {
-				    e1.printStackTrace();
-				}
-				
-				double apuesta = controlador.alertaApuesta(cliente, blackjack);
-				
-				if (apuesta != 0) {
-					if (wndBlackjack == null) {
-						wndBlackjack = null;
+					cliente = new Cliente (rsetCliente.getInt("id"), rsetCliente.getString("nombre"), rsetCliente.getDouble("saldo"));
+					
+					if (rsetJuego.getString("tipo").equals("Blackjack")) {
+						juego = new Blackjack (rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
+					
+					} else if (rsetJuego.getString("tipo").equals("Tragaperras")) {
+						juego = new Tragaperras (rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
 					}
 					
-					wndBlackjack = new BlackjackVentana(controlador, modelo, Jugar.this, cliente, blackjack, apuesta);
-					controlador.cambiarVentana(Jugar.this, wndBlackjack);
-					wndBlackjack.iniciarJuego();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				
+				double apuesta = controlador.alertaApuesta(cliente, juego);		
+				
+				if (apuesta != 0) {					
+					controlador.abrirJuegoVentana(juego, Jugar.this, cliente, apuesta, wndBlackjack, wndTragaperras);
 					btnJugar.setEnabled(false);
 				}
 

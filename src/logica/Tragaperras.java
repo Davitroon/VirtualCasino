@@ -32,7 +32,19 @@ public class Tragaperras extends Juego {
 	public Tragaperras(int id, String tipo, boolean activo, double dinero) {
 		super(id, tipo, activo, dinero);
 	}
+	
+	
+	/**
+	 * Constructor de tragaperras de datos necesarios (para guardar en el juego).
+	 * @param id Id del juego
+	 * @param dinero Dinero del juego
+	 * @since 3.0
+	 */
+	public Tragaperras(int id, double dinero) {
+		super(id, dinero);
+	}
 
+	
 	/**
 	 * Comprueba el número de casillas que esten repetidas.<br>
 	 * - Si no hay ninguna, se pierde la apuesta.<br>
@@ -45,7 +57,6 @@ public class Tragaperras extends Juego {
 	    int n1 = numeros[0], n2 = numeros[1], n3 = numeros[2];
 	    
 	    if (n1 == 7 && n2 == 7 && n3 == 7) {
-	    	System.out.println("¡Jackpot!");
 	        return apuesta * 6.50;
 	    }
 	    
@@ -75,9 +86,10 @@ public class Tragaperras extends Juego {
 	}
 
 
-	@Override
-	public String toString() {
-		
-		return "["+numeros[0]+"]" + "["+numeros[1]+"]" + "["+numeros[2]+"]";
+	public int[] getNumeros() {
+		return numeros;
 	}
+
+
+	
 }

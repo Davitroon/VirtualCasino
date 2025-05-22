@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import logica.Blackjack;
 import logica.Cliente;
 import logica.Controlador;
+import logica.Juego;
 import logica.Modelo;
 
 import javax.swing.JLabel;
@@ -42,16 +43,18 @@ public class BlackjackVentana extends JFrame {
 	private double apuesta;
 	private JLabel lblApuestaActual;
 	private boolean partidaTerminada;
+	private JButton btnVolver;
+	private JButton btnInfo;
 
 
-	public BlackjackVentana(Controlador controlador, Modelo modelo, Jugar jugar, Cliente cliente, Blackjack blackjack, double apuesta) {
+	public BlackjackVentana(Controlador controlador, Modelo modelo, Jugar jugar, Cliente cliente, Juego juego, double apuesta) {
 		
 		this.controlador = controlador;
 		this.modelo = modelo;
 
 		this.jugar = jugar;
 		this.cliente = cliente;
-		this.blackjack = blackjack;
+		this.blackjack = (Blackjack) juego;
 		
 		this.apuesta = apuesta;
 		
@@ -80,6 +83,10 @@ public class BlackjackVentana extends JFrame {
 		lblTusCartas.setBounds(48, 189, 473, 21);
 		contentPane.add(lblTusCartas);
 		
+		btnVolver = new JButton("Volver");
+		btnVolver.setBounds(102, 305, 108, 38);
+		contentPane.add(btnVolver);
+		
 		lblCartasCrupierList = new JLabel("lorem");
 		lblCartasCrupierList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
 		lblCartasCrupierList.setBounds(48, 120, 473, 30);
@@ -91,11 +98,11 @@ public class BlackjackVentana extends JFrame {
 		contentPane.add(lblTusCartasList);
 		
 		btnPedir = new JButton("Pedir");
-		btnPedir.setBounds(297, 331, 108, 38);
+		btnPedir.setBounds(338, 305, 108, 38);
 		contentPane.add(btnPedir);
 		
 		btnPlantarse = new JButton("Plantarse");
-		btnPlantarse.setBounds(151, 331, 108, 38);
+		btnPlantarse.setBounds(220, 305, 108, 38);
 		contentPane.add(btnPlantarse);
 		
 		lblApuestaActual = new JLabel("lorem");
@@ -104,33 +111,23 @@ public class BlackjackVentana extends JFrame {
 		lblApuestaActual.setBounds(48, 273, 473, 21);
 		contentPane.add(lblApuestaActual);
 		
+		btnInfo = new JButton("?");
+		btnInfo.setBounds(516, 305, 37, 38);
+		contentPane.add(btnInfo);
+		
 		addWindowListener(new WindowAdapter() {
 			// Al cerrar la ventana mediante la X
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if (!partidaTerminada) {
-					int respuesta = JOptionPane.showConfirmDialog(
-						    null,
-						    "¿Estás seguro que quieres salir? Contará como que has perdido la partida",
-						    "Confirmación",
-						    JOptionPane.YES_NO_OPTION,
-						    JOptionPane.QUESTION_MESSAGE
-						);
-
-						if (respuesta == JOptionPane.YES_OPTION) {
-							cliente.setSaldo(cliente.getSaldo() - apuesta);
-							modelo.modificarSaldoCliente(cliente);
-							
-							blackjack.setDinero(blackjack.getDinero() + apuesta);
-							modelo.modificarDineroJuego(blackjack);
-							dispose();
-							jugar.setVisible(true);
-						}
-						
-				} else {
-					dispose();
-					jugar.setVisible(true);
-				}			
+				avisoCerrar();
+			}		
+		});
+		
+		
+		// Clic boton volver
+		btnVolver.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				avisoCerrar();	
 			}
 		});
 		
@@ -156,6 +153,28 @@ public class BlackjackVentana extends JFrame {
 				if (blackjack.sumarCartas(blackjack.getCartasCliente()) == 21) finJuego(true);
 			}
 		});
+		
+		// Clic boton info
+		btnInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		        String mensaje = """
+		                ¿Cómo jugar al Blackjack?
+
+		                - El objetivo es sumar lo más cerca posible a 21 sin pasarte.
+		                - Tú y el crupier recibís cartas al inicio.
+		                - Puedes pedir más cartas (botón "Pedir") si crees que no te pasarás de 21.
+		                - Si te pasas de 21, pierdes automáticamente.
+		                - Cuando decidas plantarte (botón "Plantarse"), el crupier revelará sus cartas.
+		                - Ganas si tienes más puntos que el crupier sin pasarte de 21.
+		                - Si haces 21 con solo dos cartas (un As y una figura o un 10), ¡es un Blackjack!
+
+		                Si ganas, se te sumará dinero a tu saldo. Si pierdes, ... bueno, la proxima vez será.
+		                ¡Suerte y juega con cabeza!
+		                """;
+
+		        JOptionPane.showMessageDialog(null, mensaje, "Guía de Blackjack", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 	}
 	
 	
@@ -169,23 +188,23 @@ public class BlackjackVentana extends JFrame {
 		boolean irMensajeFinal;
 		partidaTerminada = true;
 		
-		controlador.actualizarSaldos(cliente, blackjack, apuestaResultado);
+		controlador.actualizarSaldos(cliente, blackjack, apuestaResultado, false);
 		
 		lblCartasCrupierList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCrupier()) + ") " + blackjack.mostrarCartas(false, "crupier"));
 		lblTusCartasList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCliente()) + ") " + blackjack.mostrarCartas(false, "cliente"));
-		lblCartasCrupier.setText("Baraja del crupier (" + blackjack.getDinero() + "$)");
-		lblTusCartas.setText("Baraja de " + cliente.getNombre() + " (" + cliente.getSaldo() + "$)");
+		lblCartasCrupier.setText(String.format("Baraja del crupier (%.2f$)", blackjack.getDinero()));
+		lblTusCartas.setText(String.format("Baraja de %s (%.2f$)", cliente.getNombre(), cliente.getSaldo()));
 		
 		btnPedir.setEnabled(false);
 		btnPlantarse.setEnabled(false);
 		
-		String estadoFin = controlador.blackjackEstadoFin(clienteGana, cliente, blackjack);
+		String estadoFin = controlador.blackjackEstadoFin(clienteGana, cliente, blackjack, apuestaResultado);
 		
 		do {
 			irMensajeFinal = false;
 			int eleccion = JOptionPane.showOptionDialog(
 				    null,
-				    estadoFin + apuestaResultado +  "$! ¿Qué deseas hacer?",
+				    estadoFin +  " ¿Qué deseas hacer?",
 				    "Fin de partida",
 				    JOptionPane.DEFAULT_OPTION,
 				    JOptionPane.QUESTION_MESSAGE,
@@ -225,11 +244,11 @@ public class BlackjackVentana extends JFrame {
 		int barajaCliente = blackjack.sumarCartas(blackjack.getCartasCliente());
 		partidaTerminada = false;
 		
-		lblCartasCrupier.setText("Baraja del crupier (" + blackjack.getDinero() + "$)");
-		lblTusCartas.setText("Baraja de " + cliente.getNombre() + " (" + cliente.getSaldo() + "$)");		
+		lblCartasCrupier.setText(String.format("Baraja del crupier (%.2f$)", blackjack.getDinero()));
+		lblTusCartas.setText(String.format("Baraja de %s (%.2f$)", cliente.getNombre(), cliente.getSaldo()));		
 		lblCartasCrupierList.setText("(" + (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : blackjack.getCartasCrupier().get(0)) + ") " + blackjack.mostrarCartas(true, "crupier"));
 		lblTusCartasList.setText("(" + barajaCliente + ") " + blackjack.mostrarCartas(false, "cliente"));
-		lblApuestaActual.setText("Apuesta actual: " + apuesta + "$");
+		lblApuestaActual.setText(String.format("Apuesta actual: %.2f$", apuesta));
 		
 		btnPedir.setEnabled(true);
 		btnPlantarse.setEnabled(true);	
@@ -246,5 +265,19 @@ public class BlackjackVentana extends JFrame {
 	 */
 	public void actualizarCartasCrupier(String cartas, int suma) {
 	    lblCartasCrupierList.setText(cartas + " (" + suma + ")");
+	}
+	
+	
+	public void avisoCerrar() {
+		if (!partidaTerminada) {
+			if (controlador.avisoCerrarJuego(cliente, blackjack, apuesta)) {
+				dispose();
+				jugar.setVisible(true);
+			}					
+				
+		} else {
+			dispose();
+			jugar.setVisible(true);
+		}	
 	}
 }

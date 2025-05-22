@@ -5,6 +5,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import ventanas.BlackjackVentana;
+import ventanas.Jugar;
+import ventanas.TragaperrasVentana;
 
 /**
  * Clase controlador del MVC. Gestiona intercambios, validaciones y lógica.
@@ -229,11 +231,18 @@ public class Controlador {
 	 * @param cliente Cliente a actualizar.
 	 * @param juego Juego a actualizar.
 	 * @param resultado Resultado de la apuesta.
+	 * @param cerrarJuego Verdadero si se ha cerraro el juego antes de jugar, falso si la apuesta se terminó.
 	 */
-	public void actualizarSaldos(Cliente cliente, Juego juego, double resultado) {
-	    cliente.setSaldo(cliente.getSaldo() + resultado);
+	public void actualizarSaldos(Cliente cliente, Juego juego, double resultado, boolean cerrarJuego) {
+	    if (cerrarJuego) {
+	    	cliente.setSaldo(cliente.getSaldo() - resultado);
+	    	juego.setDinero(juego.getDinero() + resultado);
+	    	
+	    } else {
+	    	cliente.setSaldo(cliente.getSaldo() + resultado);
+	    	juego.setDinero(juego.getDinero() - resultado);
+	    }		
 	    modelo.modificarSaldoCliente(cliente);
-	    juego.setDinero(juego.getDinero() - resultado);
 	    modelo.modificarDineroJuego(juego);
 	}
 	
@@ -277,39 +286,44 @@ public class Controlador {
 	 * @param clienteGana True si el jugador ganó, false si el jugador perdió.
 	 * @param cliente Objeto de Cliente que jugó.
 	 * @param blackjack Objeto de Blackjack que jugó.
+	 * @param apuestaResultado 
 	 * @return Mensaje con el estado del fin de partida.
 	 */
-	public String blackjackEstadoFin(boolean clienteGana, Cliente cliente, Blackjack blackjack) {
+	public String blackjackEstadoFin(boolean clienteGana, Cliente cliente, Blackjack blackjack, double apuestaResultado) {
 		
 		int cartasCliente = blackjack.sumarCartas(blackjack.getCartasCliente());
 		int cartasCrupier = blackjack.sumarCartas(blackjack.getCartasCrupier());
 		
 		// Cliente pierde
 		if (!clienteGana) {
-			// El cliente se pasa de 21
-			if (cartasCliente > 21) {
-				return "¡Te has pasado de 21, has perdido ";
-				
-			// Cliente pierde normal
-			} else {
-				return "¡Has perdido ";
-			}
-			
+		    // El cliente se pasa de 21
+		    if (cartasCliente > 21) {
+		        return "¡Te has pasado de 21, has perdido " + String.format("%.2f", apuestaResultado) + "$!";
+		    
+		    // Cliente pierde normal
+		    } else {
+		        return "¡Has perdido " + String.format("%.2f", apuestaResultado) + "$!";
+		    }
+
 		// Cliente gana
 		} else {
-			// Empate
-			if (cartasCliente == cartasCrupier) {
-				if (cartasCliente == 21) return "¡Empate con Push, has ganado ";
-				return "¡Empate, has ganado ";
-			
-			// Victoria
-			} else {
-				if (cartasCliente == 21 && blackjack.getCartasCliente().size() == 2) 
-					return "¡Victoria con un Blackjack, has ganado ";
-				return "¡Has ganado ";
-			}
+		    // Empate
+		    if (cartasCliente == cartasCrupier) {
+		        if (cartasCliente == 21) {
+		        	return "¡Empate con Push, has ganado " + String.format("%.2f", apuestaResultado) + "$!";
+		        }
+		        return "¡Empate, has ganado " + String.format("%.2f", apuestaResultado) + "$!";
+		    
+		    // Victoria
+		    } else {
+		        if (cartasCliente == 21 && blackjack.getCartasCliente().size() == 2) {
+		        	return "¡Victoria con un Blackjack, has ganado " + String.format("%.2f", apuestaResultado) + "$!";
+		        }
+		        return "¡Has ganado " + String.format("%.2f", apuestaResultado) + "$!";
+		    }
 		}
 	}
+
 	
 	
 	/**
@@ -317,6 +331,7 @@ public class Controlador {
 	 * @param cliente Objeto cliente que jugará.
 	 * @param juego Objeto juego que jugará.
 	 * @return La apuesta ingresada, devuelve 0 si no es válida.
+	 * @since 3.0
 	 */
 	public double alertaApuesta(Cliente cliente, Juego juego) {
 		
@@ -349,6 +364,68 @@ public class Controlador {
 				return 	Double.parseDouble(apuestaNueva);		
 			}
 		}
+	}
+
+
+	/**
+	 * Método para abrir la ventana de un juego. Dependiendo de la instancia del juego recibido abrirá de un tipo o de otra.
+	 * @param juego Clase del juego a jugar.
+	 * @param jugarVentana Ventana "Jugar" desde donde se debería llamar a este método.
+	 * @param cliente Cliente a jugar.
+	 * @param apuesta Cantidad de la apuesta.
+	 * @param wndBlackjack Ventana de Blackjack.
+	 * @param wndTragaperras Ventana de Tragaperras.
+	 * @since 3.0
+	 */
+	public void abrirJuegoVentana(Juego juego, Jugar jugarVentana, Cliente cliente, double apuesta, BlackjackVentana wndBlackjack, TragaperrasVentana wndTragaperras) {
+		if (juego instanceof Blackjack) {						
+			wndBlackjack = new BlackjackVentana(this, modelo, jugarVentana, cliente, juego, apuesta);
+			cambiarVentana(jugarVentana, wndBlackjack);
+			wndBlackjack.iniciarJuego();
+		}
+		
+		if (juego instanceof Tragaperras ) {
+			wndTragaperras = new TragaperrasVentana(this, modelo, jugarVentana, cliente, juego, apuesta);
+			cambiarVentana(jugarVentana, wndTragaperras);
+			wndTragaperras.iniciarJuego();
+		}
+	}
+
+
+	public String tragaperrasEstadoFin(Cliente cliente, Tragaperras tragaperras, double apuestaResultado) {
+		int [] numeros = tragaperras.getNumeros();
+		if (numeros[0] == 7 && numeros[1] == 7 && numeros[2] == 7) {
+		    return String.format("¡¡Jackpot, has ganado %.2f$!", apuestaResultado);
+		}
+
+		if (numeros[0] == numeros[1] && numeros[0] == numeros[2]) {
+		    return String.format("¡Triple combinación, has ganado %.2f$!", apuestaResultado);
+		}
+
+		if (numeros[0] == numeros[1] || numeros[0] == numeros[2] || numeros[1] == numeros[2]) {
+		    return String.format("¡Doble combinación, has ganado %.2f$!", apuestaResultado);
+		}
+
+		return String.format("Ninguna combinación... Has perdido %.2f$.", apuestaResultado);
+	}
+
+
+	public boolean avisoCerrarJuego(Cliente cliente, Juego juego, double apuesta) {
+		int respuesta = JOptionPane.showConfirmDialog(
+			    null,
+			    "¿Estás seguro que quieres salir? Contará como que has perdido la partida",
+			    "Confirmación",
+			    JOptionPane.YES_NO_OPTION,
+			    JOptionPane.QUESTION_MESSAGE
+			);
+
+		if (respuesta == JOptionPane.YES_OPTION) {
+			actualizarSaldos(cliente, juego, apuesta, true);
+			return true;
+		}
+			
+		return false;
+		
 	}
 }
 

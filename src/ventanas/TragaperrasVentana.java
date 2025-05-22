@@ -1,0 +1,250 @@
+package ventanas;
+
+import java.awt.EventQueue;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import logica.Blackjack;
+import logica.Cliente;
+import logica.Controlador;
+import logica.Juego;
+import logica.Modelo;
+import logica.Tragaperras;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Font;
+
+public class TragaperrasVentana extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	
+	private Controlador controlador;
+	private Modelo modelo;
+	private Jugar jugar;
+	private JButton btnTirar;
+	
+	private Cliente cliente;
+	private Tragaperras tragaperras;
+	
+	private double apuesta;
+	private boolean partidaTerminada;
+	private JLabel lblNum1;
+	private JLabel lblNum2;
+	private JLabel lblNum3;
+	private JLabel lblApuestaActual;
+	private JLabel lblCliente;
+	private JLabel lblJuego;
+	private JButton btnVolver;
+
+
+	public TragaperrasVentana(Controlador controlador, Modelo modelo, Jugar jugar, Cliente cliente, Juego juego, double apuesta) {
+		
+		this.controlador = controlador;
+		this.modelo = modelo;
+
+		this.jugar = jugar;
+		this.cliente = cliente;
+		this.tragaperras = (Tragaperras) juego;
+		
+		this.apuesta = apuesta;
+		
+		setResizable(false);
+		setBounds(100, 100, 523, 421);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblTragaperras = new JLabel("Tragaperras");
+		lblTragaperras.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblTragaperras.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTragaperras.setBounds(49, 56, 421, 30);
+		contentPane.add(lblTragaperras);
+		
+		btnTirar = new JButton("Tirar");
+		btnTirar.setBounds(264, 319, 108, 38);
+		contentPane.add(btnTirar);
+		
+		lblNum1 = new JLabel("0");
+		lblNum1.setFont(new Font("Cambria Math", Font.BOLD, 18));
+		lblNum1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNum1.setBounds(153, 118, 62, 38);
+		contentPane.add(lblNum1);
+		
+		lblNum2 = new JLabel("0");
+		lblNum2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNum2.setFont(new Font("Cambria Math", Font.BOLD, 18));
+		lblNum2.setBounds(225, 118, 62, 38);
+		contentPane.add(lblNum2);
+		
+		lblNum3 = new JLabel("0");
+		lblNum3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNum3.setFont(new Font("Cambria Math", Font.BOLD, 18));
+		lblNum3.setBounds(297, 118, 62, 38);
+		contentPane.add(lblNum3);
+		
+		lblApuestaActual = new JLabel("lorem");
+		lblApuestaActual.setHorizontalAlignment(SwingConstants.CENTER);
+		lblApuestaActual.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
+		lblApuestaActual.setBounds(10, 287, 489, 21);
+		contentPane.add(lblApuestaActual);
+		
+		lblCliente = new JLabel("lorem");
+		lblCliente.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblCliente.setBounds(10, 203, 304, 21);
+		contentPane.add(lblCliente);
+		
+		lblJuego = new JLabel("lorem");
+		lblJuego.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblJuego.setBounds(10, 235, 304, 21);
+		contentPane.add(lblJuego);
+		
+		btnVolver = new JButton("Volver");
+		btnVolver.setBounds(132, 319, 108, 38);
+		contentPane.add(btnVolver);
+		
+		JButton btnInfo = new JButton("?");
+		btnInfo.setBounds(462, 321, 37, 35);
+		contentPane.add(btnInfo);
+		
+		addWindowListener(new WindowAdapter() {
+			// Al cerrar la ventana mediante la X
+			@Override
+			public void windowClosing(WindowEvent e) {
+				avisoCerrar();			
+			}
+		});
+		
+		
+		// Clic boton pedir
+		btnTirar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tragaperras.generarNumeros();
+				lblNum1.setText(String.valueOf(tragaperras.getNumeros()[0]));
+				lblNum2.setText(String.valueOf(tragaperras.getNumeros()[1]));
+				lblNum3.setText(String.valueOf(tragaperras.getNumeros()[2]));
+				finJuego();
+			}
+		});
+		
+		// Clic boton volver
+		btnVolver.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				avisoCerrar();
+			}
+		});
+			
+		// Clic boton info
+		btnInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		        String mensaje = """
+		                ¿Cómo jugar a las Tragaperras?
+
+		                - Primero realiza una apuesta con tu saldo disponible.
+		                - Luego pulsa el botón "Tirar" para generar tres números al azar entre 1 y 9.
+		                - Los números aparecerán en pantalla inmediatamente.
+
+		                ¿Cómo se determina si ganas?
+		                - Si no hay números repetidos, pierdes tu apuesta.
+		                - Si hay dos números iguales, ganas 1.9 veces tu apuesta.
+		                - Si los tres números son iguales, ganas 3.5 veces tu apuesta.
+		                - Si los tres números son 7, ganas 6.5 veces tu apuesta.
+
+		                Ten en cuenta que este juego es completamente aleatorio.
+		                """;
+
+		        JOptionPane.showMessageDialog(null, mensaje, "Guía de Tragaperras", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+	}
+	
+	
+	/**
+	 * Método para finalizar una partida de Blackjack, comparando la baraja del cliente y crupier y ajustando sus saldos en base a la apuesta.
+	 * @param clienteGana Verdadero si el cliente ha ganado y falso en el caso contrario.
+	 */
+	public void finJuego() {
+		String[] opciones = {"Volver", "Apostar de nuevo"};
+		double apuestaResultado = tragaperras.jugar(apuesta);
+		boolean irMensajeFinal;
+		partidaTerminada = true;
+		
+		controlador.actualizarSaldos(cliente, tragaperras, apuestaResultado, false);
+		btnTirar.setEnabled(false);
+		lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
+		lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
+		
+		String estadoFin = controlador.tragaperrasEstadoFin(cliente, tragaperras, apuestaResultado);
+		
+		do {
+			irMensajeFinal = false;
+			int eleccion = JOptionPane.showOptionDialog(
+				    null,
+				    estadoFin +  " ¿Qué deseas hacer?",
+				    "Fin de partida",
+				    JOptionPane.DEFAULT_OPTION,
+				    JOptionPane.QUESTION_MESSAGE,
+				    null,
+				    opciones,
+				    opciones[0]
+				);
+				
+			if (eleccion == 0) {
+				this.dispose();
+				jugar.setVisible(true);
+				break;
+			}
+			
+			if (eleccion == 1) {
+				
+				double apuestaNueva = controlador.alertaApuesta(cliente, tragaperras);
+				
+				if (apuestaNueva == 0) {
+					irMensajeFinal = true;
+					
+				} else {
+					apuesta = apuestaNueva;
+					irMensajeFinal = false;
+					iniciarJuego();
+				}
+			}
+		} while (irMensajeFinal);
+	}
+	
+	
+	public void iniciarJuego() {
+		btnTirar.setEnabled(true);
+		lblNum1.setText("0");
+		lblNum2.setText("0");
+		lblNum3.setText("0");
+		lblApuestaActual.setText(String.format("Apuesta actual: %.2f$", apuesta));
+		lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
+		lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
+	}
+	
+	
+	public void avisoCerrar() {
+		if (!partidaTerminada) {
+			if (controlador.avisoCerrarJuego(cliente, tragaperras, apuesta)) {
+				dispose();
+				jugar.setVisible(true);
+			}					
+				
+		} else {
+			dispose();
+			jugar.setVisible(true);
+		}	
+	}
+}
