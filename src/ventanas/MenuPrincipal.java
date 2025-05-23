@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import Excepciones.JugarExcepcion;
 import logica.Controlador;
 import logica.Modelo;
 
@@ -85,10 +86,17 @@ public class MenuPrincipal extends JFrame {
 		// Clic boton jugar
 		btnJugar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (jugar == null) {
-					jugar = new Jugar(MenuPrincipal.this, modelo, controlador);
+				try {
+					if (jugar == null) {
+						jugar = new Jugar(MenuPrincipal.this, modelo, controlador);
+					}
+					jugar.actualizarTablas();
+					controlador.cambiarVentana(MenuPrincipal.this, jugar);
+				
+				} catch (JugarExcepcion ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage() , "Advertencia", JOptionPane.WARNING_MESSAGE);
 				}
-				controlador.cambiarVentana(MenuPrincipal.this, jugar);
+				
 			}
 		});
 		

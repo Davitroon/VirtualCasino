@@ -8,6 +8,7 @@ import javax.swing.UIManager;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
+import Excepciones.MensajeExcepcion;
 import ventanas.MenuPrincipal;
 
 /**

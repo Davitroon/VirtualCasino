@@ -31,6 +31,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Color;
 
 /**
  * Ventana para la gestión de usuarios y juegos.
@@ -54,11 +55,13 @@ public class Gestion extends JFrame {
 	private Modelo modelo;
 	private Controlador controlador;
 	
-	private JButton btnEditarClientes;
-	private JButton btnBorrarClientes;
-	private JButton btnEditarJuegos;
-	private JButton btnBorrarJuegos;
+	private JButton btnEditarCliente;
+	private JButton btnBorrarCliente;
+	private JButton btnEditarJuego;
+	private JButton btnBorrarJuego;
 	private JTabbedPane tabbedPane;
+	private JButton btnBorrarClientes;
+	private JButton btnBorrarJuegos;
 
 	/**
 	 * Create the frame.
@@ -90,10 +93,10 @@ public class Gestion extends JFrame {
 		tabbedPane.addTab("Usuarios", null, panelUsuarios, "Gestión de usuarios");
 		panelUsuarios.setLayout(null);
 		
-		JLabel lblMisUsuarios = new JLabel("Mis Usuarios", SwingConstants.CENTER);
-		lblMisUsuarios.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblMisUsuarios.setBounds(6, 26, 248, 36);
-		panelUsuarios.add(lblMisUsuarios);
+		JLabel lblMisClientes = new JLabel("Mis clientes", SwingConstants.CENTER);
+		lblMisClientes.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblMisClientes.setBounds(6, 26, 248, 36);
+		panelUsuarios.add(lblMisClientes);
 		
 		JScrollPane scrollPaneUsuarios = new JScrollPane();
 		scrollPaneUsuarios.setBounds(256, 66, 491, 241);
@@ -126,23 +129,31 @@ public class Gestion extends JFrame {
 		tableClientes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
 		scrollPaneUsuarios.setViewportView(tableClientes);
 		
-		JButton btnAnadirUsuario = new JButton("Añadir usuario");
-		btnAnadirUsuario.setBounds(60, 94, 132, 36);
-		panelUsuarios.add(btnAnadirUsuario);
+		JButton btnAnadircliente = new JButton("Añadir cliente");
+		btnAnadircliente.setBounds(60, 94, 132, 36);
+		panelUsuarios.add(btnAnadircliente);
 		
-		btnEditarClientes = new JButton("Editar usuario");
-		btnEditarClientes.setEnabled(false);
-		btnEditarClientes.setBounds(60, 141, 132, 36);
-		panelUsuarios.add(btnEditarClientes);
+		btnEditarCliente = new JButton("Editar cliente");
+		btnEditarCliente.setEnabled(false);
+		btnEditarCliente.setBounds(60, 141, 132, 36);
+		panelUsuarios.add(btnEditarCliente);
 		
-		btnBorrarClientes = new JButton("Borrar usuario");
+		btnBorrarCliente = new JButton("Borrar cliente");
+		btnBorrarCliente.setEnabled(false);
+		btnBorrarCliente.setBounds(60, 188, 132, 36);
+		panelUsuarios.add(btnBorrarCliente);
+		
+		JButton btnVolverCliente = new JButton("Volver");
+		btnVolverCliente.setBounds(60, 235, 132, 36);
+		panelUsuarios.add(btnVolverCliente);
+		
+		btnBorrarClientes = new JButton("Borrar clientes");
 		btnBorrarClientes.setEnabled(false);
-		btnBorrarClientes.setBounds(60, 188, 132, 36);
+		btnBorrarClientes.setForeground(Color.BLACK);
+		btnBorrarClientes.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnBorrarClientes.setBackground(new Color(242, 77, 77));
+		btnBorrarClientes.setBounds(605, 26, 142, 32);
 		panelUsuarios.add(btnBorrarClientes);
-		
-		JButton btnVolverUsuario = new JButton("Volver");
-		btnVolverUsuario.setBounds(60, 235, 132, 36);
-		panelUsuarios.add(btnVolverUsuario);
 		
 		JPanel panelJuegos = new JPanel();
 		panelJuegos.setLayout(null);
@@ -186,19 +197,27 @@ public class Gestion extends JFrame {
 		btnAnadirJuego.setBounds(60, 94, 132, 36);
 		panelJuegos.add(btnAnadirJuego);
 		
-		btnEditarJuegos = new JButton("Editar juego");
-		btnEditarJuegos.setEnabled(false);
-		btnEditarJuegos.setBounds(60, 141, 132, 36);
-		panelJuegos.add(btnEditarJuegos);
+		btnEditarJuego = new JButton("Editar juego");
+		btnEditarJuego.setEnabled(false);
+		btnEditarJuego.setBounds(60, 141, 132, 36);
+		panelJuegos.add(btnEditarJuego);
 		
-		btnBorrarJuegos = new JButton("Borrar juego");
-		btnBorrarJuegos.setEnabled(false);
-		btnBorrarJuegos.setBounds(60, 188, 132, 36);
-		panelJuegos.add(btnBorrarJuegos);
+		btnBorrarJuego = new JButton("Borrar juego");
+		btnBorrarJuego.setEnabled(false);
+		btnBorrarJuego.setBounds(60, 188, 132, 36);
+		panelJuegos.add(btnBorrarJuego);
 		
 		JButton btnVolverJuego = new JButton("Volver");
 		btnVolverJuego.setBounds(60, 235, 132, 36);
 		panelJuegos.add(btnVolverJuego);				
+		
+		btnBorrarJuegos = new JButton("Borrar juegos");
+		btnBorrarJuegos.setForeground(Color.BLACK);
+		btnBorrarJuegos.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnBorrarJuegos.setEnabled(false);
+		btnBorrarJuegos.setBackground(new Color(242, 77, 77));
+		btnBorrarJuegos.setBounds(604, 27, 142, 32);
+		panelJuegos.add(btnBorrarJuegos);
 		
 		addWindowListener(new WindowAdapter() {
 			// Al cerrar la ventana mediante la X
@@ -232,13 +251,13 @@ public class Gestion extends JFrame {
 					return;
 				}	
 				
-				btnEditarClientes.setEnabled(true);
-				btnBorrarClientes.setEnabled(true);
+				btnEditarCliente.setEnabled(true);
+				btnBorrarCliente.setEnabled(true);
 			}
 		});		
 
 		// Clic boton añadir cliente
-		btnAnadirUsuario.addActionListener(new ActionListener() {
+		btnAnadircliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (formularioCliente == null) {
 					formularioCliente  = new FormularioCliente(Gestion.this, controlador, modelo);
@@ -250,7 +269,7 @@ public class Gestion extends JFrame {
 		});		
 		
 		// Clic boton editar cliente
-		btnEditarClientes.addActionListener(new ActionListener() {
+		btnEditarCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (formularioClienteEditar == null) {
 					formularioClienteEditar = new FormularioClienteEditar(Gestion.this, controlador, modelo);
@@ -264,7 +283,7 @@ public class Gestion extends JFrame {
 		});
 			
 		// Clic boton borrar cliente
-		btnBorrarClientes.addActionListener(new ActionListener() {
+		btnBorrarCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int fila = tableClientes.getSelectedRow();
 				if (fila == -1 ) return;
@@ -277,8 +296,27 @@ public class Gestion extends JFrame {
 			}
 		});	
 		
+		// Clic boton borrar clientes
+		btnBorrarClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 int opcion = JOptionPane.showConfirmDialog(
+					        null,
+					        "¿Estás seguro de que deseas borrar todos los clientes?",
+					        "Confirmar borrado",
+					        JOptionPane.YES_NO_OPTION,
+					        JOptionPane.WARNING_MESSAGE
+					    );
+
+			    if (opcion == JOptionPane.YES_OPTION) {
+			        modelo.borrarDatosTabla("clientes");
+			        btnBorrarClientes.setEnabled(false);
+			        actualizarTablaClientes();
+			    }
+			}
+		});
+		
 		// Clic boton volver (cliente)
-		btnVolverUsuario.addActionListener(new ActionListener() {
+		btnVolverCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reiniciarBotones();
 				controlador.cambiarVentana(Gestion.this, menu);
@@ -293,13 +331,13 @@ public class Gestion extends JFrame {
 				int fila = tableJuegos.getSelectedRow();
 				
 				if (fila == -1 ) {
-					btnEditarJuegos.setEnabled(false);
-					btnBorrarJuegos.setEnabled(false);
+					btnEditarJuego.setEnabled(false);
+					btnBorrarJuego.setEnabled(false);
 					return;
 				}	
 				
-				btnEditarJuegos.setEnabled(true);
-				btnBorrarJuegos.setEnabled(true);
+				btnEditarJuego.setEnabled(true);
+				btnBorrarJuego.setEnabled(true);
 			}
 		});
 				
@@ -316,7 +354,7 @@ public class Gestion extends JFrame {
 		});		
 		
 		// Clic boton editar juego
-		btnEditarJuegos.addActionListener(new ActionListener() {
+		btnEditarJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (formularioJuegoEditar == null) {
 					formularioJuegoEditar = new FormularioJuegoEditar(Gestion.this, controlador, modelo);
@@ -330,7 +368,7 @@ public class Gestion extends JFrame {
 		});
 			
 		// Clic boton borrar juego
-		btnBorrarJuegos.addActionListener(new ActionListener() {
+		btnBorrarJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int fila = tableJuegos.getSelectedRow();
 				if (fila == -1 ) return;
@@ -340,6 +378,24 @@ public class Gestion extends JFrame {
 		
 				actualizarTablaJuegos();
 				reiniciarBotones();
+			}
+		});
+		
+		// Clic boton borrar juegos
+		btnBorrarJuegos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 int opcion = JOptionPane.showConfirmDialog(
+					        null,
+					        "¿Estás seguro de que deseas borrar todos los juegos?",
+					        "Confirmar borrado",
+					        JOptionPane.YES_NO_OPTION,
+					        JOptionPane.WARNING_MESSAGE
+					    );
+
+			    if (opcion == JOptionPane.YES_OPTION) {
+			        modelo.borrarDatosTabla("juegos");
+			        actualizarTablaJuegos();
+			    }
 			}
 		});
 				
@@ -368,9 +424,11 @@ public class Gestion extends JFrame {
 			boolean hayDatos = rset.next();			
 			if (!hayDatos) {
 				reiniciarBotones();
+				btnBorrarClientes.setEnabled(false);
 				
 			} else {
 				controlador.rellenarTablaClientesCompleto(rset, modeloClientes);
+				btnBorrarClientes.setEnabled(true);
 			}
 			
 		} catch (SQLException e) {		
@@ -391,9 +449,11 @@ public class Gestion extends JFrame {
 			boolean hayDatos = rset.next();		
 			if (!hayDatos) {
 				reiniciarBotones();
+				btnBorrarJuegos.setEnabled(false);
 	            
 			} else {
 				controlador.rellenarTablaJuegos(rset, modeloJuegos);
+				btnBorrarJuegos.setEnabled(false);
 			}
 			
 		} catch (SQLException e) {			
@@ -406,9 +466,9 @@ public class Gestion extends JFrame {
 	 * Método que restablece los botones a su estado original.
 	 */
 	public void reiniciarBotones() {
-		btnEditarClientes.setEnabled(false);
-		btnBorrarClientes.setEnabled(false);
-		btnEditarJuegos.setEnabled(false);
-		btnBorrarJuegos.setEnabled(false);
+		btnEditarCliente.setEnabled(false);
+		btnBorrarCliente.setEnabled(false);
+		btnEditarJuego.setEnabled(false);
+		btnBorrarJuego.setEnabled(false);
 	}
 }

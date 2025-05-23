@@ -16,9 +16,11 @@ import logica.Controlador;
 import logica.Modelo;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class Estadisticas extends JFrame {
 
@@ -38,6 +40,7 @@ public class Estadisticas extends JFrame {
 	private JLabel lblDineroPerdidoVal;
 	private JLabel lblClienteSaldoVal;
 	private JLabel lblDineroGanadoVal;
+	private JButton btnBorrarEstadisticas;
 
 	/**
 	 * Create the frame.
@@ -66,7 +69,7 @@ public class Estadisticas extends JFrame {
 		contentPane.add(lblEstadisticas);
 		
 		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBounds(538, 319, 120, 32);
+		btnVolver.setBounds(538, 308, 120, 32);
 		contentPane.add(btnVolver);
 		
 		JLabel lblPartidasJugadas = new JLabel("Partidas jugadas:");
@@ -169,6 +172,13 @@ public class Estadisticas extends JFrame {
 		lblUltimaPartidaVal.setBounds(490, 267, 168, 14);
 		contentPane.add(lblUltimaPartidaVal);
 		
+		btnBorrarEstadisticas = new JButton("Borrar estadísticas");
+		btnBorrarEstadisticas.setForeground(new Color(0, 0, 0));
+		btnBorrarEstadisticas.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnBorrarEstadisticas.setBackground(new Color(242, 77, 77));
+		btnBorrarEstadisticas.setBounds(10, 308, 142, 32);
+		contentPane.add(btnBorrarEstadisticas);
+		
 		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -184,7 +194,23 @@ public class Estadisticas extends JFrame {
 			}
 		});
 		
-		
+		// Clic boton borrar estadísticas
+		btnBorrarEstadisticas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 int opcion = JOptionPane.showConfirmDialog(
+					        null,
+					        "¿Estás seguro de que deseas borrar todas las estadísticas?",
+					        "Confirmar borrado",
+					        JOptionPane.YES_NO_OPTION,
+					        JOptionPane.WARNING_MESSAGE
+					    );
+
+			    if (opcion == JOptionPane.YES_OPTION) {
+			        modelo.borrarDatosTabla("partidas");
+			        actualizarDatos();
+			    }
+			}
+		});
 	}
 	
 	
@@ -195,6 +221,15 @@ public class Estadisticas extends JFrame {
 	public void actualizarDatos() {
 	    ResultSet rset = null;
 	    try {
+	    	
+	    	rset = modelo.consultarDatos("partidas", false);
+	    	if (!rset.next()) {
+	    		btnBorrarEstadisticas.setEnabled(false);
+	    		
+	    	} else {
+	    		btnBorrarEstadisticas.setEnabled(true);
+	    	}
+	    	
 	        // Partidas jugadas
 	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas;");
 	        rset.next();
@@ -260,5 +295,4 @@ public class Estadisticas extends JFrame {
 	        e.printStackTrace();
 	    }
 	}
-
 }

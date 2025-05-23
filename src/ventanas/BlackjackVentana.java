@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logica.ApuestaExcepcion;
+import Excepciones.ApuestaExcepcion;
 import logica.Blackjack;
 import logica.Cliente;
 import logica.Controlador;

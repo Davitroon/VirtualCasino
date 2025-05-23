@@ -1,4 +1,4 @@
-package logica;
+package Excepciones;
 
 public class ApuestaExcepcion extends Exception {
 	

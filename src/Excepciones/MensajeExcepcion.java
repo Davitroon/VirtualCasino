@@ -1,4 +1,4 @@
-package logica;
+package Excepciones;
 
 import java.sql.SQLException;
 

@@ -8,7 +8,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import logica.ApuestaExcepcion;
+import Excepciones.ApuestaExcepcion;
+import Excepciones.JugarExcepcion;
 import logica.Blackjack;
 import logica.Cliente;
 import logica.Controlador;
@@ -164,8 +165,6 @@ public class Jugar extends JFrame {
 		btnVolver.setBounds(464, 327, 103, 31);
 		contentPane.add(btnVolver);
 		
-		actualizarTablas();
-		
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -180,16 +179,6 @@ public class Jugar extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				controlador.cambiarVentana(Jugar.this, menu);
 				btnJugar.setEnabled(false);
-			}
-		});
-		
-		
-		
-		// Al cargar la ventana
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-				actualizarTablas();
 			}
 		});
 		
@@ -251,8 +240,9 @@ public class Jugar extends JFrame {
 	
 	/**
 	 * Método para actualizar las tablas de clientes y juegos, consultando a la BD mediante la clase modelo.
+	 * @throws JugarExcepcion 
 	 */
-	public void actualizarTablas() {
+	public void actualizarTablas() throws JugarExcepcion {
 		
 		ResultSet rset1 = modelo.consultarDatos("clientes", true);		
 		ResultSet rset2 = modelo.consultarDatos("juegos", true);		
@@ -266,24 +256,30 @@ public class Jugar extends JFrame {
 			hayDatos = rset1.next();
 			if (hayDatos) {
 				controlador.rellenarTablaClientes(rset1, modeloClientes);
+				
+			} else {
+				throw new JugarExcepcion("No puedes jugar sin haber registrado ningún cliente.");
 			}
-			rset1.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}			
+			
+		}
 				
 		// Tabla juegos
 		try {
 			hayDatos = rset2.next();
 			if (hayDatos) {
 				controlador.rellenarTablaJuegos(rset2, modeloJuegos);
+				
+			} else {
+				throw new JugarExcepcion("No puedes jugar sin haber registrado ningún juego.");
 			}
-			rset2.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}	
+			
+		}
 	}
 	
 	

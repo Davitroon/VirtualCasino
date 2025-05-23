@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 
+import Excepciones.MensajeExcepcion;
+
 
 /**
  * Clase modelo del MVC. Conecta con la BD y gestiona la información.
@@ -50,6 +52,7 @@ public class Modelo {
 		
 		String consulta = "SELECT * FROM " + tabla;	
 		ResultSet rset = null;
+		 
 		if (soloActivos) consulta += " WHERE activo = 1";
 		
 		try {
@@ -125,6 +128,7 @@ public class Modelo {
 	        stmt.setDouble(4, cliente.getSaldo());
 
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 
 	    } catch (SQLException e) {
@@ -146,12 +150,42 @@ public class Modelo {
 	        stmt.setDouble(2, juego.getDinero());
 
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 
 	    } catch (SQLException e) {
 	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al insertar un juego.\nConsultar la consola para más información.");
 	    }
 	}
+	
+	
+	/**
+	 * Inserta una nueva partida en la base de datos.
+	 * @param cliente El cliente que participa en la partida. Debe tener un ID válido.
+	 * @param juego El juego en el que se realiza la partida. Debe tener un ID y un tipo ("Blackjack" o "Tragaperras").
+	 * @param resultadoApuesta Monto resultante de la apuesta (positivo si el cliente gana, negativo si pierde).
+	 */
+	public void agregarPartida(Cliente cliente, Juego juego, double resultadoApuesta) {
+	    
+	    String consulta = "INSERT INTO partidas(id_cliente, id_juego, tipo_juego, resultado_apuesta, cliente_gana, fecha) "
+	                    + "VALUES (?, ?, ?, ?, ?, NOW())";
+	    
+	    try {
+	        PreparedStatement stmt = conexion.prepareStatement(consulta);
+	        stmt.setInt(1, cliente.getId());
+	        stmt.setInt(2, juego.getId());
+	        stmt.setString(3, juego.getTipo());
+	        stmt.setDouble(4, resultadoApuesta);
+	        stmt.setBoolean(5, resultadoApuesta > 0);
+	        
+	        stmt.executeUpdate();
+	        stmt.close();
+	        
+	    } catch (SQLException e) {
+	        mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al insertar una partida.\nConsultar la consola para más información.");
+	    }        
+	}
+	
 	
 	/**
 	 * Método para modificar un cliente en la base de datos.
@@ -169,7 +203,8 @@ public class Modelo {
 	        stmt.setDouble(5, cliente.getSaldo());
 	        stmt.setInt(6, cliente.getId());
 
-	        stmt.executeUpdate();	        
+	        stmt.executeUpdate();	
+	        stmt.close();
 	        
 	    } catch (SQLException e) {
 	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un cliente.\nConsultar la consola para más información.");
@@ -189,6 +224,7 @@ public class Modelo {
 	        stmt.setInt(2, cliente.getId());
 
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 	        
 	    } catch (SQLException e) {
@@ -211,6 +247,7 @@ public class Modelo {
 	        stmt.setInt(4, juego.getId());
 
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 	        
 	    } catch (SQLException e) {
@@ -232,6 +269,7 @@ public class Modelo {
 	        stmt.setInt(2, juego.getId());
 
 	        stmt.executeUpdate();
+	        stmt.close();
 	        
 	        
 	    } catch (SQLException e) {
@@ -247,6 +285,7 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void borrarDato(String id, String tabla) {
+		
 		String consulta = "DELETE FROM " + tabla + " WHERE id = ?;";
 		
 		try {		
@@ -254,36 +293,34 @@ public class Modelo {
 			stmt.setString(1, id);	
 			
 			stmt.executeUpdate();
+			stmt.close();
 			
 			
 		} catch (SQLException e) {
-			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al borrar un dato.\nConsultar la consola para más información.");
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al borrar un dato de la tabla " + tabla + ".\nConsultar la consola para más información.");
 		}
 	}
-
+	
+	
 	/**
-	 * Inserta una nueva partida en la base de datos.
-	 * @param cliente El cliente que participa en la partida. Debe tener un ID válido.
-	 * @param juego El juego en el que se realiza la partida. Debe tener un ID y un tipo ("Blackjack" o "Tragaperras").
-	 * @param resultadoApuesta Monto resultante de la apuesta (positivo si el cliente gana, negativo si pierde).
+	 * Método para borrar todos los datos de una tabla.
+	 * @param tabla Tabla a borrar su datos.
+	 * @since 3.0
 	 */
-	public void agregarPartida(Cliente cliente, Juego juego, double resultadoApuesta) {
-	    
-	    String consulta = "INSERT INTO partidas(id_cliente, id_juego, tipo_juego, resultado_apuesta, cliente_gana, fecha) "
-	                    + "VALUES (?, ?, ?, ?, ?, NOW())";
-	    
-	    try {
-	        PreparedStatement stmt = conexion.prepareStatement(consulta);
-	        stmt.setInt(1, cliente.getId());
-	        stmt.setInt(2, juego.getId());
-	        stmt.setString(3, juego.getTipo());
-	        stmt.setDouble(4, resultadoApuesta);
-	        stmt.setBoolean(5, resultadoApuesta > 0);
-	        
-	        stmt.executeUpdate();
-	        
-	    } catch (SQLException e) {
-	        mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al insertar una partida.\nConsultar la consola para más información.");
-	    }        
-	}	
+	public void borrarDatosTabla(String tabla) {
+		String consulta = "DELETE FROM " + tabla;
+		
+		try {
+			PreparedStatement stmt = conexion.prepareStatement(consulta);
+			stmt.executeUpdate();
+			stmt.close();
+			
+		} catch (SQLException e) {
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al borrar los datos de la tabla " + tabla + ".\nConsultar la consola para más información.");
+		}
+		
+		
+	}
+
+	
 }

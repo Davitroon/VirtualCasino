@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import Excepciones.ApuestaExcepcion;
 import ventanas.BlackjackVentana;
 import ventanas.Jugar;
 import ventanas.TragaperrasVentana;
