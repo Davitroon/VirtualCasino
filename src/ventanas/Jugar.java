@@ -8,6 +8,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import logica.ApuestaExcepcion;
 import logica.Blackjack;
 import logica.Cliente;
 import logica.Controlador;
@@ -73,6 +74,7 @@ public class Jugar extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 716, 435);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -167,7 +169,6 @@ public class Jugar extends JFrame {
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				menu.comprobarPartidas();
 				controlador.cambiarVentana(Jugar.this, menu);
 				btnJugar.setEnabled(false);
 			}
@@ -177,7 +178,6 @@ public class Jugar extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				menu.comprobarPartidas();
 				controlador.cambiarVentana(Jugar.this, menu);
 				btnJugar.setEnabled(false);
 			}
@@ -196,36 +196,37 @@ public class Jugar extends JFrame {
 		
 		// Clic boton jugar
 		btnJugar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {			
-				
-				ResultSet rsetCliente = modelo.consultarDatoUnico("clientes", Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString()) );
-				ResultSet rsetJuego = modelo.consultarDatoUnico("juegos", Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString()) );
-				
-				Cliente cliente = null;
-				Juego juego = null;
-				
-				try {
-					cliente = new Cliente (rsetCliente.getInt("id"), rsetCliente.getString("nombre"), rsetCliente.getDouble("saldo"));
-					
-					if (rsetJuego.getString("tipo").equals("Blackjack")) {
-						juego = new Blackjack (rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
-					
-					} else if (rsetJuego.getString("tipo").equals("Tragaperras")) {
-						juego = new Tragaperras (rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
-					}
-					
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-				
-				double apuesta = controlador.alertaApuesta(cliente, juego);		
-				
-				if (apuesta != 0) {					
-					controlador.abrirJuegoVentana(juego, Jugar.this, cliente, apuesta);
-					btnJugar.setEnabled(false);
-				}
+		    public void actionPerformed(ActionEvent e) {
 
-			}
+		        ResultSet rsetCliente = modelo.consultarDatoUnico("clientes", Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString()));
+		        ResultSet rsetJuego = modelo.consultarDatoUnico("juegos", Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString()));
+
+		        Cliente cliente = null;
+		        Juego juego = null;
+
+		        try {
+		            cliente = new Cliente(rsetCliente.getInt("id"), rsetCliente.getString("nombre"), rsetCliente.getDouble("saldo"));
+
+		            if (rsetJuego.getString("tipo").equals("Blackjack")) {
+		                juego = new Blackjack(rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
+		            } else if (rsetJuego.getString("tipo").equals("Tragaperras")) {
+		                juego = new Tragaperras(rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
+		            }
+
+		            double apuesta = controlador.alertaApuesta(cliente, juego);
+
+		            if (apuesta != 0) {
+		                controlador.abrirJuegoVentana(juego, Jugar.this, cliente, apuesta);
+		                btnJugar.setEnabled(false);
+		            }
+
+		        } catch (SQLException ex) {
+		            ex.printStackTrace();
+		            
+		        } catch (ApuestaExcepcion ex) {
+		            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
 		});
 		
 		

@@ -41,7 +41,7 @@ public class Tragaperras extends Juego {
 	 * @since 3.0
 	 */
 	public Tragaperras(int id, double dinero) {
-		super(id, dinero);
+		super(id, dinero, "Tragaperras");
 	}
 
 	

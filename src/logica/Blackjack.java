@@ -45,7 +45,7 @@ public class Blackjack extends Juego {
 	 * @since 3.0
 	 */
 	public Blackjack(int id, double dinero) {
-		super(id, dinero);
+		super(id, dinero, "Blackjack");
 	}
 
 	/**

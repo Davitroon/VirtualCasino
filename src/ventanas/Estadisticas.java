@@ -53,6 +53,7 @@ public class Estadisticas extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 682, 399);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -105,7 +106,7 @@ public class Estadisticas extends JFrame {
 		
 		JLabel lblDineroPerdido = new JLabel("Dinero perdido:");
 		lblDineroPerdido.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblDineroPerdido.setBounds(314, 162, 120, 24);
+		lblDineroPerdido.setBounds(314, 157, 120, 24);
 		contentPane.add(lblDineroPerdido);
 		
 		JLabel lblDineroGanado = new JLabel("Dinero ganado:");
@@ -150,7 +151,7 @@ public class Estadisticas extends JFrame {
 		
 		lblDineroPerdidoVal = new JLabel("lorem");
 		lblDineroPerdidoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
-		lblDineroPerdidoVal.setBounds(439, 167, 219, 14);
+		lblDineroPerdidoVal.setBounds(439, 163, 219, 14);
 		contentPane.add(lblDineroPerdidoVal);
 		
 		lblClienteSaldoVal = new JLabel("lorem");
@@ -189,55 +190,75 @@ public class Estadisticas extends JFrame {
 	
 	/**
 	 * Actualizar las estadisticas consultando a la BD.
+	 * Si una consulta no devuelve datos, lo marcará como null.
 	 */
 	public void actualizarDatos() {
-		ResultSet rset = null;
-		try {
-			// Partidas jugadas
-			rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas;");
-			lblPartidasJugadasVal.setText(rset.getString(1));
-			
-			// Partidas ganadas
-			rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = TRUE;");
-			lblPartidasGanadasVal.setText(rset.getString(1));
-			
-			// Partidas perdidas
-			rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = FALSE;");
-			lblPartidasPerdidasVal.setText(rset.getString(1));
-			
-			// Partidas blackjack
-			rset = modelo.consultaEspecifica("SELECT count(*) FROM partidas p JOIN juegos j ON (p.id_juego = j.id) WHERE j.tipo LIKE \"Blackjack\";");
-			lblPartidasBlackjackVal.setText(rset.getString(1));
-			
-			// Partidas tragaperras
-			rset = modelo.consultaEspecifica("SELECT count(*) FROM partidas p JOIN juegos j ON (p.id_juego = j.id) WHERE j.tipo LIKE \"Tragaperras\";");
-			lblPartidasTragaperrasVal.setText(rset.getString(1));
-			
-			// Dinero ganado
-			rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta > 0;");
-			lblDineroGanadoVal.setText(String.format("%.2f$", rset.getDouble(1)));
-			
-			// Dinero perdido
-			rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta < 0;");
-			lblDineroPerdidoVal.setText(String.format("%.2f$", rset.getDouble(1)));
-			
-			// Cliente con mas saldo
-			rset = modelo.consultaEspecifica("SELECT nombre, saldo FROM clientes ORDER BY saldo DESC LIMIT 1;");
-			lblClienteSaldoVal.setText(String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
-			
-			// Juego con mas dinero
-			rset = modelo.consultaEspecifica("SELECT id, dinero FROM juegos ORDER BY dinero DESC LIMIT 1;");
-			lblDineroJuegoVal.setText(String.format("Juego %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
-			
-			// Última partida jugada
-			rset = modelo.consultaEspecifica("SELECT fecha FROM partidas ORDER BY fecha DESC LIMIT 1;");
-			lblUltimaPartidaVal.setText(rset.getString(1));
-			
-			rset.close();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	    ResultSet rset = null;
+	    try {
+	        // Partidas jugadas
+	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas;");
+	        rset.next();
+	        lblPartidasJugadasVal.setText(rset.getString(1));
+
+	        // Partidas ganadas
+	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = TRUE;");
+	        rset.next();
+	        lblPartidasGanadasVal.setText(rset.getString(1));
+
+	        // Partidas perdidas
+	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = FALSE;");
+	        rset.next();
+	        lblPartidasPerdidasVal.setText(rset.getString(1));
+
+	        // Partidas blackjack
+	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE tipo_juego = 'Blackjack';");
+	        rset.next();
+	        lblPartidasBlackjackVal.setText(rset.getString(1));
+
+	        // Partidas tragaperras
+	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE tipo_juego = 'Tragaperras';");
+	        rset.next();
+	        lblPartidasTragaperrasVal.setText(rset.getString(1));
+
+	        // Dinero ganado
+	        rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta > 0;");
+	        rset.next();
+	        lblDineroGanadoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+
+	        // Dinero perdido
+	        rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta < 0;");
+	        rset.next();
+	        lblDineroPerdidoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+
+	        // Cliente con más saldo
+	        rset = modelo.consultaEspecifica("SELECT nombre, saldo FROM clientes ORDER BY saldo DESC LIMIT 1;");
+	        if (rset.next()) {
+	            lblClienteSaldoVal.setText(String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
+	        } else {
+	            lblClienteSaldoVal.setText("Null");
+	        }
+
+	        // Juego con más dinero
+	        rset = modelo.consultaEspecifica("SELECT id, dinero FROM juegos ORDER BY dinero DESC LIMIT 1;");
+	        if (rset.next()) {
+	            lblDineroJuegoVal.setText(String.format("Juego %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
+	        } else {
+	            lblDineroJuegoVal.setText("Null");
+	        }
+
+	        // Última partida jugada
+	        rset = modelo.consultaEspecifica("SELECT fecha FROM partidas ORDER BY fecha DESC LIMIT 1;");
+	        if (rset.next()) {
+	            lblUltimaPartidaVal.setText(rset.getString(1));
+	        } else {
+	            lblUltimaPartidaVal.setText("Null");
+	        }
+
+	        rset.close();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 
 }

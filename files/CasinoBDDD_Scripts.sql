@@ -22,11 +22,12 @@ CREATE TABLE partidas (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	id_cliente INT NOT NULL,
     id_juego INT NOT NULL,
+    tipo_juego ENUM("Blackjack", "Tragaperras") NOT NULL,
     resultado_apuesta DECIMAL(8,2) NOT NULL,
     cliente_gana BOOLEAN NOT NULL,
     fecha DATETIME,
-	FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE CASCADE,
-	FOREIGN KEY (id_juego) REFERENCES juegos(id) ON DELETE CASCADE
+	FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE SET NULL,
+	FOREIGN KEY (id_juego) REFERENCES juegos(id) ON DELETE SET NULL
 );
 
 

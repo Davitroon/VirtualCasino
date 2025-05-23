@@ -47,9 +47,10 @@ public abstract class Juego {
 	 * @param id
 	 * @param dinero
 	 */
-	public Juego(int id, double dinero) {
+	public Juego(int id, double dinero, String tipo) {
 		this.id = id;
 		this.dinero = dinero;
+		this.tipo = tipo;
 	}
 
 

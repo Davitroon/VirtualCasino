@@ -194,28 +194,33 @@ public class Controlador {
 	
 	
 	/**
-	 * Método para validar que una apuesta sea válida, devuelve un mensaje de error si no lo es.
-	 * @param apuestaTxt Cantidad de la apuesta
+	 * Método para validar que una apuesta sea válida. Lanza una excepción si no lo es.
+	 * @param apuestaTxt Cantidad de la apuesta como texto
 	 * @param saldoCliente Saldo del cliente
 	 * @param dineroJuego Dinero del juego
-	 * @return Mensaje de error si la apuesta no sirve, null si la apuesta es válida
+	 * @throws ApuestaExcepcion Si la apuesta no es válida
 	 */
-	public String validarApuesta (String apuestaTxt, double saldoCliente, double dineroJuego) {
-		
-		double apuesta = 0;
-		try {
-			apuesta = Double.parseDouble(apuestaTxt);
-			
-		} catch (NumberFormatException e) {
-			return "Ingresa una apuesta válida";
-		}	
-		
-		if (apuesta > saldoCliente) return "La apuesta es mayor que el saldo del cliente";
-		if (apuesta > dineroJuego) return "La apuesta es mayor que el dinero en el juego";
-		if (apuesta < apuestaMin) return "La apuesta mínima son " + apuestaMin;
-		if (apuesta > apuestaMax) return "La apuesta máxima son " + apuestaMax;
-		
-		return null;		
+	public void validarApuesta(String apuestaTxt, double saldoCliente, double dineroJuego) throws ApuestaExcepcion {
+	    double apuesta;
+	    
+	    try {
+	        apuesta = Double.parseDouble(apuestaTxt);
+	    } catch (NumberFormatException e) {
+	        throw new ApuestaExcepcion("Ingresa una apuesta válida");
+	    }
+	    
+	    if (apuesta > saldoCliente) {
+	        throw new ApuestaExcepcion("La apuesta es mayor que el saldo del cliente");
+	    }
+	    if (apuesta > dineroJuego) {
+	        throw new ApuestaExcepcion("La apuesta es mayor que el dinero en el juego");
+	    }
+	    if (apuesta < apuestaMin) {
+	        throw new ApuestaExcepcion("La apuesta mínima son " + apuestaMin);
+	    }
+	    if (apuesta > apuestaMax) {
+	        throw new ApuestaExcepcion("La apuesta máxima son " + apuestaMax);
+	    }
 	}
 	
 	
@@ -332,44 +337,39 @@ public class Controlador {
 	
 	
 	/**
-	 * Lanzar una ventana para ingresar una apuesta. Si el cliente o el juego tiene menos dinero que la apuesta mínima, no mostrará la ventana.
+	 * Lanza una excepción si no se puede apostar. Solicita al usuario una apuesta válida.
 	 * @param cliente Objeto cliente que jugará.
 	 * @param juego Objeto juego que jugará.
-	 * @return La apuesta ingresada, devuelve 0 si no es válida.
+	 * @return La apuesta ingresada, devuelve 0 si no es válida o se cancela.
+	 * @throws ApuestaExcepcion si el cliente o el juego no tienen suficiente dinero.
 	 * @since 3.0
 	 */
-	public double alertaApuesta(Cliente cliente, Juego juego) {
-		
-		// Cliente sin saldo suficiente
-		if (cliente.getSaldo() < apuestaMin ) {
-			JOptionPane.showMessageDialog(null, "Este cliente no puede jugar, tiene menos saldo que la apuesta mínima (" + apuestaMin + "$).", "Error", JOptionPane.ERROR_MESSAGE);
-			return 0;
+	public double alertaApuesta(Cliente cliente, Juego juego) throws ApuestaExcepcion {
+
+		    if (cliente.getSaldo() < apuestaMin) {
+		        throw new ApuestaExcepcion("Este cliente no puede jugar, tiene menos saldo que la apuesta mínima (" + apuestaMin + "$).");
+		    }
+
+		    if (juego.getDinero() < apuestaMin) {
+		        throw new ApuestaExcepcion("Este juego no puede jugar, tiene menos dinero que la apuesta mínima (" + apuestaMin + "$).");
+		    }
+
+		    while (true) {
+		        String apuestaNueva = JOptionPane.showInputDialog("Ingresa una apuesta");
+
+		        if (apuestaNueva == null) {
+		            return 0; // Usuario canceló
+		        }
+
+		        try {
+		            validarApuesta(apuestaNueva, cliente.getSaldo(), juego.getDinero());
+		            return Double.parseDouble(apuestaNueva);
+		            
+		        } catch (ApuestaExcepcion ex) {
+		            throw ex;
+		        }
+		    }
 		}
-		
-		// Juego sin dinero suficiente
-		if (juego.getDinero() < apuestaMin ) {
-			JOptionPane.showMessageDialog(null, "Este juego no puede jugar, tiene menos dinero que la apuesta mínima (" + apuestaMin + "$).", "Error", JOptionPane.ERROR_MESSAGE);
-			return 0;
-		}
-		
-		while (true) {
-			String apuestaNueva = JOptionPane.showInputDialog("Ingresa una apuesta");
-			// El usuario ha cerrado la ventana
-			if (apuestaNueva == null) {
-				return 0;
-			}
-			
-			String mensajeError = null;			
-			mensajeError = validarApuesta(apuestaNueva, cliente.getSaldo(), juego.getDinero());			
-			// El usuario ha ingresado un dato no válido
-			if (mensajeError != null) {
-				 JOptionPane.showMessageDialog(null, mensajeError, "Error", JOptionPane.ERROR_MESSAGE);
-				 
-			} else {				
-				return 	Double.parseDouble(apuestaNueva);		
-			}
-		}
-	}
 
 
 	/**
@@ -516,45 +516,23 @@ public class Controlador {
 	
 	
 	/**
-	 * Método que rellena la tabla de juegos en la ventana Gestion, con todos los campos
-	 * @param rset Resultado de la consulta a la BD.
-	 * @param modeloJuegos Tabla de juegos.
-	 */
-	public void rellenarTablaJuegosCompleto(ResultSet rset, DefaultTableModel modeloJuegos) {
-		try {
-			do {
-				// "ID", "Tipo", "Activo", "Dinero"
-		        Object[] juegoLista = new Object[4];
-		        juegoLista[0] = rset.getInt(1);
-		        juegoLista[1] = rset.getString(2);
-		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
-		        juegoLista[3] = rset.getDouble(4);
-		        
-		        modeloJuegos.addRow(juegoLista);
-			} while (rset.next());
-			
-		} catch (SQLException e) {	
-			e.printStackTrace();
-		}			
-	}
-	
-	
-	/**
 	 * Método que rellena la tabla de clientes en la ventana Gestion, con todos los campos
 	 * @param rset Resultado de la consulta a la BD.
 	 * @param modeloJuegos Tabla de juegos.
 	 */
-	public void rellenarTablaClientesCompleto(ResultSet rset, DefaultTableModel modeloJuegos) {
+	public void rellenarTablaClientesCompleto(ResultSet rset, DefaultTableModel modeloClientes) {
 		try {
 			do {
-				// "ID", "Tipo", "Activo", "Dinero"
-		        Object[] juegoLista = new Object[4];
-		        juegoLista[0] = rset.getInt(1);
-		        juegoLista[1] = rset.getString(2);
-		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
-		        juegoLista[3] = rset.getDouble(4);
+				// "ID", "Nombre", "Activo", "Saldo"
+		        Object[] clienteLista = new Object[6];
+		        clienteLista[0] = rset.getInt(1);
+		        clienteLista[1] = rset.getString(2);
+		        clienteLista[2] = rset.getInt(3);
+		        clienteLista[3] = rset.getString(4);
+		        clienteLista[4] = (rset.getBoolean(5) == true ? "SI" : "NO");
+		        clienteLista[5] = rset.getDouble(6);
 		        
-		        modeloJuegos.addRow(juegoLista);
+		        modeloClientes.addRow(clienteLista);
 			} while (rset.next());
 			
 		} catch (SQLException e) {	

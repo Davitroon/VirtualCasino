@@ -1,27 +1,25 @@
 package ventanas;
 
-import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logica.Blackjack;
+import logica.ApuestaExcepcion;
 import logica.Cliente;
 import logica.Controlador;
 import logica.Juego;
 import logica.Modelo;
 import logica.Tragaperras;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
 
 public class TragaperrasVentana extends JFrame {
 
@@ -60,6 +58,7 @@ public class TragaperrasVentana extends JFrame {
 		
 		setResizable(false);
 		setBounds(100, 100, 523, 421);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -148,6 +147,7 @@ public class TragaperrasVentana extends JFrame {
 		// Clic boton info
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Un String de 3 comillas permite dar formato al texto con saltos de linea y espacios.
 		        String mensaje = """
 		                ¿Cómo jugar a las Tragaperras?
 
@@ -171,43 +171,42 @@ public class TragaperrasVentana extends JFrame {
 	
 	
 	/**
-	 * Método para finalizar una partida de Blackjack, comparando la baraja del cliente y crupier y ajustando sus saldos en base a la apuesta.
-	 * @param clienteGana Verdadero si el cliente ha ganado y falso en el caso contrario.
+	 * Método para finalizar una partida de Tragaperras, ajustando los saldos en base al resultado.
 	 */
 	public void finJuego() {
-		double apuestaResultado = tragaperras.jugar(apuesta);
-		boolean irMensajeFinal;
-		partidaTerminada = true;
-		
-		controlador.actualizarSaldos(cliente, tragaperras, apuestaResultado, false);
-		btnTirar.setEnabled(false);
-		lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
-		lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
-		
-		String estadoFin = controlador.tragaperrasEstadoFin(cliente, tragaperras, apuestaResultado);
-		
-		do {
-			irMensajeFinal = false;
-			int eleccion = controlador.juegosEstadoFin(estadoFin);
-				
-			if (eleccion == 0) {
-				this.dispose();
-				jugar.setVisible(true);
-				break;
-			}
-			
-			if (eleccion == 1) {			
-				double apuestaNueva = controlador.alertaApuesta(cliente, tragaperras);				
-				if (apuestaNueva == 0) {
-					irMensajeFinal = true;
-					
-				} else {
-					apuesta = apuestaNueva;
-					irMensajeFinal = false;
-					iniciarJuego();
-				}
-			}
-		} while (irMensajeFinal);
+	    double apuestaResultado = tragaperras.jugar(apuesta);
+	    boolean irMensajeFinal;
+	    partidaTerminada = true;
+
+	    controlador.actualizarSaldos(cliente, tragaperras, apuestaResultado, false);
+	    btnTirar.setEnabled(false);
+	    lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
+	    lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
+
+	    String estadoFin = controlador.tragaperrasEstadoFin(cliente, tragaperras, apuestaResultado);
+
+	    do {
+	        irMensajeFinal = false;
+	        int eleccion = controlador.juegosEstadoFin(estadoFin);
+
+	        if (eleccion == 0) {
+	            this.dispose();
+	            jugar.setVisible(true);
+	            break;
+	        }
+
+	        if (eleccion == 1) {
+	            try {
+	                double apuestaNueva = controlador.alertaApuesta(cliente, tragaperras);
+	                apuesta = apuestaNueva;
+	                iniciarJuego();
+	                
+	            } catch (ApuestaExcepcion ex) {
+	                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	                irMensajeFinal = true; // Reintentar
+	            }
+	        }
+	    } while (irMensajeFinal);
 	}
 	
 	

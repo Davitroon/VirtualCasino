@@ -11,6 +11,8 @@ import logica.Controlador;
 import logica.Modelo;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -48,6 +50,7 @@ public class MenuPrincipal extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 530, 370);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -75,13 +78,7 @@ public class MenuPrincipal extends JFrame {
 		btnSalir.setBounds(193, 254, 124, 42);
 		contentPane.add(btnSalir);
 		
-		JButton btnLogros = new JButton("Logros");
-		btnLogros.setEnabled(false);
-		btnLogros.setBounds(437, 214, 65, 49);
-		contentPane.add(btnLogros);
-		
 		JButton btnNewButton = new JButton("Info");
-		btnNewButton.setEnabled(false);
 		btnNewButton.setBounds(437, 271, 65, 49);
 		contentPane.add(btnNewButton);
 		
@@ -124,25 +121,28 @@ public class MenuPrincipal extends JFrame {
 				System.exit(ABORT);
 			}
 		});
-	}
-	
-	/**
-	 * Método que comprueba si hay partidas registradas o no, para habilitar o deshabilitar el botón de Estadísticas.
-	 */
-	public void comprobarPartidas() {
-		ResultSet rset = modelo.consultarDatos("partidas", false);
 		
-		try {
-			if (!rset.next()) {
-				btnEstadisticas.setEnabled(false);
-				
-			} else {
-				btnEstadisticas.setEnabled(true);
+		// Clic botón info
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		        String mensaje = """
+		                ¿Que es esta aplicación?
+		                
+		                - Es un programa pensado para simular la gestión de un casino.
+		                - Podrás simular juegos reales de un casino en la pestaña de "Jugar"
+		               (Por ahora solo hay Blackjack y Tragaperras).
+		        		- Para jugar necesitarás crear Usuarios y Juegos, los cuales los podrás gestionar
+		        		en el apartado de "Gestión".
+		        		- Todas tus partidas serán guardadas en la base de datos, si eres curioso puedes
+		        		ver tus estadísticas en su ventana correspondiente.
+		        		
+		        		¡Experimenta y diviertete!
+		        		
+		        		~ Version: 3.0 ~               
+		                """;
+
+		        JOptionPane.showMessageDialog(null, mensaje, "Guía de la aplicación", JOptionPane.INFORMATION_MESSAGE);
 			}
-			rset.close();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		});
 	}
 }
