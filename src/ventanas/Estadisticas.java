@@ -69,6 +69,7 @@ public class Estadisticas extends JFrame {
 		contentPane.add(lblEstadisticas);
 		
 		JButton btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(538, 308, 120, 32);
 		contentPane.add(btnVolver);
 		

@@ -20,6 +20,7 @@ import logica.Cliente;
 import logica.Controlador;
 import logica.Juego;
 import logica.Modelo;
+import java.awt.Color;
 
 public class BlackjackVentana extends JFrame {
 
@@ -84,6 +85,7 @@ public class BlackjackVentana extends JFrame {
 		contentPane.add(lblTusCartas);
 		
 		btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(102, 305, 108, 38);
 		contentPane.add(btnVolver);
 		
@@ -98,10 +100,12 @@ public class BlackjackVentana extends JFrame {
 		contentPane.add(lblTusCartasList);
 		
 		btnPedir = new JButton("Pedir");
+		btnPedir.setBackground(new Color(0, 128, 64));
 		btnPedir.setBounds(338, 305, 108, 38);
 		contentPane.add(btnPedir);
 		
 		btnPlantarse = new JButton("Plantarse");
+		btnPlantarse.setBackground(new Color(255, 128, 128));
 		btnPlantarse.setBounds(220, 305, 108, 38);
 		contentPane.add(btnPlantarse);
 		
@@ -112,6 +116,7 @@ public class BlackjackVentana extends JFrame {
 		contentPane.add(lblApuestaActual);
 		
 		btnInfo = new JButton("?");
+		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(516, 305, 37, 38);
 		contentPane.add(btnInfo);
 		

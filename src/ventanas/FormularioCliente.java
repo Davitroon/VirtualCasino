@@ -135,11 +135,13 @@ public class FormularioCliente extends JFrame {
 		contentPane.add(lblGenero);
 		
 		btnAnadir = new JButton("Añadir");
+		btnAnadir.setBackground(new Color(128, 128, 255));
 		btnAnadir.setEnabled(false);
 		btnAnadir.setBounds(359, 295, 111, 32);
 		contentPane.add(btnAnadir);
 		
 		JButton btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(230, 295, 111, 32);
 		contentPane.add(btnVolver);
 		

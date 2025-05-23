@@ -89,11 +89,13 @@ public class FormularioJuegoEditar extends JFrame {
 		contentPane.add(lblEditarJuego);
 		
 		btnModificar = new JButton("Modificar");
+		btnModificar.setBackground(new Color(128, 128, 255));
 		btnModificar.setEnabled(false);
 		btnModificar.setBounds(286, 228, 111, 32);
 		contentPane.add(btnModificar);
 		
 		JButton btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(165, 228, 111, 32);
 		contentPane.add(btnVolver);
 		

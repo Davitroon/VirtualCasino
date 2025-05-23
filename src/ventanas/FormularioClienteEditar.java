@@ -145,10 +145,12 @@ public class FormularioClienteEditar extends JFrame {
 		contentPane.add(lblGenero);
 		
 		btnModificar = new JButton("Modificar");
+		btnModificar.setBackground(new Color(128, 128, 255));
 		btnModificar.setBounds(333, 307, 111, 32);
 		contentPane.add(btnModificar);
 		
 		JButton btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(202, 307, 111, 32);
 		contentPane.add(btnVolver);
 		

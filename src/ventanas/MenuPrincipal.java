@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 /**
  * Ventana del menú principal.
@@ -64,22 +65,27 @@ public class MenuPrincipal extends JFrame {
 		contentPane.add(lblTitulo);
 		
 		JButton btnJugar = new JButton("Jugar");
+		btnJugar.setBackground(new Color(128, 128, 255));
 		btnJugar.setBounds(193, 101, 124, 40);
 		contentPane.add(btnJugar);
 		
 		JButton btnAdministracion = new JButton("Administracion");
+		btnAdministracion.setBackground(new Color(128, 128, 255));
 		btnAdministracion.setBounds(193, 152, 124, 40);
 		contentPane.add(btnAdministracion);
 		
 		btnEstadisticas = new JButton("Estadisticas");
+		btnEstadisticas.setBackground(new Color(128, 128, 255));
 		btnEstadisticas.setBounds(193, 203, 124, 40);
 		contentPane.add(btnEstadisticas);
 		
 		JButton btnSalir = new JButton("Salir");
+		btnSalir.setBackground(new Color(128, 128, 128));
 		btnSalir.setBounds(193, 254, 124, 42);
 		contentPane.add(btnSalir);
 		
 		JButton btnNewButton = new JButton("Info");
+		btnNewButton.setBackground(new Color(128, 255, 255));
 		btnNewButton.setBounds(437, 271, 65, 49);
 		contentPane.add(btnNewButton);
 		

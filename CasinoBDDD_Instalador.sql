@@ -20,8 +20,8 @@ CREATE TABLE juegos (
 
 CREATE TABLE partidas (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	id_cliente INT NOT NULL,
-    id_juego INT NOT NULL,
+	id_cliente INT,
+    id_juego INT,
     tipo_juego ENUM("Blackjack", "Tragaperras") NOT NULL,
     resultado_apuesta DECIMAL(8,2) NOT NULL,
     cliente_gana BOOLEAN NOT NULL,

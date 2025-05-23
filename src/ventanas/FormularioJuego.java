@@ -86,11 +86,13 @@ public class FormularioJuego extends JFrame {
 		contentPane.add(lblAnadirJuego);
 		
 		btnAnadir = new JButton("Añadir");
+		btnAnadir.setBackground(new Color(128, 128, 255));
 		btnAnadir.setEnabled(false);
 		btnAnadir.setBounds(270, 228, 111, 32);
 		contentPane.add(btnAnadir);
 		
 		JButton btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(147, 228, 111, 32);
 		contentPane.add(btnVolver);
 		

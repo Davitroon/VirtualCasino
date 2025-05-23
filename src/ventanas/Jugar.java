@@ -35,6 +35,7 @@ import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 /**
  * Ventana para comenzar los juegos.
@@ -157,11 +158,13 @@ public class Jugar extends JFrame {
 		scrollPaneJuegos.setViewportView(tableJuegos);
 		
 		btnJugar = new JButton("Jugar");
+		btnJugar.setBackground(new Color(128, 128, 255));
 		btnJugar.setEnabled(false);
 		btnJugar.setBounds(577, 327, 103, 31);
 		contentPane.add(btnJugar);
 		
 		JButton btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(464, 327, 103, 31);
 		contentPane.add(btnVolver);
 		

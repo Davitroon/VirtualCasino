@@ -20,6 +20,7 @@ import logica.Controlador;
 import logica.Juego;
 import logica.Modelo;
 import logica.Tragaperras;
+import java.awt.Color;
 
 public class TragaperrasVentana extends JFrame {
 
@@ -73,10 +74,12 @@ public class TragaperrasVentana extends JFrame {
 		contentPane.add(lblTragaperras);
 		
 		btnTirar = new JButton("Tirar");
+		btnTirar.setBackground(new Color(0, 128, 64));
 		btnTirar.setBounds(264, 319, 108, 38);
 		contentPane.add(btnTirar);
 		
 		lblNum1 = new JLabel("0");
+		lblNum1.setBackground(new Color(0, 64, 0));
 		lblNum1.setFont(new Font("Cambria Math", Font.BOLD, 18));
 		lblNum1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNum1.setBounds(153, 118, 62, 38);
@@ -102,19 +105,21 @@ public class TragaperrasVentana extends JFrame {
 		
 		lblCliente = new JLabel("lorem");
 		lblCliente.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblCliente.setBounds(10, 203, 304, 21);
+		lblCliente.setBounds(10, 224, 304, 21);
 		contentPane.add(lblCliente);
 		
 		lblJuego = new JLabel("lorem");
 		lblJuego.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblJuego.setBounds(10, 235, 304, 21);
+		lblJuego.setBounds(10, 192, 304, 21);
 		contentPane.add(lblJuego);
 		
 		btnVolver = new JButton("Volver");
+		btnVolver.setBackground(new Color(128, 128, 128));
 		btnVolver.setBounds(132, 319, 108, 38);
 		contentPane.add(btnVolver);
 		
 		JButton btnInfo = new JButton("?");
+		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(462, 321, 37, 35);
 		contentPane.add(btnInfo);
 		

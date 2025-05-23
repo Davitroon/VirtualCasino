@@ -130,20 +130,24 @@ public class Gestion extends JFrame {
 		scrollPaneUsuarios.setViewportView(tableClientes);
 		
 		JButton btnAnadircliente = new JButton("Añadir cliente");
+		btnAnadircliente.setBackground(new Color(128, 128, 255));
 		btnAnadircliente.setBounds(60, 94, 132, 36);
 		panelUsuarios.add(btnAnadircliente);
 		
 		btnEditarCliente = new JButton("Editar cliente");
+		btnEditarCliente.setBackground(new Color(128, 128, 255));
 		btnEditarCliente.setEnabled(false);
 		btnEditarCliente.setBounds(60, 141, 132, 36);
 		panelUsuarios.add(btnEditarCliente);
 		
 		btnBorrarCliente = new JButton("Borrar cliente");
+		btnBorrarCliente.setBackground(new Color(128, 128, 255));
 		btnBorrarCliente.setEnabled(false);
 		btnBorrarCliente.setBounds(60, 188, 132, 36);
 		panelUsuarios.add(btnBorrarCliente);
 		
 		JButton btnVolverCliente = new JButton("Volver");
+		btnVolverCliente.setBackground(new Color(128, 128, 128));
 		btnVolverCliente.setBounds(60, 235, 132, 36);
 		panelUsuarios.add(btnVolverCliente);
 		
@@ -194,20 +198,24 @@ public class Gestion extends JFrame {
 		scrollPaneJuegos.setViewportView(tableJuegos);
 		
 		JButton btnAnadirJuego = new JButton("Añadir juego");
+		btnAnadirJuego.setBackground(new Color(128, 128, 255));
 		btnAnadirJuego.setBounds(60, 94, 132, 36);
 		panelJuegos.add(btnAnadirJuego);
 		
 		btnEditarJuego = new JButton("Editar juego");
+		btnEditarJuego.setBackground(new Color(128, 128, 255));
 		btnEditarJuego.setEnabled(false);
 		btnEditarJuego.setBounds(60, 141, 132, 36);
 		panelJuegos.add(btnEditarJuego);
 		
 		btnBorrarJuego = new JButton("Borrar juego");
+		btnBorrarJuego.setBackground(new Color(128, 128, 255));
 		btnBorrarJuego.setEnabled(false);
 		btnBorrarJuego.setBounds(60, 188, 132, 36);
 		panelJuegos.add(btnBorrarJuego);
 		
 		JButton btnVolverJuego = new JButton("Volver");
+		btnVolverJuego.setBackground(new Color(128, 128, 128));
 		btnVolverJuego.setBounds(60, 235, 132, 36);
 		panelJuegos.add(btnVolverJuego);				
 		
@@ -453,7 +461,7 @@ public class Gestion extends JFrame {
 	            
 			} else {
 				controlador.rellenarTablaJuegos(rset, modeloJuegos);
-				btnBorrarJuegos.setEnabled(false);
+				btnBorrarJuegos.setEnabled(true);
 			}
 			
 		} catch (SQLException e) {			

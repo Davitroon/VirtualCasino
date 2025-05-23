@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import Excepciones.ApuestaExcepcion;
@@ -32,6 +33,7 @@ public class Controlador {
 	
 	private Modelo modelo;
 	
+	private double ultimaApuesta;
 	
 	public Controlador(Modelo modelo) {
 		this.modelo = modelo;
@@ -355,19 +357,47 @@ public class Controlador {
 		        throw new ApuestaExcepcion("Este juego no puede jugar, tiene menos dinero que la apuesta mínima (" + apuestaMin + "$).");
 		    }
 
+		    // Mostrar ventana
 		    while (true) {
-		        String apuestaNueva = JOptionPane.showInputDialog("Ingresa una apuesta");
+		        JTextField campoApuesta = new JTextField();
+		        Object[] mensaje = {
+		            "Ingresa una apuesta:", campoApuesta
+		        };
 
-		        if (apuestaNueva == null) {
-		            return 0; // Usuario canceló
-		        }
+		        String[] opciones = {"Cancelar", "Repetir apuesta", "Aceptar"};
+		        int opcion = JOptionPane.showOptionDialog(null, mensaje, "Apuesta",
+		                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+		                null, opciones, opciones[0]);
 
-		        try {
-		            validarApuesta(apuestaNueva, cliente.getSaldo(), juego.getDinero());
-		            return Double.parseDouble(apuestaNueva);
+		        // Usuario canceló
+		        if (opcion == 0 || opcion == JOptionPane.CLOSED_OPTION) {
+		            return 0; 
+		         
+	            // Repetir apuesta   
+		        } else if (opcion == 1) {
+		            if (ultimaApuesta == 0) {
+		                JOptionPane.showMessageDialog(null, "No hay una apuesta previa.");
+		                continue;
+		            }
+
+		            try {
+		                validarApuesta(String.valueOf(ultimaApuesta), cliente.getSaldo(), juego.getDinero());
+		                return ultimaApuesta;
+		            } catch (ApuestaExcepcion ex) {
+		                throw ex;
+		            }
 		            
-		        } catch (ApuestaExcepcion ex) {
-		            throw ex;
+	            // Apuesta normal
+		        } else {
+		            String apuestaTexto = campoApuesta.getText();
+		            try {
+		                validarApuesta(apuestaTexto, cliente.getSaldo(), juego.getDinero());
+		                ultimaApuesta = Double.parseDouble(apuestaTexto);
+		                return ultimaApuesta;
+		                
+		            } catch (ApuestaExcepcion ex) {
+		                throw ex;
+		            }
 		        }
 		    }
 		}
