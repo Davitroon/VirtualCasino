@@ -1,5 +1,6 @@
 package ventanas;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,14 +15,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import Excepciones.ApuestaExcepcion;
+import excepciones.ApuestaExcepcion;
+import excepciones.JugarExcepcion;
 import logica.Cliente;
 import logica.Controlador;
 import logica.Juego;
 import logica.Modelo;
 import logica.Tragaperras;
-import java.awt.Color;
 
+/**
+ * Ventana donde se jugará a la Tragaperras.
+ */
 public class TragaperrasVentana extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -127,7 +131,7 @@ public class TragaperrasVentana extends JFrame {
 			// Al cerrar la ventana mediante la X
 			@Override
 			public void windowClosing(WindowEvent e) {
-				avisoCerrar();			
+				cerrarVentana();			
 			}
 		});		
 		
@@ -145,7 +149,7 @@ public class TragaperrasVentana extends JFrame {
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				avisoCerrar();
+				cerrarVentana();
 			}
 		});
 			
@@ -176,6 +180,30 @@ public class TragaperrasVentana extends JFrame {
 	
 	
 	/**
+	 * Método que llamará al controlador para mostrar un mensaje de aviso al intentar cerrar la ventana.
+	 */
+	public void cerrarVentana() {
+		if (!partidaTerminada) {
+			if (controlador.avisoCerrarJuego(cliente, tragaperras, apuesta)) {
+				dispose();
+				jugar.setVisible(true);
+			}					
+				
+		} else {
+			dispose();
+			jugar.setVisible(true);
+		}	
+		
+		try {
+			jugar.actualizarTablas();
+			
+		} catch (JugarExcepcion e) {
+			e.getMessage();
+		}
+	}
+	
+	
+	/**
 	 * Método para finalizar una partida de Tragaperras, ajustando los saldos en base al resultado.
 	 */
 	public void finJuego() {
@@ -195,8 +223,7 @@ public class TragaperrasVentana extends JFrame {
 	        int eleccion = controlador.juegosEstadoFin(estadoFin);
 
 	        if (eleccion == 0) {
-	            this.dispose();
-	            jugar.setVisible(true);
+	            cerrarVentana();
 	            break;
 	        }
 
@@ -226,22 +253,5 @@ public class TragaperrasVentana extends JFrame {
 		lblApuestaActual.setText(String.format("Apuesta actual: %.2f$", apuesta));
 		lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
 		lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
-	}
-	
-	
-	/**
-	 * Método que llamará al controlador para mostrar un mensaje de aviso al intentar cerrar la ventana.
-	 */
-	public void avisoCerrar() {
-		if (!partidaTerminada) {
-			if (controlador.avisoCerrarJuego(cliente, tragaperras, apuesta)) {
-				dispose();
-				jugar.setVisible(true);
-			}					
-				
-		} else {
-			dispose();
-			jugar.setVisible(true);
-		}	
 	}
 }

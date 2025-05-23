@@ -265,21 +265,6 @@ public class FormularioCliente extends JFrame {
 	
 	
 	/**
-	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
-	 * @since 3.0
-	 */
-	public void revisarFormulario() {
-		
-		if (edadValida && saldoValido && nombreValido && obtenerGenero() != 0) {
-			btnAnadir.setEnabled(true);
-
-		} else {
-			btnAnadir.setEnabled(false);
-		}	
-	}
-	
-	
-	/**
 	 * Método para limpiar todos los campos del formulario.
 	 * @since 3.0
 	 */
@@ -305,5 +290,20 @@ public class FormularioCliente extends JFrame {
 		if (rdbtnFemenino.isSelected()) return 'F';
 		if (rdbtnOtro.isSelected()) return 'O';
 		return 0;
+	}
+	
+	
+	/**
+	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * @since 3.0
+	 */
+	public void revisarFormulario() {
+		
+		if (edadValida && saldoValido && nombreValido && obtenerGenero() != 0) {
+			btnAnadir.setEnabled(true);
+
+		} else {
+			btnAnadir.setEnabled(false);
+		}	
 	}
 }

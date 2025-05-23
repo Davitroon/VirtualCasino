@@ -22,6 +22,17 @@ public class Tragaperras extends Juego {
 
 	
 	/**
+	 * Constructor de tragaperras de datos necesarios (para guardar en el juego).
+	 * @param id Id del juego
+	 * @param dinero Dinero del juego
+	 * @since 3.0
+	 */
+	public Tragaperras(int id, double dinero) {
+		super(id, dinero, "Tragaperras");
+	}
+	
+	
+	/**
 	 * Constructor completo (para ser editado) de la tragaperras, envia al constructor de Juego los parámetros.
 	 * @param id Id del juego
 	 * @param tipo Tipo del juego
@@ -32,19 +43,25 @@ public class Tragaperras extends Juego {
 	public Tragaperras(int id, String tipo, boolean activo, double dinero) {
 		super(id, tipo, activo, dinero);
 	}
-	
-	
-	/**
-	 * Constructor de tragaperras de datos necesarios (para guardar en el juego).
-	 * @param id Id del juego
-	 * @param dinero Dinero del juego
-	 * @since 3.0
-	 */
-	public Tragaperras(int id, double dinero) {
-		super(id, dinero, "Tragaperras");
-	}
 
 	
+	/**
+	 * Método que rellena las 3 casillas con un número al azar del 1 al 9.
+	 * @since 2.0
+	 */
+	public void generarNumeros() {	
+	
+		for (int i = 0; i < numeros.length; i++) {
+				numeros[i] = (int) Math.round(Math.random() * 8) + 1;		
+		}
+	}
+	
+	
+	public int[] getNumeros() {
+		return numeros;
+	}
+
+
 	/**
 	 * Comprueba el número de casillas que esten repetidas.<br>
 	 * - Si no hay ninguna, se pierde la apuesta.<br>
@@ -71,23 +88,6 @@ public class Tragaperras extends Juego {
 	    }
 	    
 	    return -apuesta;    
-	}
-	
-	
-	/**
-	 * Método que rellena las 3 casillas con un número al azar del 1 al 9.
-	 * @since 2.0
-	 */
-	public void generarNumeros() {	
-	
-		for (int i = 0; i < numeros.length; i++) {
-				numeros[i] = (int) Math.round(Math.random() * 8) + 1;		
-		}
-	}
-
-
-	public int[] getNumeros() {
-		return numeros;
 	}
 
 

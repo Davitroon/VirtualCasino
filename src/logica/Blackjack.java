@@ -26,6 +26,17 @@ public class Blackjack extends Juego {
 	
 	
 	/**
+	 * Constructor de blackjack de datos necesarios (para guardar en el juego).
+	 * @param id Id del juego
+	 * @param dinero Dinero del juego
+	 * @since 3.0
+	 */
+	public Blackjack(int id, double dinero) {
+		super(id, dinero, "Blackjack");
+	}
+
+	
+	/**
 	 * Constructor completo (para ser editado) del blackjack, envia al constructor de Juego los parámetros.
 	 * @param id Id del juego
 	 * @param tipo Tipo del juego
@@ -37,16 +48,71 @@ public class Blackjack extends Juego {
 		super(id, tipo, activo, dinero);
 	}
 
+	/**
+	 * Baraja las cartas. Primero vacia todos los mazos de cartas, luego rellena el mazo de cartas total y finalmente las mezcla.
+	 */
+	public void barajarCartas() {		
+
+		cartasTotales.clear();
+		cartasCliente.clear();
+		cartasCrupier.clear();
+		
+		for (int i = 1; i < 14; i++) {
+            for (int j = 0; j < 4; j++) {
+            	cartasTotales.add(i);
+            }
+        }   
+        
+        Collections.shuffle(cartasTotales);
+	}
+	
+
+	/**
+	 * Indica si el crupier debería pedir carta en situaciones diferentes.
+	 * @return Pide carta o no.
+	 */
+	public boolean crupierDebePedir() {
+		
+		int sumaCrupier = sumarCartas(cartasCrupier);
+		int sumaCliente = sumarCartas(cartasCliente);
+		
+		// Si sus cartas suman menos de 16, debe pedir sí o sí.
+		if (sumaCrupier < 16) {
+			return true;
+		
+		// Si tiene mas puntos que el cliente y no se pasa de 21, se planta.
+		} else if (sumaCrupier > sumaCliente && sumaCrupier < 22) {
+			return false;
+		
+		// Tiene menos puntos que el cliente y mas de 16, debe pedir para ganarle.
+		} else {
+			return true;
+		}
+	}
+	
+
+	public ArrayList<Integer> getCartasCliente() {
+		return cartasCliente;
+	}
+
+
+	public ArrayList<Integer> getCartasCrupier() {
+		return cartasCrupier;
+	}
+	
 	
 	/**
-	 * Constructor de blackjack de datos necesarios (para guardar en el juego).
-	 * @param id Id del juego
-	 * @param dinero Dinero del juego
-	 * @since 3.0
+	 * Comprueba si el jugador se ha pasado de 21.
+	 * @param jugador Jugador a comprobar.
+	 * @return Se ha pasado de 21 o no.
 	 */
-	public Blackjack(int id, double dinero) {
-		super(id, dinero, "Blackjack");
+	public boolean jugadorPierde(String jugador) {
+
+	    ArrayList<Integer> listaCartas = jugador.equalsIgnoreCase("cliente") ? cartasCliente : cartasCrupier;
+	    
+	    return sumarCartas(listaCartas) > 21;
 	}
+
 
 	/**
 	 * Compara la suma de las cartas del cliente y del crupier.<br>
@@ -91,48 +157,32 @@ public class Blackjack extends Juego {
 	  
 	}
 	
-
-	/**
-	 * Baraja las cartas. Primero vacia todos los mazos de cartas, luego rellena el mazo de cartas total y finalmente las mezcla.
-	 */
-	public void barajarCartas() {		
-
-		cartasTotales.clear();
-		cartasCliente.clear();
-		cartasCrupier.clear();
-		
-		for (int i = 1; i < 14; i++) {
-            for (int j = 0; j < 4; j++) {
-            	cartasTotales.add(i);
-            }
-        }   
-        
-        Collections.shuffle(cartasTotales);
-	}
 	
-
 	/**
-	 * Reparte un numero de cartas al jugador indicado, eliminando las cartas del mazo total.
-	 * @param numCartas Número de cartas a repartir.
-	 * @param jugador Jugador al que se le repartirá.
+	 * Lee una carta para traducirla a la baraja francesa.
+	 * @param carta Carta a leer.
+	 * @return Carta traducida.
 	 */
-	public void repartirCartas(int numCartas, String jugador) {
-	
+	private String leerCarta(Integer carta) {
 		
-		if (jugador.equalsIgnoreCase("cliente")) {
-			for (int i = 0; i < numCartas; i++) {
-				cartasCliente.add(cartasTotales.getFirst());
-				cartasTotales.removeFirst();
-			}
+		switch (carta) {
+		case 1:
+			return "A";
+		
+		case 11:
+			return "J";
 			
-		} else if (jugador.equalsIgnoreCase("crupier")) {
-			for (int i = 0; i < numCartas; i++) {
-				cartasCrupier.add(cartasTotales.getFirst());
-				cartasTotales.removeFirst();
-			}
-		}	
+		case 12:
+			return "Q";
+			
+		case 13:
+			return "K";
+			
+		default :
+			return String.valueOf(carta);			
+		}
 	}
-
+	
 
 	/**
 	 * Muestra las cartas de cada jugador.
@@ -162,46 +212,29 @@ public class Blackjack extends Juego {
 		
 		return cartas;
 	}
-	
-	
-	/**
-	 * Lee una carta para traducirla a la baraja francesa.
-	 * @param carta Carta a leer.
-	 * @return Carta traducida.
-	 */
-	private String leerCarta(Integer carta) {
-		
-		switch (carta) {
-		case 1:
-			return "A";
-		
-		case 11:
-			return "J";
-			
-		case 12:
-			return "Q";
-			
-		case 13:
-			return "K";
-			
-		default :
-			return String.valueOf(carta);			
-		}
-	}
 
 
 	/**
-	 * Comprueba si el jugador se ha pasado de 21.
-	 * @param jugador Jugador a comprobar.
-	 * @return Se ha pasado de 21 o no.
+	 * Reparte un numero de cartas al jugador indicado, eliminando las cartas del mazo total.
+	 * @param numCartas Número de cartas a repartir.
+	 * @param jugador Jugador al que se le repartirá.
 	 */
-	public boolean jugadorPierde(String jugador) {
-
-	    ArrayList<Integer> listaCartas = jugador.equalsIgnoreCase("cliente") ? cartasCliente : cartasCrupier;
-	    
-	    return sumarCartas(listaCartas) > 21;
-	}
+	public void repartirCartas(int numCartas, String jugador) {
 	
+		
+		if (jugador.equalsIgnoreCase("cliente")) {
+			for (int i = 0; i < numCartas; i++) {
+				cartasCliente.add(cartasTotales.getFirst());
+				cartasTotales.removeFirst();
+			}
+			
+		} else if (jugador.equalsIgnoreCase("crupier")) {
+			for (int i = 0; i < numCartas; i++) {
+				cartasCrupier.add(cartasTotales.getFirst());
+				cartasTotales.removeFirst();
+			}
+		}	
+	}
 	
 	/**
 	 * Suma el valor de las cartas de cada jugador.
@@ -235,39 +268,6 @@ public class Blackjack extends Juego {
 		}
 		
 		return suma;
-	}
-	
-
-	/**
-	 * Indica si el crupier debería pedir carta en situaciones diferentes.
-	 * @return Pide carta o no.
-	 */
-	public boolean crupierDebePedir() {
-		
-		int sumaCrupier = sumarCartas(cartasCrupier);
-		int sumaCliente = sumarCartas(cartasCliente);
-		
-		// Si sus cartas suman menos de 16, debe pedir sí o sí.
-		if (sumaCrupier < 16) {
-			return true;
-		
-		// Si tiene mas puntos que el cliente y no se pasa de 21, se planta.
-		} else if (sumaCrupier > sumaCliente && sumaCrupier < 22) {
-			return false;
-		
-		// Tiene menos puntos que el cliente y mas de 16, debe pedir para ganarle.
-		} else {
-			return true;
-		}
-	}
-
-
-	public ArrayList<Integer> getCartasCliente() {
-		return cartasCliente;
-	}
-	
-	public ArrayList<Integer> getCartasCrupier() {
-		return cartasCrupier;
 	}
 }
 

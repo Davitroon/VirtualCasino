@@ -1,5 +1,6 @@
 package ventanas;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,14 +15,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import Excepciones.ApuestaExcepcion;
+import excepciones.ApuestaExcepcion;
+import excepciones.JugarExcepcion;
 import logica.Blackjack;
 import logica.Cliente;
 import logica.Controlador;
 import logica.Juego;
 import logica.Modelo;
-import java.awt.Color;
 
+/**
+ * Ventana donde se jugará al Blackjack.
+ */
 public class BlackjackVentana extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -120,11 +124,11 @@ public class BlackjackVentana extends JFrame {
 		btnInfo.setBounds(516, 305, 37, 38);
 		contentPane.add(btnInfo);
 		
+		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {
-			// Al cerrar la ventana mediante la X
 			@Override
 			public void windowClosing(WindowEvent e) {
-				avisoCerrar();
+				cerrarVentana();
 			}		
 		});
 		
@@ -132,7 +136,7 @@ public class BlackjackVentana extends JFrame {
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				avisoCerrar();	
+				cerrarVentana();	
 			}
 		});
 		
@@ -184,6 +188,39 @@ public class BlackjackVentana extends JFrame {
 	
 	
 	/**
+	 * Actualizar la lista de cartas del crupier.
+	 * @param cartas Sus cartas.
+	 * @param suma La suma de sus cartas.
+	 */
+	public void actualizarCartasCrupier(String cartas, int suma) {
+	    lblCartasCrupierList.setText(cartas + " (" + suma + ")");
+	}
+	
+	/**
+	 * Método que llamará al controlador para mostrar un mensaje de aviso al intentar cerrar la ventana.
+	 */
+	public void cerrarVentana() {
+		if (!partidaTerminada) {
+			if (controlador.avisoCerrarJuego(cliente, blackjack, apuesta)) {
+				dispose();
+				jugar.setVisible(true);
+			}					
+				
+		} else {
+			dispose();
+			jugar.setVisible(true);
+		}	
+		
+		try {
+			jugar.actualizarTablas();
+			
+		} catch (JugarExcepcion e) {
+			e.getMessage();
+		}
+	}
+	
+	
+	/**
 	 * Método para finalizar una partida de Blackjack, comparando la baraja del cliente y crupier y ajustando sus saldos en base a la apuesta.
 	 * @param clienteGana Verdadero si el cliente ha ganado y falso en el caso contrario.
 	 */
@@ -210,8 +247,7 @@ public class BlackjackVentana extends JFrame {
 	        int eleccion = controlador.juegosEstadoFin(estadoFin);
 
 	        if (eleccion == 0) {
-	            this.dispose();
-	            jugar.setVisible(true);
+	            cerrarVentana();
 	            break;
 	        }
 
@@ -228,6 +264,7 @@ public class BlackjackVentana extends JFrame {
 	        }
 	    } while (irMensajeFinal);
 	}
+	
 	
 	/**
 	 * Método para iniciar una partida de Blackjack. Se reparten las cartas a cada jugador y se muestran. Si el jugador saca 21, gana automaticamente.
@@ -249,32 +286,5 @@ public class BlackjackVentana extends JFrame {
 		
 		if (barajaCliente == 21) finJuego(true);
 		if (barajaCrupier == 21) finJuego(false);
-	}
-	
-	
-	/**
-	 * Actualizar la lista de cartas del crupier.
-	 * @param cartas Sus cartas.
-	 * @param suma La suma de sus cartas.
-	 */
-	public void actualizarCartasCrupier(String cartas, int suma) {
-	    lblCartasCrupierList.setText(cartas + " (" + suma + ")");
-	}
-	
-	
-	/**
-	 * Método que llamará al controlador para mostrar un mensaje de aviso al intentar cerrar la ventana.
-	 */
-	public void avisoCerrar() {
-		if (!partidaTerminada) {
-			if (controlador.avisoCerrarJuego(cliente, blackjack, apuesta)) {
-				dispose();
-				jugar.setVisible(true);
-			}					
-				
-		} else {
-			dispose();
-			jugar.setVisible(true);
-		}	
 	}
 }

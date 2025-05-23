@@ -1,37 +1,33 @@
 package ventanas;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTabbedPane;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
-
-import logica.*;
-
+import java.awt.Color;
 import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.Component;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Vector;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import logica.Controlador;
+import logica.Modelo;
 
 /**
  * Ventana para la gestión de usuarios y juegos.
@@ -182,12 +178,12 @@ public class Gestion extends JFrame {
 				Class[] columnTypes = new Class[] {
 					Integer.class, String.class, String.class, Double.class
 				};
-				public Class getColumnClass(int columnIndex) {
-					return columnTypes[columnIndex];
-				}
 				boolean[] columnEditables = new boolean[] {
 					false, false, false, false
 				};
+				public Class getColumnClass(int columnIndex) {
+					return columnTypes[columnIndex];
+				}
 				public boolean isCellEditable(int row, int column) {
 					return columnEditables[column];
 				}

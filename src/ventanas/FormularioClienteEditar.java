@@ -1,35 +1,30 @@
 package ventanas;
 
-import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import logica.Cliente;
 import logica.Controlador;
 import logica.Modelo;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.JRadioButton;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.ButtonGroup;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 /**
  * Ventana para el formulario de editar clientes.
@@ -291,50 +286,6 @@ public class FormularioClienteEditar extends JFrame {
 	
 	
 	/**
-	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
-	 * @since 3.0
-	 */
-	public void revisarFormulario() {
-		
-		if (edadValida && saldoValido && nombreValido && obtenerGenero() != 0) {
-			btnModificar.setEnabled(true);
-
-		} else {
-			btnModificar.setEnabled(false);
-		}	
-	}
-	
-	
-	/**
-	 * Método para limpiar todos los campos del formulario.
-	 * @since 3.0
-	 */
-	public void limpiarCampos() {
-		btnModificar.setEnabled(false);
-		buttonGroup.clearSelection();
-		textNombre.setText("");
-		textEdad.setText("");
-		textSaldo.setText("");
-		lblErrorNombre.setText("");
-		lblErrorEdad.setText("");
-		lblErrorSaldo.setText("");
-	}
-	
-	
-	/**
-	 * Método para obtener el género en base al radio button seleccionado.
-	 * @return Género en formato char.
-	 * @since 3.0
-	 */
-	public char obtenerGenero() {
-		if (rdbtnMasculino.isSelected()) return 'M';
-		if (rdbtnFemenino.isSelected()) return 'F';
-		if (rdbtnOtro.isSelected()) return 'O';
-		return 0;
-	}
-	
-	
-	/**
 	 * Método para rellenar los campos del formulario con los datos del cliente que se vaya a modificar.
 	 * @param id Id del cliente a consultar por sus datos
 	 * @since 3.0
@@ -372,5 +323,49 @@ public class FormularioClienteEditar extends JFrame {
 	    saldoValido = true;
 	    nombreValido = true;
 	    revisarFormulario();
+	}
+	
+	
+	/**
+	 * Método para limpiar todos los campos del formulario.
+	 * @since 3.0
+	 */
+	public void limpiarCampos() {
+		btnModificar.setEnabled(false);
+		buttonGroup.clearSelection();
+		textNombre.setText("");
+		textEdad.setText("");
+		textSaldo.setText("");
+		lblErrorNombre.setText("");
+		lblErrorEdad.setText("");
+		lblErrorSaldo.setText("");
+	}
+	
+	
+	/**
+	 * Método para obtener el género en base al radio button seleccionado.
+	 * @return Género en formato char.
+	 * @since 3.0
+	 */
+	public char obtenerGenero() {
+		if (rdbtnMasculino.isSelected()) return 'M';
+		if (rdbtnFemenino.isSelected()) return 'F';
+		if (rdbtnOtro.isSelected()) return 'O';
+		return 0;
+	}
+	
+	
+	/**
+	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * @since 3.0
+	 */
+	public void revisarFormulario() {
+		
+		if (edadValida && saldoValido && nombreValido && obtenerGenero() != 0) {
+			btnModificar.setEnabled(true);
+
+		} else {
+			btnModificar.setEnabled(false);
+		}	
 	}
 }

@@ -1,38 +1,29 @@
 package ventanas;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import logica.*;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.JRadioButton;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
-import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
-
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import javax.swing.JList;
-import javax.swing.AbstractListModel;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.JComboBox;
+
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import logica.Blackjack;
+import logica.Controlador;
+import logica.Modelo;
+import logica.Tragaperras;
 
 /**
  * Ventana para el formulario de juegos.
@@ -179,6 +170,18 @@ public class FormularioJuego extends JFrame {
 	
 	
 	/**
+	 * Método para limpiar todos los campos del formulario.
+	 * @since 3.0
+	 */
+	public void limpiarCampos() {
+		btnAnadir.setEnabled(false);
+		textDinero.setText("");
+		comboTipo.setSelectedIndex(0);
+		lblErrorDinero.setText("");
+	}
+	
+	
+	/**
 	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
 	 * @since 3.0
 	 */
@@ -189,17 +192,5 @@ public class FormularioJuego extends JFrame {
 		}
 		
 		btnAnadir.setEnabled(false);
-	}
-	
-	
-	/**
-	 * Método para limpiar todos los campos del formulario.
-	 * @since 3.0
-	 */
-	public void limpiarCampos() {
-		btnAnadir.setEnabled(false);
-		textDinero.setText("");
-		comboTipo.setSelectedIndex(0);
-		lblErrorDinero.setText("");
 	}
 }

@@ -3,12 +3,11 @@ package logica;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
-import Excepciones.MensajeExcepcion;
+import excepciones.MensajeExcepcion;
 import ventanas.MenuPrincipal;
 
 /**
