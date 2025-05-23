@@ -229,6 +229,9 @@ public class BlackjackVentana extends JFrame {
 	    double apuestaResultado = blackjack.jugar(apuesta);
 	    boolean irMensajeFinal;
 	    partidaTerminada = true;
+	    
+	    // Si la apuesta es mayor que el saldo del juego, se pone directamente el dinero del juego
+	    if (blackjack.getDinero() < apuestaResultado) apuestaResultado = blackjack.getDinero();
 
 	    controlador.actualizarSaldos(cliente, blackjack, apuestaResultado, false);
 

@@ -210,6 +210,9 @@ public class TragaperrasVentana extends JFrame {
 	    double apuestaResultado = tragaperras.jugar(apuesta);
 	    boolean irMensajeFinal;
 	    partidaTerminada = true;
+	    
+	    // Si la apuesta es mayor que el saldo del juego, se pone directamente el dinero del juego
+	    if (tragaperras.getDinero() < apuestaResultado) apuestaResultado = tragaperras.getDinero();
 
 	    controlador.actualizarSaldos(cliente, tragaperras, apuestaResultado, false);
 	    btnTirar.setEnabled(false);
