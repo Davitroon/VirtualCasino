@@ -50,7 +50,6 @@ public class Modelo {
 		
 		String consulta = "SELECT * FROM " + tabla;	
 		ResultSet rset = null;
-		 
 		if (soloActivos) consulta += " WHERE activo = 1";
 		
 		try {
@@ -248,7 +247,6 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void borrarDato(String id, String tabla) {
-		
 		String consulta = "DELETE FROM " + tabla + " WHERE id = ?;";
 		
 		try {		
