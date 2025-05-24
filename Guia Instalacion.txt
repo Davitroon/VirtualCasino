@@ -1,0 +1,13 @@
+- GUIA DE INSTALACIÓN -
+
+Gracias por descargar mi programa.
+Para abrirlo, tendrás que seguir estos pasos:
+
+- Instalar MySQL
+- Ejecutar el script dentro del archivo CasinoBDDD_Instalador
+- Instalar Eclipse
+- Importar el proyecto
+- Ajustar el Class Path en las propiedades del proyecto para que tenga la dependencia dentro de la carpeta lib
+- En la clase Modelo, poner tu nombre y contraseña de MySQL
+- Ejecutar la clase Lanzador 
+
