@@ -6,7 +6,12 @@ package excepciones;
  */
 public class JugarExcepcion extends Exception {
 	
-    public JugarExcepcion(String mensaje) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -633752982384900116L;
+
+	public JugarExcepcion(String mensaje) {
         super(mensaje);
     }
 }

@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import excepciones.JugarExcepcion;
 import logica.Controlador;
 import logica.Modelo;
+import logica.Validador;
 
 /**
  * Ventana del menú principal.
@@ -31,8 +32,6 @@ public class MenuPrincipal extends JFrame {
 	private Jugar jugar;
 	private Estadisticas estadisticas;
 	
-	private Modelo modelo;
-	private Controlador controlador;
 	private JButton btnEstadisticas;
 
 	/**
@@ -40,9 +39,7 @@ public class MenuPrincipal extends JFrame {
 	 * @param controlador 
 	 * @param modelo 
 	 */
-	public MenuPrincipal(Modelo modelo, Controlador controlador) {
-		this.modelo = modelo;
-		this.controlador = controlador;
+	public MenuPrincipal(Modelo modelo, Controlador controlador, Validador validador) {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,13 +73,13 @@ public class MenuPrincipal extends JFrame {
 		
 		JButton btnSalir = new JButton("Salir");
 		btnSalir.setBackground(new Color(128, 128, 128));
-		btnSalir.setBounds(193, 254, 124, 42);
+		btnSalir.setBounds(10, 284, 105, 32);
 		contentPane.add(btnSalir);
 		
-		JButton btnNewButton = new JButton("Info");
-		btnNewButton.setBackground(new Color(128, 255, 255));
-		btnNewButton.setBounds(437, 271, 65, 49);
-		contentPane.add(btnNewButton);
+		JButton btnInfo = new JButton("?");
+		btnInfo.setBackground(new Color(128, 255, 255));
+		btnInfo.setBounds(465, 288, 37, 32);
+		contentPane.add(btnInfo);
 		
 		// Clic boton jugar
 		btnJugar.addActionListener(new ActionListener() {
@@ -105,7 +102,7 @@ public class MenuPrincipal extends JFrame {
 		btnAdministracion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (gestion == null) {
-					gestion = new Gestion(MenuPrincipal.this, modelo, controlador);
+					gestion = new Gestion(MenuPrincipal.this, modelo, controlador, validador);
 				}			
 				controlador.cambiarVentana(MenuPrincipal.this, gestion);
 				
@@ -132,7 +129,7 @@ public class MenuPrincipal extends JFrame {
 		});
 		
 		// Clic botón info
-		btnNewButton.addActionListener(new ActionListener() {
+		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		        String mensaje = """
 		                ¿Que es esta aplicación?

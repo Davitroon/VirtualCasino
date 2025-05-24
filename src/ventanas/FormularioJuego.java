@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,6 +23,7 @@ import logica.Blackjack;
 import logica.Controlador;
 import logica.Modelo;
 import logica.Tragaperras;
+import logica.Validador;
 
 /**
  * Ventana para el formulario de juegos.
@@ -34,20 +34,14 @@ public class FormularioJuego extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
 	
-	private Gestion gestion;
-	private Controlador controlador;
 	private JTextField textDinero;
 	
 	private boolean dineroValido;
 	private JButton btnAnadir;
 	
-	private Modelo modelo;
-	
-
 	private JLabel lblErrorDinero;
-	private JComboBox comboTipo;
+	private JComboBox<Object> comboTipo;
 	
 
 	/**
@@ -56,10 +50,7 @@ public class FormularioJuego extends JFrame {
 	 * @param gestion2 
 	 * @since 3.0
 	 */
-	public FormularioJuego(Gestion gestion, Controlador controlador, Modelo modelo) {
-		
-		this.gestion = gestion;		this.controlador = controlador;
-		this.modelo = modelo;
+	public FormularioJuego(Gestion gestion, Controlador controlador, Modelo modelo, Validador validador) {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);	
@@ -84,7 +75,7 @@ public class FormularioJuego extends JFrame {
 		
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(147, 228, 111, 32);
+		btnVolver.setBounds(20, 228, 111, 32);
 		contentPane.add(btnVolver);
 		
 		JLabel lblTipo = new JLabel("Tipo");
@@ -108,8 +99,8 @@ public class FormularioJuego extends JFrame {
 		lblErrorDinero.setBounds(36, 172, 233, 14);
 		contentPane.add(lblErrorDinero);
 		
-		comboTipo = new JComboBox();
-		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Blackjack", "Tragaperras"}));
+		comboTipo = new JComboBox<Object>();
+		comboTipo.setModel(new DefaultComboBoxModel<Object>(new String[] {"Blackjack", "Tragaperras"}));
 		comboTipo.setBounds(97, 80, 111, 22);
 		contentPane.add(comboTipo);		
 		
@@ -120,7 +111,7 @@ public class FormularioJuego extends JFrame {
 				dineroValido = false;				
 				String texto = textDinero.getText();
 				
-				if (controlador.validarDineroJuego(texto, lblErrorDinero)) {
+				if (validador.validarDineroJuego(texto, lblErrorDinero)) {
 					dineroValido = true;
 				}
 				

@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 
 import logica.Controlador;
 import logica.Modelo;
+import logica.Validador;
 
 /**
  * Ventana para la gestión de usuarios y juegos.
@@ -43,7 +44,6 @@ public class Gestion extends JFrame {
 	private DefaultTableModel modeloClientes;
 	private DefaultTableModel modeloJuegos;
 	
-	private MenuPrincipal menu;
 	private FormularioCliente formularioCliente;
 	private FormularioClienteEditar formularioClienteEditar;
 	private FormularioJuego formularioJuego;
@@ -65,10 +65,9 @@ public class Gestion extends JFrame {
 	 * @param modelo 
 	 * @param controlador2 
 	 */
-	public Gestion(MenuPrincipal menu, Modelo modelo, Controlador controlador) {
+	public Gestion(MenuPrincipal menu, Modelo modelo, Controlador controlador, Validador validador) {
 		setResizable(false);
 		
-		this.menu = menu;
 		this.modelo = modelo;
 		this.controlador = controlador;
 		
@@ -105,13 +104,18 @@ public class Gestion extends JFrame {
 					"ID", "Nombre", "Edad", "Género", "Activo", "Saldo"
 				}
 			) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1602146996076819230L; // Los SerialId y SupressWarnings los esta poniendo eclipse, no quiero que salgan advertencias
+				@SuppressWarnings("rawtypes")
 				Class[] columnTypes = new Class[] {
 					Integer.class, String.class, Integer.class, Character.class, String.class, Double.class
 				};
 			    boolean[] columnEditables = new boolean[] {
 			            false, false, false, false, false, false  // todas las columnas NO editables
 		        };
-				public Class getColumnClass(int columnIndex) {
+				public Class<?> getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
 			    @Override
@@ -137,7 +141,8 @@ public class Gestion extends JFrame {
 		panelUsuarios.add(btnEditarCliente);
 		
 		btnBorrarCliente = new JButton("Borrar cliente");
-		btnBorrarCliente.setBackground(new Color(128, 128, 255));
+		btnBorrarCliente.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnBorrarCliente.setBackground(new Color(242, 77, 77));
 		btnBorrarCliente.setEnabled(false);
 		btnBorrarCliente.setBounds(60, 188, 132, 36);
 		panelUsuarios.add(btnBorrarCliente);
@@ -175,13 +180,18 @@ public class Gestion extends JFrame {
 					"ID", "Tipo", "Activo", "Dinero"
 				}
 			) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -1612780249715316697L;
+				@SuppressWarnings("rawtypes")
 				Class[] columnTypes = new Class[] {
 					Integer.class, String.class, String.class, Double.class
 				};
 				boolean[] columnEditables = new boolean[] {
 					false, false, false, false
 				};
-				public Class getColumnClass(int columnIndex) {
+				public Class<?> getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
 				public boolean isCellEditable(int row, int column) {
@@ -205,7 +215,8 @@ public class Gestion extends JFrame {
 		panelJuegos.add(btnEditarJuego);
 		
 		btnBorrarJuego = new JButton("Borrar juego");
-		btnBorrarJuego.setBackground(new Color(128, 128, 255));
+		btnBorrarJuego.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnBorrarJuego.setBackground(new Color(242, 77, 77));
 		btnBorrarJuego.setEnabled(false);
 		btnBorrarJuego.setBounds(60, 188, 132, 36);
 		panelJuegos.add(btnBorrarJuego);
@@ -264,7 +275,7 @@ public class Gestion extends JFrame {
 		btnAnadircliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (formularioCliente == null) {
-					formularioCliente  = new FormularioCliente(Gestion.this, controlador, modelo);
+					formularioCliente  = new FormularioCliente(Gestion.this, controlador, modelo, validador);
 				}
 				
 				controlador.cambiarVentana(Gestion.this, formularioCliente);
@@ -276,7 +287,7 @@ public class Gestion extends JFrame {
 		btnEditarCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (formularioClienteEditar == null) {
-					formularioClienteEditar = new FormularioClienteEditar(Gestion.this, controlador, modelo);
+					formularioClienteEditar = new FormularioClienteEditar(Gestion.this, controlador, modelo, validador);
 				}
 				
 				int id = Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString());
@@ -349,7 +360,7 @@ public class Gestion extends JFrame {
 		btnAnadirJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (formularioJuego == null) {
-					formularioJuego  = new FormularioJuego(Gestion.this, controlador, modelo);
+					formularioJuego  = new FormularioJuego(Gestion.this, controlador, modelo, validador);
 				}
 				
 				controlador.cambiarVentana(Gestion.this, formularioJuego);
@@ -361,7 +372,7 @@ public class Gestion extends JFrame {
 		btnEditarJuego.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (formularioJuegoEditar == null) {
-					formularioJuegoEditar = new FormularioJuegoEditar(Gestion.this, controlador, modelo);
+					formularioJuegoEditar = new FormularioJuegoEditar(Gestion.this, controlador, modelo, validador);
 				}
 				
 				int id = Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString());

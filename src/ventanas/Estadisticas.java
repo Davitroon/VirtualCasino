@@ -28,9 +28,7 @@ public class Estadisticas extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	
-	private MenuPrincipal menuPrincipal;
 	private Modelo modelo;
-	private Controlador controlador;
 	private JLabel lblPartidasJugadasVal;
 	private JLabel lblPartidasGanadasVal;
 	private JLabel lblPartidasPerdidasVal;
@@ -50,9 +48,7 @@ public class Estadisticas extends JFrame {
 	 * @param controlador 
 	 */
 	public Estadisticas(MenuPrincipal menuPrincipal, Modelo modelo, Controlador controlador) {
-		this.menuPrincipal = menuPrincipal;
 		this.modelo = modelo;
-		this.controlador = controlador;
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -71,7 +67,7 @@ public class Estadisticas extends JFrame {
 		
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(538, 308, 120, 32);
+		btnVolver.setBounds(20, 297, 120, 32);
 		contentPane.add(btnVolver);
 		
 		JLabel lblPartidasJugadas = new JLabel("Partidas jugadas:");
@@ -125,52 +121,52 @@ public class Estadisticas extends JFrame {
 		contentPane.add(lblUltimaPartida);
 		
 		lblPartidasJugadasVal = new JLabel("lorem");
-		lblPartidasJugadasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
-		lblPartidasJugadasVal.setBounds(155, 128, 141, 14);
+		lblPartidasJugadasVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblPartidasJugadasVal.setBounds(155, 127, 141, 14);
 		contentPane.add(lblPartidasJugadasVal);
 		
 		lblPartidasGanadasVal = new JLabel("lorem");
-		lblPartidasGanadasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasGanadasVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblPartidasGanadasVal.setBounds(155, 163, 149, 14);
 		contentPane.add(lblPartidasGanadasVal);
 		
 		lblPartidasPerdidasVal = new JLabel("lorem");
-		lblPartidasPerdidasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasPerdidasVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblPartidasPerdidasVal.setBounds(164, 197, 140, 14);
 		contentPane.add(lblPartidasPerdidasVal);
 		
 		lblPartidasBlackjackVal = new JLabel("lorem");
-		lblPartidasBlackjackVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasBlackjackVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblPartidasBlackjackVal.setBounds(197, 233, 108, 14);
 		contentPane.add(lblPartidasBlackjackVal);
 		
 		lblPartidasTragaperrasVal = new JLabel("lorem");
-		lblPartidasTragaperrasVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblPartidasTragaperrasVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblPartidasTragaperrasVal.setBounds(211, 268, 93, 14);
 		contentPane.add(lblPartidasTragaperrasVal);
 		
 		lblDineroGanadoVal = new JLabel("lorem");
-		lblDineroGanadoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblDineroGanadoVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblDineroGanadoVal.setBounds(433, 127, 225, 14);
 		contentPane.add(lblDineroGanadoVal);
 		
 		lblDineroPerdidoVal = new JLabel("lorem");
-		lblDineroPerdidoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblDineroPerdidoVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblDineroPerdidoVal.setBounds(439, 163, 219, 14);
 		contentPane.add(lblDineroPerdidoVal);
 		
 		lblClienteSaldoVal = new JLabel("lorem");
-		lblClienteSaldoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblClienteSaldoVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblClienteSaldoVal.setBounds(488, 197, 170, 14);
 		contentPane.add(lblClienteSaldoVal);
 		
 		lblDineroJuegoVal = new JLabel("lorem");
-		lblDineroJuegoVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblDineroJuegoVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblDineroJuegoVal.setBounds(480, 232, 178, 14);
 		contentPane.add(lblDineroJuegoVal);
 		
 		lblUltimaPartidaVal = new JLabel("lorem");
-		lblUltimaPartidaVal.setFont(new Font("SimSun", Font.PLAIN, 11));
+		lblUltimaPartidaVal.setFont(new Font("SimSun", Font.PLAIN, 14));
 		lblUltimaPartidaVal.setBounds(490, 267, 168, 14);
 		contentPane.add(lblUltimaPartidaVal);
 		
@@ -178,7 +174,7 @@ public class Estadisticas extends JFrame {
 		btnBorrarEstadisticas.setForeground(new Color(0, 0, 0));
 		btnBorrarEstadisticas.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnBorrarEstadisticas.setBackground(new Color(242, 77, 77));
-		btnBorrarEstadisticas.setBounds(10, 308, 142, 32);
+		btnBorrarEstadisticas.setBounds(516, 90, 142, 32);
 		contentPane.add(btnBorrarEstadisticas);
 		
 		// Al cerrar la ventana mediante la X

@@ -32,7 +32,6 @@ public class BlackjackVentana extends JFrame {
 	private JPanel contentPane;
 	
 	private Controlador controlador;
-	private Modelo modelo;
 	private Jugar jugar;
 	private JLabel lblCartasCrupierList;
 	private JLabel lblTusCartasList;
@@ -52,17 +51,14 @@ public class BlackjackVentana extends JFrame {
 
 
 	public BlackjackVentana(Controlador controlador, Modelo modelo, Jugar jugar, Cliente cliente, Juego juego, double apuesta) {
-		setResizable(false);
-		
+		setResizable(false);	
 		
 		this.controlador = controlador;
-		this.modelo = modelo;
-
 		this.jugar = jugar;
 		this.cliente = cliente;
 		this.blackjack = (Blackjack) juego;
-		
 		this.apuesta = apuesta;
+		
 		setBounds(100, 100, 577, 442);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
@@ -90,7 +86,7 @@ public class BlackjackVentana extends JFrame {
 		
 		btnVolver = new JButton("Volver");
 		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(102, 305, 108, 38);
+		btnVolver.setBounds(22, 349, 95, 30);
 		contentPane.add(btnVolver);
 		
 		lblCartasCrupierList = new JLabel("lorem");
@@ -105,12 +101,12 @@ public class BlackjackVentana extends JFrame {
 		
 		btnPedir = new JButton("Pedir");
 		btnPedir.setBackground(new Color(0, 128, 64));
-		btnPedir.setBounds(338, 305, 108, 38);
+		btnPedir.setBounds(298, 305, 108, 38);
 		contentPane.add(btnPedir);
 		
 		btnPlantarse = new JButton("Plantarse");
 		btnPlantarse.setBackground(new Color(255, 128, 128));
-		btnPlantarse.setBounds(220, 305, 108, 38);
+		btnPlantarse.setBounds(172, 305, 108, 38);
 		contentPane.add(btnPlantarse);
 		
 		lblApuestaActual = new JLabel("lorem");
@@ -121,7 +117,7 @@ public class BlackjackVentana extends JFrame {
 		
 		btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(516, 305, 37, 38);
+		btnInfo.setBounds(514, 11, 37, 38);
 		contentPane.add(btnInfo);
 		
 		// Al cerrar la ventana mediante la X
@@ -201,21 +197,20 @@ public class BlackjackVentana extends JFrame {
 	 */
 	public void cerrarVentana() {
 		if (!partidaTerminada) {
-			if (controlador.avisoCerrarJuego(cliente, blackjack, apuesta)) {
-				dispose();
-				jugar.setVisible(true);
-			}					
-				
-		} else {
-			dispose();
-			jugar.setVisible(true);
-		}	
+			if (!controlador.avisoCerrarJuego(cliente, blackjack, apuesta)) {
+				return;
+			}									
+		}
 		
+		dispose();
+	
 		try {
 			jugar.actualizarTablas();
+			jugar.setVisible(true);
 			
 		} catch (JugarExcepcion e) {
-			e.getMessage();
+			controlador.cambiarVentana(jugar, jugar.getMenu());
+			JOptionPane.showMessageDialog(null, e.getMessage() , "Advertencia", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 	

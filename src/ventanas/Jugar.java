@@ -47,13 +47,11 @@ public class Jugar extends JFrame {
 	private DefaultTableModel modeloClientes;
 	private DefaultTableModel modeloJuegos;
 	
-	private MenuPrincipal menu;
 	private Modelo modelo;
 	private Controlador controlador;
 	private JButton btnJugar;
+	private MenuPrincipal menu;
 	
-	private BlackjackVentana wndBlackjack;
-	private TragaperrasVentana wndTragaperras;
 	
 
 	/**
@@ -99,13 +97,18 @@ public class Jugar extends JFrame {
 					"Id", "Nombre", "Activo", "Saldo"
 				}
 			) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 4840318942523039213L;
+				@SuppressWarnings("rawtypes")
 				Class[] columnTypes = new Class[] {
 					Integer.class, String.class, String.class, Double.class
 				};
 				boolean[] columnEditables = new boolean[] {
 					false, false, false, false
 				};
-				public Class getColumnClass(int columnIndex) {
+				public Class<?> getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
 				public boolean isCellEditable(int row, int column) {
@@ -134,13 +137,18 @@ public class Jugar extends JFrame {
 					"Id", "Tipo", "Activo", "Dinero"
 				}
 			) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = -6299895431999927772L;
+				@SuppressWarnings("rawtypes")
 				Class[] columnTypes = new Class[] {
 					Integer.class, String.class, String.class, Double.class
 				};
 				boolean[] columnEditables = new boolean[] {
 					false, false, false, false
 				};
-				public Class getColumnClass(int columnIndex) {
+				public Class<?> getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
 				public boolean isCellEditable(int row, int column) {
@@ -160,7 +168,7 @@ public class Jugar extends JFrame {
 		
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(464, 327, 103, 31);
+		btnVolver.setBounds(28, 327, 103, 31);
 		contentPane.add(btnVolver);
 		
 		// Clic boton volver
@@ -292,4 +300,12 @@ public class Jugar extends JFrame {
 		
 		btnJugar.setEnabled(true);
 	}
+
+
+	public MenuPrincipal getMenu() {
+		return menu;
+	}
+	
+	
+	
 }

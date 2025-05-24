@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
- * Clase que mostrará un mensaje de error en caso de excepciones. Es la primera clase en ser instanciada en el programa, para pueda llamarse antes de haber creado el modelo.
+ * Clase que mostrará un mensaje de error en caso de excepciones y cerrará el programa. Es la primera clase en ser instanciada en el programa, para pueda llamarse antes de haber creado el modelo.
  */
 public class MensajeExcepcion {
 

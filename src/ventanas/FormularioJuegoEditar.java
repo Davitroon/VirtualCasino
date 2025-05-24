@@ -11,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -27,6 +26,7 @@ import logica.Blackjack;
 import logica.Controlador;
 import logica.Modelo;
 import logica.Tragaperras;
+import logica.Validador;
 
 /**
  * Ventana para el formulario de editar juegos.
@@ -37,10 +37,7 @@ public class FormularioJuegoEditar extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
-	
-	private Gestion gestion;
-	private Controlador controlador;
+
 	private JTextField textDinero;
 	private boolean dineroValido;
 	private JButton btnModificar;
@@ -49,7 +46,7 @@ public class FormularioJuegoEditar extends JFrame {
 	
 
 	private JLabel lblErrorDinero;
-	private JComboBox comboTipo;
+	private JComboBox<Object> comboTipo;
 	private JTextField textId;
 	private JLabel lblId;
 	private JCheckBox chckbxActivo;
@@ -60,9 +57,8 @@ public class FormularioJuegoEditar extends JFrame {
 	 * @param controlador 
 	 * @param gestion2 
 	 */
-	public FormularioJuegoEditar(Gestion gestion, Controlador controlador, Modelo modelo) {
+	public FormularioJuegoEditar(Gestion gestion, Controlador controlador, Modelo modelo, Validador validador) {
 		
-		this.gestion = gestion;		this.controlador = controlador;
 		this.modelo = modelo;
 		
 		setResizable(false);
@@ -83,12 +79,12 @@ public class FormularioJuegoEditar extends JFrame {
 		btnModificar = new JButton("Modificar");
 		btnModificar.setBackground(new Color(128, 128, 255));
 		btnModificar.setEnabled(false);
-		btnModificar.setBounds(286, 228, 111, 32);
+		btnModificar.setBounds(292, 228, 111, 32);
 		contentPane.add(btnModificar);
 		
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(165, 228, 111, 32);
+		btnVolver.setBounds(24, 228, 111, 32);
 		contentPane.add(btnVolver);
 		
 		JLabel lblTipo = new JLabel("Tipo");
@@ -112,8 +108,8 @@ public class FormularioJuegoEditar extends JFrame {
 		lblErrorDinero.setBounds(40, 178, 297, 14);
 		contentPane.add(lblErrorDinero);
 		
-		comboTipo = new JComboBox();
-		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Blackjack", "Tragaperras"}));
+		comboTipo = new JComboBox<Object>();
+		comboTipo.setModel(new DefaultComboBoxModel<Object>(new String[] {"Blackjack", "Tragaperras"}));
 		comboTipo.setBounds(172, 80, 111, 22);
 		contentPane.add(comboTipo);
 		
@@ -140,7 +136,7 @@ public class FormularioJuegoEditar extends JFrame {
 				dineroValido = false;				
 				String texto = textDinero.getText();
 				
-				if (controlador.validarDineroJuego(texto, lblErrorDinero)) {
+				if (validador.validarDineroJuego(texto, lblErrorDinero)) {
 					dineroValido = true;
 				}
 				

@@ -19,6 +19,7 @@ public class Lanzador {
 	
 	private static Modelo modelo;
 	private static Controlador controlador;
+	private static Validador validador;
 	private static MenuPrincipal menu;
 	private static MensajeExcepcion mensajeExcepcion;
 	
@@ -48,8 +49,9 @@ public class Lanzador {
         	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error inesperado.\nConsultar la consola para más información.");
         }
         
-        controlador = new Controlador(modelo);
-        menu = new MenuPrincipal(modelo, controlador);
+        validador = new Validador();
+        controlador = new Controlador(modelo, validador);
+        menu = new MenuPrincipal(modelo, controlador, validador);
         menu.setVisible(true);
 	}
 	

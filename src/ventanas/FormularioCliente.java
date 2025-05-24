@@ -22,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 import logica.Cliente;
 import logica.Controlador;
 import logica.Modelo;
+import logica.Validador;
 
 /**
  * Ventana para el formulario de clientes.
@@ -36,10 +37,6 @@ public class FormularioCliente extends JFrame {
 	private JTextField textEdad;
 	private JTextField textSaldo;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	
-	private Gestion gestion;
-	private Controlador controlador;
-	private Modelo modelo;
 	
 	private boolean nombreValido;
 	private boolean edadValida;
@@ -61,10 +58,7 @@ public class FormularioCliente extends JFrame {
 	 * @param modelo 
 	 * @param gestion2 
 	 */
-	public FormularioCliente(Gestion gestion, Controlador controlador, Modelo modelo) {
-		
-		this.gestion = gestion;		this.controlador = controlador;
-		this.modelo = modelo;
+	public FormularioCliente(Gestion gestion, Controlador controlador, Modelo modelo, Validador validador) {
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);	
@@ -142,7 +136,7 @@ public class FormularioCliente extends JFrame {
 		
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(230, 295, 111, 32);
+		btnVolver.setBounds(24, 295, 111, 32);
 		contentPane.add(btnVolver);
 		
 		lblErrorNombre = new JLabel("");
@@ -170,7 +164,7 @@ public class FormularioCliente extends JFrame {
 				nombreValido = false;
 				String texto = textNombre.getText();
 				
-				if (controlador.validarNombreCliente(texto, lblErrorNombre)) {
+				if (validador.validarNombreCliente(texto, lblErrorNombre)) {
 					nombreValido = true;
 				}
 				
@@ -185,7 +179,7 @@ public class FormularioCliente extends JFrame {
 				edadValida = false;
 				String texto = textEdad.getText();
 				
-				if (controlador.validarEdadCliente(texto, lblErrorEdad)) {
+				if (validador.validarEdadCliente(texto, lblErrorEdad)) {
 					edadValida = true;
 				}
 				
@@ -200,7 +194,7 @@ public class FormularioCliente extends JFrame {
 				saldoValido = false;				
 				String texto = textSaldo.getText();
 				
-				if (controlador.validarSaldoCliente(texto, lblErrorSaldo)) {
+				if (validador.validarSaldoCliente(texto, lblErrorSaldo)) {
 					saldoValido = true;
 				}
 				

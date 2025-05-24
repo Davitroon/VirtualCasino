@@ -32,7 +32,6 @@ public class TragaperrasVentana extends JFrame {
 	private JPanel contentPane;
 	
 	private Controlador controlador;
-	private Modelo modelo;
 	private Jugar jugar;
 	private JButton btnTirar;
 	
@@ -53,12 +52,9 @@ public class TragaperrasVentana extends JFrame {
 	public TragaperrasVentana(Controlador controlador, Modelo modelo, Jugar jugar, Cliente cliente, Juego juego, double apuesta) {
 		
 		this.controlador = controlador;
-		this.modelo = modelo;
-
 		this.jugar = jugar;
 		this.cliente = cliente;
 		this.tragaperras = (Tragaperras) juego;
-		
 		this.apuesta = apuesta;
 		
 		setResizable(false);
@@ -79,7 +75,7 @@ public class TragaperrasVentana extends JFrame {
 		
 		btnTirar = new JButton("Tirar");
 		btnTirar.setBackground(new Color(0, 128, 64));
-		btnTirar.setBounds(264, 319, 108, 38);
+		btnTirar.setBounds(391, 319, 108, 38);
 		contentPane.add(btnTirar);
 		
 		lblNum1 = new JLabel("0");
@@ -119,12 +115,12 @@ public class TragaperrasVentana extends JFrame {
 		
 		btnVolver = new JButton("Volver");
 		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(132, 319, 108, 38);
+		btnVolver.setBounds(10, 319, 108, 38);
 		contentPane.add(btnVolver);
 		
 		JButton btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(462, 321, 37, 35);
+		btnInfo.setBounds(462, 11, 37, 35);
 		contentPane.add(btnInfo);
 		
 		addWindowListener(new WindowAdapter() {
@@ -184,21 +180,21 @@ public class TragaperrasVentana extends JFrame {
 	 */
 	public void cerrarVentana() {
 		if (!partidaTerminada) {
-			if (controlador.avisoCerrarJuego(cliente, tragaperras, apuesta)) {
-				dispose();
-				jugar.setVisible(true);
+			if (!controlador.avisoCerrarJuego(cliente, tragaperras, apuesta)) {
+				return;
 			}					
 				
-		} else {
-			dispose();
-			jugar.setVisible(true);
-		}	
+		}
 		
+		dispose();
+	
 		try {
 			jugar.actualizarTablas();
+			jugar.setVisible(true);
 			
 		} catch (JugarExcepcion e) {
-			e.getMessage();
+			controlador.cambiarVentana(jugar, jugar.getMenu());
+			JOptionPane.showMessageDialog(null, e.getMessage() , "Advertencia", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 	
