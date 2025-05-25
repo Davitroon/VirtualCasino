@@ -1,5 +1,8 @@
 package logica;
 
+/**
+ * Clase para los diferentes perfiles que podrá tener el jugador.
+ */
 public class Usuario {
 
 	private int id;

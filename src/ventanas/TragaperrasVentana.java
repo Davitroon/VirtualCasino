@@ -182,8 +182,7 @@ public class TragaperrasVentana extends JFrame {
 		if (!partidaTerminada) {
 			if (!controlador.avisoCerrarJuego(cliente, tragaperras, apuesta)) {
 				return;
-			}					
-				
+			}									
 		}
 		
 		dispose();

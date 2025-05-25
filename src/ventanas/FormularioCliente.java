@@ -140,7 +140,7 @@ public class FormularioCliente extends JFrame {
 		contentPane.add(btnVolver);
 		
 		lblErrorNombre = new JLabel("");
-		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorNombre.setForeground(new Color(255, 0, 0));
 		lblErrorNombre.setBounds(54, 121, 389, 14);
 		contentPane.add(lblErrorNombre);
@@ -152,7 +152,7 @@ public class FormularioCliente extends JFrame {
 		contentPane.add(lblErrorEdad);
 		
 		lblErrorSaldo = new JLabel("");
-		lblErrorSaldo.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorSaldo.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorSaldo.setForeground(new Color(255, 0, 0));
 		lblErrorSaldo.setBounds(244, 186, 199, 17);
 		contentPane.add(lblErrorSaldo);		

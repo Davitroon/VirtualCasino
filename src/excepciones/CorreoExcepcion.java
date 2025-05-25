@@ -1,5 +1,8 @@
 package excepciones;
 
+/**
+ * Excepción que se lanzará cuando un correo ingresado no sea válido.
+ */
 public class CorreoExcepcion extends Exception {
 
 	/**

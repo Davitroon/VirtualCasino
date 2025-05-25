@@ -98,7 +98,7 @@ public class CrearUsuario extends JFrame {
 		contentPane.add(btnAceptar);
 		
 		lblErrorNombre = new JLabel("");
-		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorNombre.setForeground(new Color(255, 0, 0));
 		lblErrorNombre.setBounds(27, 131, 306, 14);
 		contentPane.add(lblErrorNombre);

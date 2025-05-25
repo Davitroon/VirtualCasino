@@ -94,9 +94,9 @@ public class IniciarSesion extends JFrame {
 		contentPane.add(btnAceptar);
 		
 		lblErrorNombre = new JLabel("");
-		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 8));
+		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorNombre.setForeground(new Color(255, 0, 0));
-		lblErrorNombre.setBounds(109, 132, 291, 14);
+		lblErrorNombre.setBounds(89, 132, 311, 14);
 		contentPane.add(lblErrorNombre);
 		
 		JLabel lblContrasenaAviso = new JLabel("La contraseña debe tener mínimo 8 caracteres");
