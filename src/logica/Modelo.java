@@ -5,9 +5,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
 
+import excepciones.CorreoExcepcion;
 import excepciones.MensajeExcepcion;
+import excepciones.UsuarioExcepcion;
 
 
 /**
@@ -58,7 +61,6 @@ public class Modelo {
 	        stmt.setInt(5, usuarioActual);
 
 	        stmt.executeUpdate();
-	        stmt.close();
 	        
 
 	    } catch (SQLException e) {
@@ -82,7 +84,6 @@ public class Modelo {
 	        stmt.setInt(3, usuarioActual);
 
 	        stmt.executeUpdate();
-	        stmt.close();
 	        
 
 	    } catch (SQLException e) {
@@ -99,8 +100,8 @@ public class Modelo {
 	 */
 	public void agregarPartida(Cliente cliente, Juego juego, double resultadoApuesta) {
 	    
-	    String consulta = "INSERT INTO game_sessions (customer_id, game_id, game_type, bet_result, session_date, user_profile) "
-	                    + "VALUES (?, ?, ?, ?, NOW(), ?)";
+	    String consulta = "INSERT INTO game_sessions (customer_id, game_id, game_type, bet_result, user_profile) "
+	                    + "VALUES (?, ?, ?, ?, ?)";
 	    
 	    try {
 	        PreparedStatement stmt = conexion.prepareStatement(consulta);
@@ -144,6 +145,30 @@ public class Modelo {
 	
 	
 	/**
+	 * Método para borrar un dato de la base de datos.
+	 * @param id Id del dato a borrar.
+	 * @param tabla Tabla de donde se borrará el dato.
+	 * @since 3.0
+	 */
+	public void borrarUsuario(String nombre) {
+		
+		String consulta = "DELETE FROM users WHERE username = ?;";
+		
+		try {		
+			PreparedStatement stmt = conexion.prepareStatement(consulta);
+			stmt.setString(1, nombre);	
+			
+			stmt.executeUpdate();
+			stmt.close();
+			
+			
+		} catch (SQLException e) {
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al borrar un usuario.\nConsultar la consola para más información.");
+		}
+	}
+	
+	
+	/**
 	 * Método para borrar todos los datos de una tabla.
 	 * @param tabla Tabla a borrar su datos.
 	 * @since 3.0
@@ -164,6 +189,11 @@ public class Modelo {
 	}
 	
 	
+	/**
+	 * Realiza una consulta a la BD que se reciba por parametro. Recomendado para consultas muy específicas.
+	 * @param consulta Consulta a ejecutar
+	 * @return Resultado de la consulta SQL.
+	 */
 	public ResultSet consultaEspecifica(String consulta) {
 		
 		ResultSet rset = null;
@@ -250,7 +280,6 @@ public class Modelo {
 	        stmt.setInt(6, cliente.getId());
 
 	        stmt.executeUpdate();	
-	        stmt.close();
 	        
 	    } catch (SQLException e) {
 	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un cliente.\nConsultar la consola para más información.");
@@ -271,7 +300,6 @@ public class Modelo {
 	        stmt.setInt(2, juego.getId());
 
 	        stmt.executeUpdate();
-	        stmt.close();
 	        
 	        
 	    } catch (SQLException e) {
@@ -295,7 +323,6 @@ public class Modelo {
 	        stmt.setInt(4, juego.getId());
 
 	        stmt.executeUpdate();
-	        stmt.close();
 	        
 	        
 	    } catch (SQLException e) {
@@ -317,13 +344,129 @@ public class Modelo {
 	        stmt.setInt(2, cliente.getId());
 
 	        stmt.executeUpdate();
-	        stmt.close();
 	        
 	        
 	    } catch (SQLException e) {
 	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar el saldo del cliente.\nConsultar la consola para más información.");
 	    }
 	}
-
 	
+	
+	/**
+	 * Consulta un usuario de la base de datos. El nombre y contraseña debe ser exactamente el mismo.
+	 * @param nombre Nombre del usuario.
+	 * @param contraseña Contraseña del usuario.
+	 * @return Resultado de la consulta SQL.
+	 */
+	public ResultSet consultarUsuario (String nombre, String contraseña) {
+		String consulta = "SELECT * FROM users WHERE username = ? AND user_password = ?";
+		ResultSet rset;
+		
+	    try {
+	    	PreparedStatement stmt = conexion.prepareStatement(consulta);
+	        stmt.setString(1, nombre);
+	        stmt.setString(2, contraseña);
+
+	        rset = stmt.executeQuery();
+	        
+	        // Si se encontró un usuario con esa contraseña
+	        if (rset.next()) {   
+	        	return rset;        	
+	        }
+             
+	    } catch (SQLException e) {
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al consultar la tabla usuarios.\nConsultar la consola para más información.");
+	    }
+	    
+	    return null;
+	}	
+	
+	
+/**
+ * Método que añade un usuario a la BD.
+ * @param usuario Objeto usuario a agregar.
+ * @param recordarSesion True si se ha indicado que se guarde el inicio de sesion.
+ * @return 
+ * @throws CorreoExcepcion Excepción que se lanza en caso de que el correo no sea válido.
+ * @throws UsuarioExcepcion 
+ */
+	public Usuario agregarUsuario (Usuario usuario, boolean recordarSesion) throws CorreoExcepcion, UsuarioExcepcion {
+		String consulta = "INSERT INTO users (username, user_password, email) VALUES (?, ?, ?);";
+		
+	    try {
+	    	PreparedStatement stmt = conexion.prepareStatement(consulta);
+	        stmt.setString(1, usuario.getNombre());
+	        stmt.setString(2, usuario.getContrasena());
+	        stmt.setString(3, usuario.getCorreo());
+
+	        stmt.executeUpdate();
+	        
+	        ResultSet rset = consultarUsuario(usuario.getNombre(), usuario.getContrasena());
+	             	
+	        // Lanza una excepcion si el correo ingresado no es válido
+	        if (!rset.getBoolean("verified_email")) {
+	        	borrarDato(String.valueOf(rset.getInt("id")), "users");
+	        	throw new CorreoExcepcion("El correo ingresado no es válido.");
+	        }
+	        
+        	if (recordarSesion) {
+        		alternarRecordarSesion(usuario.getNombre(), recordarSesion);    		
+        	}
+        	
+        	usuario = new Usuario(rset.getString("username"), rset.getString("user_password"), rset.getString("email"), 
+        			rset.getString("last_access"), recordarSesion);    	
+
+        	return usuario;
+             
+	    } catch (SQLIntegrityConstraintViolationException e) {
+	    	throw new UsuarioExcepcion("El usuario " + usuario.getNombre() + " ya está registrado.");
+	    	
+	    } catch (SQLException e) {
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al agregar un usuario.\nConsultar la consola para más información.");
+	    }
+		return null;
+	}
+	
+	
+	/**
+	 * Método que alternará el inicio de sesion automático de un usuario.
+	 * @param nombre Nombre del usuario a alternar.
+	 * @param activar True si se ha marcado que se recuerde la sesión.
+	 */
+	public void alternarRecordarSesion(String nombre, boolean activar) {
+		try {
+			// Quitar el resto de usuarios que tengan marcado recordar sesion
+			try (PreparedStatement stmt2 = conexion.prepareStatement("UPDATE users SET remember_login = FALSE WHERE remember_login = TRUE")) {
+			    stmt2.executeUpdate();
+			}
+			
+			if (activar) {
+				// Poner a este usuario como recordar sesion
+				try (PreparedStatement stmt3 = conexion.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
+				    stmt3.setString(1, nombre);
+				    stmt3.executeUpdate();
+				}	
+			}
+
+		} catch (SQLException e) {
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un usuario.\nConsultar la consola para más información.");
+	    } 
+	}
+	
+	
+	/**
+	 * Actualizar el último acceso de un usuario al programa.
+	 * @param nombre Nombre del usuario actualizar.
+	 */
+	public void actualizarUltimoAcceso (String nombre) {
+		String consulta = "UPDATE users SET last_access = NOW() WHERE username = ?";
+		
+		try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+			stmt.setString(1, nombre);
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un usuario.\nConsultar la consola para más información.");
+		}
+	}
 }

@@ -188,7 +188,7 @@ public class FormularioClienteEditar extends JFrame {
 				nombreValido = false;
 				String texto = textNombre.getText();
 				
-				if (validador.validarNombreCliente(texto, lblErrorNombre)) {
+				if (validador.validarNombre(texto, lblErrorNombre)) {
 					nombreValido = true;
 				}
 				

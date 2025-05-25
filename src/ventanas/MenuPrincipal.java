@@ -16,6 +16,7 @@ import javax.swing.border.EmptyBorder;
 import excepciones.JugarExcepcion;
 import logica.Controlador;
 import logica.Modelo;
+import logica.Usuario;
 import logica.Validador;
 
 /**
@@ -31,6 +32,9 @@ public class MenuPrincipal extends JFrame {
 	private Gestion gestion;
 	private Jugar jugar;
 	private Estadisticas estadisticas;
+	private Usuario usuario;
+	private Perfil perfil;
+	private Conectarse conectarse;
 	
 	private JButton btnEstadisticas;
 
@@ -38,6 +42,7 @@ public class MenuPrincipal extends JFrame {
 	 * Create the frame.
 	 * @param controlador 
 	 * @param modelo 
+	 * @param usuario 
 	 */
 	public MenuPrincipal(Modelo modelo, Controlador controlador, Validador validador) {
 		
@@ -53,7 +58,7 @@ public class MenuPrincipal extends JFrame {
 		
 		JLabel lblTitulo = new JLabel("Simulador casino", SwingConstants.CENTER);
 		lblTitulo.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblTitulo.setBounds(10, 21, 492, 59);
+		lblTitulo.setBounds(60, 21, 375, 59);
 		contentPane.add(lblTitulo);
 		
 		JButton btnJugar = new JButton("Jugar");
@@ -80,6 +85,10 @@ public class MenuPrincipal extends JFrame {
 		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(465, 288, 37, 32);
 		contentPane.add(btnInfo);
+		
+		JButton btnPerfil = new JButton("Perfil");
+		btnPerfil.setBounds(445, 11, 57, 32);
+		contentPane.add(btnPerfil);
 		
 		// Clic boton jugar
 		btnJugar.addActionListener(new ActionListener() {
@@ -120,6 +129,13 @@ public class MenuPrincipal extends JFrame {
 			}
 		});
 		
+		// Clic boton perfil
+		btnPerfil.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				perfil.actualizarDatos(usuario);
+				controlador.cambiarVentana(MenuPrincipal.this, perfil);
+			}
+		});
 		
 		// Clic boton salir
 		btnSalir.addActionListener(new ActionListener() {
@@ -151,4 +167,32 @@ public class MenuPrincipal extends JFrame {
 			}
 		});
 	}
+
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+
+	public Perfil getPerfil() {
+		return perfil;
+	}
+	
+	
+	public void setPerfil(Perfil perfil) {
+		this.perfil = perfil;
+	}
+
+
+	public Conectarse getConectarse() {
+		return conectarse;
+	}
+
+
+	public void setConectarse(Conectarse conectarse) {
+		this.conectarse = conectarse;
+	}
+	
+	
+	
 }

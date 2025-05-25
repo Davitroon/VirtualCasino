@@ -7,7 +7,9 @@ CREATE TABLE users (
     username VARCHAR(30) NOT NULL UNIQUE,
     user_password VARCHAR(39) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    verified_email BOOLEAN NOT NULL DEFAULT TRUE
+    last_access DATETIME DEFAULT NOW(),
+    verified_email BOOLEAN NOT NULL DEFAULT TRUE,
+    remember_login BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE customers (
@@ -36,7 +38,7 @@ CREATE TABLE game_sessions (
     game_id INT,
     game_type ENUM('Blackjack', 'SlotMachine') NOT NULL,
     bet_result DECIMAL(8,2) NOT NULL,
-    session_date DATETIME,
+    session_date DATETIME DEFAULT NOW(),
 	user_profile INT NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
     FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE SET NULL,
@@ -1172,7 +1174,7 @@ INSERT INTO dominios (domain_type, tld, manager) VALUES  ('generic', '.hsbc', 'H
 
 
 -- Sample data
-INSERT INTO users (username, user_password, email) VALUES ('usuario', '12345', 'usuario@gmail.com');
+INSERT INTO users (username, user_password, email) VALUES ('usuario', '12345678', 'usuario@gmail.com');
 INSERT INTO customers (customer_name, age, gender, balance, user_profile) VALUES ('John', 32, 'M', 2030.0, 1);
 INSERT INTO games (game_type, money_pool, user_profile) VALUES ('SlotMachine', 50000.0, 1);
 INSERT INTO games (game_type, money_pool, user_profile) VALUES ('Blackjack', 50000.0, 1);

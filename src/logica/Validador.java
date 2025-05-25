@@ -132,7 +132,7 @@ public class Validador {
 	 * @return True si el nombre es válido, false si no lo es
 	 * @since 3.0
 	 */
-	public boolean validarNombreCliente(String texto, JLabel mensajeError) {
+	public boolean validarNombre(String texto, JLabel mensajeError) {
 		
 		if (texto.isBlank()) {
 			mensajeError.setText("");

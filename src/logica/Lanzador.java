@@ -8,7 +8,9 @@ import javax.swing.UIManager;
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
 import excepciones.MensajeExcepcion;
+import ventanas.Conectarse;
 import ventanas.MenuPrincipal;
+import ventanas.Perfil;
 
 /**
  * Clase encargada de instanciar las clases más importantes y ejecutar el programa.
@@ -16,16 +18,10 @@ import ventanas.MenuPrincipal;
  * @since 3.0
  */
 public class Lanzador {
-	
-	private static Modelo modelo;
-	private static Controlador controlador;
-	private static Validador validador;
-	private static MenuPrincipal menu;
-	private static MensajeExcepcion mensajeExcepcion;
-	
-	
+		
     public static void main(String[] args) {
-    	mensajeExcepcion = new MensajeExcepcion();
+    	MensajeExcepcion mensajeExcepcion = new MensajeExcepcion();
+    	Modelo modelo = null;
     	
         try {      	
             modelo = new Modelo(mensajeExcepcion);          
@@ -49,10 +45,17 @@ public class Lanzador {
         	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error inesperado.\nConsultar la consola para más información.");
         }
         
-        validador = new Validador();
-        controlador = new Controlador(modelo, validador);
-        menu = new MenuPrincipal(modelo, controlador, validador);
-        menu.setVisible(true);
+        Validador validador = new Validador();
+        Controlador controlador = new Controlador(modelo, validador);
+        MenuPrincipal menu = new MenuPrincipal(modelo, controlador, validador);
+        Sesion sesion = new Sesion(menu, null, controlador, modelo);
+        Conectarse conectarse = new Conectarse(modelo, controlador, sesion, validador, menu);
+        Perfil perfil = new Perfil(menu, controlador, modelo);
+        
+        menu.setPerfil(perfil);
+        menu.setConectarse(conectarse);
+        sesion.setConectarse(conectarse);
+        sesion.comprobarInicio();
 	}
 	
 
