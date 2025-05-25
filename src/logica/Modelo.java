@@ -24,6 +24,7 @@ public class Modelo {
 	private String url = "jdbc:mysql://localhost/" + database;
 	
 	private MensajeExcepcion mensajeExcepcion;
+	private int usuarioActual;
 	
 	/**
 	 * Constructor del modelo, dodne hace conexión a la base de datos.
@@ -47,13 +48,14 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void agregarCliente(Cliente cliente) {
-	    String consulta = "INSERT INTO clientes (nombre, edad, genero, activo, saldo) VALUES (?, ?, ?, true, ?);";
+	    String consulta = "INSERT INTO customers (customer_name, age, gender, balance, user_profile) VALUES (?, ?, ?, ?, ?);";
 
 	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
 	        stmt.setString(1, cliente.getNombre());
 	        stmt.setInt(2, cliente.getEdad());
 	        stmt.setString(3, String.valueOf(cliente.getGenero()));
 	        stmt.setDouble(4, cliente.getSaldo());
+	        stmt.setInt(5, usuarioActual);
 
 	        stmt.executeUpdate();
 	        stmt.close();
@@ -72,11 +74,12 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void agregarJuego(Juego juego) {
-	    String consulta = "INSERT INTO juegos (tipo, activo, dinero) VALUES (?, true, ?);";
+	    String consulta = "INSERT INTO games (game_type, money_pool, user_profile) VALUES (?, ?, ?);";
 
 	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
 	        stmt.setString(1, juego.getTipo());
 	        stmt.setDouble(2, juego.getDinero());
+	        stmt.setInt(3, usuarioActual);
 
 	        stmt.executeUpdate();
 	        stmt.close();
@@ -96,8 +99,8 @@ public class Modelo {
 	 */
 	public void agregarPartida(Cliente cliente, Juego juego, double resultadoApuesta) {
 	    
-	    String consulta = "INSERT INTO partidas(id_cliente, id_juego, tipo_juego, resultado_apuesta, cliente_gana, fecha) "
-	                    + "VALUES (?, ?, ?, ?, ?, NOW())";
+	    String consulta = "INSERT INTO game_sessions (customer_id, game_id, game_type, bet_result, session_date, user_profile) "
+	                    + "VALUES (?, ?, ?, ?, NOW(), ?)";
 	    
 	    try {
 	        PreparedStatement stmt = conexion.prepareStatement(consulta);
@@ -105,7 +108,7 @@ public class Modelo {
 	        stmt.setInt(2, juego.getId());
 	        stmt.setString(3, juego.getTipo());
 	        stmt.setDouble(4, resultadoApuesta);
-	        stmt.setBoolean(5, resultadoApuesta > 0);
+	        stmt.setInt(5, usuarioActual);
 	        
 	        stmt.executeUpdate();
 	        stmt.close();
@@ -189,7 +192,7 @@ public class Modelo {
 		String consulta = "SELECT * FROM " + tabla;	
 		ResultSet rset = null;
 		 
-		if (soloActivos) consulta += " WHERE activo = 1";
+		if (soloActivos) consulta += " WHERE active_status = 1";
 		
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
@@ -236,7 +239,7 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void modificarCliente(Cliente cliente) {
-	    String consulta = "UPDATE clientes SET nombre = ?, edad = ?, genero = ?, activo = ?, saldo = ? WHERE id = ?;";
+	    String consulta = "UPDATE customers SET customer_name = ?, age = ?, gender = ?, active_status = ?, balance = ? WHERE id = ?;";
 	    
 	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
 	        stmt.setString(1, cliente.getNombre());
@@ -261,7 +264,7 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void modificarDineroJuego(Juego juego) {
-	    String consulta = "UPDATE juegos SET dinero = ? WHERE id = ?;";
+	    String consulta = "UPDATE games SET money_pool = ? WHERE id = ?;";
 	    
 	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
 	        stmt.setDouble(1, juego.getDinero());
@@ -283,7 +286,7 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void modificarJuego(Juego juego) {
-	    String consulta = "UPDATE juegos SET tipo = ?, activo = ?, dinero = ? WHERE id = ?;";
+	    String consulta = "UPDATE games SET game_type = ?, active_status = ?, money_pool = ? WHERE id = ?;";
 	    
 	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
 	        stmt.setString(1, juego.getTipo());
@@ -307,7 +310,7 @@ public class Modelo {
 	 * @since 3.0
 	 */
 	public void modificarSaldoCliente(Cliente cliente) {
-	    String consulta = "UPDATE clientes SET saldo = ? WHERE id = ?;";
+	    String consulta = "UPDATE customers SET balance = ? WHERE id = ?;";
 	    
 	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
 	        stmt.setDouble(1, cliente.getSaldo());

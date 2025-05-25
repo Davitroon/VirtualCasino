@@ -4,6 +4,9 @@ import javax.swing.JLabel;
 
 import excepciones.ApuestaExcepcion;
 
+/**
+ * Clase ocupada de validar entrada y saldia de datos
+ */
 public class Validador {
 	
 	// Definición constantes

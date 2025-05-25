@@ -220,7 +220,7 @@ public class Estadisticas extends JFrame {
 	    ResultSet rset = null;
 	    try {
 	    	
-	    	rset = modelo.consultarDatos("partidas", false);
+	    	rset = modelo.consultarDatos("game_sessions", false);
 	    	if (!rset.next()) {
 	    		btnBorrarEstadisticas.setEnabled(false);
 	    		
@@ -228,64 +228,70 @@ public class Estadisticas extends JFrame {
 	    		btnBorrarEstadisticas.setEnabled(true);
 	    	}
 	    	
-	        // Partidas jugadas
-	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas;");
-	        rset.next();
-	        lblPartidasJugadasVal.setText(rset.getString(1));
+	    	// Partidas jugadas
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions;");
+	    	rset.next();
+	    	lblPartidasJugadasVal.setText(rset.getString(1));
 
-	        // Partidas ganadas
-	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = TRUE;");
-	        rset.next();
-	        lblPartidasGanadasVal.setText(rset.getString(1));
+	    	// Partidas ganadas (bet_result > 0)
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE bet_result > 0;");
+	    	rset.next();
+	    	lblPartidasGanadasVal.setText(rset.getString(1));
 
-	        // Partidas perdidas
-	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE cliente_gana = FALSE;");
-	        rset.next();
-	        lblPartidasPerdidasVal.setText(rset.getString(1));
+	    	// Partidas perdidas (bet_result < 0)
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE bet_result < 0;");
+	    	rset.next();
+	    	lblPartidasPerdidasVal.setText(rset.getString(1));
 
-	        // Partidas blackjack
-	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE tipo_juego = 'Blackjack';");
-	        rset.next();
-	        lblPartidasBlackjackVal.setText(rset.getString(1));
+	    	// Partidas Blackjack
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE game_type = 'Blackjack';");
+	    	rset.next();
+	    	lblPartidasBlackjackVal.setText(rset.getString(1));
 
-	        // Partidas tragaperras
-	        rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM partidas WHERE tipo_juego = 'Tragaperras';");
-	        rset.next();
-	        lblPartidasTragaperrasVal.setText(rset.getString(1));
+	    	// Partidas Slot Machine
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE game_type = 'SlotMachine';");
+	    	rset.next();
+	    	lblPartidasTragaperrasVal.setText(rset.getString(1));
 
-	        // Dinero ganado
-	        rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta > 0;");
-	        rset.next();
-	        lblDineroGanadoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+	    	// Dinero ganado (suma de bet_result positivos)
+	    	rset = modelo.consultaEspecifica("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result > 0;");
+	    	rset.next();
+	    	lblDineroGanadoVal.setText(String.format("%.2f$", rset.getDouble(1)));
 
-	        // Dinero perdido
-	        rset = modelo.consultaEspecifica("SELECT SUM(resultado_apuesta) FROM partidas WHERE resultado_apuesta < 0;");
-	        rset.next();
-	        lblDineroPerdidoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+	    	// Dinero perdido (suma de bet_result negativos)
+	    	rset = modelo.consultaEspecifica("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result < 0;");
+	    	rset.next();
+	    	lblDineroPerdidoVal.setText(String.format("%.2f$", rset.getDouble(1)));
 
-	        // Cliente con más saldo
-	        rset = modelo.consultaEspecifica("SELECT nombre, saldo FROM clientes ORDER BY saldo DESC LIMIT 1;");
-	        if (rset.next()) {
-	            lblClienteSaldoVal.setText(String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
-	        } else {
-	            lblClienteSaldoVal.setText("Null");
-	        }
+	    	// Cliente con más saldo
+	    	rset = modelo.consultaEspecifica(
+	    	    "SELECT customer_name, balance FROM customers ORDER BY balance DESC LIMIT 1;");
+	    	if (rset.next()) {
+	    	    lblClienteSaldoVal.setText(
+	    	        String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
+	    	} else {
+	    	    lblClienteSaldoVal.setText("Null");
+	    	}
 
-	        // Juego con más dinero
-	        rset = modelo.consultaEspecifica("SELECT id, dinero FROM juegos ORDER BY dinero DESC LIMIT 1;");
-	        if (rset.next()) {
-	            lblDineroJuegoVal.setText(String.format("Juego %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
-	        } else {
-	            lblDineroJuegoVal.setText("Null");
-	        }
+	    	// Juego con más dinero en pool
+	    	rset = modelo.consultaEspecifica(
+	    	    "SELECT id, money_pool FROM games ORDER BY money_pool DESC LIMIT 1;");
+	    	if (rset.next()) {
+	    	    lblDineroJuegoVal.setText(
+	    	        String.format("Game %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
+	    	} else {
+	    	    lblDineroJuegoVal.setText("Null");
+	    	}
 
-	        // Última partida jugada
-	        rset = modelo.consultaEspecifica("SELECT fecha FROM partidas ORDER BY fecha DESC LIMIT 1;");
-	        if (rset.next()) {
-	            lblUltimaPartidaVal.setText(rset.getString(1));
-	        } else {
-	            lblUltimaPartidaVal.setText("Null");
-	        }
+	    	// Última partida jugada
+	    	rset = modelo.consultaEspecifica(
+	    	    "SELECT session_date FROM game_sessions ORDER BY session_date DESC LIMIT 1;");
+	    	if (rset.next()) {
+	    	    lblUltimaPartidaVal.setText(rset.getString(1));
+	    	} else {
+	    	    lblUltimaPartidaVal.setText("Null");
+	    	}
+
 
 	        rset.close();
 

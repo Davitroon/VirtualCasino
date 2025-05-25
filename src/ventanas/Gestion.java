@@ -304,7 +304,7 @@ public class Gestion extends JFrame {
 				if (fila == -1 ) return;
 				
 				String id = String.valueOf(tableClientes.getValueAt(fila, 0)) ;
-				modelo.borrarDato(id, "clientes");
+				modelo.borrarDato(id, "customers");
 		
 				actualizarTablaClientes();
 				reiniciarBotones();
@@ -323,7 +323,7 @@ public class Gestion extends JFrame {
 					    );
 
 			    if (opcion == JOptionPane.YES_OPTION) {
-			        modelo.borrarDatosTabla("clientes");
+			        modelo.borrarDatosTabla("customers");
 			        btnBorrarClientes.setEnabled(false);
 			        actualizarTablaClientes();
 			    }
@@ -389,7 +389,7 @@ public class Gestion extends JFrame {
 				if (fila == -1 ) return;
 				
 				String id = String.valueOf(tableJuegos.getValueAt(fila, 0)) ;
-				modelo.borrarDato(id, "juegos");
+				modelo.borrarDato(id, "games");
 		
 				actualizarTablaJuegos();
 				reiniciarBotones();
@@ -408,7 +408,7 @@ public class Gestion extends JFrame {
 					    );
 
 			    if (opcion == JOptionPane.YES_OPTION) {
-			        modelo.borrarDatosTabla("juegos");
+			        modelo.borrarDatosTabla("games");
 			        actualizarTablaJuegos();
 			    }
 			}
@@ -433,7 +433,7 @@ public class Gestion extends JFrame {
 		
 		modeloClientes.setRowCount(0);
 		
-		ResultSet rset = modelo.consultarDatos("clientes", false);
+		ResultSet rset = modelo.consultarDatos("customers", false);
 		
 		try {		
 			boolean hayDatos = rset.next();			
@@ -458,7 +458,7 @@ public class Gestion extends JFrame {
 	public void actualizarTablaJuegos() {
 		
 		modeloJuegos.setRowCount(0);
-		ResultSet rset = modelo.consultarDatos("juegos", false);
+		ResultSet rset = modelo.consultarDatos("games", false);
 		
 		try {
 			boolean hayDatos = rset.next();		

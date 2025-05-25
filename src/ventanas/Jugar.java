@@ -193,8 +193,8 @@ public class Jugar extends JFrame {
 		btnJugar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 
-		        ResultSet rsetCliente = modelo.consultarDatoUnico("clientes", Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString()));
-		        ResultSet rsetJuego = modelo.consultarDatoUnico("juegos", Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString()));
+		        ResultSet rsetCliente = modelo.consultarDatoUnico("customers", Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString()));
+		        ResultSet rsetJuego = modelo.consultarDatoUnico("games", Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString()));
 
 		        Cliente cliente = null;
 		        Juego juego = null;
@@ -250,8 +250,8 @@ public class Jugar extends JFrame {
 	 */
 	public void actualizarTablas() throws JugarExcepcion {
 		
-		ResultSet rset1 = modelo.consultarDatos("clientes", true);		
-		ResultSet rset2 = modelo.consultarDatos("juegos", true);		
+		ResultSet rset1 = modelo.consultarDatos("customers", true);		
+		ResultSet rset2 = modelo.consultarDatos("games", true);		
 		boolean hayDatos = false;
 		
 		modeloClientes.setRowCount(0);
