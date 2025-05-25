@@ -15,7 +15,7 @@ CREATE TABLE customers (
     customer_name VARCHAR(30) NOT NULL,
     age INT NOT NULL,
     gender ENUM('M','F','O') NOT NULL,
-    customer_active BOOLEAN NOT NULL DEFAULT TRUE,
+    active_status BOOLEAN NOT NULL DEFAULT TRUE,
     balance DECIMAL(8,2) NOT NULL,
     user_profile INT NOT NULL,
     FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
@@ -24,7 +24,7 @@ CREATE TABLE customers (
 CREATE TABLE games (
     id INT PRIMARY KEY AUTO_INCREMENT,
     game_type ENUM('Blackjack', 'SlotMachine') NOT NULL,
-    game_active BOOLEAN NOT NULL DEFAULT TRUE,
+    active_status BOOLEAN NOT NULL DEFAULT TRUE,
     money_pool DECIMAL(8,2) NOT NULL,
 	user_profile INT NOT NULL,
 	FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
@@ -49,10 +49,52 @@ CREATE TABLE dominios (
     manager VARCHAR(255)
 );
 
-DROP TRIGGER IF EXISTS verify_email;
+DROP TRIGGER IF EXISTS verify_email_insert;
 DELIMITER $$
-CREATE TRIGGER verify_email
+CREATE TRIGGER verify_email_insert
 BEFORE INSERT ON users
+FOR EACH ROW
+BEGIN
+    DECLARE at_pos INT;
+    DECLARE dot_after INT;
+	DECLARE last_dot_pos INT;
+    DECLARE domain VARCHAR(50);
+    DECLARE valid_domain INT;
+
+	-- Buscar el arroba
+	SET at_pos = LOCATE('@', NEW.email);
+	IF at_pos <= 0 THEN
+		SET NEW.verified_email = FALSE;
+
+    ELSE
+        -- Buscar el punto después del arroba
+        SET dot_after = LOCATE('.', NEW.email, at_pos);
+        IF dot_after <= at_pos THEN
+            SET NEW.verified_email = FALSE;
+
+        ELSE
+            -- Extraer el dominio (a partir del último punto)
+            SET last_dot_pos = CHAR_LENGTH(NEW.email) - LOCATE('.', REVERSE(NEW.email)) + 1;
+            SET domain = CONCAT('.', SUBSTRING_INDEX(NEW.email, '.', -1));
+
+            -- Verificar que el dominio exista en la tabla dominios
+            SELECT COUNT(*) INTO valid_domain FROM dominios WHERE tld = domain;
+
+			-- Comprobar el resultado
+            IF valid_domain > 0 THEN
+                SET NEW.verified_email = TRUE;
+            ELSE
+                SET NEW.verified_email = FALSE;
+            END IF;
+        END IF;
+    END IF;
+END $$
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS verify_email_update;
+DELIMITER $$
+CREATE TRIGGER verify_email_update
+BEFORE UPDATE ON users
 FOR EACH ROW
 BEGIN
     DECLARE at_pos INT;
@@ -1134,6 +1176,8 @@ INSERT INTO users (username, user_password, email) VALUES ('usuario', '12345', '
 INSERT INTO customers (customer_name, age, gender, balance, user_profile) VALUES ('John', 32, 'M', 2030.0, 1);
 INSERT INTO games (game_type, money_pool, user_profile) VALUES ('SlotMachine', 50000.0, 1);
 INSERT INTO games (game_type, money_pool, user_profile) VALUES ('Blackjack', 50000.0, 1);
+
+-- UPDATE users SET email = "caca@gmail.com" WHERE id = 1;
 
 -- Uncomment for testing
 -- SELECT * FROM customers;
