@@ -109,7 +109,7 @@ public class FormularioJuegoEditar extends JFrame {
 		contentPane.add(lblErrorDinero);
 		
 		comboTipo = new JComboBox<Object>();
-		comboTipo.setModel(new DefaultComboBoxModel<Object>(new String[] {"Blackjack", "Tragaperras"}));
+		comboTipo.setModel(new DefaultComboBoxModel<Object>(new String[] {"Blackjack", "SlotMachine"}));
 		comboTipo.setBounds(172, 80, 111, 22);
 		contentPane.add(comboTipo);
 		
@@ -164,7 +164,7 @@ public class FormularioJuegoEditar extends JFrame {
 					modelo.modificarJuego(new Blackjack(id, tipo, activo, dinero));
 				}
 				
-				if (tipo.equalsIgnoreCase("Tragaperras")) {
+				if (tipo.equalsIgnoreCase("SlotMachine")) {
 					modelo.modificarJuego(new Tragaperras(id, tipo, activo, dinero));
 				}	
 				
@@ -190,7 +190,7 @@ public class FormularioJuegoEditar extends JFrame {
 	 * @since 3.0
 	 */
 	public void cargarJuegoOriginal(int id) {	    
-		ResultSet rset = modelo.consultarDatoUnico("juegos", id);
+		ResultSet rset = modelo.consultarDatoUnico("games", id);
 	    
 	    try {
 		    textId.setText(String.valueOf(id));
@@ -200,7 +200,7 @@ public class FormularioJuegoEditar extends JFrame {
 			    	comboTipo.setSelectedIndex(0);
 			    	break;
 			    
-			    case "Tragaperras":
+			    case "SlotMachine":
 			    	comboTipo.setSelectedIndex(1);
 			    	break;
 		    }

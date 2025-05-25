@@ -100,7 +100,7 @@ public class FormularioJuego extends JFrame {
 		contentPane.add(lblErrorDinero);
 		
 		comboTipo = new JComboBox<Object>();
-		comboTipo.setModel(new DefaultComboBoxModel<Object>(new String[] {"Blackjack", "Tragaperras"}));
+		comboTipo.setModel(new DefaultComboBoxModel<Object>(new String[] {"Blackjack", "SlotMachine"}));
 		comboTipo.setBounds(97, 80, 111, 22);
 		contentPane.add(comboTipo);		
 		
@@ -139,7 +139,7 @@ public class FormularioJuego extends JFrame {
 					modelo.agregarJuego(blackjack);
 				}
 				
-				if (tipo.equalsIgnoreCase("Tragaperras")) {
+				if (tipo.equalsIgnoreCase("SlotMachine")) {
 					Tragaperras tragaperras = new Tragaperras(dinero);
 					modelo.agregarJuego(tragaperras);
 				}		

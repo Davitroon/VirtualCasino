@@ -290,7 +290,7 @@ public class FormularioClienteEditar extends JFrame {
 	 */
 	public void cargarClienteOriginal(int id) {	    
 
-		ResultSet rset = modelo.consultarDatoUnico("clientes", id);
+		ResultSet rset = modelo.consultarDatoUnico("customers", id);
 	    String genero = "";
 	    
 	    try {

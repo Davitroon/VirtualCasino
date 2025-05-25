@@ -36,7 +36,7 @@ public class Sesion {
 		
 		try {
 			if (rset.next()) {
-				iniciarSesion(new Usuario(rset.getString("username"), rset.getString("user_password"), rset.getString("email"), 
+				iniciarSesion(new Usuario(rset.getInt("id") ,rset.getString("username"), rset.getString("user_password"), rset.getString("email"), 
 						rset.getString("last_access"), true), menu);
 				
 			} else {
@@ -58,6 +58,7 @@ public class Sesion {
 		modelo.actualizarUltimoAcceso(usuario.getNombre());
 		menu.setUsuario(usuario);
 		menu.getPerfil().actualizarDatos(usuario);
+		modelo.setUsuarioActual(usuario.getId());
 		controlador.cambiarVentana(ventanaActual, menu);
 	}
 

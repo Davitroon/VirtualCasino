@@ -215,10 +215,9 @@ public class TragaperrasVentana extends JFrame {
 	    lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
 	    lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
 
-	    String estadoFin = controlador.tragaperrasEstadoFin(cliente, tragaperras, apuestaResultado);
-
+	    irMensajeFinal = true;
 	    do {
-	        irMensajeFinal = false;
+		    String estadoFin = controlador.tragaperrasEstadoFin(cliente, tragaperras, apuestaResultado);
 	        int eleccion = controlador.juegosEstadoFin(estadoFin);
 
 	        if (eleccion == 0) {
@@ -229,12 +228,15 @@ public class TragaperrasVentana extends JFrame {
 	        if (eleccion == 1) {
 	            try {
 	                double apuestaNueva = controlador.alertaApuesta(cliente, tragaperras);
-	                apuesta = apuestaNueva;
-	                iniciarJuego();
+	                if (apuestaNueva != 0) {
+	                	apuesta = apuestaNueva;
+	                	irMensajeFinal = false;
+		                iniciarJuego();
+	                }             
 	                
 	            } catch (ApuestaExcepcion ex) {
 	                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	                irMensajeFinal = true; // Reintentar
+	                irMensajeFinal = true; // Repetir el bucle hasta que ingrese una apuesta válida o cancele
 	            }
 	        }
 	    } while (irMensajeFinal);

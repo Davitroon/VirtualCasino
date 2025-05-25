@@ -52,7 +52,6 @@ public class Jugar extends JFrame {
 	private JButton btnJugar;
 	private MenuPrincipal menu;
 	
-	
 
 	/**
 	 * Create the frame.
@@ -200,12 +199,13 @@ public class Jugar extends JFrame {
 		        Juego juego = null;
 
 		        try {
-		            cliente = new Cliente(rsetCliente.getInt("id"), rsetCliente.getString("nombre"), rsetCliente.getDouble("saldo"));
+		            cliente = new Cliente(rsetCliente.getInt("id"), rsetCliente.getString("customer_name"), rsetCliente.getDouble("balance"));
 
-		            if (rsetJuego.getString("tipo").equals("Blackjack")) {
-		                juego = new Blackjack(rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
-		            } else if (rsetJuego.getString("tipo").equals("Tragaperras")) {
-		                juego = new Tragaperras(rsetJuego.getInt("id"), rsetJuego.getDouble("dinero"));
+		            if (rsetJuego.getString("game_type").equals("Blackjack")) {
+		                juego = new Blackjack(rsetJuego.getInt("id"), rsetJuego.getDouble("money_pool"));
+		                
+		            } else if (rsetJuego.getString("game_type").equals("SlotMachine")) {
+		                juego = new Tragaperras(rsetJuego.getInt("id"), rsetJuego.getDouble("money_pool"));
 		            }
 
 		            double apuesta = controlador.alertaApuesta(cliente, juego);

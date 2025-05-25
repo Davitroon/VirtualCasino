@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import logica.Controlador;
 import logica.Modelo;
+import logica.Usuario;
 
 /**
  * Ventana donde guarda información de las partidas
@@ -28,7 +29,6 @@ public class Estadisticas extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	
-	private Modelo modelo;
 	private JLabel lblPartidasJugadasVal;
 	private JLabel lblPartidasGanadasVal;
 	private JLabel lblPartidasPerdidasVal;
@@ -41,14 +41,18 @@ public class Estadisticas extends JFrame {
 	private JLabel lblDineroGanadoVal;
 	private JButton btnBorrarEstadisticas;
 
+	private Modelo modelo;
+	private Usuario usuario;
+
 	/**
 	 * Create the frame.
 	 * @param menuPrincipal 
 	 * @param modelo 
 	 * @param controlador 
 	 */
-	public Estadisticas(MenuPrincipal menuPrincipal, Modelo modelo, Controlador controlador) {
+	public Estadisticas(MenuPrincipal menuPrincipal, Modelo modelo, Controlador controlador, Usuario usuario) {
 		this.modelo = modelo;
+		this.usuario = usuario;
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -217,6 +221,7 @@ public class Estadisticas extends JFrame {
 	 * Si una consulta no devuelve datos, lo marcará como null.
 	 */
 	public void actualizarDatos() {
+		System.out.println(usuario.getId());
 	    ResultSet rset = null;
 	    try {
 	    	
@@ -229,43 +234,56 @@ public class Estadisticas extends JFrame {
 	    	}
 	    	
 	    	// Partidas jugadas
-	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions;");
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE user_profile = " + usuario.getId() + ";");
 	    	rset.next();
 	    	lblPartidasJugadasVal.setText(rset.getString(1));
 
 	    	// Partidas ganadas (bet_result > 0)
-	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE bet_result > 0;");
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE bet_result > 0 AND user_profile = " + usuario.getId() + ";");
 	    	rset.next();
 	    	lblPartidasGanadasVal.setText(rset.getString(1));
 
 	    	// Partidas perdidas (bet_result < 0)
-	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE bet_result < 0;");
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE bet_result < 0 AND user_profile = " + usuario.getId() + ";");
 	    	rset.next();
 	    	lblPartidasPerdidasVal.setText(rset.getString(1));
 
 	    	// Partidas Blackjack
-	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE game_type = 'Blackjack';");
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE game_type = 'Blackjack' AND user_profile = " + usuario.getId() + ";");
 	    	rset.next();
 	    	lblPartidasBlackjackVal.setText(rset.getString(1));
 
 	    	// Partidas Slot Machine
-	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE game_type = 'SlotMachine';");
+	    	rset = modelo.consultaEspecifica("SELECT COUNT(*) FROM game_sessions WHERE game_type = 'SlotMachine' AND user_profile = " + usuario.getId() + ";");
 	    	rset.next();
 	    	lblPartidasTragaperrasVal.setText(rset.getString(1));
 
 	    	// Dinero ganado (suma de bet_result positivos)
-	    	rset = modelo.consultaEspecifica("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result > 0;");
+	    	rset = modelo.consultaEspecifica("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result > 0 AND user_profile = " + usuario.getId() + ";");
 	    	rset.next();
-	    	lblDineroGanadoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+	    	double dineroGanado;
+	    	if (rset.wasNull()) {
+	    		dineroGanado = 0.0;
+	    	
+	    	} else {
+	    		dineroGanado = rset.getDouble(1);
+	    	}
+	    	lblDineroGanadoVal.setText(String.format("%.2f$", dineroGanado));
 
 	    	// Dinero perdido (suma de bet_result negativos)
-	    	rset = modelo.consultaEspecifica("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result < 0;");
+	    	rset = modelo.consultaEspecifica("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result < 0 AND user_profile = " + usuario.getId() + ";");
 	    	rset.next();
-	    	lblDineroPerdidoVal.setText(String.format("%.2f$", rset.getDouble(1)));
+	    	double dineroPerdido;
+	    	if (rset.wasNull()) {
+	    		dineroPerdido = 0.0;
+	    	
+	    	} else {
+	    		dineroPerdido = rset.getDouble(1);
+	    	}
+	    	lblDineroPerdidoVal.setText(String.format("%.2f$", dineroPerdido));
 
 	    	// Cliente con más saldo
-	    	rset = modelo.consultaEspecifica(
-	    	    "SELECT customer_name, balance FROM customers ORDER BY balance DESC LIMIT 1;");
+	    	rset = modelo.consultaEspecifica("SELECT customer_name, balance FROM customers WHERE user_profile = " + usuario.getId() + " ORDER BY balance DESC LIMIT 1;");
 	    	if (rset.next()) {
 	    	    lblClienteSaldoVal.setText(
 	    	        String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
@@ -274,8 +292,7 @@ public class Estadisticas extends JFrame {
 	    	}
 
 	    	// Juego con más dinero en pool
-	    	rset = modelo.consultaEspecifica(
-	    	    "SELECT id, money_pool FROM games ORDER BY money_pool DESC LIMIT 1;");
+	    	rset = modelo.consultaEspecifica("SELECT id, money_pool FROM games WHERE user_profile = " + usuario.getId() + " ORDER BY money_pool DESC LIMIT 1;");
 	    	if (rset.next()) {
 	    	    lblDineroJuegoVal.setText(
 	    	        String.format("Game %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
@@ -284,14 +301,12 @@ public class Estadisticas extends JFrame {
 	    	}
 
 	    	// Última partida jugada
-	    	rset = modelo.consultaEspecifica(
-	    	    "SELECT session_date FROM game_sessions ORDER BY session_date DESC LIMIT 1;");
+	    	rset = modelo.consultaEspecifica("SELECT session_date FROM game_sessions WHERE user_profile = " + usuario.getId() + " ORDER BY session_date DESC LIMIT 1;");
 	    	if (rset.next()) {
 	    	    lblUltimaPartidaVal.setText(rset.getString(1));
 	    	} else {
 	    	    lblUltimaPartidaVal.setText("Null");
 	    	}
-
 
 	        rset.close();
 
@@ -299,4 +314,11 @@ public class Estadisticas extends JFrame {
 	        e.printStackTrace();
 	    }
 	}
+
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+	
+	
 }

@@ -7,10 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
+import java.sql.Statement;
 
 import excepciones.CorreoExcepcion;
 import excepciones.MensajeExcepcion;
-import excepciones.UsuarioExcepcion;
 
 
 /**
@@ -46,6 +46,24 @@ public class Modelo {
 	
 	
 	/**
+	 * Actualizar el último acceso de un usuario al programa.
+	 * @param nombre Nombre del usuario actualizar.
+	 */
+	public void actualizarUltimoAcceso (String nombre) {
+		String consulta = "UPDATE users SET last_access = NOW() WHERE username = ?";
+		
+		try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+			stmt.setString(1, nombre);
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un usuario.\nConsultar la consola para más información.");
+		}
+	}
+	
+	
+	
+	/**
 	 * Método para insertar un cliente en la base de datos.
 	 * @param cliente Cliente a agregar.
 	 * @since 3.0
@@ -67,7 +85,6 @@ public class Modelo {
 	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al insertar un cliente.\nConsultar la consola para más información.");
 	    }
 	}
-	
 	
 	
 	/**
@@ -121,18 +138,96 @@ public class Modelo {
 	
 	
 	/**
+	 * Método que añade un usuario a la BD.
+	 * @param usuario Objeto usuario a agregar.
+	 * @param recordarSesion True si se ha indicado que se guarde el inicio de sesion.
+	 * @return 
+	 * @throws CorreoExcepcion Excepción que se lanza en caso de que el correo no sea válido.
+	 * @throws SQLIntegrityConstraintViolationException 
+	 */
+		public Usuario agregarUsuario (Usuario usuario, boolean recordarSesion) throws CorreoExcepcion, SQLIntegrityConstraintViolationException {
+			String consulta = "INSERT INTO users (username, user_password, email) VALUES (?, ?, ?);";
+			
+		    try (PreparedStatement stmt = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS)) {
+		        stmt.setString(1, usuario.getNombre());
+		        stmt.setString(2, usuario.getContrasena());
+		        stmt.setString(3, usuario.getCorreo());
+	
+		        stmt.executeUpdate();
+		        
+		        // Obtener el ID generado
+		        int idGenerado = -1;
+		        try (ResultSet rs = stmt.getGeneratedKeys()) {
+		            if (rs.next()) {
+		                idGenerado = rs.getInt(1);
+		            }
+		        }
+
+		        ResultSet rset = consultarUsuario(usuario.getNombre(), usuario.getContrasena());
+	            if (!rset.getBoolean("verified_email")) {
+	                borrarDato(rset.getInt("id"), "users");
+	                throw new CorreoExcepcion("El correo ingresado no es válido.");
+	            }
+
+	            if (recordarSesion) {
+	                alternarRecordarSesion(usuario.getNombre(), recordarSesion);
+	            }
+
+	            usuario = new Usuario(idGenerado, rset.getString("username"), rset.getString("user_password"),
+	                rset.getString("email"), rset.getString("last_access"), recordarSesion);
+
+	            return usuario;
+
+	             
+		    } catch (SQLIntegrityConstraintViolationException e) {
+		    	throw new SQLIntegrityConstraintViolationException("El usuario " + usuario.getNombre() + " ya está registrado.");
+		    	
+		    } catch (SQLException e) {
+		    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al agregar un usuario.\nConsultar la consola para más información.");
+		    }
+			return null;
+		}
+	
+	
+	/**
+	 * Método que alternará el inicio de sesion automático de un usuario.
+	 * @param nombre Nombre del usuario a alternar.
+	 * @param activar True si se ha marcado que se recuerde la sesión.
+	 */
+	public void alternarRecordarSesion(String nombre, boolean activar) {
+		try {
+			// Quitar el resto de usuarios que tengan marcado recordar sesion
+			try (PreparedStatement stmt2 = conexion.prepareStatement("UPDATE users SET remember_login = FALSE WHERE remember_login = TRUE")) {
+			    stmt2.executeUpdate();
+			}
+			
+			if (activar) {
+				// Poner a este usuario como recordar sesion
+				try (PreparedStatement stmt3 = conexion.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
+				    stmt3.setString(1, nombre);
+				    stmt3.executeUpdate();
+				}	
+			}
+
+		} catch (SQLException e) {
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un usuario.\nConsultar la consola para más información.");
+	    } 
+	}
+	
+	
+	/**
 	 * Método para borrar un dato de la base de datos.
 	 * @param id Id del dato a borrar.
 	 * @param tabla Tabla de donde se borrará el dato.
 	 * @since 3.0
 	 */
-	public void borrarDato(String id, String tabla) {
+	public void borrarDato(int id, String tabla) {
 		
 		String consulta = "DELETE FROM " + tabla + " WHERE id = ?;";
 		
 		try {		
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
-			stmt.setString(1, id);	
+			stmt.setInt(1, id);	
 			
 			stmt.executeUpdate();
 			stmt.close();
@@ -143,41 +238,17 @@ public class Modelo {
 		}
 	}
 	
-	
-	/**
-	 * Método para borrar un dato de la base de datos.
-	 * @param id Id del dato a borrar.
-	 * @param tabla Tabla de donde se borrará el dato.
-	 * @since 3.0
-	 */
-	public void borrarUsuario(String nombre) {
-		
-		String consulta = "DELETE FROM users WHERE username = ?;";
-		
-		try {		
-			PreparedStatement stmt = conexion.prepareStatement(consulta);
-			stmt.setString(1, nombre);	
-			
-			stmt.executeUpdate();
-			stmt.close();
-			
-			
-		} catch (SQLException e) {
-			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al borrar un usuario.\nConsultar la consola para más información.");
-		}
-	}
-	
-	
 	/**
 	 * Método para borrar todos los datos de una tabla.
 	 * @param tabla Tabla a borrar su datos.
 	 * @since 3.0
 	 */
 	public void borrarDatosTabla(String tabla) {
-		String consulta = "DELETE FROM " + tabla;
+		String consulta = "DELETE FROM " + tabla + " WHERE user_profile = ?";
 		
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
+			stmt.setInt(1, usuarioActual);
 			stmt.executeUpdate();
 			stmt.close();
 			
@@ -187,7 +258,6 @@ public class Modelo {
 		
 		
 	}
-	
 	
 	/**
 	 * Realiza una consulta a la BD que se reciba por parametro. Recomendado para consultas muy específicas.
@@ -219,13 +289,14 @@ public class Modelo {
 	 */
 	public ResultSet consultarDatos(String tabla, boolean soloActivos) {
 		
-		String consulta = "SELECT * FROM " + tabla;	
+		String consulta = "SELECT * FROM " + tabla + " WHERE user_profile = ?";	
 		ResultSet rset = null;
 		 
-		if (soloActivos) consulta += " WHERE active_status = 1";
+		if (soloActivos) consulta += " AND active_status = 1";
 		
 		try {
 			PreparedStatement stmt = conexion.prepareStatement(consulta);
+			stmt.setInt(1, usuarioActual);
 			rset = stmt.executeQuery();
 			
 			
@@ -236,6 +307,7 @@ public class Modelo {
 	
 		return rset;
 	}
+	
 	
 	/**
 	 * Método para realizar una consulta de un único dato en una tabla a la base de datos.
@@ -263,6 +335,37 @@ public class Modelo {
 		return rset;
 	}
 	
+	
+	/**
+	 * Consulta un usuario de la base de datos. El nombre y contraseña debe ser exactamente el mismo.
+	 * @param nombre Nombre del usuario.
+	 * @param contraseña Contraseña del usuario.
+	 * @return Resultado de la consulta SQL.
+	 */
+	public ResultSet consultarUsuario (String nombre, String contraseña) {
+		String consulta = "SELECT * FROM users WHERE username = ? AND user_password = ?";
+		ResultSet rset;
+		
+	    try {
+	    	PreparedStatement stmt = conexion.prepareStatement(consulta);
+	        stmt.setString(1, nombre);
+	        stmt.setString(2, contraseña);
+
+	        rset = stmt.executeQuery();
+	        
+	        // Si se encontró un usuario con esa contraseña
+	        if (rset.next()) {   
+	        	return rset;        	
+	        }
+             
+	    } catch (SQLException e) {
+	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al consultar la tabla usuarios.\nConsultar la consola para más información.");
+	    }
+	    
+	    return null;
+	}
+	
+	
 	/**
 	 * Método para modificar un cliente en la base de datos.
 	 * @param cliente Cliente a modificar.
@@ -284,28 +387,28 @@ public class Modelo {
 	    } catch (SQLException e) {
 	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un cliente.\nConsultar la consola para más información.");
 	    }
-	}
+	}	
 	
 	
-	/**
-	 * Método para modificar el dinero de un juego en la base de datos.
-	 * @param juego Juego a modificar.
-	 * @since 3.0
-	 */
-	public void modificarDineroJuego(Juego juego) {
-	    String consulta = "UPDATE games SET money_pool = ? WHERE id = ?;";
-	    
-	    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
-	        stmt.setDouble(1, juego.getDinero());
-	        stmt.setInt(2, juego.getId());
+/**
+ * Método para modificar el dinero de un juego en la base de datos.
+ * @param juego Juego a modificar.
+ * @since 3.0
+ */
+public void modificarDineroJuego(Juego juego) {
+    String consulta = "UPDATE games SET money_pool = ? WHERE id = ?;";
+    
+    try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
+        stmt.setDouble(1, juego.getDinero());
+        stmt.setInt(2, juego.getId());
 
-	        stmt.executeUpdate();
-	        
-	        
-	    } catch (SQLException e) {
-	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar el dinero del juego.\nConsultar la consola para más información.");
-	    }
-	}
+        stmt.executeUpdate();
+        
+        
+    } catch (SQLException e) {
+    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar el dinero del juego.\nConsultar la consola para más información.");
+    }
+}
 	
 	
 	/**
@@ -350,123 +453,11 @@ public class Modelo {
 	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar el saldo del cliente.\nConsultar la consola para más información.");
 	    }
 	}
-	
-	
-	/**
-	 * Consulta un usuario de la base de datos. El nombre y contraseña debe ser exactamente el mismo.
-	 * @param nombre Nombre del usuario.
-	 * @param contraseña Contraseña del usuario.
-	 * @return Resultado de la consulta SQL.
-	 */
-	public ResultSet consultarUsuario (String nombre, String contraseña) {
-		String consulta = "SELECT * FROM users WHERE username = ? AND user_password = ?";
-		ResultSet rset;
-		
-	    try {
-	    	PreparedStatement stmt = conexion.prepareStatement(consulta);
-	        stmt.setString(1, nombre);
-	        stmt.setString(2, contraseña);
 
-	        rset = stmt.executeQuery();
-	        
-	        // Si se encontró un usuario con esa contraseña
-	        if (rset.next()) {   
-	        	return rset;        	
-	        }
-             
-	    } catch (SQLException e) {
-	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al consultar la tabla usuarios.\nConsultar la consola para más información.");
-	    }
-	    
-	    return null;
-	}	
-	
-	
-/**
- * Método que añade un usuario a la BD.
- * @param usuario Objeto usuario a agregar.
- * @param recordarSesion True si se ha indicado que se guarde el inicio de sesion.
- * @return 
- * @throws CorreoExcepcion Excepción que se lanza en caso de que el correo no sea válido.
- * @throws UsuarioExcepcion 
- */
-	public Usuario agregarUsuario (Usuario usuario, boolean recordarSesion) throws CorreoExcepcion, UsuarioExcepcion {
-		String consulta = "INSERT INTO users (username, user_password, email) VALUES (?, ?, ?);";
-		
-	    try {
-	    	PreparedStatement stmt = conexion.prepareStatement(consulta);
-	        stmt.setString(1, usuario.getNombre());
-	        stmt.setString(2, usuario.getContrasena());
-	        stmt.setString(3, usuario.getCorreo());
 
-	        stmt.executeUpdate();
-	        
-	        ResultSet rset = consultarUsuario(usuario.getNombre(), usuario.getContrasena());
-	             	
-	        // Lanza una excepcion si el correo ingresado no es válido
-	        if (!rset.getBoolean("verified_email")) {
-	        	borrarDato(String.valueOf(rset.getInt("id")), "users");
-	        	throw new CorreoExcepcion("El correo ingresado no es válido.");
-	        }
-	        
-        	if (recordarSesion) {
-        		alternarRecordarSesion(usuario.getNombre(), recordarSesion);    		
-        	}
-        	
-        	usuario = new Usuario(rset.getString("username"), rset.getString("user_password"), rset.getString("email"), 
-        			rset.getString("last_access"), recordarSesion);    	
-
-        	return usuario;
-             
-	    } catch (SQLIntegrityConstraintViolationException e) {
-	    	throw new UsuarioExcepcion("El usuario " + usuario.getNombre() + " ya está registrado.");
-	    	
-	    } catch (SQLException e) {
-	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al agregar un usuario.\nConsultar la consola para más información.");
-	    }
-		return null;
+	public void setUsuarioActual(int usuarioActual) {
+		this.usuarioActual = usuarioActual;
 	}
 	
 	
-	/**
-	 * Método que alternará el inicio de sesion automático de un usuario.
-	 * @param nombre Nombre del usuario a alternar.
-	 * @param activar True si se ha marcado que se recuerde la sesión.
-	 */
-	public void alternarRecordarSesion(String nombre, boolean activar) {
-		try {
-			// Quitar el resto de usuarios que tengan marcado recordar sesion
-			try (PreparedStatement stmt2 = conexion.prepareStatement("UPDATE users SET remember_login = FALSE WHERE remember_login = TRUE")) {
-			    stmt2.executeUpdate();
-			}
-			
-			if (activar) {
-				// Poner a este usuario como recordar sesion
-				try (PreparedStatement stmt3 = conexion.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
-				    stmt3.setString(1, nombre);
-				    stmt3.executeUpdate();
-				}	
-			}
-
-		} catch (SQLException e) {
-	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un usuario.\nConsultar la consola para más información.");
-	    } 
-	}
-	
-	
-	/**
-	 * Actualizar el último acceso de un usuario al programa.
-	 * @param nombre Nombre del usuario actualizar.
-	 */
-	public void actualizarUltimoAcceso (String nombre) {
-		String consulta = "UPDATE users SET last_access = NOW() WHERE username = ?";
-		
-		try (PreparedStatement stmt = conexion.prepareStatement(consulta)) {
-			stmt.setString(1, nombre);
-			stmt.executeUpdate();
-			
-		} catch (SQLException e) {
-	    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al modificar un usuario.\nConsultar la consola para más información.");
-		}
-	}
 }

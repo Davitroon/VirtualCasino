@@ -174,7 +174,7 @@ public class IniciarSesion extends JFrame {
 				try {
 					ResultSet rset = (modelo.consultarUsuario(textNombre.getText(), contraseña));
 					if (rset != null) {
-						usuario = new Usuario(rset.getString("username"), rset.getString("user_password"), rset.getString("email"), rset.getString("last_access"), rset.getBoolean("remember_login"));
+						usuario = new Usuario(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"), rset.getString("email"), rset.getString("last_access"), rset.getBoolean("remember_login"));
 						
 						// Si se ha marcado que se recuerde la sesion, lo modifica antes de entrar
 						if (chckbxRecordarSesion.isSelected()) {

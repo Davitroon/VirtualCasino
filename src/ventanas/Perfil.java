@@ -130,7 +130,7 @@ public class Perfil extends JFrame {
 				
 				if (respuesta == JOptionPane.YES_OPTION) {
 					controlador.cambiarVentana(Perfil.this, menu.getConectarse());
-					modelo.borrarUsuario(usuario.getNombre());
+					modelo.borrarDato(usuario.getId(), "users");
 				}
 			}
 		});

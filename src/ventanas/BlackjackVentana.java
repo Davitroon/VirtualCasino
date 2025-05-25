@@ -238,10 +238,9 @@ public class BlackjackVentana extends JFrame {
 	    btnPedir.setEnabled(false);
 	    btnPlantarse.setEnabled(false);
 
-	    String estadoFin = controlador.blackjackEstadoFin(clienteGana, cliente, blackjack, apuestaResultado);
-
+	    irMensajeFinal = true;
 	    do {
-	        irMensajeFinal = false;
+	    	String estadoFin = controlador.blackjackEstadoFin(clienteGana, cliente, blackjack, apuestaResultado);
 	        int eleccion = controlador.juegosEstadoFin(estadoFin);
 
 	        if (eleccion == 0) {
@@ -252,8 +251,11 @@ public class BlackjackVentana extends JFrame {
 	        if (eleccion == 1) {
 	            try {
 	                double apuestaNueva = controlador.alertaApuesta(cliente, blackjack);
-	                apuesta = apuestaNueva;
-	                iniciarJuego();
+	                if (apuestaNueva != 0) {
+	                	apuesta = apuestaNueva;
+	                	irMensajeFinal = false;
+		                iniciarJuego();
+	                }             
 	                
 	            } catch (ApuestaExcepcion ex) {
 	                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -274,8 +276,11 @@ public class BlackjackVentana extends JFrame {
 		partidaTerminada = false;
 		
 		lblCartasCrupier.setText(String.format("Baraja del crupier (%.2f$)", blackjack.getDinero()));
-		lblTusCartas.setText(String.format("Baraja de %s (%.2f$)", cliente.getNombre(), cliente.getSaldo()));		
-		lblCartasCrupierList.setText("(" + (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : blackjack.getCartasCrupier().get(0)) + ") " + blackjack.mostrarCartas(true, "crupier"));
+		lblTusCartas.setText(String.format("Baraja de %s (%.2f$)", cliente.getNombre(), cliente.getSaldo()));
+		
+		int sumaCrupier = blackjack.getCartasCrupier().get(0);
+		if (sumaCrupier > 10) sumaCrupier = 10;
+		lblCartasCrupierList.setText("(" + (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : sumaCrupier + ") " + blackjack.mostrarCartas(true, "crupier")));
 		lblTusCartasList.setText("(" + barajaCliente + ") " + blackjack.mostrarCartas(false, "cliente"));
 		lblApuestaActual.setText(String.format("Apuesta actual: %.2f$", apuesta));
 		

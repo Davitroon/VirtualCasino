@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,7 +22,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import excepciones.CorreoExcepcion;
-import excepciones.UsuarioExcepcion;
 import logica.Controlador;
 import logica.Modelo;
 import logica.Sesion;
@@ -243,7 +241,7 @@ public class CrearUsuario extends JFrame {
 					} catch (CorreoExcepcion e1) {
 						 JOptionPane.showMessageDialog(null, e1.getMessage(), "Correo no válido", JOptionPane.WARNING_MESSAGE);
 						 
-					} catch (UsuarioExcepcion e2) {
+					} catch (SQLIntegrityConstraintViolationException e2) {
 						JOptionPane.showMessageDialog(null, e2.getMessage(), "Correo no válido", JOptionPane.WARNING_MESSAGE);
 					}
 				}

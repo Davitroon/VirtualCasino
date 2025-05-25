@@ -122,7 +122,10 @@ public class MenuPrincipal extends JFrame {
 		btnEstadisticas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (estadisticas == null) {
-					estadisticas = new Estadisticas(MenuPrincipal.this, modelo, controlador);
+					estadisticas = new Estadisticas(MenuPrincipal.this, modelo, controlador, usuario);
+					
+				} else {
+					estadisticas.setUsuario(usuario);
 				}
 				estadisticas.actualizarDatos();
 				controlador.cambiarVentana(MenuPrincipal.this, estadisticas);

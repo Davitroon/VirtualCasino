@@ -303,7 +303,7 @@ public class Gestion extends JFrame {
 				int fila = tableClientes.getSelectedRow();
 				if (fila == -1 ) return;
 				
-				String id = String.valueOf(tableClientes.getValueAt(fila, 0)) ;
+				int id = (int) tableClientes.getValueAt(fila, 0) ;
 				modelo.borrarDato(id, "customers");
 		
 				actualizarTablaClientes();
@@ -388,7 +388,7 @@ public class Gestion extends JFrame {
 				int fila = tableJuegos.getSelectedRow();
 				if (fila == -1 ) return;
 				
-				String id = String.valueOf(tableJuegos.getValueAt(fila, 0)) ;
+				int id = (int) tableJuegos.getValueAt(fila, 0) ;
 				modelo.borrarDato(id, "games");
 		
 				actualizarTablaJuegos();

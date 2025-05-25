@@ -2,6 +2,7 @@ package logica;
 
 public class Usuario {
 
+	private int id;
 	private String nombre;
 	private String contrasena;
 	private String correo;
@@ -10,7 +11,8 @@ public class Usuario {
 	
 	
 	
-	public Usuario(String nombre, String contraseña, String correo, String ultimoAcceso, boolean recordarSesion) {
+	public Usuario(int id, String nombre, String contraseña, String correo, String ultimoAcceso, boolean recordarSesion) {
+		this.id = id;
 		this.nombre = nombre;
 		this.contrasena = contraseña;
 		this.correo = correo;
@@ -55,6 +57,11 @@ public class Usuario {
 
 	public boolean isRecordarSesion() {
 		return recordarSesion;
+	}
+
+
+	public int getId() {
+		return id;
 	}	
 	
 	
