@@ -214,7 +214,7 @@ public class Estadisticas extends JFrame {
 					    );
 
 			    if (opcion == JOptionPane.YES_OPTION) {
-			        modelo.borrarDatosTabla("partidas");
+			        modelo.borrarDatosTabla("game_sessions");
 			        actualizarDatos();
 			    }
 			}
@@ -294,7 +294,7 @@ public class Estadisticas extends JFrame {
 	    	    lblClienteSaldoVal.setText(
 	    	        String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
 	    	} else {
-	    	    lblClienteSaldoVal.setText("Null");
+	    	    lblClienteSaldoVal.setText("Ninguno registrado");
 	    	}
 
 	    	// Juego con más dinero en pool
@@ -303,7 +303,7 @@ public class Estadisticas extends JFrame {
 	    	    lblDineroJuegoVal.setText(
 	    	        String.format("Game %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
 	    	} else {
-	    	    lblDineroJuegoVal.setText("Null");
+	    	    lblDineroJuegoVal.setText("Ninguno registrado");
 	    	}
 
 	    	// Última partida jugada
@@ -311,7 +311,7 @@ public class Estadisticas extends JFrame {
 	    	if (rset.next()) {
 	    	    lblUltimaPartidaVal.setText(rset.getString(1));
 	    	} else {
-	    	    lblUltimaPartidaVal.setText("Null");
+	    	    lblUltimaPartidaVal.setText("Ninguno registrado");
 	    	}
 
 	        rset.close();
