@@ -1174,8 +1174,8 @@ INSERT INTO dominios (domain_type, tld, manager) VALUES  ('generic', '.hsbc', 'H
 
 
 -- Sample data
-INSERT INTO users (username, user_password, email) VALUES ('pepe', '12345678', 'usuario@gmail.com');
-INSERT INTO users (username, user_password, email) VALUES ('juan', '12345678', 'usuario2@gmail.com');
+INSERT INTO users (username, user_password, email) VALUES ('usuario', '12345678', 'usuario@gmail.com');
+INSERT INTO users (username, user_password, email) VALUES ('prueba', '12345678', 'usuario2@gmail.com');
 INSERT INTO customers (customer_name, age, gender, balance, user_profile) VALUES ('John', 32, 'M', 2030.0, 1);
 INSERT INTO customers (customer_name, age, gender, balance, user_profile) VALUES ('Pepe', 32, 'M', 2030.0, 2);
 INSERT INTO games (game_type, money_pool, user_profile) VALUES ('SlotMachine', 50000.0, 1);
@@ -1186,10 +1186,10 @@ INSERT INTO games (game_type, money_pool, user_profile) VALUES ('Blackjack', 500
 -- UPDATE users SET email = "caca@gmail.com" WHERE id = 1;
 
 -- Uncomment for testing
- SELECT * FROM customers;
- SELECT * FROM game_sessions;
- SELECT * FROM games;
- SELECT * FROM users;
+-- SELECT * FROM customers;
+-- SELECT * FROM game_sessions;
+-- SELECT * FROM games;
+-- SELECT * FROM users;
 -- SHOW TRIGGERS;
 
 -- SET sql_safe_updates = 0;

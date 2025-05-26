@@ -273,7 +273,7 @@ public class Modelo {
 			rset = stmt.executeQuery();
 			
 		} catch (SQLException e) {
-			mensajeExcepcion.mostrarError(e, "Ha ocurrido u nerror en la conexión con la BD al hacer una lectura.\nConsultar la consola para más información.");
+			mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al hacer una lectura.\nConsultar la consola para más información.");
 		}	
 		
 		return rset;

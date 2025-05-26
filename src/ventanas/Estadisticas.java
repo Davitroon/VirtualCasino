@@ -43,6 +43,7 @@ public class Estadisticas extends JFrame {
 
 	private Modelo modelo;
 	private Usuario usuario;
+	private JLabel lblUsuario;
 
 	/**
 	 * Create the frame.
@@ -181,6 +182,11 @@ public class Estadisticas extends JFrame {
 		btnBorrarEstadisticas.setBounds(516, 90, 142, 32);
 		contentPane.add(btnBorrarEstadisticas);
 		
+		lblUsuario = new JLabel("Estadísticas de ");
+		lblUsuario.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblUsuario.setBounds(20, 95, 178, 14);
+		contentPane.add(lblUsuario);
+		
 		// Al cerrar la ventana mediante la X
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -221,7 +227,7 @@ public class Estadisticas extends JFrame {
 	 * Si una consulta no devuelve datos, lo marcará como null.
 	 */
 	public void actualizarDatos() {
-		System.out.println(usuario.getId());
+		lblUsuario.setText("Estadísticas de " + usuario.getNombre());
 	    ResultSet rset = null;
 	    try {
 	    	
@@ -319,6 +325,4 @@ public class Estadisticas extends JFrame {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
-	
 }
