@@ -26,6 +26,9 @@ public class Modelo {
 	private String pwd = "Coco2006";
 	private String url = "jdbc:mysql://localhost/" + database;
 	
+	private Cliente clienteDefault;
+	private Juego juegoDefault;
+	
 	private MensajeExcepcion mensajeExcepcion;
 	private int usuarioActual;
 	
@@ -457,6 +460,19 @@ public void modificarDineroJuego(Juego juego) {
 
 	public void setUsuarioActual(int usuarioActual) {
 		this.usuarioActual = usuarioActual;
+	}
+
+
+	/** 
+	 * Método que agrega usuarios y juegos pro defecto al crear un usuario.
+	 */
+	public void agregarUsuarioDefault() {
+		clienteDefault = new Cliente("usuario", 32, 'O', 2000);
+		agregarCliente(clienteDefault);
+		juegoDefault = new Blackjack(10000);
+		agregarJuego(juegoDefault);
+		juegoDefault = new Tragaperras(10000);
+		agregarJuego(juegoDefault);
 	}
 	
 	

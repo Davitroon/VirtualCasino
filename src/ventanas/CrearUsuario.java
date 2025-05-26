@@ -236,6 +236,7 @@ public class CrearUsuario extends JFrame {
 						usuario = new Usuario(textNombre.getText(), contraseña, textCorreo.getText(), chckbxRecordarSesion.isSelected());
 						usuario = modelo.agregarUsuario(usuario, chckbxRecordarSesion.isSelected() );	
 						sesion.iniciarSesion(usuario, CrearUsuario.this);
+						modelo.agregarUsuarioDefault();
 						reiniciarContenido();
 						
 					} catch (CorreoExcepcion e1) {
