@@ -1,0 +1,2 @@
+Main-Class: logica.Lanzador
+Class-Path: lib/mysql-connector-j-9.3.0.jar
