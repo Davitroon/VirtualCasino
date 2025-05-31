@@ -83,11 +83,9 @@ BEGIN
             SELECT COUNT(*) INTO valid_domain FROM dominios WHERE tld = domain;
 
 			-- Comprobar el resultado
-            IF valid_domain > 0 THEN
-                SET NEW.verified_email = TRUE;
-            ELSE
-                SET NEW.verified_email = FALSE;
-            END IF;
+			IF valid_domain = 0 THEN
+				SIGNAL SQLSTATE '45000';
+			END IF;
         END IF;
     END IF;
 END $$

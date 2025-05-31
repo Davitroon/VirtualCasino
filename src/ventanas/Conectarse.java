@@ -67,10 +67,20 @@ public class Conectarse extends JFrame {
 		btnSalir.setBounds(10, 219, 105, 32);
 		contentPane.add(btnSalir);
 		
+		// Cerrar ventana
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        modelo.cerrarConexion();
+		        System.exit(0);
+		    }
+		});
+		
 		// Clic boton salir
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(ABORT);
+				modelo.cerrarConexion();
+				System.exit(0);
 			}
 		});		
 		

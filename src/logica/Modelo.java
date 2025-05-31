@@ -167,10 +167,6 @@ public class Modelo {
 		        }
 
 		        ResultSet rset = consultarUsuario(usuario.getNombre(), usuario.getContrasena());
-	            if (!rset.getBoolean("verified_email")) {
-	                borrarDato(rset.getInt("id"), "users");
-	                throw new CorreoExcepcion("El correo ingresado no es válido.");
-	            }
 
 	            if (recordarSesion) {
 	                alternarRecordarSesion(usuario.getNombre(), recordarSesion);
@@ -186,7 +182,12 @@ public class Modelo {
 		    	throw new SQLIntegrityConstraintViolationException("El usuario " + usuario.getNombre() + " ya está registrado.");
 		    	
 		    } catch (SQLException e) {
-		    	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al agregar un usuario.\nConsultar la consola para más información.");
+		        if ("45000".equals(e.getSQLState())) {
+		            throw new CorreoExcepcion("Dominio de correo no válido");
+		            
+		        } else {
+		        	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error en la conexión con la BD al agregar un usuario.\nConsultar la consola para más información.");
+		        }		    	
 		    }
 			return null;
 		}
@@ -473,6 +474,21 @@ public void modificarDineroJuego(Juego juego) {
 		agregarJuego(juegoDefault);
 		juegoDefault = new Tragaperras(10000);
 		agregarJuego(juegoDefault);
+	}
+	
+	/**
+	 * Método para cerrar la conexión con la BD.
+	 */
+	public void cerrarConexion() {
+	    try {
+	        if (conexion != null && !conexion.isClosed()) {
+	            conexion.close();
+	            System.out.println(" - Conexión con BD cerrada -");
+	        }
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	

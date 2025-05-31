@@ -40,6 +40,7 @@ public class CrearUsuario extends JFrame {
 	private boolean nombreValido;
 	private boolean contraseñaValida;
 	private boolean contraseñaValida2;
+	private boolean correoValido;
 	
 	private JPasswordField passwordField;
 	private JButton btnAceptar;
@@ -51,6 +52,7 @@ public class CrearUsuario extends JFrame {
 	private JCheckBox chckbxMostrar;
 
 	private Usuario usuario;
+	private JLabel lblContrasenaAviso;
 	/**
 	 * Create the frame.
 	 */
@@ -103,8 +105,8 @@ public class CrearUsuario extends JFrame {
 		lblErrorNombre.setBounds(27, 131, 306, 14);
 		contentPane.add(lblErrorNombre);
 		
-		JLabel lblContrasenaAviso = new JLabel("La contraseña debe tener mínimo 8 caracteres");
-		lblContrasenaAviso.setForeground(new Color(128, 128, 128));
+		lblContrasenaAviso = new JLabel("La contraseña debe tener mínimo 8 caracteres");
+		lblContrasenaAviso.setForeground(Color.RED);
 		lblContrasenaAviso.setBounds(27, 187, 272, 20);
 		contentPane.add(lblContrasenaAviso);
 		
@@ -141,6 +143,12 @@ public class CrearUsuario extends JFrame {
 		textCorreo.setBounds(411, 101, 172, 26);
 		contentPane.add(textCorreo);
 		
+		JLabel lblErrorCorreo = new JLabel("");
+		lblErrorCorreo.setForeground(Color.RED);
+		lblErrorCorreo.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorCorreo.setBounds(351, 131, 232, 14);
+		contentPane.add(lblErrorCorreo);
+		
 		// Clic boton volver
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -173,6 +181,10 @@ public class CrearUsuario extends JFrame {
 				
 				if (contraseña.length() > 7)  {
 					contraseñaValida = true;
+					lblContrasenaAviso.setForeground(Color.GRAY);
+					
+				} else {
+					lblContrasenaAviso.setForeground(Color.RED);
 				}
 
 				revisarFormulario();
@@ -194,10 +206,22 @@ public class CrearUsuario extends JFrame {
 		});
 		
 		// Al escribir en el campo correo
-		textCorreo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				revisarFormulario();
-			}
+		textCorreo.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyReleased(KeyEvent e) {
+		        correoValido = false;
+		        String correo = textCorreo.getText().trim();
+
+		        if (correo.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+		            correoValido = true;
+		            lblErrorCorreo.setText(""); 
+		            
+		        } else {
+		            lblErrorCorreo.setText("Formato de correo no válido");
+		        }
+
+		        revisarFormulario();
+		    }
 		});
 			
 		// Mostrar u ocultar contraseña
@@ -279,9 +303,9 @@ public class CrearUsuario extends JFrame {
 	 * Revisa el formulario para asegurarse que los datos sean correctos.
 	 */
 	public void revisarFormulario() {
-		if (nombreValido && contraseñaValida && contraseñaValida2 && !textCorreo.getText().isBlank()) {
-			btnAceptar.setEnabled(true);
-			
+		if (contraseñaValida && contraseñaValida2 && nombreValido && correoValido) {		
+			btnAceptar.setEnabled(true);				
+		
 		} else {
 			btnAceptar.setEnabled(false);
 		}

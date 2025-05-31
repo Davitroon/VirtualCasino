@@ -90,6 +90,15 @@ public class MenuPrincipal extends JFrame {
 		btnPerfil.setBounds(445, 11, 57, 32);
 		contentPane.add(btnPerfil);
 		
+		// Cerrar ventana
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        modelo.cerrarConexion();
+		        System.exit(0);
+		    }
+		});
+		
 		// Clic boton jugar
 		btnJugar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -143,7 +152,8 @@ public class MenuPrincipal extends JFrame {
 		// Clic boton salir
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(ABORT);
+				modelo.cerrarConexion();
+				System.exit(0);
 			}
 		});
 		
