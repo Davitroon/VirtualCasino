@@ -55,9 +55,7 @@ public class Sesion {
 	 * @param ventanaActual Ventana en la que se está iniciando sesión.
 	 */
 	public void iniciarSesion (Usuario usuario, JFrame ventanaActual) {
-		modelo.actualizarUltimoAcceso(usuario.getNombre());
 		menu.setUsuario(usuario);
-		menu.getPerfil().actualizarDatos(usuario);
 		modelo.setUsuarioActual(usuario.getId());
 		controlador.cambiarVentana(ventanaActual, menu);
 	}

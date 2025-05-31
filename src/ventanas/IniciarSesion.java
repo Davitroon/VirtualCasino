@@ -100,7 +100,7 @@ public class IniciarSesion extends JFrame {
 		contentPane.add(lblErrorNombre);
 		
 		JLabel lblContrasenaAviso = new JLabel("La contraseña debe tener mínimo 8 caracteres");
-		lblContrasenaAviso.setForeground(new Color(128, 128, 128));
+		lblContrasenaAviso.setForeground(Color.RED);
 		lblContrasenaAviso.setBounds(89, 191, 288, 20);
 		contentPane.add(lblContrasenaAviso);
 		
@@ -147,6 +147,10 @@ public class IniciarSesion extends JFrame {
 				contraseñaValida = false;
 				if (passwordField.getPassword().length >= 8) {
 					contraseñaValida = true;
+					lblContrasenaAviso.setForeground(Color.GRAY);
+					
+				} else {
+					lblContrasenaAviso.setForeground(Color.RED);
 				}
 				
 				revisarFormulario();
@@ -170,24 +174,35 @@ public class IniciarSesion extends JFrame {
 				char[] passwordChars = passwordField.getPassword();
 				String contraseña = new String(passwordChars);
 				
-				// Revisa si el usuario existe con esa contraseña. Si es asi, inicia sesion como el.
+				// Revisa si el usuario existe.
 				try {
-					ResultSet rset = (modelo.consultarUsuario(textNombre.getText(), contraseña));
+					ResultSet rset = (modelo.consultarUsuario(textNombre.getText()));
 					if (rset != null) {
 						usuario = new Usuario(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"), rset.getString("email"), rset.getString("last_access"), rset.getBoolean("remember_login"));
 						
-						// Si se ha marcado que se recuerde la sesion, lo modifica antes de entrar
-						if (chckbxRecordarSesion.isSelected()) {
-							modelo.alternarRecordarSesion(usuario.getNombre(), true);
-						}
-						sesion.iniciarSesion(usuario, IniciarSesion.this);
-						reiniciarContenido();
+						// Validar que la contraseña del usuario sea igual que la contraseña escrita
+						if (!usuario.getContrasena().equals(contraseña)) {
+							JOptionPane.showMessageDialog(
+								    null,
+								    "Contraseña incorrecta",
+								    "Advertencia",
+								    JOptionPane.WARNING_MESSAGE
+								);
+							
+						} else {
+							// Si se ha marcado que se recuerde la sesion, lo modifica antes de entrar
+							if (chckbxRecordarSesion.isSelected()) {
+								modelo.alternarRecordarSesion(usuario.getNombre(), true);
+							}
+							sesion.iniciarSesion(usuario, IniciarSesion.this);
+							reiniciarContenido();
+						}					
 						rset.close();
 						
 					} else {
 						JOptionPane.showMessageDialog(
 							    null,
-							    "Usuario no encontrado o datos mal escritos.",
+							    "El usuario " + textNombre.getText() + " no está registrado",
 							    "Advertencia",
 							    JOptionPane.WARNING_MESSAGE
 							);

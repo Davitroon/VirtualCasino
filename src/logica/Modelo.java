@@ -166,7 +166,7 @@ public class Modelo {
 		            }
 		        }
 
-		        ResultSet rset = consultarUsuario(usuario.getNombre(), usuario.getContrasena());
+		        ResultSet rset = consultarUsuario(usuario.getNombre());
 
 	            if (recordarSesion) {
 	                alternarRecordarSesion(usuario.getNombre(), recordarSesion);
@@ -343,17 +343,15 @@ public class Modelo {
 	/**
 	 * Consulta un usuario de la base de datos. El nombre y contraseña debe ser exactamente el mismo.
 	 * @param nombre Nombre del usuario.
-	 * @param contraseña Contraseña del usuario.
 	 * @return Resultado de la consulta SQL.
 	 */
-	public ResultSet consultarUsuario (String nombre, String contraseña) {
-		String consulta = "SELECT * FROM users WHERE username = ? AND user_password = ?";
+	public ResultSet consultarUsuario (String nombre) {
+		String consulta = "SELECT * FROM users WHERE username = ?";
 		ResultSet rset;
 		
 	    try {
 	    	PreparedStatement stmt = conexion.prepareStatement(consulta);
 	        stmt.setString(1, nombre);
-	        stmt.setString(2, contraseña);
 
 	        rset = stmt.executeQuery();
 	        

@@ -176,10 +176,8 @@ public class CrearUsuario extends JFrame {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				contraseñaValida = false;
-				char[] passwordChars = passwordField.getPassword();
-				String contraseña = new String(passwordChars);
 				
-				if (contraseña.length() > 7)  {
+				if (passwordField.getPassword().length > 7)  {
 					contraseñaValida = true;
 					lblContrasenaAviso.setForeground(Color.GRAY);
 					

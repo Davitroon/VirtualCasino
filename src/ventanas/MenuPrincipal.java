@@ -94,6 +94,7 @@ public class MenuPrincipal extends JFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	modelo.actualizarUltimoAcceso(usuario.getNombre());
 		        modelo.cerrarConexion();
 		        System.exit(0);
 		    }
@@ -152,6 +153,7 @@ public class MenuPrincipal extends JFrame {
 		// Clic boton salir
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				modelo.actualizarUltimoAcceso(usuario.getNombre());
 				modelo.cerrarConexion();
 				System.exit(0);
 			}

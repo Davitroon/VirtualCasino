@@ -107,6 +107,7 @@ public class Perfil extends JFrame {
 		btnCerrarSesion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				controlador.cambiarVentana(Perfil.this, menu.getConectarse());
+				modelo.actualizarUltimoAcceso(usuario.getNombre());
 			}
 		});
 		
