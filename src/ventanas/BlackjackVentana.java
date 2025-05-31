@@ -280,7 +280,7 @@ public class BlackjackVentana extends JFrame {
 		
 		int sumaCrupier = blackjack.getCartasCrupier().get(0);
 		if (sumaCrupier > 10) sumaCrupier = 10;
-		lblCartasCrupierList.setText("(" + (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : sumaCrupier + ") - " + blackjack.mostrarCartas(true, "crupier")));
+		lblCartasCrupierList.setText("(" + ( (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : sumaCrupier) + ") - " + blackjack.mostrarCartas(true, "crupier")));
 		lblTusCartasList.setText("(" + barajaCliente + ") - " + blackjack.mostrarCartas(false, "cliente"));
 		lblApuestaActual.setText(String.format("Apuesta actual: %.2f$", apuesta));
 		
