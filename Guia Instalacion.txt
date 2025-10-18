@@ -1,8 +1,0 @@
-- GUIA DE INSTALACIÓN -
-
-Gracias por descargar mi programa.
-Para abrirlo, tendrás que seguir estos pasos:
-
-- Instalar MySQL
-- Ejecutar Casino Virtual
-
