@@ -26,41 +26,59 @@ import ui.BlackjackUI;
 import ui.PlayUI;
 
 /**
- * Ventana donde se jugará al Blackjack.
+ * Window where Blackjack will be played.
  */
 public class BlackjackUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	
-	private Controller controlador;
-	private PlayUI jugar;
-	private JLabel lblCartasCrupierList;
-	private JLabel lblTusCartasList;
-	private JLabel lblTusCartas;
-	private JLabel lblCartasCrupier;
-	private JButton btnPlantarse;
-	private JButton btnPedir;
-	
-	private Client cliente;
+
+	private Controller controller;
+	private PlayUI play;
+	private JLabel lblDealerCardsList;
+	private JLabel lblYourCardsList;
+	private JLabel lblYourCards;
+	private JLabel lblDealerCards;
+	private JButton btnStand;
+	private JButton btnHit;
+
+	private Client client;
 	private Blackjack blackjack;
-	
-	private double apuesta;
-	private JLabel lblApuestaActual;
-	private boolean partidaTerminada;
-	private JButton btnVolver;
+
+	private double bet;
+	private JLabel lblCurrentBet;
+	private boolean gameFinished;
+	private JButton btnBack;
 	private JButton btnInfo;
 
+	/**
+	 * Constructor for the Blackjack game window. Initializes UI components and
+	 * links the window to the MVC architecture elements and the current game
+	 * session data.
+	 * 
+	 * @param controller The Controller instance used to manage game logic, state
+	 *                   updates, and window changes.
+	 * @param model      The Model instance providing access to database and overall
+	 *                   application data.
+	 * @param play       The parent 'Play' window (PlayUI) to return to when the
+	 *                   game is closed.
+	 * @param client     The Client object representing the player currently
+	 *                   engaging in the game.
+	 * @param game       The specific Game object (which is cast to Blackjack)
+	 *                   containing the game's state (cards, money pool).
+	 * @param bet        The initial amount placed by the client for this game
+	 *                   session.
+	 * @since 3.0
+	 */
+	public BlackjackUI(Controller controller, Model model, PlayUI play, Client client, Game game, double bet) {
+		setResizable(false);
 
-	public BlackjackUI(Controller controlador, Model modelo, PlayUI jugar, Client cliente, Game juego, double apuesta) {
-		setResizable(false);	
-		
-		this.controlador = controlador;
-		this.jugar = jugar;
-		this.cliente = cliente;
-		this.blackjack = (Blackjack) juego;
-		this.apuesta = apuesta;
-		
+		this.controller = controller;
+		this.play = play;
+		this.client = client;
+		this.blackjack = (Blackjack) game;
+		this.bet = bet;
+
 		setBounds(100, 100, 577, 442);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
@@ -69,227 +87,236 @@ public class BlackjackUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JLabel lblBlackjack = new JLabel("Blackjack");
 		lblBlackjack.setFont(new Font("Stencil", Font.PLAIN, 28));
 		lblBlackjack.setHorizontalAlignment(SwingConstants.CENTER);
 		lblBlackjack.setBounds(48, 36, 473, 30);
 		contentPane.add(lblBlackjack);
-		
-		lblCartasCrupier = new JLabel("lorem");
-		lblCartasCrupier.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblCartasCrupier.setBounds(48, 88, 473, 21);
-		contentPane.add(lblCartasCrupier);
-		
-		lblTusCartas = new JLabel("lorem");
-		lblTusCartas.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblTusCartas.setBounds(48, 189, 473, 21);
-		contentPane.add(lblTusCartas);
-		
-		btnVolver = new JButton("Volver");
-		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(22, 349, 95, 30);
-		contentPane.add(btnVolver);
-		
-		lblCartasCrupierList = new JLabel("lorem");
-		lblCartasCrupierList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
-		lblCartasCrupierList.setBounds(48, 120, 473, 30);
-		contentPane.add(lblCartasCrupierList);
-		
-		lblTusCartasList = new JLabel("lorem");
-		lblTusCartasList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
-		lblTusCartasList.setBounds(48, 221, 473, 30);
-		contentPane.add(lblTusCartasList);
-		
-		btnPedir = new JButton("Pedir");
-		btnPedir.setBackground(new Color(0, 128, 64));
-		btnPedir.setBounds(298, 305, 108, 38);
-		contentPane.add(btnPedir);
-		
-		btnPlantarse = new JButton("Plantarse");
-		btnPlantarse.setBackground(new Color(255, 128, 128));
-		btnPlantarse.setBounds(172, 305, 108, 38);
-		contentPane.add(btnPlantarse);
-		
-		lblApuestaActual = new JLabel("lorem");
-		lblApuestaActual.setHorizontalAlignment(SwingConstants.CENTER);
-		lblApuestaActual.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
-		lblApuestaActual.setBounds(48, 273, 473, 21);
-		contentPane.add(lblApuestaActual);
-		
+
+		lblDealerCards = new JLabel("lorem");
+		lblDealerCards.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblDealerCards.setBounds(48, 88, 473, 21);
+		contentPane.add(lblDealerCards);
+
+		lblYourCards = new JLabel("lorem");
+		lblYourCards.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblYourCards.setBounds(48, 189, 473, 21);
+		contentPane.add(lblYourCards);
+
+		btnBack = new JButton("Back");
+		btnBack.setBackground(new Color(128, 128, 128));
+		btnBack.setBounds(22, 349, 95, 30);
+		contentPane.add(btnBack);
+
+		lblDealerCardsList = new JLabel("lorem");
+		lblDealerCardsList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
+		lblDealerCardsList.setBounds(48, 120, 473, 30);
+		contentPane.add(lblDealerCardsList);
+
+		lblYourCardsList = new JLabel("lorem");
+		lblYourCardsList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
+		lblYourCardsList.setBounds(48, 221, 473, 30);
+		contentPane.add(lblYourCardsList);
+
+		btnHit = new JButton("Hit");
+		btnHit.setBackground(new Color(0, 128, 64));
+		btnHit.setBounds(298, 305, 108, 38);
+		contentPane.add(btnHit);
+
+		btnStand = new JButton("Stand");
+		btnStand.setBackground(new Color(255, 128, 128));
+		btnStand.setBounds(172, 305, 108, 38);
+		contentPane.add(btnStand);
+
+		lblCurrentBet = new JLabel("lorem");
+		lblCurrentBet.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCurrentBet.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
+		lblCurrentBet.setBounds(48, 273, 473, 21);
+		contentPane.add(lblCurrentBet);
+
 		btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(514, 11, 37, 38);
 		contentPane.add(btnInfo);
-		
-		// Al cerrar la ventana mediante la X
+
+		// When closing the window using the X
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				cerrarVentana();
-			}		
-		});
-		
-		
-		// Clic boton volver
-		btnVolver.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cerrarVentana();	
+				closeWindow();
 			}
 		});
-		
-		
-		// Clic boton plantarse
-		btnPlantarse.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        boolean clienteGana = controlador.blackjackPlantarse(blackjack, BlackjackUI.this);
-		        finJuego(clienteGana);
-		    }
-		});
-		
-		
-		// Clic boton pedir
-		btnPedir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				if (controlador.blackjackPedirCarta(blackjack)) {
-					finJuego(false);
-				}
-				lblTusCartasList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCliente()) + ") " + blackjack.mostrarCartas(false, "cliente"));
 
-				if (blackjack.sumarCartas(blackjack.getCartasCliente()) == 21) finJuego(true);
+		// Click on back button
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				closeWindow();
 			}
 		});
-		
-		// Clic boton info
+
+		// Click on stand button
+		btnStand.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean clientWins = controller.blackjackStand(blackjack, BlackjackUI.this);
+				endGame(clientWins);
+			}
+		});
+
+		// Click hit button
+		btnHit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (controller.blackjackHit(blackjack)) {
+					endGame(false);
+				}
+				lblYourCardsList.setText("(" + blackjack.sumCards(blackjack.getPlayerCards()) + ") "
+						+ blackjack.showCards(false, "player"));
+
+				if (blackjack.sumCards(blackjack.getPlayerCards()) == 21)
+					endGame(true);
+			}
+		});
+
+		// Click info button
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		        String mensaje = """
-		                ¿Cómo jugar al Blackjack?
+				String message = """
+						How to play Blackjack?
 
-		                - El objetivo es sumar lo más cerca posible a 21 sin pasarte.
-		                - Tú y el crupier recibís cartas al inicio.
-		                - Puedes pedir más cartas (botón "Pedir") si crees que no te pasarás de 21.
-		                - Si te pasas de 21, pierdes automáticamente.
-		                - Cuando decidas plantarte (botón "Plantarse"), el crupier revelará sus cartas.
-		                - Ganas si tienes más puntos que el crupier sin pasarte de 21.
-		                - Si haces 21 con solo dos cartas (un As y una figura o un 10), ¡es un Blackjack!
+						- The goal is to get as close to 21 as possible without going over.
+						- You and the dealer receive cards at the start.
+						- You can ask for more cards ("Hit" button) if you think you won't exceed 21.
+						- If you exceed 21, you lose automatically.
+						- When you decide to stand ("Stand" button), the dealer will reveal their cards.
+						- You win if you have more points than the dealer without going over 21.
+						- If you hit 21 with only two cards (an Ace and a face card or a 10), it's a Blackjack!
 
-		                Si ganas, se te sumará dinero a tu saldo. Si pierdes, ... bueno, la proxima vez será.
-		                ¡Suerte y juega con cabeza!
-		                """;
+						If you win, money will be added to your balance. If you lose, ... well, there's always next time.
+						Good luck and play smart!
+						""";
 
-		        JOptionPane.showMessageDialog(null, mensaje, "Guía de Blackjack", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, message, "Blackjack Guide", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 	}
-	
-	
+
 	/**
-	 * Actualizar la lista de cartas del crupier.
-	 * @param cartas Sus cartas.
-	 * @param suma La suma de sus cartas.
+	 * Updates the dealer's card list.
+	 * 
+	 * @param cards Their cards.
+	 * @param sum   The sum of their cards.
 	 */
-	public void actualizarCartasCrupier(String cartas, int suma) {
-	    lblCartasCrupierList.setText(cartas + " (" + suma + ")");
+	public void updateDealerCards(String cards, int sum) {
+		lblDealerCardsList.setText(cards + " (" + sum + ")");
 	}
-	
+
 	/**
-	 * Método que llamará al controlador para mostrar un mensaje de aviso al intentar cerrar la ventana.
+	 * Method that calls the controller to show a warning message when attempting to
+	 * close the window.
 	 */
-	public void cerrarVentana() {
-		if (!partidaTerminada) {
-			if (!controlador.avisoCerrarJuego(cliente, blackjack, apuesta)) {
+	public void closeWindow() {
+		if (!gameFinished) {
+			if (!controller.warnCloseGame(client, blackjack, bet)) {
 				return;
-			}									
+			}
 		}
-		
+
 		dispose();
-	
+
 		try {
-			jugar.actualizarTablas();
-			jugar.setVisible(true);
-			
+			play.updateTables();
+			play.setVisible(true);
+
 		} catch (GameException e) {
-			controlador.cambiarVentana(jugar, jugar.getMenu());
-			JOptionPane.showMessageDialog(null, e.getMessage() , "Advertencia", JOptionPane.WARNING_MESSAGE);
+			controller.switchWindow(play, play.getMenu());
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
-	
-	
+
 	/**
-	 * Método para finalizar una partida de Blackjack, comparando la baraja del cliente y crupier y ajustando sus saldos en base a la apuesta.
-	 * @param clienteGana Verdadero si el cliente ha ganado y falso en el caso contrario.
+	 * Method to finalize a Blackjack match, comparing the client's and dealer's
+	 * hands and adjusting their balances based on the bet.
+	 * 
+	 * @param clientWins True if the client has won and false otherwise.
 	 */
-	public void finJuego(boolean clienteGana) {
+	public void endGame(boolean clientWins) {
 
-	    double apuestaResultado = blackjack.jugar(apuesta);
-	    boolean irMensajeFinal;
-	    partidaTerminada = true;
-	    
-	    // Si la apuesta es mayor que el saldo del juego, se pone directamente el dinero del juego
-	    if (blackjack.getDinero() < apuestaResultado) apuestaResultado = blackjack.getDinero();
+		double betResult = blackjack.play(bet);
+		boolean goToFinalMessage;
+		gameFinished = true;
 
-	    controlador.actualizarSaldos(cliente, blackjack, apuestaResultado, false);
+		// If the winning amount is greater than the game's money pool, the game's money
+		// is set directly
+		if (blackjack.getMoney() < betResult)
+			betResult = blackjack.getMoney();
 
-	    lblCartasCrupierList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCrupier()) + ") " + blackjack.mostrarCartas(false, "crupier"));
-	    lblTusCartasList.setText("(" + blackjack.sumarCartas(blackjack.getCartasCliente()) + ") " + blackjack.mostrarCartas(false, "cliente"));
-	    lblCartasCrupier.setText(String.format("Baraja del crupier (%.2f$)", blackjack.getDinero()));
-	    lblTusCartas.setText(String.format("Baraja de %s (%.2f$)", cliente.getNombre(), cliente.getSaldo()));
+		controller.updateBalances(client, blackjack, betResult, false);
 
-	    btnPedir.setEnabled(false);
-	    btnPlantarse.setEnabled(false);
+		lblDealerCardsList.setText(
+				"(" + blackjack.sumCards(blackjack.getDealerCards()) + ") " + blackjack.showCards(false, "dealer"));
+		lblYourCardsList.setText(
+				"(" + blackjack.sumCards(blackjack.getPlayerCards()) + ") " + blackjack.showCards(false, "player"));
+		lblDealerCards.setText(String.format("Dealer's Hand (%.2f$)", blackjack.getMoney()));
+		lblYourCards.setText(String.format("%s's Hand (%.2f$)", client.getName(), client.getBalance()));
 
-	    irMensajeFinal = true;
-	    do {
-	    	String estadoFin = controlador.blackjackEstadoFin(clienteGana, cliente, blackjack, apuestaResultado);
-	        int eleccion = controlador.juegosEstadoFin(estadoFin);
+		btnHit.setEnabled(false);
+		btnStand.setEnabled(false);
 
-	        if (eleccion == 0) {
-	            cerrarVentana();
-	            break;
-	        }
+		goToFinalMessage = true;
+		do {
+			String endStatus = controller.blackjackEndStatus(clientWins, client, blackjack, betResult);
+			int choice = controller.gameEndStatus(endStatus); // Translated from 'eleccion'
 
-	        if (eleccion == 1) {
-	            try {
-	                double apuestaNueva = controlador.alertaApuesta(cliente, blackjack);
-	                if (apuestaNueva != 0) {
-	                	apuesta = apuestaNueva;
-	                	irMensajeFinal = false;
-		                iniciarJuego();
-	                }             
-	                
-	            } catch (BetException ex) {
-	                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	                irMensajeFinal = true; // Repetir el bucle hasta que ingrese una apuesta válida o cancele
-	            }
-	        }
-	    } while (irMensajeFinal);
+			if (choice == 0) {
+				closeWindow();
+				break;
+			}
+
+			if (choice == 1) {
+				try {
+					double newBet = controller.promptBet(client, blackjack);
+					if (newBet != 0) {
+						bet = newBet;
+						goToFinalMessage = false;
+						startGame();
+					}
+
+				} catch (BetException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					goToFinalMessage = true; // Repeat the loop until a valid bet is entered or canceled
+				}
+			}
+		} while (goToFinalMessage);
 	}
-	
-	
+
 	/**
-	 * Método para iniciar una partida de Blackjack. Se reparten las cartas a cada jugador y se muestran. Si el jugador saca 21, gana automaticamente.
+	 * Method to start a Blackjack match. Cards are dealt to each player and shown.
+	 * If the player gets 21, they win automatically.
 	 */
-	public void iniciarJuego() {
-		controlador.blackjackIniciar(blackjack);
-		int barajaCrupier = blackjack.sumarCartas(blackjack.getCartasCrupier());
-		int barajaCliente = blackjack.sumarCartas(blackjack.getCartasCliente());
-		partidaTerminada = false;
-		
-		lblCartasCrupier.setText(String.format("Baraja del crupier (%.2f$)", blackjack.getDinero()));
-		lblTusCartas.setText(String.format("Baraja de %s (%.2f$)", cliente.getNombre(), cliente.getSaldo()));
-		
-		int sumaCrupier = blackjack.getCartasCrupier().get(0);
-		if (sumaCrupier > 10) sumaCrupier = 10;
-		lblCartasCrupierList.setText("(" + ( (blackjack.getCartasCrupier().get(0) == 1 ? "11/1" : sumaCrupier) + ") - " + blackjack.mostrarCartas(true, "crupier")));
-		lblTusCartasList.setText("(" + barajaCliente + ") - " + blackjack.mostrarCartas(false, "cliente"));
-		lblApuestaActual.setText(String.format("Apuesta actual: %.2f$", apuesta));
-		
-		btnPedir.setEnabled(true);
-		btnPlantarse.setEnabled(true);	
-		
-		if (barajaCliente == 21) finJuego(true);
-		if (barajaCrupier == 21) finJuego(false);
+	public void startGame() {
+		controller.startBlackjack(blackjack);
+		int dealerHand = blackjack.sumCards(blackjack.getDealerCards());
+		int clientHand = blackjack.sumCards(blackjack.getPlayerCards());
+		gameFinished = false;
+
+		lblDealerCards.setText(String.format("Dealer's Hand (%.2f$)", blackjack.getMoney()));
+		lblYourCards.setText(String.format("%s's Hand (%.2f$)", client.getName(), client.getBalance()));
+
+		int dealerFirstCardSum = blackjack.getDealerCards().get(0);
+		if (dealerFirstCardSum > 10)
+			dealerFirstCardSum = 10;
+		lblDealerCardsList.setText("(" + ((blackjack.getDealerCards().get(0) == 1 ? "11/1" : dealerFirstCardSum)
+				+ ") - " + blackjack.showCards(true, "dealer")));
+		lblYourCardsList.setText("(" + clientHand + ") - " + blackjack.showCards(false, "player"));
+		lblCurrentBet.setText(String.format("Current Bet: %.2f$", bet));
+
+		btnHit.setEnabled(true);
+		btnStand.setEnabled(true);
+
+		if (clientHand == 21)
+			endGame(true);
+		if (dealerHand == 21)
+			endGame(false);
 	}
 }

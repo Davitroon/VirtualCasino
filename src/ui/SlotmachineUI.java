@@ -25,39 +25,54 @@ import logic.Slotmachine;
 import ui.PlayUI;
 
 /**
- * Ventana donde se jugará a la Tragaperras.
+ * Window where the Slot Machine game will be played.
+ * 
+ * @author David
+ * @since 3.0
  */
 public class SlotmachineUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	
-	private Controller controlador;
-	private PlayUI jugar;
-	private JButton btnTirar;
-	
-	private Client cliente;
-	private Slotmachine tragaperras;
-	
-	private double apuesta;
-	private boolean partidaTerminada;
+
+	private Controller controller;
+	private PlayUI playUI;
+	private JButton btnSpin;
+
+	private Client client;
+	private Slotmachine slotMachine;
+
+	private double bet;
+	private boolean gameFinished;
 	private JLabel lblNum1;
 	private JLabel lblNum2;
 	private JLabel lblNum3;
-	private JLabel lblApuestaActual;
-	private JLabel lblCliente;
-	private JLabel lblJuego;
-	private JButton btnVolver;
+	private JLabel lblCurrentBet;
+	private JLabel lblClient;
+	private JLabel lblGame;
+	private JButton btnBack;
 
+	/**
+	 * Constructs the SlotmachineUI window where the Slot Machine game will be
+	 * played.
+	 *
+	 * @param controller The main controller handling game logic and window changes.
+	 * @param model      The data model used to access and update game and client
+	 *                   information.
+	 * @param playUI     The parent PlayUI window from which this game was started.
+	 * @param client     The client who is playing the slot machine.
+	 * @param game       The game instance being played, cast to Slotmachine.
+	 * @param bet        The amount of money the client is betting for this game.
+	 * @since 3.0
+	 */
+	public SlotmachineUI(Controller controller, Model model, PlayUI playUI, Client client, Game game, double bet) {
 
-	public SlotmachineUI(Controller controlador, Model modelo, PlayUI jugar, Client cliente, Game juego, double apuesta) {
-		
-		this.controlador = controlador;
-		this.jugar = jugar;
-		this.cliente = cliente;
-		this.tragaperras = (Slotmachine) juego;
-		this.apuesta = apuesta;
-		
+		this.controller = controller;
+		this.playUI = playUI;
+		this.client = client;
+		this.slotMachine = (Slotmachine) game;
+		this.bet = bet;
+
 		setResizable(false);
 		setBounds(100, 100, 523, 421);
 		setLocationRelativeTo(null);
@@ -67,192 +82,192 @@ public class SlotmachineUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblTragaperras = new JLabel("Tragaperras");
-		lblTragaperras.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblTragaperras.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTragaperras.setBounds(49, 56, 421, 30);
-		contentPane.add(lblTragaperras);
-		
-		btnTirar = new JButton("Tirar");
-		btnTirar.setBackground(new Color(0, 128, 64));
-		btnTirar.setBounds(391, 319, 108, 38);
-		contentPane.add(btnTirar);
-		
+
+		JLabel lblSlotMachine = new JLabel("Slot Machine");
+		lblSlotMachine.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblSlotMachine.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSlotMachine.setBounds(49, 56, 421, 30);
+		contentPane.add(lblSlotMachine);
+
+		btnSpin = new JButton("Spin");
+		btnSpin.setBackground(new Color(0, 128, 64));
+		btnSpin.setBounds(391, 319, 108, 38);
+		contentPane.add(btnSpin);
+
 		lblNum1 = new JLabel("0");
 		lblNum1.setBackground(new Color(0, 64, 0));
 		lblNum1.setFont(new Font("Cambria Math", Font.BOLD, 18));
 		lblNum1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNum1.setBounds(153, 118, 62, 38);
 		contentPane.add(lblNum1);
-		
+
 		lblNum2 = new JLabel("0");
 		lblNum2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNum2.setFont(new Font("Cambria Math", Font.BOLD, 18));
 		lblNum2.setBounds(225, 118, 62, 38);
 		contentPane.add(lblNum2);
-		
+
 		lblNum3 = new JLabel("0");
 		lblNum3.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNum3.setFont(new Font("Cambria Math", Font.BOLD, 18));
 		lblNum3.setBounds(297, 118, 62, 38);
 		contentPane.add(lblNum3);
-		
-		lblApuestaActual = new JLabel("lorem");
-		lblApuestaActual.setHorizontalAlignment(SwingConstants.CENTER);
-		lblApuestaActual.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
-		lblApuestaActual.setBounds(10, 287, 489, 21);
-		contentPane.add(lblApuestaActual);
-		
-		lblCliente = new JLabel("lorem");
-		lblCliente.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblCliente.setBounds(10, 224, 304, 21);
-		contentPane.add(lblCliente);
-		
-		lblJuego = new JLabel("lorem");
-		lblJuego.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblJuego.setBounds(10, 192, 304, 21);
-		contentPane.add(lblJuego);
-		
-		btnVolver = new JButton("Volver");
-		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(10, 319, 108, 38);
-		contentPane.add(btnVolver);
-		
+
+		lblCurrentBet = new JLabel("lorem");
+		lblCurrentBet.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCurrentBet.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
+		lblCurrentBet.setBounds(10, 287, 489, 21);
+		contentPane.add(lblCurrentBet);
+
+		lblClient = new JLabel("lorem");
+		lblClient.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblClient.setBounds(10, 224, 304, 21);
+		contentPane.add(lblClient);
+
+		lblGame = new JLabel("lorem");
+		lblGame.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblGame.setBounds(10, 192, 304, 21);
+		contentPane.add(lblGame);
+
+		btnBack = new JButton("Back");
+		btnBack.setBackground(new Color(128, 128, 128));
+		btnBack.setBounds(10, 319, 108, 38);
+		contentPane.add(btnBack);
+
 		JButton btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(462, 11, 37, 35);
 		contentPane.add(btnInfo);
-		
+
 		addWindowListener(new WindowAdapter() {
-			// Al cerrar la ventana mediante la X
+			// When closing the window using the X button
 			@Override
 			public void windowClosing(WindowEvent e) {
-				cerrarVentana();			
-			}
-		});		
-		
-		// Clic boton pedir
-		btnTirar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tragaperras.generarNumeros();
-				lblNum1.setText(String.valueOf(tragaperras.getNumeros()[0]));
-				lblNum2.setText(String.valueOf(tragaperras.getNumeros()[1]));
-				lblNum3.setText(String.valueOf(tragaperras.getNumeros()[2]));
-				finJuego();
+				closeWindow();
 			}
 		});
-		
-		// Clic boton volver
-		btnVolver.addActionListener(new ActionListener() {
+
+		// Click Spin button
+		btnSpin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cerrarVentana();
+				slotMachine.generateNumbers();
+				lblNum1.setText(String.valueOf(slotMachine.getNumbers()[0]));
+				lblNum2.setText(String.valueOf(slotMachine.getNumbers()[1]));
+				lblNum3.setText(String.valueOf(slotMachine.getNumbers()[2]));
+				endGame();
 			}
 		});
-			
-		// Clic boton info
+
+		// Click Back button
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				closeWindow();
+			}
+		});
+
+		// Click Info button
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Un String de 3 comillas permite dar formato al texto con saltos de linea y espacios.
-		        String mensaje = """
-		                ¿Cómo jugar a las Tragaperras?
+				// A triple-quoted string allows formatting with line breaks and spaces
+				String message = """
+						How to play the Slot Machine?
 
-		                - Primero realiza una apuesta con tu saldo disponible.
-		                - Luego pulsa el botón "Tirar" para generar tres números al azar entre 1 y 9.
-		                - Los números aparecerán en pantalla inmediatamente.
+						- First, place a bet using your available balance.
+						- Then press the "Spin" button to generate three random numbers between 1 and 9.
+						- The numbers will appear on the screen immediately.
 
-		                ¿Cómo se determina si ganas?
-		                - Si no hay números repetidos, pierdes tu apuesta.
-		                - Si hay dos números iguales, ganas 1.9 veces tu apuesta.
-		                - Si los tres números son iguales, ganas 3.5 veces tu apuesta.
-		                - Si los tres números son 7, ganas 6.5 veces tu apuesta.
+						How is winning determined?
+						- If there are no matching numbers, you lose your bet.
+						- If two numbers are the same, you win 1.9 times your bet.
+						- If all three numbers are the same, you win 3.5 times your bet.
+						- If all three numbers are 7, you win 6.5 times your bet.
 
-		                Ten en cuenta que este juego es completamente aleatorio.
-		                """;
+						Keep in mind that this game is completely random.
+						""";
 
-		        JOptionPane.showMessageDialog(null, mensaje, "Guía de Tragaperras", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, message, "Slot Machine Guide", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 	}
-	
-	
+
 	/**
-	 * Método que llamará al controlador para mostrar un mensaje de aviso al intentar cerrar la ventana.
+	 * Method that calls the controller to show a warning message when trying to
+	 * close the window.
 	 */
-	public void cerrarVentana() {
-		if (!partidaTerminada) {
-			if (!controlador.avisoCerrarJuego(cliente, tragaperras, apuesta)) {
+	public void closeWindow() {
+		if (!gameFinished) {
+			if (!controller.warnCloseGame(client, slotMachine, bet)) {
 				return;
-			}									
+			}
 		}
-		
+
 		dispose();
-	
+
 		try {
-			jugar.actualizarTablas();
-			jugar.setVisible(true);
-			
+			playUI.updateTables();
+			playUI.setVisible(true);
+
 		} catch (GameException e) {
-			controlador.cambiarVentana(jugar, jugar.getMenu());
-			JOptionPane.showMessageDialog(null, e.getMessage() , "Advertencia", JOptionPane.WARNING_MESSAGE);
+			controller.switchWindow(playUI, playUI.getMenu());
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
-	
-	
+
 	/**
-	 * Método para finalizar una partida de Tragaperras, ajustando los saldos en base al resultado.
+	 * Method to finish a Slot Machine game, adjusting balances according to the
+	 * result.
 	 */
-	public void finJuego() {
-	    double apuestaResultado = tragaperras.jugar(apuesta);
-	    boolean irMensajeFinal;
-	    partidaTerminada = true;
-	    
-	    // Si la apuesta es mayor que el saldo del juego, se pone directamente el dinero del juego
-	    if (tragaperras.getDinero() < apuestaResultado) apuestaResultado = tragaperras.getDinero();
+	public void endGame() {
+		double resultBet = slotMachine.play(bet);
+		boolean showFinalMessage;
+		gameFinished = true;
 
-	    controlador.actualizarSaldos(cliente, tragaperras, apuestaResultado, false);
-	    btnTirar.setEnabled(false);
-	    lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
-	    lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
+		// If the bet is higher than the game's balance, use the game's balance instead
+		if (slotMachine.getMoney() < resultBet)
+			resultBet = slotMachine.getMoney();
 
-	    irMensajeFinal = true;
-	    do {
-		    String estadoFin = controlador.tragaperrasEstadoFin(cliente, tragaperras, apuestaResultado);
-	        int eleccion = controlador.juegosEstadoFin(estadoFin);
+		controller.updateBalances(client, slotMachine, resultBet, false);
+		btnSpin.setEnabled(false);
+		lblClient.setText(String.format("%s's Balance: %.2f$", client.getName(), client.getBalance()));
+		lblGame.setText(String.format("Game Money: %.2f$", slotMachine.getMoney()));
 
-	        if (eleccion == 0) {
-	            cerrarVentana();
-	            break;
-	        }
+		showFinalMessage = true;
+		do {
+			String endState = controller.slotmachineEndStatus(client, slotMachine, resultBet);
+			int choice = controller.gameEndStatus(endState);
 
-	        if (eleccion == 1) {
-	            try {
-	                double apuestaNueva = controlador.alertaApuesta(cliente, tragaperras);
-	                if (apuestaNueva != 0) {
-	                	apuesta = apuestaNueva;
-	                	irMensajeFinal = false;
-		                iniciarJuego();
-	                }             
-	                
-	            } catch (BetException ex) {
-	                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	                irMensajeFinal = true; // Repetir el bucle hasta que ingrese una apuesta válida o cancele
-	            }
-	        }
-	    } while (irMensajeFinal);
+			if (choice == 0) {
+				closeWindow();
+				break;
+			}
+
+			if (choice == 1) {
+				try {
+					double newBet = controller.promptBet(client, slotMachine);
+					if (newBet != 0) {
+						bet = newBet;
+						showFinalMessage = false;
+						startGame();
+					}
+
+				} catch (BetException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					showFinalMessage = true; // Repeat the loop until a valid bet is entered or cancelled
+				}
+			}
+		} while (showFinalMessage);
 	}
-	
-	
+
 	/**
-	 * Método para iniciar una partida de tragaperras, reiniciando los campos y actualizando los textos.
+	 * Method to start a Slot Machine game, resetting fields and updating labels.
 	 */
-	public void iniciarJuego() {
-		btnTirar.setEnabled(true);
+	public void startGame() {
+		btnSpin.setEnabled(true);
 		lblNum1.setText("0");
 		lblNum2.setText("0");
 		lblNum3.setText("0");
-		lblApuestaActual.setText(String.format("Apuesta actual: %.2f$", apuesta));
-		lblCliente.setText(String.format("Saldo de %s: %.2f$", cliente.getNombre(), cliente.getSaldo()));
-		lblJuego.setText(String.format("Dinero del juego: %.2f$", tragaperras.getDinero()));
+		lblCurrentBet.setText(String.format("Current Bet: %.2f$", bet));
+		lblClient.setText(String.format("%s's Balance: %.2f$", client.getName(), client.getBalance()));
+		lblGame.setText(String.format("Game Money: %.2f$", slotMachine.getMoney()));
 	}
 }

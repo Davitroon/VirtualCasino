@@ -24,10 +24,11 @@ import logic.Controller;
 import logic.Model;
 import logic.Validator;
 import ui.ClientUI;
-import ui.GestionUI;
+import ui.ManagementUI;
 
 /**
- * Ventana para el formulario de clientes.
+ * Window for the client form.
+ * 
  * @author David
  * @since 3.0
  */
@@ -35,35 +36,38 @@ public class ClientUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textNombre;
-	private JTextField textEdad;
-	private JTextField textSaldo;
+	private JTextField textName;
+	private JTextField textAge;
+	private JTextField textBalance;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	
-	private boolean nombreValido;
-	private boolean edadValida;
-	private boolean saldoValido;
-	private JRadioButton rdbtnMasculino;
-	private JRadioButton rdbtnFemenino;
-	private JRadioButton rdbtnOtro;
-	private JButton btnAnadir;
-	
 
-	private JLabel lblErrorNombre;
-	private JLabel lblErrorEdad;
-	private JLabel lblErrorSaldo;
-	
+	private boolean nameValid;
+	private boolean ageValid;
+	private boolean balanceValid;
+	private JRadioButton rdbtnMale;
+	private JRadioButton rdbtnFemale;
+	private JRadioButton rdbtnOther;
+	private JButton btnAdd;
+
+	private JLabel lblErrorName;
+	private JLabel lblErrorAge;
+	private JLabel lblErrorBalance;
 
 	/**
-	 * Create the frame.
-	 * @param controlador 
-	 * @param modelo 
-	 * @param gestion2 
+	 * Creates the frame for adding new clients.
+	 * 
+	 * @param management Reference to the management window (used to return to it
+	 *                   after adding a client).
+	 * @param controller Reference to the controller that handles window transitions
+	 *                   and logic.
+	 * @param model      Reference to the model that manages data operations.
+	 * @param validator  Reference to the validator that checks form inputs.
+	 * @since 3.0
 	 */
-	public ClientUI(GestionUI gestion, Controller controlador, Model modelo, Validator validador) {
-		
+	public ClientUI(ManagementUI management, Controller controller, Model model, Validator validator) {
+
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);	
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 496, 397);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
@@ -71,235 +75,238 @@ public class ClientUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblAnadirCliente = new JLabel("Añadir cliente", SwingConstants.CENTER);
-		lblAnadirCliente.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblAnadirCliente.setBounds(10, 21, 460, 39);
-		contentPane.add(lblAnadirCliente);
-		
-		textNombre = new JTextField();
-		textNombre.setBounds(122, 84, 321, 32);
-		contentPane.add(textNombre);
-		textNombre.setColumns(10);
-		
-		textEdad = new JTextField();
-		textEdad.setBounds(105, 149, 129, 32);
-		contentPane.add(textEdad);
-		textEdad.setColumns(10);
-		
-		rdbtnMasculino = new JRadioButton("Masculino");
-		buttonGroup.add(rdbtnMasculino);
-		rdbtnMasculino.setBounds(100, 246, 99, 23);
-		contentPane.add(rdbtnMasculino);
-		
-		rdbtnFemenino = new JRadioButton("Femenino");
-		buttonGroup.add(rdbtnFemenino);
-		rdbtnFemenino.setBounds(211, 246, 86, 23);
-		contentPane.add(rdbtnFemenino);
-		
-		rdbtnOtro = new JRadioButton("Otro");
-		buttonGroup.add(rdbtnOtro);
-		rdbtnOtro.setBounds(309, 246, 64, 23);
-		contentPane.add(rdbtnOtro);
-		
-		textSaldo = new JTextField();
-		textSaldo.setBounds(290, 149, 153, 32);
-		contentPane.add(textSaldo);
-		textSaldo.setColumns(10);
-		
-		JLabel lblNombre = new JLabel("Nombre");
-		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNombre.setLabelFor(textNombre);
-		lblNombre.setBounds(52, 92, 64, 17);
-		contentPane.add(lblNombre);
-		
-		JLabel lblEdad = new JLabel("Edad");
-		lblEdad.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblEdad.setLabelFor(textEdad);
-		lblEdad.setBounds(52, 157, 64, 17);
-		contentPane.add(lblEdad);
-		
-		JLabel lblSaldo = new JLabel("Saldo");
-		lblSaldo.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblSaldo.setLabelFor(textSaldo);
-		lblSaldo.setBounds(244, 157, 53, 17);
-		contentPane.add(lblSaldo);
-		
-		JLabel lblGenero = new JLabel("Género", SwingConstants.CENTER);
-		lblGenero.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblGenero.setBounds(34, 220, 409, 14);
-		contentPane.add(lblGenero);
-		
-		btnAnadir = new JButton("Añadir");
-		btnAnadir.setBackground(new Color(128, 128, 255));
-		btnAnadir.setEnabled(false);
-		btnAnadir.setBounds(359, 295, 111, 32);
-		contentPane.add(btnAnadir);
-		
-		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(24, 295, 111, 32);
-		contentPane.add(btnVolver);
-		
-		lblErrorNombre = new JLabel("");
-		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorNombre.setForeground(new Color(255, 0, 0));
-		lblErrorNombre.setBounds(54, 121, 389, 14);
-		contentPane.add(lblErrorNombre);
-		
-		lblErrorEdad = new JLabel("");
-		lblErrorEdad.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorEdad.setForeground(new Color(255, 0, 0));
-		lblErrorEdad.setBounds(52, 186, 182, 14);
-		contentPane.add(lblErrorEdad);
-		
-		lblErrorSaldo = new JLabel("");
-		lblErrorSaldo.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorSaldo.setForeground(new Color(255, 0, 0));
-		lblErrorSaldo.setBounds(244, 186, 199, 17);
-		contentPane.add(lblErrorSaldo);		
-		
-		// Al escribir en el campo nombre
-		textNombre.addKeyListener(new KeyAdapter() {
+
+		JLabel lblAddClient = new JLabel("Add Client", SwingConstants.CENTER);
+		lblAddClient.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblAddClient.setBounds(10, 21, 460, 39);
+		contentPane.add(lblAddClient);
+
+		textName = new JTextField();
+		textName.setBounds(122, 84, 321, 32);
+		contentPane.add(textName);
+		textName.setColumns(10);
+
+		textAge = new JTextField();
+		textAge.setBounds(105, 149, 129, 32);
+		contentPane.add(textAge);
+		textAge.setColumns(10);
+
+		rdbtnMale = new JRadioButton("Male");
+		buttonGroup.add(rdbtnMale);
+		rdbtnMale.setBounds(100, 246, 99, 23);
+		contentPane.add(rdbtnMale);
+
+		rdbtnFemale = new JRadioButton("Female");
+		buttonGroup.add(rdbtnFemale);
+		rdbtnFemale.setBounds(211, 246, 86, 23);
+		contentPane.add(rdbtnFemale);
+
+		rdbtnOther = new JRadioButton("Other");
+		buttonGroup.add(rdbtnOther);
+		rdbtnOther.setBounds(309, 246, 64, 23);
+		contentPane.add(rdbtnOther);
+
+		textBalance = new JTextField();
+		textBalance.setBounds(290, 149, 153, 32);
+		contentPane.add(textBalance);
+		textBalance.setColumns(10);
+
+		JLabel lblName = new JLabel("Name");
+		lblName.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblName.setLabelFor(textName);
+		lblName.setBounds(52, 92, 64, 17);
+		contentPane.add(lblName);
+
+		JLabel lblAge = new JLabel("Age");
+		lblAge.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblAge.setLabelFor(textAge);
+		lblAge.setBounds(52, 157, 64, 17);
+		contentPane.add(lblAge);
+
+		JLabel lblBalance = new JLabel("Balance");
+		lblBalance.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblBalance.setLabelFor(textBalance);
+		lblBalance.setBounds(244, 157, 53, 17);
+		contentPane.add(lblBalance);
+
+		JLabel lblGender = new JLabel("Gender", SwingConstants.CENTER);
+		lblGender.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblGender.setBounds(34, 220, 409, 14);
+		contentPane.add(lblGender);
+
+		btnAdd = new JButton("Add");
+		btnAdd.setBackground(new Color(128, 128, 255));
+		btnAdd.setEnabled(false);
+		btnAdd.setBounds(359, 295, 111, 32);
+		contentPane.add(btnAdd);
+
+		JButton btnBack = new JButton("Back");
+		btnBack.setBackground(new Color(128, 128, 128));
+		btnBack.setBounds(24, 295, 111, 32);
+		contentPane.add(btnBack);
+
+		lblErrorName = new JLabel("");
+		lblErrorName.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorName.setForeground(new Color(255, 0, 0));
+		lblErrorName.setBounds(54, 121, 389, 14);
+		contentPane.add(lblErrorName);
+
+		lblErrorAge = new JLabel("");
+		lblErrorAge.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorAge.setForeground(new Color(255, 0, 0));
+		lblErrorAge.setBounds(52, 186, 182, 14);
+		contentPane.add(lblErrorAge);
+
+		lblErrorBalance = new JLabel("");
+		lblErrorBalance.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorBalance.setForeground(new Color(255, 0, 0));
+		lblErrorBalance.setBounds(244, 186, 199, 17);
+		contentPane.add(lblErrorBalance);
+
+		// When typing in the name field
+		textName.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {			
-				nombreValido = false;
-				String texto = textNombre.getText();
-				
-				if (validador.validarNombre(texto, lblErrorNombre)) {
-					nombreValido = true;
+			public void keyReleased(KeyEvent e) {
+				nameValid = false;
+				String text = textName.getText();
+
+				if (validator.validateName(text, lblErrorName)) {
+					nameValid = true;
 				}
-				
-				revisarFormulario();
+
+				checkForm();
 			}
-		});		
-		
-		// Al escribir en el campo edad
-		textEdad.addKeyListener(new KeyAdapter() {
+		});
+
+		// When typing in the age field
+		textAge.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {		
-				edadValida = false;
-				String texto = textEdad.getText();
-				
-				if (validador.validarEdadCliente(texto, lblErrorEdad)) {
-					edadValida = true;
+			public void keyReleased(KeyEvent e) {
+				ageValid = false;
+				String text = textAge.getText();
+
+				if (validator.validateClientAge(text, lblErrorAge)) {
+					ageValid = true;
 				}
-				
-				revisarFormulario();
+
+				checkForm();
 			}
-		});	
-				
-		// Al escribir en el campo saldo
-		textSaldo.addKeyListener(new KeyAdapter() {
+		});
+
+		// When typing in the balance field
+		textBalance.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {			
-				saldoValido = false;				
-				String texto = textSaldo.getText();
-				
-				if (validador.validarSaldoCliente(texto, lblErrorSaldo)) {
-					saldoValido = true;
+			public void keyReleased(KeyEvent e) {
+				balanceValid = false;
+				String text = textBalance.getText();
+
+				if (validator.validateClientBalance(text, lblErrorBalance)) {
+					balanceValid = true;
 				}
-				
-				revisarFormulario();
+
+				checkForm();
 			}
-		});		
-		
-		// Elegir genero masculino
-		rdbtnMasculino.addActionListener(new ActionListener() {
+		});
+
+		// Select male gender
+		rdbtnMale.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				revisarFormulario();
+				checkForm();
 			}
-		});		
-		
-		// Elegir genero femenino
-		rdbtnFemenino.addActionListener(new ActionListener() {
+		});
+
+		// Select female gender
+		rdbtnFemale.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				revisarFormulario();
+				checkForm();
 			}
-		});		
-		
-		// Elegir genero otro
-		rdbtnOtro.addActionListener(new ActionListener() {
+		});
+
+		// Select other gender
+		rdbtnOther.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				revisarFormulario();
+				checkForm();
 			}
-		});		
-		
-		// Clic boton añadir
-		btnAnadir.addActionListener(new ActionListener() {
+		});
+
+		// Click "Add" button
+		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String nombre = textNombre.getText();
-				int edad = Integer.parseInt(textEdad.getText());
-				char genero = obtenerGenero();
-				double saldo = Double.parseDouble(textSaldo.getText());
-				
-				Client cliente = new Client(nombre, edad, genero, saldo);
-				modelo.agregarCliente(cliente);
-				
-				limpiarCampos();
-				controlador.cambiarVentana(ClientUI.this, gestion);
+				String name = textName.getText();
+				int age = Integer.parseInt(textAge.getText());
+				char gender = getGender();
+				double balance = Double.parseDouble(textBalance.getText());
+
+				Client client = new Client(name, age, gender, balance);
+				model.addClient(client);
+
+				clearFields();
+				controller.switchWindow(ClientUI.this, management);
 			}
-		});		
-		
-		// Clic boton volver
-		btnVolver.addActionListener(new ActionListener() {
+		});
+
+		// Click "Back" button
+		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				limpiarCampos();
-				controlador.cambiarVentana(ClientUI.this, gestion);
+				clearFields();
+				controller.switchWindow(ClientUI.this, management);
 			}
-		});		
-		
-		// Al cerrar la ventana mediante la X
+		});
+
+		// When closing the window using the X
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				limpiarCampos();
-				controlador.cambiarVentana(ClientUI.this, gestion);
+				clearFields();
+				controller.switchWindow(ClientUI.this, management);
 			}
 		});
 	}
-	
-	
+
 	/**
-	 * Método para limpiar todos los campos del formulario.
+	 * Method to clear all fields in the form.
+	 * 
 	 * @since 3.0
 	 */
-	public void limpiarCampos() {
-		btnAnadir.setEnabled(false);
+	public void clearFields() {
+		btnAdd.setEnabled(false);
 		buttonGroup.clearSelection();
-		textNombre.setText("");
-		textEdad.setText("");
-		textSaldo.setText("");
-		lblErrorNombre.setText("");
-		lblErrorEdad.setText("");
-		lblErrorSaldo.setText("");
+		textName.setText("");
+		textAge.setText("");
+		textBalance.setText("");
+		lblErrorName.setText("");
+		lblErrorAge.setText("");
+		lblErrorBalance.setText("");
 	}
-	
-	
+
 	/**
-	 * Método para obtener el género en base al radio button seleccionado.
-	 * @return Género en formato char.
+	 * Method to get the gender based on the selected radio button.
+	 * 
+	 * @return Gender as a char.
 	 * @since 3.0
 	 */
-	public char obtenerGenero() {
-		if (rdbtnMasculino.isSelected()) return 'M';
-		if (rdbtnFemenino.isSelected()) return 'F';
-		if (rdbtnOtro.isSelected()) return 'O';
+	public char getGender() {
+		if (rdbtnMale.isSelected())
+			return 'M';
+		if (rdbtnFemale.isSelected())
+			return 'F';
+		if (rdbtnOther.isSelected())
+			return 'O';
 		return 0;
 	}
-	
-	
+
 	/**
-	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * Method to check that the user has filled in all form fields.
+	 * 
 	 * @since 3.0
 	 */
-	public void revisarFormulario() {
-		
-		if (edadValida && saldoValido && nombreValido && obtenerGenero() != 0) {
-			btnAnadir.setEnabled(true);
+	public void checkForm() {
+
+		if (ageValid && balanceValid && nameValid && getGender() != 0) {
+			btnAdd.setEnabled(true);
 
 		} else {
-			btnAnadir.setEnabled(false);
-		}	
+			btnAdd.setEnabled(false);
+		}
 	}
 }

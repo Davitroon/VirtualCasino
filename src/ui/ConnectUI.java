@@ -22,25 +22,34 @@ import ui.LogInUI;
 import ui.HomeUI;
 
 /**
- * Ventana donde el usuario podrá conectarse con un perfil de la BD. Será el inicio del programa si no se ha indicado un inicio de sesión automático.
+ * Window where the user can log in with a profile from the database. This will
+ * be the program's start screen if automatic login has not been set.
+ * 
+ * @author David
+ * @since 3.0
  */
 public class ConnectUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	
-	private LogInUI iniciarSesion;
-	private SignInUI crearUsuario;
+
+	private LogInUI logIn;
+	private SignInUI createUser;
 	private HomeUI menu;
 
 	/**
 	 * Create the frame.
-	 * @param menu 
-	 * @param usuario 
+	 * 
+	 * @param model      Reference to the model that manages data operations.
+	 * @param controller Reference to the controller handling program logic.
+	 * @param session    Current session information.
+	 * @param validator  Reference to the validator for input checks.
+	 * @param menu       Reference to the home menu window.
+	 * @since 3.0
 	 */
-	public ConnectUI(Model modelo, Controller controlador, Session sesion, Validator validador, HomeUI menu) {
+	public ConnectUI(Model model, Controller controller, Session session, Validator validator, HomeUI menu) {
 		this.menu = menu;
-		
+
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 501, 301);
@@ -50,67 +59,65 @@ public class ConnectUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblTitulo = new JLabel("Conectarse", SwingConstants.CENTER);
-		lblTitulo.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblTitulo.setBounds(10, 28, 465, 31);
-		contentPane.add(lblTitulo);
-		
-		JButton btnCrearUsuario = new JButton("Crear usuario");
-		btnCrearUsuario.setBackground(new Color(128, 128, 255));
-		btnCrearUsuario.setBounds(113, 112, 117, 45);
-		contentPane.add(btnCrearUsuario);
-		
-		JButton btnIniciarSesion = new JButton("Iniciar sesión");
-		btnIniciarSesion.setBackground(new Color(128, 128, 255));
-		btnIniciarSesion.setBounds(253, 112, 117, 45);
-		contentPane.add(btnIniciarSesion);
-		
-		JButton btnSalir = new JButton("Salir");
-		btnSalir.setBackground(Color.GRAY);
-		btnSalir.setBounds(10, 219, 105, 32);
-		contentPane.add(btnSalir);
-		
-		// Cerrar ventana
+
+		JLabel lblTitle = new JLabel("Connect", SwingConstants.CENTER);
+		lblTitle.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblTitle.setBounds(10, 28, 465, 31);
+		contentPane.add(lblTitle);
+
+		JButton btnCreateUser = new JButton("Create User");
+		btnCreateUser.setBackground(new Color(128, 128, 255));
+		btnCreateUser.setBounds(113, 112, 117, 45);
+		contentPane.add(btnCreateUser);
+
+		JButton btnLogIn = new JButton("Log In");
+		btnLogIn.setBackground(new Color(128, 128, 255));
+		btnLogIn.setBounds(253, 112, 117, 45);
+		contentPane.add(btnLogIn);
+
+		JButton btnExit = new JButton("Exit");
+		btnExit.setBackground(Color.GRAY);
+		btnExit.setBounds(10, 219, 105, 32);
+		contentPane.add(btnExit);
+
+		// Close window
 		addWindowListener(new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		        modelo.cerrarConexion();
-		        System.exit(0);
-		    }
-		});
-		
-		// Clic boton salir
-		btnSalir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				modelo.cerrarConexion();
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				model.closeConnection();
 				System.exit(0);
 			}
-		});		
-		
-		// Clic boton crear usuario
-		btnCrearUsuario.addActionListener(new ActionListener() {
+		});
+
+		// Click "Exit" button
+		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (crearUsuario == null) {
-					crearUsuario = new SignInUI(modelo, controlador, sesion, ConnectUI.this, validador);
-				}		
-				setVisible(false);
-				crearUsuario.setVisible(true);
+				model.closeConnection();
+				System.exit(0);
 			}
 		});
-		
-		// Clic boton iniciar sesion
-		btnIniciarSesion.addActionListener(new ActionListener() {
+
+		// Click "Create User" button
+		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (iniciarSesion == null) {
-					iniciarSesion = new LogInUI(modelo, controlador, sesion, ConnectUI.this, validador);
-				}		
+				if (createUser == null) {
+					createUser = new SignInUI(model, controller, session, ConnectUI.this, validator);
+				}
 				setVisible(false);
-				iniciarSesion.setVisible(true);
+				createUser.setVisible(true);
 			}
 		});
-		
-		
+
+		// Click "Log In" button
+		btnLogIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (logIn == null) {
+					logIn = new LogInUI(model, controller, session, ConnectUI.this, validator);
+				}
+				setVisible(false);
+				logIn.setVisible(true);
+			}
+		});
 	}
 
 	public HomeUI getMenu() {

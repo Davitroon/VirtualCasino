@@ -28,10 +28,11 @@ import logic.Model;
 import logic.Slotmachine;
 import logic.Validator;
 import ui.GameUpdateUI;
-import ui.GestionUI;
+import ui.ManagementUI;
 
 /**
- * Ventana para el formulario de editar juegos.
+ * Window for the game edit form.
+ * 
  * @author David
  * @since 3.0
  */
@@ -40,31 +41,33 @@ public class GameUpdateUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	private JTextField textDinero;
-	private boolean dineroValido;
-	private JButton btnModificar;
-	
-	private Model modelo;
-	
+	private JTextField textMoney;
+	private boolean moneyValid;
+	private JButton btnUpdate;
 
-	private JLabel lblErrorDinero;
-	private JComboBox<Object> comboTipo;
+	private Model model;
+
+	private JLabel lblErrorMoney;
+	private JComboBox<Object> comboType;
 	private JTextField textId;
 	private JLabel lblId;
-	private JCheckBox chckbxActivo;
-	
+	private JCheckBox chckbxActive;
 
 	/**
 	 * Create the frame.
-	 * @param controlador 
-	 * @param gestion2 
+	 * 
+	 * @param management Reference to the management window.
+	 * @param controller Reference to the controller handling logic.
+	 * @param model      Reference to the model managing data operations.
+	 * @param validator  Reference to the validator for input checks.
+	 * @since 3.0
 	 */
-	public GameUpdateUI(GestionUI gestion, Controller controlador, Model modelo, Validator validador) {
-		
-		this.modelo = modelo;
-		
+	public GameUpdateUI(ManagementUI management, Controller controller, Model model, Validator validator) {
+
+		this.model = model;
+
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);	
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 440, 314);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
@@ -72,175 +75,176 @@ public class GameUpdateUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblEditarJuego = new JLabel("Editar juego", SwingConstants.CENTER);
-		lblEditarJuego.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblEditarJuego.setBounds(6, 21, 412, 39);
-		contentPane.add(lblEditarJuego);
-		
-		btnModificar = new JButton("Modificar");
-		btnModificar.setBackground(new Color(128, 128, 255));
-		btnModificar.setEnabled(false);
-		btnModificar.setBounds(292, 228, 111, 32);
-		contentPane.add(btnModificar);
-		
-		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(24, 228, 111, 32);
-		contentPane.add(btnVolver);
-		
-		JLabel lblTipo = new JLabel("Tipo");
-		lblTipo.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTipo.setBounds(129, 84, 49, 14);
-		contentPane.add(lblTipo);
-		
-		JLabel lblDinero = new JLabel("Dinero");
-		lblDinero.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblDinero.setBounds(40, 152, 49, 14);
-		contentPane.add(lblDinero);
-		
-		textDinero = new JTextField();
-		textDinero.setBounds(101, 143, 236, 32);
-		contentPane.add(textDinero);
-		textDinero.setColumns(10);
-		
-		lblErrorDinero = new JLabel("");
-		lblErrorDinero.setForeground(new Color(255, 0, 0));
-		lblErrorDinero.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorDinero.setBounds(40, 178, 297, 14);
-		contentPane.add(lblErrorDinero);
-		
-		comboTipo = new JComboBox<Object>();
-		comboTipo.setModel(new DefaultComboBoxModel<Object>(new String[] {"Blackjack", "SlotMachine"}));
-		comboTipo.setBounds(172, 80, 111, 22);
-		contentPane.add(comboTipo);
-		
+
+		JLabel lblEditGame = new JLabel("Edit Game", SwingConstants.CENTER);
+		lblEditGame.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblEditGame.setBounds(6, 21, 412, 39);
+		contentPane.add(lblEditGame);
+
+		btnUpdate = new JButton("Update");
+		btnUpdate.setBackground(new Color(128, 128, 255));
+		btnUpdate.setEnabled(false);
+		btnUpdate.setBounds(292, 228, 111, 32);
+		contentPane.add(btnUpdate);
+
+		JButton btnBack = new JButton("Back");
+		btnBack.setBackground(new Color(128, 128, 128));
+		btnBack.setBounds(24, 228, 111, 32);
+		contentPane.add(btnBack);
+
+		JLabel lblType = new JLabel("Type");
+		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblType.setBounds(129, 84, 49, 14);
+		contentPane.add(lblType);
+
+		JLabel lblMoney = new JLabel("Money");
+		lblMoney.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblMoney.setBounds(40, 152, 49, 14);
+		contentPane.add(lblMoney);
+
+		textMoney = new JTextField();
+		textMoney.setBounds(101, 143, 236, 32);
+		contentPane.add(textMoney);
+		textMoney.setColumns(10);
+
+		lblErrorMoney = new JLabel("");
+		lblErrorMoney.setForeground(new Color(255, 0, 0));
+		lblErrorMoney.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorMoney.setBounds(40, 178, 297, 14);
+		contentPane.add(lblErrorMoney);
+
+		comboType = new JComboBox<Object>();
+		comboType.setModel(new DefaultComboBoxModel<Object>(new String[] { "Blackjack", "SlotMachine" }));
+		comboType.setBounds(172, 80, 111, 22);
+		contentPane.add(comboType);
+
 		lblId = new JLabel("ID");
 		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblId.setBounds(40, 84, 26, 14);
 		contentPane.add(lblId);
-		
+
 		textId = new JTextField();
 		textId.setEnabled(false);
 		textId.setEditable(false);
 		textId.setBounds(64, 77, 38, 29);
 		contentPane.add(textId);
 		textId.setColumns(10);
-		
-		chckbxActivo = new JCheckBox("Activo");
-		chckbxActivo.setBounds(304, 80, 89, 23);
-		contentPane.add(chckbxActivo);
-				
-		// Al escribir en el campo saldo
-		textDinero.addKeyListener(new KeyAdapter() {
+
+		chckbxActive = new JCheckBox("Active");
+		chckbxActive.setBounds(304, 80, 89, 23);
+		contentPane.add(chckbxActive);
+
+		// When typing in the money field
+		textMoney.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {			
-				dineroValido = false;				
-				String texto = textDinero.getText();
-				
-				if (validador.validarDineroJuego(texto, lblErrorDinero)) {
-					dineroValido = true;
+			public void keyReleased(KeyEvent e) {
+				moneyValid = false;
+				String text = textMoney.getText();
+
+				if (validator.validateGameMoney(text, lblErrorMoney)) {
+					moneyValid = true;
 				}
-				
-				revisarFormulario();
-			}
-		});		
-		
-		// Clic boton volver
-		btnVolver.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				limpiarCampos();
-				controlador.cambiarVentana(GameUpdateUI.this, gestion);
+
+				checkForm();
 			}
 		});
-			
-		// Clic boton modificar
-		btnModificar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-				int id = Integer.parseInt(textId.getText());
-				String tipo = String.valueOf(comboTipo.getSelectedItem());
-				boolean activo = chckbxActivo.isSelected() ? true : false;
-				Double dinero = Double.parseDouble(textDinero.getText());
-				
-				if (tipo.equalsIgnoreCase("Blackjack")) {
-					modelo.modificarJuego(new Blackjack(id, tipo, activo, dinero));
-				}
-				
-				if (tipo.equalsIgnoreCase("SlotMachine")) {
-					modelo.modificarJuego(new Slotmachine(id, tipo, activo, dinero));
-				}	
-				
-				limpiarCampos();
-				controlador.cambiarVentana(GameUpdateUI.this, gestion);
+
+		// Click "Back" button
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				clearFields();
+				controller.switchWindow(GameUpdateUI.this, management);
 			}
-		});		
-		
-		// Al cerrar la ventana mediante la X
+		});
+
+		// Click "Update" button
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int id = Integer.parseInt(textId.getText());
+				String type = String.valueOf(comboType.getSelectedItem());
+				boolean active = chckbxActive.isSelected() ? true : false;
+				Double money = Double.parseDouble(textMoney.getText());
+
+				if (type.equalsIgnoreCase("Blackjack")) {
+					model.updateGame(new Blackjack(id, type, active, money));
+				}
+
+				if (type.equalsIgnoreCase("SlotMachine")) {
+					model.updateGame(new Slotmachine(id, type, active, money));
+				}
+
+				clearFields();
+				controller.switchWindow(GameUpdateUI.this, management);
+			}
+		});
+
+		// When closing the window using the X
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				limpiarCampos();
-				controlador.cambiarVentana(GameUpdateUI.this, gestion);
+				clearFields();
+				controller.switchWindow(GameUpdateUI.this, management);
 			}
 		});
 	}
-	
-	
+
 	/**
-	 * Método para rellenar los campos del formulario con los datos del juego que se vaya a modificar.
-	 * @param id Id del juego a consultar por sus datos
+	 * Method to fill the form fields with the data of the game to be edited.
+	 * 
+	 * @param id Id of the game to retrieve its data
 	 * @since 3.0
 	 */
-	public void cargarJuegoOriginal(int id) {	    
-		ResultSet rset = modelo.consultarDatoUnico("games", id);
-	    
-	    try {
-		    textId.setText(String.valueOf(id));
-		    
-		    switch (rset.getString(2)) {
-			    case "Blackjack":
-			    	comboTipo.setSelectedIndex(0);
-			    	break;
-			    
-			    case "SlotMachine":
-			    	comboTipo.setSelectedIndex(1);
-			    	break;
-		    }
-		    
-			if (rset.getBoolean(3)) chckbxActivo.setSelected(true);
-		    textDinero.setText( String.valueOf(rset.getString(4) ) ) ;
-			
+	public void loadOriginalGame(int id) {
+		ResultSet rset = model.querySingleData("games", id);
+
+		try {
+			textId.setText(String.valueOf(id));
+
+			switch (rset.getString(2)) {
+			case "Blackjack":
+				comboType.setSelectedIndex(0);
+				break;
+
+			case "SlotMachine":
+				comboType.setSelectedIndex(1);
+				break;
+			}
+
+			if (rset.getBoolean(3))
+				chckbxActive.setSelected(true);
+			textMoney.setText(String.valueOf(rset.getString(4)));
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	    
-	    dineroValido = true;
-	    revisarFormulario();
+
+		moneyValid = true;
+		checkForm();
 	}
-	
-	
+
 	/**
-	 * Método para limpiar todos los campos del formulario.
+	 * Method to clear all the form fields.
+	 * 
 	 * @since 3.0
 	 */
-	public void limpiarCampos() {
-		btnModificar.setEnabled(false);
-		textDinero.setText("");
-		comboTipo.setSelectedIndex(0);
-		lblErrorDinero.setText("");
+	public void clearFields() {
+		btnUpdate.setEnabled(false);
+		textMoney.setText("");
+		comboType.setSelectedIndex(0);
+		lblErrorMoney.setText("");
 	}
-	
-	
+
 	/**
-	 * Método para revisar que el usuario haya rellenado todos los datos en el formulario.
+	 * Method to check that the user has filled in all the form data.
+	 * 
 	 * @since 3.0
 	 */
-	public void revisarFormulario() {	
-		if (dineroValido) {
-			btnModificar.setEnabled(true);
+	public void checkForm() {
+		if (moneyValid) {
+			btnUpdate.setEnabled(true);
 			return;
 		}
-		
-		btnModificar.setEnabled(false);
+
+		btnUpdate.setEnabled(false);
 	}
 }

@@ -35,7 +35,8 @@ import ui.PlayUI;
 import ui.HomeUI;
 
 /**
- * Ventana para comenzar los juegos.
+ * Window for starting games.
+ * 
  * @author David
  * @since 3.0
  */
@@ -43,30 +44,31 @@ public class PlayUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTable tableClientes;
-	private JTable tableJuegos;
-	
-	private DefaultTableModel modeloClientes;
-	private DefaultTableModel modeloJuegos;
-	
-	private Model modelo;
-	private Controller controlador;
-	private JButton btnJugar;
+	private JTable tableClients;
+	private JTable tableGames;
+
+	private DefaultTableModel modelClients;
+	private DefaultTableModel modelGames;
+
+	private Model model;
+	private Controller controller;
+	private JButton btnPlay;
 	private HomeUI menu;
-	
 
 	/**
-	 * Create the frame.
-	 * @param menu
-	 * @param modelo
-	 * @param controlador
+	 * Creates the frame.
+	 * 
+	 * @param menu       The main menu window
+	 * @param model      The data model
+	 * @param controller The controller for handling events
+	 * @since 3.0
 	 */
-	public PlayUI(HomeUI menu, Model modelo, Controller controlador) {
-		
+	public PlayUI(HomeUI menu, Model model, Controller controller) {
+
 		this.menu = menu;
-		this.modelo = modelo;
-		this.controlador = controlador;	
-		
+		this.model = model;
+		this.controller = controller;
+
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 716, 435);
@@ -76,238 +78,206 @@ public class PlayUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblJuego = new JLabel("Jugar", SwingConstants.CENTER);
-		lblJuego.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblJuego.setBounds(28, 28, 652, 31);
-		contentPane.add(lblJuego);
-		
-		JLabel lblClientes = new JLabel("Clientes", SwingConstants.CENTER);
-		lblClientes.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblClientes.setBounds(28, 82, 287, 31);
-		contentPane.add(lblClientes);
-		
-		JScrollPane scrollPaneCliente = new JScrollPane();
-		scrollPaneCliente.setBounds(28, 124, 287, 166);
-		contentPane.add(scrollPaneCliente);
-		
-		modeloClientes = new DefaultTableModel(
-				new Object[][] {
-				},
-				new String[] {
-					"Id", "Nombre", "Activo", "Saldo"
-				}
-			) {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 4840318942523039213L;
-				@SuppressWarnings("rawtypes")
-				Class[] columnTypes = new Class[] {
-					Integer.class, String.class, String.class, Double.class
-				};
-				boolean[] columnEditables = new boolean[] {
-					false, false, false, false
-				};
-				public Class<?> getColumnClass(int columnIndex) {
-					return columnTypes[columnIndex];
-				}
-				public boolean isCellEditable(int row, int column) {
-					return columnEditables[column];
-				}
-				
-			};
-		tableClientes = new JTable();
-		tableClientes.setModel(modeloClientes);
-		tableClientes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrollPaneCliente.setViewportView(tableClientes);
-		
-		JLabel lblJuegos = new JLabel("Juegos", SwingConstants.CENTER);
-		lblJuegos.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblJuegos.setBounds(357, 86, 323, 23);
-		contentPane.add(lblJuegos);
-		
-		JScrollPane scrollPaneJuegos = new JScrollPane();
-		scrollPaneJuegos.setBounds(357, 124, 323, 166);
-		contentPane.add(scrollPaneJuegos);
-		
-		modeloJuegos = new DefaultTableModel(
-				new Object[][] {
-				},
-				new String[] {
-					"Id", "Tipo", "Activo", "Dinero"
-				}
-			) {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = -6299895431999927772L;
-				@SuppressWarnings("rawtypes")
-				Class[] columnTypes = new Class[] {
-					Integer.class, String.class, String.class, Double.class
-				};
-				boolean[] columnEditables = new boolean[] {
-					false, false, false, false
-				};
-				public Class<?> getColumnClass(int columnIndex) {
-					return columnTypes[columnIndex];
-				}
-				public boolean isCellEditable(int row, int column) {
-					return columnEditables[column];
-				}
-			};
-		tableJuegos = new JTable();
-		tableJuegos.setModel(modeloJuegos);
-		tableJuegos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrollPaneJuegos.setViewportView(tableJuegos);
-		
-		btnJugar = new JButton("Jugar");
-		btnJugar.setBackground(new Color(128, 128, 255));
-		btnJugar.setEnabled(false);
-		btnJugar.setBounds(577, 327, 103, 31);
-		contentPane.add(btnJugar);
-		
-		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBackground(new Color(128, 128, 128));
-		btnVolver.setBounds(28, 327, 103, 31);
-		contentPane.add(btnVolver);
-		
-		// Clic boton volver
-		btnVolver.addActionListener(new ActionListener() {
+
+		JLabel lblGame = new JLabel("Play", SwingConstants.CENTER);
+		lblGame.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblGame.setBounds(28, 28, 652, 31);
+		contentPane.add(lblGame);
+
+		JLabel lblClients = new JLabel("Clients", SwingConstants.CENTER);
+		lblClients.setFont(new Font("SansSerif", Font.BOLD, 16));
+		lblClients.setBounds(28, 82, 287, 31);
+		contentPane.add(lblClients);
+
+		JScrollPane scrollPaneClients = new JScrollPane();
+		scrollPaneClients.setBounds(28, 124, 287, 166);
+		contentPane.add(scrollPaneClients);
+
+		modelClients = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Name", "Active", "Balance" }) {
+			private static final long serialVersionUID = 4840318942523039213L;
+			@SuppressWarnings("rawtypes")
+			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, Double.class };
+			boolean[] columnEditables = new boolean[] { false, false, false, false };
+
+			public Class<?> getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		};
+		tableClients = new JTable();
+		tableClients.setModel(modelClients);
+		tableClients.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPaneClients.setViewportView(tableClients);
+
+		JLabel lblGames = new JLabel("Games", SwingConstants.CENTER);
+		lblGames.setFont(new Font("SansSerif", Font.BOLD, 16));
+		lblGames.setBounds(357, 86, 323, 23);
+		contentPane.add(lblGames);
+
+		JScrollPane scrollPaneGames = new JScrollPane();
+		scrollPaneGames.setBounds(357, 124, 323, 166);
+		contentPane.add(scrollPaneGames);
+
+		modelGames = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Type", "Active", "Money" }) {
+			private static final long serialVersionUID = -6299895431999927772L;
+			@SuppressWarnings("rawtypes")
+			Class[] columnTypes = new Class[] { Integer.class, String.class, String.class, Double.class };
+			boolean[] columnEditables = new boolean[] { false, false, false, false };
+
+			public Class<?> getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		};
+		tableGames = new JTable();
+		tableGames.setModel(modelGames);
+		tableGames.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPaneGames.setViewportView(tableGames);
+
+		btnPlay = new JButton("Play");
+		btnPlay.setBackground(new Color(128, 128, 255));
+		btnPlay.setEnabled(false);
+		btnPlay.setBounds(577, 327, 103, 31);
+		contentPane.add(btnPlay);
+
+		JButton btnBack = new JButton("Back");
+		btnBack.setBackground(new Color(128, 128, 128));
+		btnBack.setBounds(28, 327, 103, 31);
+		contentPane.add(btnBack);
+
+		// Click the back button
+		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controlador.cambiarVentana(PlayUI.this, menu);
-				btnJugar.setEnabled(false);
+				controller.switchWindow(PlayUI.this, menu);
+				btnPlay.setEnabled(false);
 			}
 		});
-		
-		// Al cerrar la ventana mediante la X
+
+		// When closing the window using the X
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controlador.cambiarVentana(PlayUI.this, menu);
-				btnJugar.setEnabled(false);
+				controller.switchWindow(PlayUI.this, menu);
+				btnPlay.setEnabled(false);
 			}
 		});
-		
-		
-		// Clic boton jugar
-		btnJugar.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
 
-		        ResultSet rsetCliente = modelo.consultarDatoUnico("customers", Integer.parseInt(tableClientes.getValueAt(tableClientes.getSelectedRow(), 0).toString()));
-		        ResultSet rsetJuego = modelo.consultarDatoUnico("games", Integer.parseInt(tableJuegos.getValueAt(tableJuegos.getSelectedRow(), 0).toString()));
+		// Click the play button
+		btnPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-		        Client cliente = null;
-		        Game juego = null;
+				ResultSet clientResult = model.querySingleData("customers",
+						Integer.parseInt(tableClients.getValueAt(tableClients.getSelectedRow(), 0).toString()));
+				ResultSet gameResult = model.querySingleData("games",
+						Integer.parseInt(tableGames.getValueAt(tableGames.getSelectedRow(), 0).toString()));
 
-		        try {
-		            cliente = new Client(rsetCliente.getInt("id"), rsetCliente.getString("customer_name"), rsetCliente.getDouble("balance"));
+				Client client = null;
+				Game game = null;
 
-		            if (rsetJuego.getString("game_type").equals("Blackjack")) {
-		                juego = new Blackjack(rsetJuego.getInt("id"), rsetJuego.getDouble("money_pool"));
-		                
-		            } else if (rsetJuego.getString("game_type").equals("SlotMachine")) {
-		                juego = new Slotmachine(rsetJuego.getInt("id"), rsetJuego.getDouble("money_pool"));
-		            }
+				try {
+					client = new Client(clientResult.getInt("id"), clientResult.getString("customer_name"),
+							clientResult.getDouble("balance"));
 
-		            double apuesta = controlador.alertaApuesta(cliente, juego);
+					if (gameResult.getString("game_type").equals("Blackjack")) {
+						game = new Blackjack(gameResult.getInt("id"), gameResult.getDouble("money_pool"));
 
-		            if (apuesta != 0) {
-		                controlador.abrirJuegoVentana(juego, PlayUI.this, cliente, apuesta);
-		                btnJugar.setEnabled(false);
-		            }
+					} else if (gameResult.getString("game_type").equals("SlotMachine")) {
+						game = new Slotmachine(gameResult.getInt("id"), gameResult.getDouble("money_pool"));
+					}
 
-		        } catch (SQLException ex) {
-		            ex.printStackTrace();
-		            
-		        } catch (BetException ex) {
-		            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		        }
-		    }
-		});
-		
-		
-		// Clic fila de la tabla clientes
-		tableClientes.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {				
-				comprobarTablas();
+					double bet = controller.promptBet(client, game);
+
+					if (bet != 0) {
+						controller.openGameWindow(game, PlayUI.this, client, bet);
+						btnPlay.setEnabled(false);
+					}
+
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+
+				} catch (BetException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
-		
-		
-		// Clic fila de la tabla juegos
-		tableJuegos.addMouseListener(new MouseAdapter() {
+
+		// Click on a row in the clients table
+		tableClients.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				comprobarTablas();
+				checkTables();
+			}
+		});
+
+		// Click on a row in the games table
+		tableGames.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				checkTables();
 			}
 		});
 	}
-	
-	
+
 	/**
-	 * Método para actualizar las tablas de clientes y juegos, consultando a la BD mediante la clase modelo.
-	 * @throws GameException 
+	 * Method to update the clients and games tables by querying the database
+	 * through the model class.
+	 * 
+	 * @throws GameException
 	 */
-	public void actualizarTablas() throws GameException {
-		
-		ResultSet rset1 = modelo.consultarDatos("customers", true);		
-		ResultSet rset2 = modelo.consultarDatos("games", true);		
-		boolean hayDatos = false;
-		
-		modeloClientes.setRowCount(0);
-		modeloJuegos.setRowCount(0);
-		
-		// Tabla clientes
+	public void updateTables() throws GameException {
+
+		ResultSet clientsResult = model.queryTableData("customers", true);
+		ResultSet gamesResult = model.queryTableData("games", true);
+		boolean hasData = false;
+
+		modelClients.setRowCount(0);
+		modelGames.setRowCount(0);
+
+		// Clients table
 		try {
-			hayDatos = rset1.next();
-			if (hayDatos) {
-				controlador.rellenarTablaClientes(rset1, modeloClientes);
-				
+			hasData = clientsResult.next();
+			if (hasData) {
+				controller.fillClientTable(clientsResult, modelClients);
 			} else {
-				throw new GameException("No puedes jugar sin haber registrado ningún cliente.");
+				throw new GameException("You cannot play without having registered any client.");
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
 		}
-				
-		// Tabla juegos
+
+		// Games table
 		try {
-			hayDatos = rset2.next();
-			if (hayDatos) {
-				controlador.rellenarTablaJuegos(rset2, modeloJuegos);
-				
+			hasData = gamesResult.next();
+			if (hasData) {
+				controller.fillGameTable(gamesResult, modelGames);
 			} else {
-				throw new GameException("No puedes jugar sin haber registrado ningún juego.");
+				throw new GameException("You cannot play without having registered any game.");
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
 		}
-	}
-	
-	
-	/**
-	 * Método que comprueba que se hayan elegido campos en la tabla clientes y tabla juegos.
-	 */
-	public void comprobarTablas() {
-		if (tableClientes.getSelectedRow() == -1 || tableJuegos.getSelectedRow() == -1 ) {
-			btnJugar.setEnabled(false);
-			return;
-		}	
-		
-		btnJugar.setEnabled(true);
 	}
 
+	/**
+	 * Method that checks whether rows have been selected in both the clients and
+	 * games tables.
+	 */
+	public void checkTables() {
+		if (tableClients.getSelectedRow() == -1 || tableGames.getSelectedRow() == -1) {
+			btnPlay.setEnabled(false);
+			return;
+		}
+
+		btnPlay.setEnabled(true);
+	}
 
 	public HomeUI getMenu() {
 		return menu;
 	}
-	
-	
-	
 }

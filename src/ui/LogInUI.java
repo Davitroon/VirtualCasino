@@ -31,29 +31,39 @@ import ui.ConnectUI;
 import ui.LogInUI;
 
 /**
- * Ventana donde el usuario podra iniciar sesión.
+ * Window where the user can log in.
+ * 
+ * @author David
+ * @since 3.0
  */
 public class LogInUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textNombre;
-	
-	private User usuario;
-	
-	private boolean nombreValido;
-	private boolean contraseñaValida;
+	private JTextField textUsername;
+
+	private User user;
+
+	private boolean usernameValid;
+	private boolean passwordValid;
 	private JPasswordField passwordField;
-	private JButton btnAceptar;
-	private JLabel lblErrorNombre;
-	private JCheckBox chckbxRecordarSesion;
-	private JCheckBox chckbxMostrar;
+	private JButton btnAccept;
+	private JLabel lblUsernameError;
+	private JCheckBox chckbxRememberSession;
+	private JCheckBox chckbxShowPassword;
 
 	/**
-	 * Create the frame.
+	 * Constructs the login window frame.
+	 *
+	 * @param model      the data model of the application
+	 * @param controller the controller handling UI actions
+	 * @param session    the current session object
+	 * @param login      the ConnectUI window to return to
+	 * @param validator  the validator for input fields
+	 * @since 3.0
 	 */
-	public LogInUI(Model modelo, Controller controlador, Session sesion, ConnectUI login, Validator validador) {
-		
+	public LogInUI(Model model, Controller controller, Session session, ConnectUI login, Validator validator) {
+
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 533, 367);
@@ -63,197 +73,185 @@ public class LogInUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblIniciarSesion = new JLabel("Iniciar sesión", SwingConstants.CENTER);
-		lblIniciarSesion.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblIniciarSesion.setBounds(10, 29, 486, 31);
-		contentPane.add(lblIniciarSesion);
-		
-		JButton btnVolver = new JButton("Volver");
-		btnVolver.setBackground(Color.GRAY);
-		btnVolver.setBounds(21, 273, 105, 32);
-		contentPane.add(btnVolver);
-		
-		JLabel lblNombre = new JLabel("Nombre de usuario");
-		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNombre.setBounds(89, 107, 133, 14);
-		contentPane.add(lblNombre);
-		
-		textNombre = new JTextField();
-		textNombre.setBounds(228, 101, 172, 26);
-		textNombre.setColumns(10);
-		contentPane.add(textNombre);
-		
-		
-		JLabel lblContrasena = new JLabel("Contraseña");
-		lblContrasena.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblContrasena.setBounds(89, 165, 129, 15);
-		contentPane.add(lblContrasena);
-		
-		btnAceptar = new JButton("Aceptar");
-		btnAceptar.setEnabled(false);
-		btnAceptar.setBounds(391, 273, 105, 32);
-		contentPane.add(btnAceptar);
-		
-		lblErrorNombre = new JLabel("");
-		lblErrorNombre.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorNombre.setForeground(new Color(255, 0, 0));
-		lblErrorNombre.setBounds(89, 132, 311, 14);
-		contentPane.add(lblErrorNombre);
-		
-		JLabel lblContrasenaAviso = new JLabel("La contraseña debe tener mínimo 8 caracteres");
-		lblContrasenaAviso.setForeground(Color.RED);
-		lblContrasenaAviso.setBounds(89, 191, 288, 20);
-		contentPane.add(lblContrasenaAviso);
-		
+
+		JLabel lblLogIn = new JLabel("Log In", SwingConstants.CENTER);
+		lblLogIn.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblLogIn.setBounds(10, 29, 486, 31);
+		contentPane.add(lblLogIn);
+
+		JButton btnBack = new JButton("Back");
+		btnBack.setBackground(Color.GRAY);
+		btnBack.setBounds(21, 273, 105, 32);
+		contentPane.add(btnBack);
+
+		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblUsername.setBounds(89, 107, 133, 14);
+		contentPane.add(lblUsername);
+
+		textUsername = new JTextField();
+		textUsername.setBounds(228, 101, 172, 26);
+		textUsername.setColumns(10);
+		contentPane.add(textUsername);
+
+		JLabel lblPassword = new JLabel("Password");
+		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblPassword.setBounds(89, 165, 129, 15);
+		contentPane.add(lblPassword);
+
+		btnAccept = new JButton("Accept");
+		btnAccept.setEnabled(false);
+		btnAccept.setBounds(391, 273, 105, 32);
+		contentPane.add(btnAccept);
+
+		lblUsernameError = new JLabel("");
+		lblUsernameError.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblUsernameError.setForeground(new Color(255, 0, 0));
+		lblUsernameError.setBounds(89, 132, 311, 14);
+		contentPane.add(lblUsernameError);
+
+		JLabel lblPasswordNotice = new JLabel("Password must be at least 8 characters");
+		lblPasswordNotice.setForeground(Color.RED);
+		lblPasswordNotice.setBounds(89, 191, 288, 20);
+		contentPane.add(lblPasswordNotice);
+
 		passwordField = new JPasswordField();
 		passwordField.setEchoChar('*');
 		passwordField.setBounds(189, 160, 149, 26);
 		contentPane.add(passwordField);
-		
-		chckbxMostrar = new JCheckBox("Mostrar");
-		chckbxMostrar.setBounds(344, 162, 69, 23);
-		contentPane.add(chckbxMostrar);
-		
-		chckbxRecordarSesion = new JCheckBox("Recordar inicio de sesión");
-		chckbxRecordarSesion.setBounds(89, 218, 201, 23);
-		contentPane.add(chckbxRecordarSesion);
-		
-		// Clic boton volver
-		btnVolver.addActionListener(new ActionListener() {
+
+		chckbxShowPassword = new JCheckBox("Show");
+		chckbxShowPassword.setBounds(344, 162, 69, 23);
+		contentPane.add(chckbxShowPassword);
+
+		chckbxRememberSession = new JCheckBox("Remember login");
+		chckbxRememberSession.setBounds(89, 218, 201, 23);
+		contentPane.add(chckbxRememberSession);
+
+		// Click back button
+		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				reiniciarContenido();
-				controlador.cambiarVentana(LogInUI.this, login);
+				resetContent();
+				controller.switchWindow(LogInUI.this, login);
 			}
-		});	
-		
-		// Al escribir en el campo nombre
-		textNombre.addKeyListener(new KeyAdapter() {
+		});
+
+		// Typing in the username field
+		textUsername.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {			
-				nombreValido = false;
-				String texto = textNombre.getText();
-				
-				if (validador.validarNombre(texto, lblErrorNombre)) {
-					nombreValido = true;
+			public void keyReleased(KeyEvent e) {
+				usernameValid = false;
+				String text = textUsername.getText();
+
+				if (validator.validateName(text, lblUsernameError)) {
+					usernameValid = true;
 				}
-				
-				revisarFormulario();
+
+				checkForm();
 			}
-		});	
-				
-		// Al escribir en el campo contraseña
+		});
+
+		// Typing in the password field
 		passwordField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				contraseñaValida = false;
+				passwordValid = false;
 				if (passwordField.getPassword().length >= 8) {
-					contraseñaValida = true;
-					lblContrasenaAviso.setForeground(Color.GRAY);
-					
+					passwordValid = true;
+					lblPasswordNotice.setForeground(Color.GRAY);
 				} else {
-					lblContrasenaAviso.setForeground(Color.RED);
+					lblPasswordNotice.setForeground(Color.RED);
 				}
-				
-				revisarFormulario();
+
+				checkForm();
 			}
 		});
-			
-		// Mostrar u ocultar contraseña
-		chckbxMostrar.addActionListener(new ActionListener() {
+
+		// Show or hide password
+		chckbxShowPassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			    if (chckbxMostrar.isSelected()) {
-			        passwordField.setEchoChar((char) 0); // Mostrar
-			    } else {
-			        passwordField.setEchoChar('*'); // Ocultar
-			    }
+				if (chckbxShowPassword.isSelected()) {
+					passwordField.setEchoChar((char) 0); // Show
+				} else {
+					passwordField.setEchoChar('*'); // Hide
+				}
 			}
 		});
-		
-		// Clic boton aceptar
-		btnAceptar.addActionListener(new ActionListener() {
+
+		// Click accept button
+		btnAccept.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				char[] passwordChars = passwordField.getPassword();
-				String contraseña = new String(passwordChars);
-				
-				// Revisa si el usuario existe.
+				String password = new String(passwordChars);
+
+				// Check if the user exists
 				try {
-					ResultSet rset = (modelo.consultarUsuario(textNombre.getText()));
+					ResultSet rset = (model.queryUser(textUsername.getText()));
 					if (rset != null) {
-						usuario = new User(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"), rset.getString("email"), rset.getString("last_access"), rset.getBoolean("remember_login"));
-						
-						// Validar que la contraseña del usuario sea igual que la contraseña escrita
-						if (!usuario.getContrasena().equals(contraseña)) {
-							JOptionPane.showMessageDialog(
-								    null,
-								    "Contraseña incorrecta",
-								    "Advertencia",
-								    JOptionPane.WARNING_MESSAGE
-								);
-							
+						user = new User(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"),
+								rset.getString("email"), rset.getString("last_access"),
+								rset.getBoolean("remember_login"));
+
+						// Validate that the user's password matches the input
+						if (!user.getPassword().equals(password)) {
+							JOptionPane.showMessageDialog(null, "Incorrect password", "Warning",
+									JOptionPane.WARNING_MESSAGE);
 						} else {
-							// Si se ha marcado que se recuerde la sesion, lo modifica antes de entrar
-							if (chckbxRecordarSesion.isSelected()) {
-								modelo.alternarRecordarSesion(usuario.getNombre(), true);
+							// If "remember login" is checked, update before logging in
+							if (chckbxRememberSession.isSelected()) {
+								model.toggleRememberLogin(user.getName(), true);
 							}
-							sesion.iniciarSesion(usuario, LogInUI.this);
-							reiniciarContenido();
-						}					
+							session.startSession(user, LogInUI.this);
+							resetContent();
+						}
 						rset.close();
-						
+
 					} else {
-						JOptionPane.showMessageDialog(
-							    null,
-							    "El usuario " + textNombre.getText() + " no está registrado",
-							    "Advertencia",
-							    JOptionPane.WARNING_MESSAGE
-							);
-					}			
+						JOptionPane.showMessageDialog(null, "The user " + textUsername.getText() + " is not registered",
+								"Warning", JOptionPane.WARNING_MESSAGE);
+					}
 
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
-		
-		// Al cerrar la ventana mediante la X
+
+		// Closing the window with the X
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				reiniciarContenido();
-				controlador.cambiarVentana(LogInUI.this, login);
+				resetContent();
+				controller.switchWindow(LogInUI.this, login);
 			}
 		});
 	}
-	
-	
+
 	/**
-	 * Reinicia el contenido de la pagina para cerrarse.
+	 * Resets the content of the page before closing.
 	 */
-	public void reiniciarContenido() {
-		lblErrorNombre.setText("");
-		btnAceptar.setEnabled(false);
-		textNombre.setText("");
+	public void resetContent() {
+		lblUsernameError.setText("");
+		btnAccept.setEnabled(false);
+		textUsername.setText("");
 		passwordField.setText("");
-		chckbxRecordarSesion.setSelected(false);
-		chckbxMostrar.setSelected(false);
+		chckbxRememberSession.setSelected(false);
+		chckbxShowPassword.setSelected(false);
 	}
-	
-	
+
 	/**
-	 * Revisa el formulario para asegurarse que los datos sean correctos.
+	 * Checks the form to ensure the data is valid.
 	 */
-	public void revisarFormulario() {
-		if (nombreValido && contraseñaValida) {
-			btnAceptar.setEnabled(true);
-			
+	public void checkForm() {
+		if (usernameValid && passwordValid) {
+			btnAccept.setEnabled(true);
 		} else {
-			btnAceptar.setEnabled(false);
+			btnAccept.setEnabled(false);
 		}
 	}
 
-
-	public void setUsuario(User usuario) {
-		this.usuario = usuario;
+	public void setUser(User user) {
+		this.user = user;
 	}
+
 }
