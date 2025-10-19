@@ -1,65 +1,65 @@
 package logic;
 
 /**
- * Clase para los diferentes perfiles que podrá tener el jugador.
+ * Class for the different profiles the player can have.
  */
 public class User {
 
 	private int id;
-	private String nombre;
-	private String contrasena;
-	private String correo;
-	private String ultimoAcceso;
-	private boolean recordarSesion;
+	private String name;
+	private String password;
+	private String email;
+	private String lastAccess;
+	private boolean rememberSession;
 	
 	
 	
-	public User(int id, String nombre, String contraseña, String correo, String ultimoAcceso, boolean recordarSesion) {
+	public User(int id, String name, String password, String email, String lastAccess, boolean rememberSession) {
 		this.id = id;
-		this.nombre = nombre;
-		this.contrasena = contraseña;
-		this.correo = correo;
-		this.ultimoAcceso = ultimoAcceso;
-		this.recordarSesion = recordarSesion;
+		this.name = name;
+		this.password = password;
+		this.email = email;
+		this.lastAccess = lastAccess;
+		this.rememberSession = rememberSession;
 	}
 	
 	
-	public User(String nombre, String contraseña) {
-		this.nombre = nombre;
-		this.contrasena = contraseña;
+	public User(String name, String password) {
+		this.name = name;
+		this.password = password;
 	}
 
 
-	public User(String nombre, String contraseña, String correo, boolean recordarSesion) {
-		this.nombre = nombre;
-		this.contrasena = contraseña;
-		this.correo = correo;
-		this.recordarSesion = recordarSesion;
+	public User(String name, String password, String email, boolean rememberSession) {
+		this.name = name;
+		this.password = password;
+		this.email = email;
+		this.rememberSession = rememberSession;
 	}
 
 
-	public String getNombre() {
-		return nombre;
+	public String getName() {
+		return name;
 	}
 
 
-	public String getContrasena() {
-		return contrasena;
+	public String getPassword() {
+		return password;
 	}
 
 
-	public String getCorreo() {
-		return correo;
+	public String getEmail() {
+		return email;
 	}
 
 
-	public String getUltimoAcceso() {
-		return ultimoAcceso;
+	public String getLastAccess() {
+		return lastAccess;
 	}
 
 
-	public boolean isRecordarSesion() {
-		return recordarSesion;
+	public boolean isRememberSession() {
+		return rememberSession;
 	}
 
 

@@ -1,73 +1,75 @@
 package logic;
 
 /**
- * Clase para los clientes del casino.
+ * Class for casino clients (customers).
  * @author David Forero
  * @since 2.0
  */
 public class Client {
 	
 	private int id;
-	private String nombre;
-	private int edad;
-	private char genero;
-	private boolean activo;
-	private double saldo;
+	private String name;       
+	private int age;
+	private char gender;
+	private boolean active;
+	private double balance;
 	
 	
 	/**
-	 * Constructor mínimo para jugar, solo se necesitará saber el nombre, saldo y el id.
-	 * @param id Id del cliente
-	 * @param saldo Saldo del cliente
-	 */
-	public Client(int id, String nombre, double saldo) {
-		this.id = id;
-		this.nombre = nombre;
-		this.saldo = saldo;
-	}
-
-	
-	/**
-	 * Constructor de los clientes.
-	 * @param nombre Nombre completo del cliente (nombre y apellido)
-	 * @param edad Edad del cliente (con rango de edad válido establecido)
-	 * @param genero Género del cliente
-	 * @param saldo Saldo del cliente
+	 * Minimum constructor for playing, only the name, balance, and id will be needed.
+	 * @param id Client ID
+	 * @param name Client name
+	 * @param balance Client balance
 	 * @since 2.0
 	 */
-	public Client(String nombre, int edad, char genero, double saldo) {
-		this.nombre = nombre;
-		this.edad = edad;
-		this.genero = genero;
-		activo = true;
-		this.saldo = saldo;
+	public Client(int id, String name, double balance) {
+		this.id = id;
+		this.name = name;
+		this.balance = balance;
+	}
+
+	
+	/**
+	 * Constructor for clients.
+	 * @param name Client's full name (first and last name)
+	 * @param age Client's age (with established valid age range)
+	 * @param gender Client's gender
+	 * @param balance Client's balance
+	 * @since 2.0
+	 */
+	public Client(String name, int age, char gender, double balance) {
+		this.name = name;
+		this.age = age;
+		this.gender = gender;
+		active = true;
+		this.balance = balance;
 	}
 	
 	/**
-	 * Constructor completo (para ser editado) de los clientes.
-	 * @param nombre Nombre completo del cliente (nombre y apellido)
-	 * @param edad Edad del cliente (con rango de edad válido establecido)
-	 * @param genero Género del cliente
-	 * @param saldo Saldo del cliente
+	 * Complete constructor (to be edited) for clients.
+	 * @param name Client's full name (first and last name)
+	 * @param age Client's age (with established valid age range)
+	 * @param gender Client's gender
+	 * @param balance Client's balance
 	 * @since 2.0
 	 */
-	public Client(String nombre, int edad, char genero, double saldo, int id, boolean activo) {
+	public Client(String name, int age, char gender, double balance, int id, boolean active) {
 		this.id = id;
-		this.nombre = nombre;
-		this.edad = edad;
-		this.genero = genero;
-		this.activo = activo;
-		this.saldo = saldo;
+		this.name = name;
+		this.age = age;
+		this.gender = gender;
+		this.active = active;
+		this.balance = balance;
 	}
 
 
-	public int getEdad() {
-		return edad;
+	public int getAge() {
+		return age;
 	}
 
 
-	public char getGenero() {
-		return genero;
+	public char getGender() {
+		return gender;
 	}
 
 
@@ -76,51 +78,42 @@ public class Client {
 	}
 
 
-	public String getNombre() {
-		return nombre;
+	public String getName() {
+		return name;
 	}
 
 
-	public double getSaldo() {
-		return saldo;
+	public double getBalance() {
+		return balance;
 	}
 
 
-	public boolean isActivo() {
-		return activo;
+	public boolean isActive() {
+		return active;
 	}
 
 
-	public void setActivo(boolean baja) {
-		this.activo = baja;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 
-	public void setEdad(int edad) {
-		this.edad = edad;
+	public void setAge(int age) {
+		this.age = age;
 	}
 
 
-	public void setGenero(char genero) {
-		this.genero = genero;
+	public void setGender(char gender) {
+		this.gender = gender;
 	}
 
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 
-	public void setSaldo(double saldo) {
-		this.saldo = saldo;
+	public void setBalance(double balance) {
+		this.balance = balance;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 }
-

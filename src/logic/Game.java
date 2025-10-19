@@ -1,61 +1,62 @@
 package logic;
 
 /**
- * Clase abstracta que da formato a los juegos.
- * Cada juego tendrá su propia lógica, metodos propios y atributos.
+ * Abstract class that provides the format for games.
+ * Each game will have its own logic, methods, and attributes.
  * @author David Forero
  * @since 2.0
  */
 public abstract class Game {
 	
 	private int id;
-	private String tipo;
-	private boolean activo = true;
-	private double dinero;
+	private String type;
+	private boolean active = true;
+	private double money;
 	
 	
 	/**
-	 * Constructor de los juegos.
-	 * @param dinero Dinero que contará el juego para las apuestas
-	 * @param tipo Tipo del juego
+	 * Constructor for the games.
+	 * @param money Money that the game will count for bets
+	 * @param type Game type
 	 * @since 2.0
 	 */
-	public Game(double dinero, String tipo) {
-		this.dinero = dinero;
-		this.tipo = tipo;
+	public Game(double money, String type) {
+		this.money = money;
+		this.type = type;
 	}
 	
 	
 	/**
-	 * Constructor minimo para jugar, solo se necesitará saber el dinero y el id.
-	 * @param id
-	 * @param dinero
+	 * Minimum constructor for playing, only the money and the id will be needed.
+	 * @param id Game ID
+	 * @param money Game money
+	 * @param type Game type
 	 */
-	public Game(int id, double dinero, String tipo) {
+	public Game(int id, double money, String type) {
 		this.id = id;
-		this.dinero = dinero;
-		this.tipo = tipo;
+		this.money = money;
+		this.type = type;
 	}
 
 	
 	/**
-	 * Constructor completo (para ser editado) de los juegos.
-	 * @param id Id del juego
-	 * @param tipo Tipo del juego
-	 * @param activo Estado del juego
-	 * @param dinero Dinero que contará el juego para las apuestas
+	 * Complete constructor (to be edited) for games.
+	 * @param id Game ID
+	 * @param type Game type
+	 * @param active Game status
+	 * @param money Money that the game will count for bets
 	 * @since 2.0
 	 */
-	public Game(int id, String tipo, boolean activo, double dinero) {
+	public Game(int id, String type, boolean active, double money) {
 		this.id = id;
-		this.dinero = dinero;
-		this.activo = activo;
-		this.tipo = tipo;
+		this.money = money;
+		this.active = active;
+		this.type = type;
 	}
 
 
-	public double getDinero() {
-		return dinero;
+	public double getMoney() {
+		return money;
 	}
 	
 	
@@ -64,36 +65,32 @@ public abstract class Game {
 	}
 
 
-	public String getTipo() {
-		return tipo;
+	public String getType() {
+		return type;
 	}
 
 
-	public boolean isActivo() {
-		return activo;
+	public boolean isActive() {
+		return active;
 	}
-
 
 
 	/**
-	 * Método para jugar al juego. Cada tipo de juego calcula mediante sus propias reglas la modificación de la apuesta, en base si el cliente pierde o gana.
-	 * @param apuesta Apuesta del cliente.
-	 * @return Apuesta modificada.
+	 * Method for playing the game. Each game type calculates the bet modification based on its own rules, depending on whether the client wins or loses.
+	 * @param bet Client's bet.
+	 * @return Modified bet (positive for winnings, negative for losses, zero/same for push).
 	 * @since 2.0
 	 */
-	public abstract double jugar(double apuesta);
+	public abstract double play(double bet);
 	
 	
-	public void setActivo(boolean activo) {
-		this.activo = activo;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 
-	public void setDinero(double dinero) {
-		this.dinero = dinero;
+	public void setMoney(double money) {
+		this.money = money;
 	}
-	
-	
-	
 	
 }

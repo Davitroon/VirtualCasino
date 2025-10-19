@@ -17,50 +17,48 @@ import ui.HomeUI;
 import ui.ProfileUI;
 
 /**
- * Clase encargada de instanciar las clases más importantes y ejecutar el programa.
+ * Class responsible for instantiating the most important classes and executing the program.
  * @author David
  * @since 3.0
  */
 public class Launcher {
 		
     public static void main(String[] args) {
-    	MessageException mensajeExcepcion = new MessageException();
-    	Model modelo = null;
+    	MessageException exceptionMessage = new MessageException();
+    	Model model = null;
     	
-        try {      	
-            modelo = new Model(mensajeExcepcion);          
+        try { 
+            model = new Model(exceptionMessage);           
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
             
         } catch (SQLSyntaxErrorException e) {
-        	mensajeExcepcion.mostrarError(e, "Base de datos no encontrada, utiliza la guía de instalación y revisa que el nombre de la base de datos sea correcto.\nConsultar la consola para más detalles.");
+        	exceptionMessage.showError(e, "Database not found, use the installation guide and check that the database name is correct.\nCheck the console for more details.");
         
         } catch (CommunicationsException e) {
-        	mensajeExcepcion.mostrarError(e, "Asegúrate de que el servicio MySQL80 esté en ejecución y de no haber modificado el host en el código del programa.\nConsultar la consola para más detalles.");
+        	exceptionMessage.showError(e, "Make sure the MySQL80 service is running and that you haven't modified the host in the program code.\nCheck the console for more details.");
         
         } catch (SQLException e) {
             if (e.getErrorCode() == 1045) {
-            	mensajeExcepcion.mostrarError(e, "Usuario o contraseña incorrectos.\nConsultar la consola para más información.");
+            	exceptionMessage.showError(e, "Incorrect username or password.\nCheck the console for more information.");
             
             } else {
-            	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error al conectar con la BD.\nConsultar la consola para más información.");
+            	exceptionMessage.showError(e, "An error occurred while connecting to the DB.\nCheck the console for more information.");
             }
         
         } catch (Exception e) {
-        	mensajeExcepcion.mostrarError(e, "Ha ocurrido un error inesperado.\nConsultar la consola para más información.");
+        	exceptionMessage.showError(e, "An unexpected error occurred.\nCheck the console for more information.");
         }
         
-        Validator validador = new Validator();
-        Controller controlador = new Controller(modelo, validador);
-        HomeUI menu = new HomeUI(modelo, controlador, validador);
-        Session sesion = new Session(menu, null, controlador, modelo);
-        ConnectUI conectarse = new ConnectUI(modelo, controlador, sesion, validador, menu);
-        ProfileUI perfil = new ProfileUI(menu, controlador, modelo);
+        Validator validator = new Validator(); 
+        Controller controller = new Controller(model, validator); 
+        HomeUI menu = new HomeUI(model, controller, validator); 
+        Session session = new Session(menu, null, controller, model); 
+        ConnectUI connect = new ConnectUI(model, controller, session, validator, menu); 
+        ProfileUI profile = new ProfileUI(menu, controller, model); 
         
-        menu.setPerfil(perfil);
-        menu.setConectarse(conectarse);
-        sesion.setConectarse(conectarse);
-        sesion.comprobarInicio();
+        menu.setProfile(profile); 
+        menu.setConnect(connect); 
+        session.setConnect(connect); 
+        session.checkStartup(); 
 	}
-	
-
 }

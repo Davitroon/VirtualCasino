@@ -19,118 +19,124 @@ import ui.BlackjackUI;
 import ui.PlayUI;
 import ui.SlotmachineUI;
 
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 /**
- * Clase controlador del MVC. Gestiona intercambios, validaciones y lógica.
+ * MVC Controller class. Manages exchanges, validations, and logic.
  * @author David
  * @since 3.0
  */
 public class Controller {
 	
-	private Model modelo;
-	private Validator validador;
+	private Model model;
+	private Validator validator;
 	
-	private double ultimaApuesta;
+	private double lastBet;
 	
-	public Controller(Model modelo, Validator validador) {
-		this.modelo = modelo;
-		this.validador = validador;
+	public Controller(Model model, Validator validator) {
+		this.model = model;
+		this.validator = validator;
 	}
 
 
 	/**
-	 * Método para abrir la ventana de un juego. Dependiendo de la instancia del juego recibido abrirá de un tipo o de otra.
-	 * @param juego Clase del juego a jugar.
-	 * @param jugarVentana Ventana "Jugar" desde donde se debería llamar a este método.
-	 * @param cliente Cliente a jugar.
-	 * @param apuesta Cantidad de la apuesta.
+	 * Method to open a game window. Depending on the instance of the received game, it will open a different type of window.
+	 * @param game Game class to play.
+	 * @param playWindow "Play" window from which this method should be called.
+	 * @param client Client who will play.
+	 * @param bet Amount of the bet.
 	 * @since 3.0
 	 */
-	public void abrirJuegoVentana(Game juego, PlayUI jugarVentana, Client cliente, double apuesta) {
-		if (juego instanceof Blackjack) {						
-			BlackjackUI blackjackVentana = new BlackjackUI(this, modelo, jugarVentana, cliente, juego, apuesta);
-			cambiarVentana(jugarVentana, blackjackVentana);
-			blackjackVentana.iniciarJuego();
+	public void openGameWindow(Game game, PlayUI playWindow, Client client, double bet) {
+		if (game instanceof Blackjack) {						
+			BlackjackUI blackjackWindow = new BlackjackUI(this, model, playWindow, client, game, bet);
+			changeWindow(playWindow, blackjackWindow);
+			blackjackWindow.startGame();
 		}
 		
-		if (juego instanceof Slotmachine ) {
-			SlotmachineUI tragaperrasVentana = new SlotmachineUI(this, modelo, jugarVentana, cliente, juego, apuesta);
-			cambiarVentana(jugarVentana, tragaperrasVentana);
-			tragaperrasVentana.iniciarJuego();
+		if (game instanceof Slotmachine ) {
+			SlotmachineUI slotmachineWindow = new SlotmachineUI(this, model, playWindow, client, game, bet); // Translated from 'tragaperrasVentana'
+			changeWindow(playWindow, slotmachineWindow);
+			slotmachineWindow.startGame();
 		}
 	}
 	
 	
 	/**
-	 * Actualizar el saldo y el dinero de juego y cliente al terminar una partida.
-	 * @param cliente Cliente a actualizar.
-	 * @param juego Juego a actualizar.
-	 * @param resultadoApuesta Resultado de la apuesta.
-	 * @param cerrarJuego Verdadero si se ha cerrado el juego antes de jugar, falso si la apuesta se terminó.
+	 * Updates the balance and game money for the client and the game after a match ends.
+	 * @param client Client to update.
+	 * @param game Game to update.
+	 * @param betResult Result of the bet (positive for win, negative/zero for loss).
+	 * @param gameClosed True if the game was closed before a bet finished, false if the bet terminated normally.
 	 */
-	public void actualizarSaldos(Client cliente, Game juego, double resultadoApuesta, boolean cerrarJuego) {
-	    if (cerrarJuego) {
-	    	cliente.setSaldo(cliente.getSaldo() - resultadoApuesta);
-	    	juego.setDinero(juego.getDinero() + resultadoApuesta);
+	public void updateBalances(Client client, Game game, double betResult, boolean gameClosed) {
+	    if (gameClosed) {
+	    	// Reverts the initial bet (if the game was closed before playing/resolving)
+	    	client.setBalance(client.getBalance() - betResult); 
+	    	game.setMoney(game.getMoney() + betResult);
 	    	
 	    } else {
-	    	cliente.setSaldo(cliente.getSaldo() + resultadoApuesta);
-	    	juego.setDinero(juego.getDinero() - resultadoApuesta);
+	    	// Standard win/loss transaction
+	    	client.setBalance(client.getBalance() + betResult);
+	    	game.setMoney(game.getMoney() - betResult);
 	    }		
-	    modelo.modificarSaldoCliente(cliente);
-	    modelo.modificarDineroJuego(juego);
-	    modelo.agregarPartida(cliente, juego, resultadoApuesta);
+        // Assumes translated model methods
+	    model.modifyClientBalance(client);
+	    model.modifyGameMoney(game);
+	    model.addGameSession(client, game, betResult);
 	}
 	
 	
 	/**
-	 * Lanza una excepción si no se puede apostar. Solicita al usuario una apuesta válida.
-	 * @param cliente Objeto cliente que jugará.
-	 * @param juego Objeto juego que jugará.
-	 * @return La apuesta ingresada, devuelve 0 si no es válida o se cancela.
-	 * @throws BetException si el cliente o el juego no tienen suficiente dinero.
+	 * Throws an exception if betting is not possible. Prompts the user for a valid bet.
+	 * @param client Client object who will play.
+	 * @param game Game object that will be played.
+	 * @return The entered bet, returns 0 if invalid or canceled.
+	 * @throws BetException if the client or the game does not have enough money.
 	 * @since 3.0
 	 */
-	public double alertaApuesta(Client cliente, Game juego) throws BetException {
+	public double betAlert(Client client, Game game) throws BetException {
 
-		validador.validarSaldosMinimos(cliente.getSaldo(), juego.getDinero());
+		validator.validateMinimumBalances(client.getBalance(), game.getMoney());
 
-		    // Mostrar ventana
+		    // Show window
 		    while (true) {
-		        JTextField campoApuesta = new JTextField();
-		        Object[] mensaje = {
-		            "Ingresa una apuesta:", campoApuesta
+		        JTextField betField = new JTextField();
+		        Object[] message = {
+		            "Enter a bet:", betField
 		        };
 
-		        String[] opciones = {"Cancelar", "Repetir apuesta", "Aceptar"};
-		        int opcion = JOptionPane.showOptionDialog(null, mensaje, "Apuesta",
+		        String[] options = {"Cancel", "Repeat Last Bet", "Accept"};
+		        int option = JOptionPane.showOptionDialog(null, message, "Bet",
 		                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
-		                null, opciones, opciones[0]);
+		                null, options, options[0]);
 
-		        // Usuario canceló
-		        if (opcion == 0 || opcion == JOptionPane.CLOSED_OPTION) {
+		        // User canceled
+		        if (option == 0 || option == JOptionPane.CLOSED_OPTION) {
 		            return 0; 
 		         
-	            // Repetir apuesta   
-		        } else if (opcion == 1) {
-		            if (ultimaApuesta == 0) {
-		                JOptionPane.showMessageDialog(null, "No hay una apuesta previa.");
+	            // Repeat Last Bet  
+		        } else if (option == 1) {
+		            if (lastBet == 0) {
+		                JOptionPane.showMessageDialog(null, "There is no previous bet.");
 		                continue;
 		            }
 
 		            try {
-		                validador.validarApuesta(String.valueOf(ultimaApuesta), cliente.getSaldo(), juego.getDinero());
-		                return ultimaApuesta;
+		                validator.validateBet(String.valueOf(lastBet), client.getBalance(), game.getMoney());
+		                return lastBet;
 		            } catch (BetException ex) {
 		                throw ex;
 		            }
 		            
-	            // Apuesta normal
+	            // Normal Bet
 		        } else {
-		            String apuestaTexto = campoApuesta.getText();
+		            String betText = betField.getText();
 		            try {
-		            	validador.validarApuesta(apuestaTexto, cliente.getSaldo(), juego.getDinero());
-		                ultimaApuesta = Double.parseDouble(apuestaTexto);
-		                return ultimaApuesta;
+		            	validator.validateBet(betText, client.getBalance(), game.getMoney());
+		                lastBet = Double.parseDouble(betText);
+		                return lastBet;
 		                
 		            } catch (BetException ex) {
 		                throw ex;
@@ -141,259 +147,251 @@ public class Controller {
 	
 	
 	/**
-	 * Método que mostrará al usuario un aviso si intenta cerrar una partida sin haberla terminado.
-	 * @param cliente Cliente jugando.
-	 * @param juego Juego jugando.
-	 * @param apuesta Apuesta de la partida.
-	 * @return True si ha confirmado salir, false si no.
+	 * Method that will show the user a warning if they try to close a game without having finished it.
+	 * @param client Client playing.
+	 * @param game Game being played.
+	 * @param bet Bet for the match.
+	 * @return True if they confirmed exiting, false otherwise.
 	 */
-	public boolean avisoCerrarJuego(Client cliente, Game juego, double apuesta) {
-		int respuesta = JOptionPane.showConfirmDialog(
-			    null,
-			    "¿Estás seguro que quieres salir? Contará como que has perdido la partida",
-			    "Confirmación",
-			    JOptionPane.YES_NO_OPTION,
-			    JOptionPane.QUESTION_MESSAGE
-			);
+	public boolean confirmCloseGame(Client client, Game game, double bet) {
+	    int response = JOptionPane.showConfirmDialog(
+	        null,
+	        "Are you sure you want to quit? This will count as a loss for the current match.",
+	        "Confirmation",
+	        JOptionPane.YES_NO_OPTION,
+	        JOptionPane.QUESTION_MESSAGE
+	    );
 
-		if (respuesta == JOptionPane.YES_OPTION) {
-			actualizarSaldos(cliente, juego, apuesta, true);
-			return true;
-		}
-			
-		return false;	
+	    if (response == JOptionPane.YES_OPTION) {
+	        // Assume 'updateBalances' uses the original bet amount as a loss when 'gameClosed' is true
+	        updateBalances(client, game, bet, true); 
+	        return true;
+	    }
+	        
+	    return false;	
 	}
-	
-	
-	/** 
-	 * Muestra el resultado final de una partida de blackjack.
-	 * @param clienteGana True si el jugador ganó, false si el jugador perdió.
-	 * @param cliente Objeto de Cliente que jugó.
-	 * @param blackjack Objeto de Blackjack que jugó.
-	 * @param apuestaResultado 
-	 * @return Mensaje con el estado del fin de partida.
-	 */
-	public String blackjackEstadoFin(boolean clienteGana, Client cliente, Blackjack blackjack, double apuestaResultado) {
-		
-		int cartasCliente = blackjack.sumarCartas(blackjack.getCartasCliente());
-		int cartasCrupier = blackjack.sumarCartas(blackjack.getCartasCrupier());
-		
-		// Cliente pierde
-		if (!clienteGana) {
-		    // El cliente se pasa de 21
-		    if (cartasCliente > 21) {
-		        return "¡Te has pasado de 21, has perdido " + String.format("%.2f", apuestaResultado) + "$!";
-		    
-		    // Cliente pierde normal
-		    } else {
-		        return "¡Has perdido " + String.format("%.2f", apuestaResultado) + "$!";
-		    }
 
-		// Cliente gana
-		} else {
-		    // Empate
-		    if (cartasCliente == cartasCrupier) {
-		        if (cartasCliente == 21) {
-		        	return "¡Empate con Push, has ganado " + String.format("%.2f", apuestaResultado) + "$!";
-		        }
-		        return "¡Empate, has ganado " + String.format("%.2f", apuestaResultado) + "$!";
-		    
-		    // Victoria
-		    } else {
-		        if (cartasCliente == 21 && blackjack.getCartasCliente().size() == 2) {
-		        	return "¡Victoria con un Blackjack, has ganado " + String.format("%.2f", apuestaResultado) + "$!";
-		        }
-		        return "¡Has ganado " + String.format("%.2f", apuestaResultado) + "$!";
-		    }
-		}
-	}
-	
-	
-	/**
-	 * Iniciar partida de blackjack, barajando las cartas y repartiendo las cartas a los jugadores.
-	 * @param blackjack Objeto de la partida de blackjack.
+
+	/** * Shows the final result of a blackjack match.
+	 * @param clientWins True if the player won, false if the player lost.
+	 * @param client Client object who played.
+	 * @param blackjack Blackjack object that was played.
+	 * @param betResult Result of the bet (amount won/lost).
+	 * @return Message with the status of the end of the match.
 	 */
-	public void blackjackIniciar(Blackjack blackjack) {
-	    blackjack.barajarCartas();
-	    blackjack.repartirCartas(2, "crupier");
-	    blackjack.repartirCartas(2, "cliente");
+	public String blackjackEndStatus(boolean clientWins, Client client, Blackjack blackjack, double betResult) {
+	    
+	    // Assumes 'sumCards' and 'getPlayerCards/getDealerCards' are the translated methods
+	    int playerCardsSum = blackjack.sumCards(blackjack.getPlayerCards());
+	    int dealerCardsSum = blackjack.sumCards(blackjack.getDealerCards());
+	    
+	    // Player loses
+	    if (!clientWins) {
+	        // Player busts (exceeds 21)
+	        if (playerCardsSum > 21) {
+	            return "You busted (exceeded 21), you lost " + String.format("%.2f", betResult) + "$!";
+	        
+	        // Player loses normally (dealer had higher non-busting score)
+	        } else {
+	            return "You lost " + String.format("%.2f", betResult) + "$!";
+	        }
+
+	    // Player wins or pushes
+	    } else {
+	        // Tie (Push)
+	        if (playerCardsSum == dealerCardsSum) {
+	            if (playerCardsSum == 21) {
+	                return "Tie with Blackjack (Push), you won " + String.format("%.2f", betResult) + "$!";
+	            }
+	            return "Tie (Push), you won " + String.format("%.2f", betResult) + "$!";
+	        
+	        // Victory
+	        } else {
+	            // Natural Blackjack (21 on first two cards)
+	            if (playerCardsSum == 21 && blackjack.getPlayerCards().size() == 2) {
+	                return "Victory with a Blackjack, you won " + String.format("%.2f", betResult) + "$!";
+	            }
+	            return "You won " + String.format("%.2f", betResult) + "$!";
+	        }
+	    }
 	}
-	
-	
+
+
 	/**
-	 * El jugador pide una carta en el juego Blackjack.
-	 * @param blackjack Objeto blackjack.
-	 * @return Verdadero si se ha pasado de 21, falso si no.
+	 * Starts a blackjack match by shuffling the cards and dealing the cards to the players.
+	 * @param blackjack Blackjack match object.
 	 */
-	public boolean blackjackPedirCarta(Blackjack blackjack) {
-	    blackjack.repartirCartas(1, "cliente");
-	    return blackjack.jugadorPierde("cliente");
+	public void startBlackjack(Blackjack blackjack) {
+	    blackjack.shuffleCards();
+	    blackjack.dealCards(2, "dealer");
+	    blackjack.dealCards(2, "player");
 	}
-	
-	
+
+
 	/**
-	 * Maneja la acción de plantarse en el Blackjack
-	 * @param blackjack Juego de Blackjack.
-	 * @param ventana Ventana de Blackjack.
-	 * @return true si el cliente gana, false si pierde
+	 * The player hits (asks for a card) in the Blackjack game.
+	 * @param blackjack Blackjack object.
+	 * @return True if the player has busted (exceeded 21), false otherwise.
 	 */
-	public boolean blackjackPlantarse(Blackjack blackjack, BlackjackUI ventana) {
-	    while (blackjack.crupierDebePedir()) {
-	        blackjack.repartirCartas(1, "crupier");
-	        if (blackjack.jugadorPierde("crupier")) {
-	        	// El jugador ha ganado
-	            ventana.actualizarCartasCrupier(blackjack.mostrarCartas(false, "crupier"), 
-	                                        blackjack.sumarCartas(blackjack.getCartasCrupier()));
+	public boolean blackjackHit(Blackjack blackjack) {
+	    blackjack.dealCards(1, "player");
+	    return blackjack.playerLoses("player");
+	}
+
+
+	/**
+	 * Handles the Stand action in Blackjack.
+	 * @param blackjack Blackjack Game.
+	 * @param window Blackjack window (UI).
+	 * @return true if the client wins, false if the client loses.
+	 */
+	public boolean blackjackStand(Blackjack blackjack, BlackjackUI window) {
+	    while (blackjack.dealerShouldHit()) {
+	        blackjack.dealCards(1, "dealer");
+	        if (blackjack.playerLoses("dealer")) {
+	            // The player has won (dealer busted)
+	            window.updateDealerCards(blackjack.showCards(false, "dealer"), 
+	                                        blackjack.sumCards(blackjack.getDealerCards()));
 	            return true;
 	        }
 	    }
-	    // El jugador ha perdido
-	    ventana.actualizarCartasCrupier(blackjack.mostrarCartas(false, "crupier"), 
-	                                blackjack.sumarCartas(blackjack.getCartasCrupier()));
+	    // The player has lost (dealer stands with a higher or equal score)
+	    window.updateDealerCards(blackjack.showCards(false, "dealer"), 
+	                                blackjack.sumCards(blackjack.getDealerCards()));
 	    return false;
 	}
-	
-	
+
+
 	/**
-	 * Método para ocultar una ventana y mostrar una nueva.
-	 * @param ventanaActual Ventana a cerrar
-	 * @param ventanaNueva Ventana a abrir
+	 * Method to hide one window and show a new one.
+	 * @param currentWindow Window to close/hide
+	 * @param newWindow Window to open/show
 	 * @since 3.0
 	 */
-	public void cambiarVentana(JFrame ventanaActual, JFrame ventanaNueva) {	
-		ventanaActual.setVisible(false);
-		ventanaNueva.setVisible(true);
+	public void changeWindow(JFrame currentWindow, JFrame newWindow) {
+	    currentWindow.setVisible(false);
+	    newWindow.setVisible(true);
 
-	}
-	
-	
-	/**
-	 * Método que mostrará una ventana de fin génerica para los juegos.
-	 * @param mensajeEstado Mensaje personalizado dependiendo del contexto del fin de partida.
-	 * @return Elección del jugador (Volver / Apostar de nuevo).
-	 */
-	public int juegosEstadoFin(String mensajeEstado) {
-		String[] opciones = {"Volver", "Apostar de nuevo"};
-		int eleccion = JOptionPane.showOptionDialog(
-			    null,
-			    mensajeEstado +  " ¿Qué deseas hacer?",
-			    "Fin de partida",
-			    JOptionPane.DEFAULT_OPTION,
-			    JOptionPane.QUESTION_MESSAGE,
-			    null,
-			    opciones,
-			    opciones[0]
-			);
-		
-		return eleccion;
 	}
 
 
 	/**
-	 * Método que rellena la tabla de clientes en la ventana Juegos
-	 * @param rset Resultado de la consulta a la BD.
-	 * @param modeloClientes Tabla de clientes.
+	 * Method that will show a generic end game window for the games.
+	 * @param statusMessage Custom message depending on the context of the end of the match.
+	 * @return Player's choice (Go Back / Bet Again).
 	 */
-	public void rellenarTablaClientes(ResultSet rset, DefaultTableModel modeloClientes) {
-		try {
-			do {
-				// "ID", "Nombre", "Activo", "Saldo"
-		        Object[] clienteLista = new Object[4];
-		        clienteLista[0] = rset.getInt(1);
-		        clienteLista[1] = rset.getString(2);
-		        clienteLista[2] = (rset.getBoolean(5) == true ? "SI" : "NO");
-		        clienteLista[3] = rset.getDouble(6);
-		        
-		        modeloClientes.addRow(clienteLista);
-			} while (rset.next());
-			
-		} catch (SQLException e) {	
-			e.printStackTrace();
-		}			
-	}
-
-	
-	
-	/**
-	 * Método que rellena la tabla de clientes en la ventana Gestion, con todos los campos
-	 * @param rset Resultado de la consulta a la BD.
-	 * @param modeloJuegos Tabla de juegos.
-	 */
-	public void rellenarTablaClientesCompleto(ResultSet rset, DefaultTableModel modeloClientes) {
-		try {
-			do {
-				// "ID", "Nombre", "Activo", "Saldo"
-		        Object[] clienteLista = new Object[6];
-		        clienteLista[0] = rset.getInt(1);
-		        clienteLista[1] = rset.getString(2);
-		        clienteLista[2] = rset.getInt(3);
-		        clienteLista[3] = rset.getString(4);
-		        clienteLista[4] = (rset.getBoolean(5) == true ? "SI" : "NO");
-		        clienteLista[5] = rset.getDouble(6);
-		        
-		        modeloClientes.addRow(clienteLista);
-			} while (rset.next());
-			
-		} catch (SQLException e) {	
-			e.printStackTrace();
-		}			
+	public int gameEndStatus(String statusMessage) {
+	    String[] options = {"Go Back", "Bet Again"};
+	    int choice = JOptionPane.showOptionDialog(
+	        null,
+	        statusMessage +  " What do you want to do?",
+	        "End of Match",
+	        JOptionPane.DEFAULT_OPTION,
+	        JOptionPane.QUESTION_MESSAGE,
+	        null,
+	        options,
+	        options[0]
+	    );
+	    
+	    return choice;
 	}
 
 
 	/**
-	 * Método que rellena la tabla de clientes en la ventana Juegos
-	 * @param rset Resultado de la consulta a la BD.
-	 * @param modeloJuegos Tabla de juegos.
+	 * Method that populates the client table in the Games window.
+	 * @param rset Result of the query to the DB (Database).
+	 * @param clientModel Client table model.
 	 */
-	public void rellenarTablaJuegos(ResultSet rset, DefaultTableModel modeloJuegos) {
-		try {
-			do {
-				// "ID", "Tipo", "Activo", "Dinero"
-		        Object[] juegoLista = new Object[4];
-		        juegoLista[0] = rset.getInt(1);
-		        juegoLista[1] = rset.getString(2);
-		        juegoLista[2] = (rset.getBoolean(3) == true ? "SI" : "NO");
-		        juegoLista[3] = rset.getDouble(4);
-		        
-		        modeloJuegos.addRow(juegoLista);
-			} while (rset.next());
-			
-		} catch (SQLException e) {	
-			e.printStackTrace();
-		}			
+	public void populateClientTable(ResultSet rset, DefaultTableModel clientModel) {
+	    try {
+	        while (rset.next()) {
+	            // "ID", "Name", "Active", "Balance"
+	            Object[] clientList = new Object[4];
+	            clientList[0] = rset.getInt(1); // ID
+	            clientList[1] = rset.getString(2); // Name
+	            clientList[2] = (rset.getBoolean(5) == true ? "YES" : "NO"); // Active
+	            clientList[3] = rset.getDouble(6); // Balance
+	            
+	            clientModel.addRow(clientList);
+	        }
+	    } catch (SQLException e) {	
+	        e.printStackTrace();
+	    }			
 	}
 
 
 	/**
-	 * Muestra un el resultado final de una partida de tragaperras.
-	 * @param cliente Cliente jugando.
-	 * @param tragaperras Objeto de clase tragaperras jugando.
-	 * @param apuestaResultado Resultado de la apuesta.
-	 * @return Mensaje del resultado de la partida.
+	 * Method that populates the client table in the Management window, with all fields.
+	 * @param rset Result of the query to the DB.
+	 * @param clientModel Client table model.
 	 */
-	public String tragaperrasEstadoFin(Client cliente, Slotmachine tragaperras, double apuestaResultado) {
-		int [] numeros = tragaperras.getNumeros();
-		if (numeros[0] == 7 && numeros[1] == 7 && numeros[2] == 7) {
-		    return String.format("¡¡Jackpot, has ganado %.2f$!", apuestaResultado);
-		}
-
-		if (numeros[0] == numeros[1] && numeros[0] == numeros[2]) {
-		    return String.format("¡Triple combinación, has ganado %.2f$!", apuestaResultado);
-		}
-
-		if (numeros[0] == numeros[1] || numeros[0] == numeros[2] || numeros[1] == numeros[2]) {
-		    return String.format("¡Doble combinación, has ganado %.2f$!", apuestaResultado);
-		}
-
-		return String.format("Ninguna combinación... Has perdido %.2f$.", apuestaResultado);
+	public void populateFullClientTable(ResultSet rset, DefaultTableModel clientModel) {
+	    try {
+	        while (rset.next()) {
+	            // "ID", "Name", "Age", "Gender", "Active", "Balance" (Based on column indices 1-6)
+	            Object[] clientList = new Object[6];
+	            clientList[0] = rset.getInt(1);    // ID
+	            clientList[1] = rset.getString(2); // Name
+	            clientList[2] = rset.getInt(3);    // Age
+	            clientList[3] = rset.getString(4); // Gender
+	            clientList[4] = (rset.getBoolean(5) == true ? "YES" : "NO"); // Active
+	            clientList[5] = rset.getDouble(6); // Balance
+	            
+	            clientModel.addRow(clientList);
+	        }
+	    } catch (SQLException e) {	
+	        e.printStackTrace();
+	    }			
 	}
 
-	
 
-	
-	
+	/**
+	 * Method that populates the game table.
+	 * @param rset Result of the query to the DB.
+	 * @param gameModel Game table model.
+	 */
+	public void populateGameTable(ResultSet rset, DefaultTableModel gameModel) {
+	    try {
+	        while (rset.next()) {
+	            // "ID", "Type", "Active", "Money"
+	            Object[] gameList = new Object[4];
+	            gameList[0] = rset.getInt(1);    // ID
+	            gameList[1] = rset.getString(2); // Type
+	            gameList[2] = (rset.getBoolean(3) == true ? "YES" : "NO"); // Active
+	            gameList[3] = rset.getDouble(4); // Money
+	            
+	            gameModel.addRow(gameList);
+	        }
+	    } catch (SQLException e) {	
+	        e.printStackTrace();
+	    }			
+	}
 
-	
-	
-	
+
+	/**
+	 * Shows the final result of a slot machine match.
+	 * @param client Client playing.
+	 * @param slotmachine Slotmachine class object being played.
+	 * @param betResult Result of the bet (amount won/lost).
+	 * @return Message with the result of the match.
+	 */
+	public String slotmachineEndStatus(Client client, Slotmachine slotmachine, double betResult) {
+	    // Assumes 'getNumeros' is 'getNumbers'
+	    int [] numbers = slotmachine.getNumbers();
+	    
+	    if (numbers[0] == 7 && numbers[1] == 7 && numbers[2] == 7) {
+	        return String.format("!!Jackpot, you won %.2f$!", betResult);
+	    }
+
+	    if (numbers[0] == numbers[1] && numbers[0] == numbers[2]) {
+	        return String.format("Triple combination, you won %.2f$!", betResult);
+	    }
+
+	    if (numbers[0] == numbers[1] || numbers[0] == numbers[2] || numbers[1] == numbers[2]) {
+	        return String.format("Double combination, you won %.2f$!", betResult);
+	    }
+
+	    // Since 'betResult' is the result (negative for loss), we show the absolute value here.
+	    return String.format("No combination... You lost %.2f$.", Math.abs(betResult)); 
+	}
 }

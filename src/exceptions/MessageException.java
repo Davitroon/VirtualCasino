@@ -16,7 +16,7 @@ public class MessageException {
 	 * @param userMessage Error message to display to the user
 	 * @since 3.0
 	 */
-    public void mostrarError(Exception e, String userMessage) {
+    public void showError(Exception e, String userMessage) {
         JOptionPane.showMessageDialog(null, userMessage, "DB Connection Error", JOptionPane.ERROR_MESSAGE);
         System.out.println("(" + e.getClass().getSimpleName() + ") " + e.getMessage());
         e.printStackTrace();

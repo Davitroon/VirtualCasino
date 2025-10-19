@@ -3,93 +3,93 @@ package logic;
 import logic.Game;
 
 /**
- * Juego tragaperras, hijo de clase Juego.
- * Simula el funcionamiento real de una máquina tragaperras.
+ * Slot machine game, child of the Game class.
+ * Simulates the real operation of a slot machine.
  * @author David Forero
  * @since 2.0
  */
 public class Slotmachine extends Game {
 
-	int [] numeros = new int [3];
+	int [] numbers = new int [3]; 
 	
 	
 	/**
-	 * Constructor de la tragaperras, envia al constructor de Juego su tipo.
-	 * @param dinero Dinero que contará el juego para las apuestas.
+	 * Constructor for the slot machine, sends its type to the Game constructor.
+	 * @param money Money that the game will count for bets.
 	 * @since 2.0
 	 */
-	public Slotmachine(double dinero) {
-		super(dinero, "SlotMachine");
+	public Slotmachine(double money) {
+		super(money, "SlotMachine");
 	}
 
 	
 	/**
-	 * Constructor de tragaperras de datos necesarios (para guardar en el juego).
-	 * @param id Id del juego
-	 * @param dinero Dinero del juego
+	 * Slot machine constructor for necessary data (to save in the game).
+	 * @param id Game ID
+	 * @param money Game money
 	 * @since 3.0
 	 */
-	public Slotmachine(int id, double dinero) {
-		super(id, dinero, "SlotMachine");
+	public Slotmachine(int id, double money) {
+		super(id, money, "SlotMachine");
 	}
 	
 	
 	/**
-	 * Constructor completo (para ser editado) de la tragaperras, envia al constructor de Juego los parámetros.
-	 * @param id Id del juego
-	 * @param tipo Tipo del juego
-	 * @param activo Estado del juego
-	 * @param dinero Dinero del juego
+	 * Complete constructor (to be edited) for the slot machine, sends parameters to the Game constructor.
+	 * @param id Game ID
+	 * @param type Game type
+	 * @param active Game status
+	 * @param money Game money
 	 * @since 2.0
 	 */
-	public Slotmachine(int id, String tipo, boolean activo, double dinero) {
-		super(id, tipo, activo, dinero);
+	public Slotmachine(int id, String type, boolean active, double money) {
+		super(id, type, active, money);
 	}
 
 	
 	/**
-	 * Método que rellena las 3 casillas con un número al azar del 1 al 9.
+	 * Method that fills the 3 slots with a random number from 1 to 9.
 	 * @since 2.0
 	 */
-	public void generarNumeros() {	
+	public void generateNumbers() {
 	
-		for (int i = 0; i < numeros.length; i++) {
-				numeros[i] = (int) Math.round(Math.random() * 8) + 1;		
+		for (int i = 0; i < numbers.length; i++) {
+				numbers[i] = (int) Math.round(Math.random() * 8) + 1;		
 		}
 	}
 	
 	
-	public int[] getNumeros() {
-		return numeros;
+	public int[] getNumbers() {
+		return numbers;
 	}
 
 
 	/**
-	 * Comprueba el número de casillas que esten repetidas.<br>
-	 * - Si no hay ninguna, se pierde la apuesta.<br>
-	 * - Si hay 2, se multiplica por 1.9.<br>
-	 * - Si hay 3, se multiplica por 3.5.<br>
-	 * - Si hay 3 sietes, se multiplica por 6.5.<br>
+	 * Checks the number of repeated slots (numbers).<br>
+	 * - If there are none, the bet is lost.<br>
+	 * - If there are 2, the bet is multiplied by 1.9.<br>
+	 * - If there are 3, the bet is multiplied by 3.5.<br>
+	 * - If there are three sevens, the bet is multiplied by 6.5.<br>
 	 */
 	@Override
-	public double jugar(double apuesta) {
-	    int n1 = numeros[0], n2 = numeros[1], n3 = numeros[2];
+	public double play(double bet) {
+	    int n1 = numbers[0], n2 = numbers[1], n3 = numbers[2]; 
 	    
 	    if (n1 == 7 && n2 == 7 && n3 == 7) {
-	        return apuesta * 6.50;
+	        return bet * 6.50;
 	    }
 	    
 	    if (n1 == n2 && n1 == n3) {
-	        return apuesta * 3.5;
+	        return bet * 3.5;
 	        
 	    }
 	    
 	    if (n1 == n2 || n1 == n3 || n2 == n3) {
-	        return apuesta * 1.9;
+	        return bet * 1.9;
 	        
 	    }
 	    
-	    return -apuesta;    
+	    return -bet;    
 	}
 
 

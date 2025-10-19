@@ -7,269 +7,283 @@ import java.util.LinkedList;
 import logic.Game;
 
 /**
- * Juego BlackJack, hijo de juego.
- * Simula el funcionamiento del BlackJack real. 
+ * Blackjack Game, child of Game.
+ * Simulates the functionality of real BlackJack. 
  * @author David Forero
+ * @since 2.0
  */
 public class Blackjack extends Game {
 
-	private LinkedList<Integer> cartasTotales = new LinkedList<>();
-	private ArrayList<Integer> cartasCliente = new ArrayList<>();
-	private ArrayList<Integer> cartasCrupier= new ArrayList<>();
+	private LinkedList<Integer> totalCards = new LinkedList<>();
+	private ArrayList<Integer> playerCards = new ArrayList<>();
+	private ArrayList<Integer> dealerCards= new ArrayList<>();
 	
 	/**
-	 * Constructor del blackjack, envia al constructor de Juego su tipo.
-	 * @param dinero Dinero que contará el juego para las apuestas.
+	 * Constructor for Blackjack, sends its type to the Game constructor.
+	 * @param money Money that the game will count for bets.
 	 * @since 2.0
 	 */
-	public Blackjack(double dinero) {
-		super(dinero, "BlackJack");
+	public Blackjack(double money) {
+		super(money, "BlackJack");
 	}
 	
 	
 	/**
-	 * Constructor de blackjack de datos necesarios (para guardar en el juego).
-	 * @param id Id del juego
-	 * @param dinero Dinero del juego
+	 * Blackjack constructor for necessary data (to save in the game).
+	 * @param id Game ID
+	 * @param money Game money
 	 * @since 3.0
 	 */
-	public Blackjack(int id, double dinero) {
-		super(id, dinero, "Blackjack");
+	public Blackjack(int id, double money) {
+		super(id, money, "Blackjack");
 	}
 
 	
 	/**
-	 * Constructor completo (para ser editado) del blackjack, envia al constructor de Juego los parámetros.
-	 * @param id Id del juego
-	 * @param tipo Tipo del juego
-	 * @param activo Estado del juego
-	 * @param dinero Dinero del juego
+	 * Complete constructor (to be edited) for Blackjack, sends parameters to the Game constructor.
+	 * @param id Game ID
+	 * @param type Game type
+	 * @param active Game status
+	 * @param money Game money
 	 * @since 3.0
 	 */
-	public Blackjack(int id, String tipo, boolean activo, double dinero) {
-		super(id, tipo, activo, dinero);
+	public Blackjack(int id, String type, boolean active, double money) {
+	    super(id, type, active, money);
 	}
 
 	/**
-	 * Baraja las cartas. Primero vacia todos los mazos de cartas, luego rellena el mazo de cartas total y finalmente las mezcla.
+	 * Shuffles the cards. First, it empties all card decks, then it fills the total card deck, and finally shuffles them.
 	 */
-	public void barajarCartas() {		
+	public void shuffleCards() {		
 
-		cartasTotales.clear();
-		cartasCliente.clear();
-		cartasCrupier.clear();
-		
-		for (int i = 1; i < 14; i++) {
-            for (int j = 0; j < 4; j++) {
-            	cartasTotales.add(i);
-            }
-        }   
-        
-        Collections.shuffle(cartasTotales);
-	}
-	
-
-	/**
-	 * Indica si el crupier debería pedir carta en situaciones diferentes.
-	 * @return Pide carta o no.
-	 */
-	public boolean crupierDebePedir() {
-		
-		int sumaCrupier = sumarCartas(cartasCrupier);
-		int sumaCliente = sumarCartas(cartasCliente);
-		
-		// Si sus cartas suman menos de 16, debe pedir sí o sí.
-		if (sumaCrupier < 16) {
-			return true;
-		
-		// Si tiene mas puntos que el cliente y no se pasa de 21, se planta.
-		} else if (sumaCrupier > sumaCliente && sumaCrupier < 22) {
-			return false;
-		
-		// Tiene menos puntos que el cliente y mas de 16, debe pedir para ganarle.
-		} else {
-			return true;
-		}
-	}
-	
-
-	public ArrayList<Integer> getCartasCliente() {
-		return cartasCliente;
-	}
-
-
-	public ArrayList<Integer> getCartasCrupier() {
-		return cartasCrupier;
-	}
-	
-	
-	/**
-	 * Comprueba si el jugador se ha pasado de 21.
-	 * @param jugador Jugador a comprobar.
-	 * @return Se ha pasado de 21 o no.
-	 */
-	public boolean jugadorPierde(String jugador) {
-
-	    ArrayList<Integer> listaCartas = jugador.equalsIgnoreCase("cliente") ? cartasCliente : cartasCrupier;
+	    totalCards.clear();
+	    playerCards.clear();
+	    dealerCards.clear(); // NOTE: 'cartasTotales' translated to 'totalCards', etc., in the previous response
 	    
-	    return sumarCartas(listaCartas) > 21;
+	    for (int i = 1; i < 14; i++) {
+	        for (int j = 0; j < 4; j++) {
+	            totalCards.add(i);
+	        }
+	    }   
+	    
+	    Collections.shuffle(totalCards);
 	}
 
 
 	/**
-	 * Compara la suma de las cartas del cliente y del crupier.<br>
-	 * - Si gana el cliente con blackjack, se multiplica la apuesta por 2.5.<br>
-	 * - Si hay empate con un blackjack o el cliente gana con mano normal, se multiplica la apuesta por 1.5.<br>
-	 * - Si hay empate sin blackjack, se recupera la apuesta original.<br>
-	 * - Si el cliente pierde, pierde su apuesta.<br>
+	 * Indicates whether the dealer should ask for a card in different situations.
+	 * @return Whether or not to ask for a card.
+	 * @since 2.0
+	 */
+	public boolean dealerShouldHit() {
+	    
+	    int dealerSum = sumCards(dealerCards);
+	    int playerSum = sumCards(playerCards);
+	    
+	    // If their cards sum less than 16, they must hit (ask for a card).
+	    if (dealerSum < 16) {
+	        return true;
+	    
+	    // If they have more points than the player and don't exceed 21, they stand.
+	    } else if (dealerSum > playerSum && dealerSum < 22) {
+	        return false;
+	    
+	    // They have fewer points than the player and more than 16, so they must hit to win.
+	    } else {
+	        return true;
+	    }
+	}
+	
+
+	public ArrayList<Integer> getPlayerCards() {
+	    return playerCards;
+	}
+
+
+	public ArrayList<Integer> getDealerCards() {
+	    return dealerCards;
+	}
+
+
+	/**
+	 * Checks if the player has exceeded 21 (busted).
+	 * @param player Player to check.
+	 * @return True if the player has exceeded 21, otherwise false.
+	 * @since 2.0
+	 */
+	public boolean playerLoses(String player) {
+
+	    ArrayList<Integer> cardList = player.equalsIgnoreCase("player") ? playerCards : dealerCards;
+	    
+	    // Assumes 'sumCards' is a method accessible in this class, corresponding to 'sumarCartas'
+	    return sumCards(cardList) > 21;
+	}
+
+
+	/**
+	 * Compares the sum of the player's and the dealer's cards.<br>
+	 * - If the player wins with a blackjack, the bet is multiplied by 2.5.<br>
+	 * - If there is a tie with a blackjack or the player wins with a normal hand, the bet is multiplied by 1.5.<br>
+	 * - If there is a tie without a blackjack, the original bet is recovered.<br>
+	 * - If the player loses, they lose their bet.<br>
 	 */
 	@Override
-	public double jugar(double apuesta) {
-		
-		int sumaCrupier = sumarCartas(cartasCrupier);
-		int sumaCliente = sumarCartas(cartasCliente);
-		
-	    // Cliente pierde
-	    if (sumaCliente > 21) {
-	        return -apuesta;
+	public double play(double bet) {
+	    
+	    // Assumes 'sumCards' is a method accessible in this class, corresponding to 'sumarCartas'
+	    int dealerSum = sumCards(dealerCards);
+	    int playerSum = sumCards(playerCards);
+	    
+	    // Player busts/loses
+	    if (playerSum > 21) {
+	        return -bet;
 	    }
 
-	    // Crupier se pasa y el cliente no
-	    if (sumaCrupier > 21) {
-	    	return apuesta * 1.75;
+	    // Dealer busts and the player does not
+	    if (dealerSum > 21) {
+	        // NOTE: The original code uses 1.75 here, which is not standard BlackJack payout (usually 2.0). 
+	        // We maintain the logic.
+	        return bet * 1.75;
 	    }
 
-	    // Empate
-	    if (sumaCliente == sumaCrupier) {
-	        if (sumaCliente == 21) {
-	            return apuesta * 1.5;  // Empate con blackjack
+	    // Tie (Push)
+	    if (playerSum == dealerSum) {
+	        if (playerSum == 21) {
+	            return bet * 1.5;  // Tie with a blackjack (often just a push/1.0 in real games, but maintaining the code's logic)
 	            
 	        } else {
-	            return apuesta;        // Empate normal
+	            return bet;        // Normal tie (push)
 	        }
 	    }
 
-	    // Cliente gana (Blackjack o normal)
-	    if (sumaCliente > sumaCrupier) {
-	        return (sumaCliente == 21 && cartasCliente.size() == 2) ? apuesta * 2.5 : apuesta * 1.5;
+	    // Player wins (Blackjack or normal win)
+	    if (playerSum > dealerSum) {
+	        // Check for natural Blackjack (21 on first 2 cards)
+	        return (playerSum == 21 && playerCards.size() == 2) ? bet * 2.5 : bet * 1.5;
 	    }
 
-	    // Cliente pierde
-	    return -apuesta;
+	    // Player loses (Dealer score > Player score, and neither busted)
+	    return -bet;
 	  
 	}
 	
-	
-	/**
-	 * Lee una carta para traducirla a la baraja francesa.
-	 * @param carta Carta a leer.
-	 * @return Carta traducida.
-	 */
-	private String leerCarta(Integer carta) {
-		
-		switch (carta) {
-		case 1:
-			return "A";
-		
-		case 11:
-			return "J";
-			
-		case 12:
-			return "Q";
-			
-		case 13:
-			return "K";
-			
-		default :
-			return String.valueOf(carta);			
-		}
-	}
-	
 
 	/**
-	 * Muestra las cartas de cada jugador.
-	 * @param ocultarCarta Ocultar la 2º carta del crupier o no.
-	 * @return Cartas de cada jugador.
+	 * Reads a card to translate it to the French deck (face card symbols).
+	 * @param card Card to read.
+	 * @return Translated card symbol.
 	 * @since 2.0
 	 */
-	public String mostrarCartas(boolean ocultarCarta, String jugador) {
-		
-		String cartas = "";
-		
-		if (jugador.equals("cliente")) {
-			for (Integer carta : cartasCliente) {
-			    cartas += "[" + leerCarta(carta) + "] ";        
-			}
-		}
-		
-		if (jugador.equals("crupier")) {		
-			for (int i = 0; i < cartasCrupier.size(); i++) {
-			    if (ocultarCarta && i == 1) {
-			        cartas += "[?] ";
-			    } else {
-			        cartas += "[" + leerCarta(cartasCrupier.get(i)) + "] ";
-			    }
-			}
-		}
-		
-		return cartas;
+	private String readCard(Integer card) {
+	    
+	    switch (card) {
+	    case 1:
+	        return "A";
+	    
+	    case 11:
+	        return "J";
+	        
+	    case 12:
+	        return "Q";
+	        
+	    case 13:
+	        return "K";
+	        
+	    default :
+	        return String.valueOf(card);			
+	    }
 	}
 
 
 	/**
-	 * Reparte un numero de cartas al jugador indicado, eliminando las cartas del mazo total.
-	 * @param numCartas Número de cartas a repartir.
-	 * @param jugador Jugador al que se le repartirá.
+	 * Shows the cards of each player.
+	 * @param hideCard Whether or not to hide the dealer's 2nd card.
+	 * @param player The player whose cards are to be displayed ("player" or "dealer").
+	 * @return The cards of the specified player.
+	 * @since 2.0
 	 */
-	public void repartirCartas(int numCartas, String jugador) {
-	
-		
-		if (jugador.equalsIgnoreCase("cliente")) {
-			for (int i = 0; i < numCartas; i++) {
-				cartasCliente.add(cartasTotales.getFirst());
-				cartasTotales.removeFirst();
-			}
-			
-		} else if (jugador.equalsIgnoreCase("crupier")) {
-			for (int i = 0; i < numCartas; i++) {
-				cartasCrupier.add(cartasTotales.getFirst());
-				cartasTotales.removeFirst();
-			}
-		}	
+	public String showCards(boolean hideCard, String player) {
+	    
+	    String cards = "";
+	    
+	    if (player.equals("player")) {
+	        // Assumes 'playerCards' is used for the client/player
+	        for (Integer card : playerCards) {
+	            cards += "[" + readCard(card) + "] ";        
+	        }
+	    }
+	    
+	    if (player.equals("dealer")) {		
+	        // Assumes 'dealerCards' is used for the dealer/crupier
+	        for (int i = 0; i < dealerCards.size(); i++) {
+	            if (hideCard && i == 1) {
+	                cards += "[?] ";
+	            } else {
+	                cards += "[" + readCard(dealerCards.get(i)) + "] ";
+	            }
+	        }
+	    }
+	    
+	    return cards;
 	}
-	
+
+
 	/**
-	 * Suma el valor de las cartas de cada jugador.
-	 * @param listaCartas Cartas del jugador.
-	 * @return La suma total, teniendo en cuenta los As.
+	 * Deals a number of cards to the indicated player, removing the cards from the total deck.
+	 * @param numCards Number of cards to deal.
+	 * @param player Player to whom the cards will be dealt.
+	 * @since 2.0
 	 */
-	public int sumarCartas(ArrayList<Integer> listaCartas) {
-		
-		int suma = 0;
-		int numAses = 0;
-		
-		for (int carta : listaCartas) {
-			// Cuenta si hay algun As.
-            if (carta == 1) {  
-                numAses++;
-                suma += 11;
-                
-            // J, Q y K los considero como 10.
-            } else if (carta > 10) {  
-                suma += 10;
-                
-            } else {
-            	suma += carta;
-            }
-		}
-		 
-		// Convierte un As de 11 a 1 si el jugador se pasa de 21.
-		while (suma > 21 && numAses > 0) {
-	        suma -= 10;  
-	        numAses--;
-		}
-		
-		return suma;
+	public void dealCards(int numCards, String player) {
+
+	    
+	    if (player.equalsIgnoreCase("player")) {
+	        for (int i = 0; i < numCards; i++) {
+	            playerCards.add(totalCards.getFirst());
+	            totalCards.removeFirst();
+	        }
+	        
+	    } else if (player.equalsIgnoreCase("dealer")) {
+	        for (int i = 0; i < numCards; i++) {
+	            dealerCards.add(totalCards.getFirst());
+	            totalCards.removeFirst();
+	        }
+	    }	
+	}
+
+	/**
+	 * Sums the value of the player's cards.
+	 * @param cardList Player's cards.
+	 * @return The total sum, taking Aces into account.
+	 * @since 2.0
+	 */
+	public int sumCards(ArrayList<Integer> cardList) {
+	    
+	    int sum = 0;
+	    int numAces = 0;
+	    
+	    for (int card : cardList) {
+	        // Counts if there are any Aces.
+	        if (card == 1) {  
+	            numAces++;
+	            sum += 11;
+	            
+	        // Considers J, Q, and K as 10.
+	        } else if (card > 10) {  
+	            sum += 10;
+	            
+	        } else {
+	            sum += card;
+	        }
+	    }
+	     
+	    // Converts an Ace from 11 to 1 if the player busts (exceeds 21).
+	    while (sum > 21 && numAces > 0) {
+	        sum -= 10;  
+	        numAces--;
+	    }
+	    
+	    return sum;
 	}
 }
 

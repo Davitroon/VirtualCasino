@@ -1,7 +1,5 @@
 package logic;
 
-
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -14,36 +12,36 @@ import ui.ConnectUI;
 import ui.HomeUI;
 
 /**
- * Clase que maneja el inicio de sesión de los usuarios.
+ * Class that handles user login sessions.
  */
 public class Session {
 	
 	private HomeUI menu;
-	private ConnectUI conectarse;
-	private Controller controlador;
-	private Model modelo;
+	private ConnectUI connect;
+	private Controller controller;
+	private Model model;
 
-	public Session(HomeUI menu, ConnectUI conectarse, Controller controlador, Model modelo) {
+	public Session(HomeUI menu, ConnectUI connect, Controller controller, Model model) {
 		this.menu = menu;
-		this.conectarse = conectarse;
-		this.controlador = controlador;
-		this.modelo = modelo;
+		this.connect = connect;
+		this.controller = controller;
+		this.model = model;
 	}
 
 
 	/**
-	 * Comprobar si se ha indicado que se recuerde el inicio de sesión de algún usuario. Si es así, llevara al menú con su sesión activada.
+	 * Checks if any user has been flagged to remember the login session. If so, it will take them to the menu with their session activated.
 	 */
-	public void comprobarInicio () {
-		ResultSet rset = modelo.consultaEspecifica("SELECT * FROM users WHERE remember_login = 1");
+	public void checkStartup () {
+		ResultSet rset = model.specificQuery("SELECT * FROM users WHERE remember_login = 1");
 		
 		try {
 			if (rset.next()) {
-				iniciarSesion(new User(rset.getInt("id") ,rset.getString("username"), rset.getString("user_password"), rset.getString("email"), 
+				startSession(new User(rset.getInt("id") ,rset.getString("username"), rset.getString("user_password"), rset.getString("email"), 
 						rset.getString("last_access"), true), menu);
 				
 			} else {
-				conectarse.setVisible(true);
+				connect.setVisible(true);
 			}
 			
 		} catch (SQLException e) {
@@ -53,18 +51,18 @@ public class Session {
 	
 	
 	/**
-	 * Método que inicia sesión con un núevo usuario y lleva al usuario al menú principal.
-	 * @param usuario Usuario nuevo.
-	 * @param ventanaActual Ventana en la que se está iniciando sesión.
+	 * Method that starts a session with a new user and takes the user to the main menu.
+	 * @param user New user.
+	 * @param currentWindow Window from which the session is being started.
 	 */
-	public void iniciarSesion (User usuario, JFrame ventanaActual) {
-		menu.setUsuario(usuario);
-		modelo.setUsuarioActual(usuario.getId());
-		controlador.cambiarVentana(ventanaActual, menu);
+	public void startSession (User user, JFrame currentWindow) {
+		menu.setUser(user);
+		model.setCurrentUser(user.getId());
+		controller.changeWindow(currentWindow, menu);
 	}
 
 
-	public void setConectarse(ConnectUI conectarse) {
-		this.conectarse = conectarse;
+	public void setConnect(ConnectUI connect) {
+		this.connect = connect;
 	}
 }

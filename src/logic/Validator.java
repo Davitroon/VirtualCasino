@@ -5,207 +5,208 @@ import javax.swing.JLabel;
 import exceptions.BetException;
 
 /**
- * Clase ocupada de validar entrada y saldia de datos
+ * Class responsible for validating data input and output.
  */
 public class Validator {
 	
-	// Definición constantes
-	private static final double saldoMin = 100;
-	private static final double saldoMax = 999999;
-	private static final int edadMax = 95;
-	private static final int longitudNombreMax = 30;
-	private static final double dineroMin = 1000;
-	private static final double dineroMax = 999999;
-	private static final double apuestaMin = 2;
-	private static final double apuestaMax = 50000;
+	// Constant definitions
+	private static final double MIN_BALANCE = 100;
+	private static final double MAX_BALANCE = 999999;
+	private static final int MAX_AGE = 95;
+	private static final int MAX_NAME_LENGTH = 30;
+	private static final double MIN_MONEY = 1000;
+	private static final double MAX_MONEY = 999999;
+	private static final double MIN_BET = 2;
+	private static final double MAX_BET = 50000;
 
 	/**
-	 * Método para validar que una apuesta sea válida. Lanza una excepción si no lo es.
-	 * @param apuestaTxt Cantidad de la apuesta como texto
-	 * @param saldoCliente Saldo del cliente
-	 * @param dineroJuego Dinero del juego
-	 * @throws BetException Excepción que se lanza si la apuesta no es válida
+	 * Method to validate that a bet is valid. Throws an exception if it is not.
+	 * @param betTxt Bet amount as text
+	 * @param clientBalance Client's balance
+	 * @param gameMoney Game's money pool
+	 * @throws BetException Exception thrown if the bet is not valid
 	 */
-	public void validarApuesta(String apuestaTxt, double saldoCliente, double dineroJuego) throws BetException {
-	    double apuesta;
+	public void validateBet(String betTxt, double clientBalance, double gameMoney) throws BetException {
+	    double bet;
 	    
 	    try {
-	        apuesta = Double.parseDouble(apuestaTxt);
+	        bet = Double.parseDouble(betTxt);
 	    } catch (NumberFormatException e) {
-	        throw new BetException("Ingresa una apuesta válida");
+	        throw new BetException("Enter a valid bet");
 	    }
 	    
-	    if (apuesta > saldoCliente) {
-	        throw new BetException("La apuesta es mayor que el saldo del cliente");
+	    if (bet > clientBalance) {
+	        throw new BetException("The bet is greater than the client's balance");
 	    }
-	    if (apuesta > dineroJuego) {
-	        throw new BetException("La apuesta es mayor que el dinero en el juego");
+	    if (bet > gameMoney) {
+	        throw new BetException("The bet is greater than the money in the game");
 	    }
-	    if (apuesta < apuestaMin) {
-	        throw new BetException("La apuesta mínima son " + apuestaMin);
+	    if (bet < MIN_BET) {
+	        throw new BetException("The minimum bet is " + MIN_BET);
 	    }
-	    if (apuesta > apuestaMax) {
-	        throw new BetException("La apuesta máxima son " + apuestaMax);
+	    if (bet > MAX_BET) {
+	        throw new BetException("The maximum bet is " + MAX_BET);
 	    }
 	}
 	
 	
 	/**
-	 * Método para validar el dinero de un juego.
-	 * @param texto Dinero del juego
-	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
-	 * @return True el dinero es válido, false si no lo es
+	 * Method to validate a game's money pool.
+	 * @param text Game's money pool
+	 * @param errorMessage Visual text where the error will be shown (if any)
+	 * @return True if the money is valid, false otherwise
 	 * @since 3.0
 	 */
-	public boolean validarDineroJuego(String texto, JLabel mensajeError) {
+	public boolean validateGameMoney(String text, JLabel errorMessage) {
 		
-		double saldo;
+		double balance;
 		
-		if (texto.isBlank()) {
-			mensajeError.setText("");
+		if (text.isBlank()) {
+			errorMessage.setText("");
 			return false;
 		}
 		
 		try {
-			saldo = Double.parseDouble(texto);
+			balance = Double.parseDouble(text);
 		
 		} catch (NumberFormatException ee) {
-			mensajeError.setText("Ingresa únicamente números");
+			errorMessage.setText("Enter numbers only");
 			return false;
 		}
 		
-		if (saldo < dineroMin) {
-			mensajeError.setText("Cantidad muy pequeña (" + dineroMin + " min.)");
+		if (balance < MIN_MONEY) {
+			errorMessage.setText("Amount too small (" + MIN_MONEY + " min.)");
 			return false;
 		}
 		
-		if (saldo > dineroMax) {
-			mensajeError.setText("Cantidad demasiado grande (" + dineroMax + " max.)");
+		if (balance > MAX_MONEY) {
+			errorMessage.setText("Amount too large (" + MAX_MONEY + " max.)");
 			return false;
 		}
 		
-		mensajeError.setText("");
+		errorMessage.setText("");
 		return true;
 	}
 	
 	
 	/**
-	 * Método para validar la edad de un cliente.
-	 * @param texto Edad del cliente
-	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
-	 * @return True si la edad es válida, false si no lo es
+	 * Method to validate a client's age.
+	 * @param text Client's age
+	 * @param errorMessage Visual text where the error will be shown (if any)
+	 * @return True if the age is valid, false otherwise
 	 * @since 3.0
 	 */
-	public boolean validarEdadCliente(String texto, JLabel mensajeError) {
+	public boolean validateClientAge(String text, JLabel errorMessage) {
 		
-		if (texto.isBlank()) {
-			mensajeError.setText("");
+		if (text.isBlank()) {
+			errorMessage.setText("");
 			return false;
 		}
 		
-		if (!texto.matches("[0-9]+")) {
-			mensajeError.setText("Ingresa únicamente números");
+		if (!text.matches("[0-9]+")) {
+			errorMessage.setText("Enter numbers only");
 			return false;
 		}
 		
-		int edad = Integer.parseInt(texto);
+		int age = Integer.parseInt(text);
 		
-		if (edad < 18) {
-			mensajeError.setText("Cliente menor de edad.");
+		if (age < 18) {
+			errorMessage.setText("Client is underage.");
 			return false;
 		}
 		
-		if (edad > edadMax) {
-			mensajeError.setText("Cliente demasiado mayor (" + edadMax + " máx.)");
+		if (age > MAX_AGE) {
+			errorMessage.setText("Client is too old (" + MAX_AGE + " max.)");
 			return false;
 		}
 		
-		mensajeError.setText("");
+		errorMessage.setText("");
 		return true;
 	}
 	
 	
 	/**
-	 * Método para validar el nombre de un cliente.
-	 * @param texto Nombre del cliente
-	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
-	 * @return True si el nombre es válido, false si no lo es
+	 * Method to validate a client's name.
+	 * @param text Client's name
+	 * @param errorMessage Visual text where the error will be shown (if any)
+	 * @return True if the name is valid, false otherwise
 	 * @since 3.0
 	 */
-	public boolean validarNombre(String texto, JLabel mensajeError) {
+	public boolean validateName(String text, JLabel errorMessage) {
 		
-		if (texto.isBlank()) {
-			mensajeError.setText("");
+		if (text.isBlank()) {
+			errorMessage.setText("");
 			return false;
 		}
 		
-		if (!texto.matches("[a-zA-Z ]+")) {
-			mensajeError.setText("No se permiten caracteres especiales ni números");
+		if (!text.matches("[a-zA-Z ]+")) {
+			errorMessage.setText("Special characters or numbers are not allowed");
 			return false;
 		}
 		
-		if (texto.length() > longitudNombreMax) {
-			mensajeError.setText("Nombre demasiado largo (" + longitudNombreMax + " máx.)");
+		if (text.length() > MAX_NAME_LENGTH) {
+			errorMessage.setText("Name is too long (" + MAX_NAME_LENGTH + " max.)");
 			return false;
 		}		
 		
-		mensajeError.setText("");
+		errorMessage.setText("");
 		return true;
 	}
 	
 	
 	/**
-	 * Método para validar el saldo de un cliente.
-	 * @param texto Saldo del cliente
-	 * @param mensajeError Texo visual donde se mostrará el error (si hubiese)
-	 * @return True el saldo es válido, false si no lo es
+	 * Method to validate a client's balance.
+	 * @param text Client's balance
+	 * @param errorMessage Visual text where the error will be shown (if any)
+	 * @return True if the balance is valid, false otherwise
 	 * @since 3.0
 	 */
-	public boolean validarSaldoCliente(String texto, JLabel mensajeError) {
+	public boolean validateClientBalance(String text, JLabel errorMessage) {
 		
-		double saldo;
+		double balance;
 		
-		if (texto.isBlank()) {
-			mensajeError.setText("");
+		if (text.isBlank()) {
+			errorMessage.setText("");
 			return false;
 		}
 		
 		try {
-			saldo = Double.parseDouble(texto);
+			balance = Double.parseDouble(text);
 		
 		} catch (NumberFormatException ee) {
-			mensajeError.setText("Ingresa únicamente números");
+			errorMessage.setText("Enter numbers only");
 			return false;
 		}
 		
-		if (saldo < saldoMin) {
-			mensajeError.setText("Saldo muy pequeño (" + saldoMin + " min.)");
+		if (balance < MIN_BALANCE) {
+			errorMessage.setText("Balance too small (" + MIN_BALANCE + " min.)");
 			return false;
 		}
 		
-		if (saldo > saldoMax) {
-			mensajeError.setText("Saldo demasiado grande (" + saldoMax + " max.)");
+		if (balance > MAX_BALANCE) {
+			errorMessage.setText("Balance too large (" + MAX_BALANCE + " max.)");
 			return false;
 		}
 		
-		mensajeError.setText("");
+		errorMessage.setText("");
 		return true;
 	}
 	
 	
 	/**
-	 * Método que comprueba que tanto el cliente como el juego tengan más dinero que la apuesta mínima.
-	 * @param saldoCliente Saldo del cliente.
-	 * @param dineroJuego Dinero del juego.
-	 * @throws BetException Excepción en caso de que no tengan suficiente dinero.
+	 * Method that checks that both the client and the game have more money than the minimum bet.
+	 * @param clientBalance Client's balance.
+	 * @param gameMoney Game's money pool.
+	 * @throws BetException Exception thrown if they do not have enough money.
+	 * @since 3.0
 	 */
-	public void validarSaldosMinimos(double saldoCliente, double dineroJuego) throws BetException {
-	    if (saldoCliente < apuestaMin) {
-	        throw new BetException("Este cliente no puede jugar, tiene menos saldo que la apuesta mínima (" + apuestaMin + "$).");
+	public void validateMinimumBalances(double clientBalance, double gameMoney) throws BetException {
+	    if (clientBalance < MIN_BET) {
+	        throw new BetException("This client cannot play, they have less balance than the minimum bet (" + MIN_BET + "$).");
 	    }
 
-	    if (dineroJuego < apuestaMin) {
-	        throw new BetException("Este juego no puede jugar, tiene menos dinero que la apuesta mínima (" + apuestaMin + "$).");
+	    if (gameMoney < MIN_BET) {
+	        throw new BetException("This game cannot be played, it has less money than the minimum bet (" + MIN_BET + "$).");
 	    }
 	}
 }
