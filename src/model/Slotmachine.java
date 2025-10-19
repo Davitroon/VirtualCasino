@@ -1,6 +1,4 @@
-package logic;
-
-import logic.Game;
+package model;
 
 /**
  * Slot machine game, child of the Game class. Simulates the real operation of a

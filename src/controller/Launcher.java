@@ -1,4 +1,4 @@
-package logic;
+package controller;
 
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
@@ -7,11 +7,9 @@ import javax.swing.UIManager;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
+import dao.DBConnection;
+import dao.DBManagement;
 import exceptions.MessageException;
-import logic.Controller;
-import logic.Model;
-import logic.Session;
-import logic.Validator;
 import ui.ConnectUI;
 import ui.HomeUI;
 import ui.ProfileUI;
@@ -27,10 +25,13 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		MessageException exceptionMessage = new MessageException();
-		Model model = null;
+		DBConnection dbConnection;
+		DBManagement dbManagement = null;
+		Session session;
 
 		try {
-			model = new Model(exceptionMessage);
+			dbConnection = new DBConnection(exceptionMessage);
+			dbManagement = new DBManagement(exceptionMessage, dbConnection, session);
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
 		} catch (SQLSyntaxErrorException e) {
@@ -56,14 +57,14 @@ public class Launcher {
 		}
 
 		Validator validator = new Validator();
-		Controller controller = new Controller(model, validator);
-		HomeUI menu = new HomeUI(model, controller, validator);
-		Session session = new Session(menu, null, controller, model);
-		ConnectUI connect = new ConnectUI(model, controller, session, validator, menu);
-		ProfileUI profile = new ProfileUI(menu, controller, model);
+		Controller controller = new Controller(dbManagement, validator);
+		HomeUI mainMenu = new HomeUI(dbManagement, controller, validator);
+		Session session = new Session(mainMenu, null, controller, dbManagement);
+		ConnectUI connect = new ConnectUI(dbManagement, controller, session, validator, mainMenu);
+		ProfileUI profile = new ProfileUI(mainMenu, controller, dbManagement);
 
-		menu.setProfile(profile);
-		menu.setConnect(connect);
+		mainMenu.setProfile(profile);
+		mainMenu.setConnect(connect);
 		session.setConnect(connect);
 		session.checkStartup();
 	}

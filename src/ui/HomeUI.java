@@ -13,11 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.Controller;
+import controller.Validator;
+import dao.DBManagement;
 import exceptions.GameException;
-import logic.Controller;
-import logic.Model;
-import logic.User;
-import logic.Validator;
+import model.User;
 import ui.ConnectUI;
 import ui.StatisticsUI;
 import ui.ManagementUI;
@@ -52,7 +52,7 @@ public class HomeUI extends JFrame {
 	 * @param controller The controller handling interactions.
 	 * @param validator  The validator for input checks.
 	 */
-	public HomeUI(Model model, Controller controller, Validator validator) {
+	public HomeUI(DBManagement model, Controller controller, Validator validator) {
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

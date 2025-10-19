@@ -1,4 +1,4 @@
-package logic;
+package controller;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,13 +8,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import controller.Validator;
+import dao.DBManagement;
 import exceptions.BetException;
-import logic.Blackjack;
-import logic.Client;
-import logic.Game;
-import logic.Model;
-import logic.Slotmachine;
-import logic.Validator;
+import model.Blackjack;
+import model.Client;
+import model.Game;
+import model.Slotmachine;
 import ui.BlackjackUI;
 import ui.PlayUI;
 import ui.SlotmachineUI;
@@ -30,13 +30,13 @@ import javax.swing.JTextField;
  */
 public class Controller {
 
-	private Model model;
+	private DBManagement dbManagement;
 	private Validator validator;
 
 	private double lastBet;
 
-	public Controller(Model model, Validator validator) {
-		this.model = model;
+	public Controller(DBManagement dbManagement, Validator validator) {
+		this.dbManagement = dbManagement;
 		this.validator = validator;
 	}
 
@@ -52,13 +52,13 @@ public class Controller {
 	 */
 	public void openGameWindow(Game game, PlayUI playWindow, Client client, double bet) {
 		if (game instanceof Blackjack) {
-			BlackjackUI blackjackWindow = new BlackjackUI(this, model, playWindow, client, game, bet);
+			BlackjackUI blackjackWindow = new BlackjackUI(this, dbManagement, playWindow, client, game, bet);
 			switchWindow(playWindow, blackjackWindow);
 			blackjackWindow.startGame();
 		}
 
 		if (game instanceof Slotmachine) {
-			SlotmachineUI slotmachineWindow = new SlotmachineUI(this, model, playWindow, client, game, bet); // Translated
+			SlotmachineUI slotmachineWindow = new SlotmachineUI(this, dbManagement, playWindow, client, game, bet); // Translated
 																												// from
 																												// 'tragaperrasVentana'
 			switchWindow(playWindow, slotmachineWindow);
@@ -89,9 +89,9 @@ public class Controller {
 			game.setMoney(game.getMoney() - betResult);
 		}
 		// Assumes translated model methods
-		model.updateClientBalance(client);
-		model.updateGameMoney(game);
-		model.addGameSession(client, game, betResult);
+		dbManagement.updateClientBalance(client);
+		dbManagement.getGameDAO().updateGameMoney(game);
+		dbManagement.addGameSession(client, game, betResult);
 	}
 
 	/**

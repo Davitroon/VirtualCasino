@@ -22,11 +22,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logic.Controller;
-import logic.Model;
-import logic.Session;
-import logic.User;
-import logic.Validator;
+import controller.Controller;
+import controller.Session;
+import controller.Validator;
+import dao.DBManagement;
+import model.User;
 import ui.ConnectUI;
 import ui.LogInUI;
 
@@ -62,7 +62,7 @@ public class LogInUI extends JFrame {
 	 * @param validator  the validator for input fields
 	 * @since 3.0
 	 */
-	public LogInUI(Model model, Controller controller, Session session, ConnectUI login, Validator validator) {
+	public LogInUI(DBManagement model, Controller controller, Session session, ConnectUI login, Validator validator) {
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

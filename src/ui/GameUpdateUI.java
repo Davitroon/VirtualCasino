@@ -22,11 +22,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logic.Blackjack;
-import logic.Controller;
-import logic.Model;
-import logic.Slotmachine;
-import logic.Validator;
+import controller.Controller;
+import controller.Validator;
+import dao.DBManagement;
+import model.Blackjack;
+import model.Slotmachine;
 import ui.GameUpdateUI;
 import ui.ManagementUI;
 
@@ -45,7 +45,7 @@ public class GameUpdateUI extends JFrame {
 	private boolean moneyValid;
 	private JButton btnUpdate;
 
-	private Model model;
+	private DBManagement model;
 
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
@@ -62,7 +62,7 @@ public class GameUpdateUI extends JFrame {
 	 * @param validator  Reference to the validator for input checks.
 	 * @since 3.0
 	 */
-	public GameUpdateUI(ManagementUI management, Controller controller, Model model, Validator validator) {
+	public GameUpdateUI(ManagementUI management, Controller controller, DBManagement model, Validator validator) {
 
 		this.model = model;
 

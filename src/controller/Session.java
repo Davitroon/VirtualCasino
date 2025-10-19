@@ -1,13 +1,13 @@
-package logic;
+package controller;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
 
-import logic.Controller;
-import logic.Model;
-import logic.User;
+import controller.Controller;
+import dao.DBManagement;
+import model.User;
 import ui.ConnectUI;
 import ui.HomeUI;
 
@@ -19,9 +19,10 @@ public class Session {
 	private HomeUI menu;
 	private ConnectUI connect;
 	private Controller controller;
-	private Model model;
+	private DBManagement model;
+	private int currentUser;
 
-	public Session(HomeUI menu, ConnectUI connect, Controller controller, Model model) {
+	public Session(HomeUI menu, ConnectUI connect, Controller controller, DBManagement model) {
 		this.menu = menu;
 		this.connect = connect;
 		this.controller = controller;
@@ -58,11 +59,17 @@ public class Session {
 	 */
 	public void startSession(User user, JFrame currentWindow) {
 		menu.setUser(user);
-		model.setCurrentUser(user.getId());
+		currentUser = user.getId();
 		controller.switchWindow(currentWindow, menu);
 	}
 
 	public void setConnect(ConnectUI connect) {
 		this.connect = connect;
 	}
+
+	public int getCurrentUser() {
+		return currentUser;
+	}
+	
+	
 }

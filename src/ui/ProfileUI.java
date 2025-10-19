@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logic.Controller;
-import logic.Model;
-import logic.User;
+import controller.Controller;
+import dao.DBManagement;
+import model.User;
 import ui.HomeUI;
 import ui.ProfileUI;
 
@@ -48,7 +48,7 @@ public class ProfileUI extends JFrame {
 	 *                   user actions
 	 * @param model      The model used to access and update user data
 	 */
-	public ProfileUI(HomeUI menu, Controller controller, Model model) {
+	public ProfileUI(HomeUI menu, Controller controller, DBManagement model) {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 542, 390);

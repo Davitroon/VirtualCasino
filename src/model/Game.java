@@ -1,4 +1,4 @@
-package logic;
+package model;
 
 /**
  * Abstract class that provides the format for games. Each game will have its

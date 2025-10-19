@@ -15,13 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.Controller;
+import dao.DBManagement;
 import exceptions.BetException;
 import exceptions.GameException;
-import logic.Blackjack;
-import logic.Client;
-import logic.Controller;
-import logic.Game;
-import logic.Model;
+import model.Blackjack;
+import model.Client;
+import model.Game;
 import ui.BlackjackUI;
 import ui.PlayUI;
 
@@ -70,7 +70,7 @@ public class BlackjackUI extends JFrame {
 	 *                   session.
 	 * @since 3.0
 	 */
-	public BlackjackUI(Controller controller, Model model, PlayUI play, Client client, Game game, double bet) {
+	public BlackjackUI(Controller controller, DBManagement model, PlayUI play, Client client, Game game, double bet) {
 		setResizable(false);
 
 		this.controller = controller;

@@ -1,4 +1,4 @@
-package logic;
+package model;
 
 /**
  * Class for the different profiles the player can have.

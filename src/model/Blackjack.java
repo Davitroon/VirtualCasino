@@ -1,10 +1,8 @@
-package logic;
+package model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-
-import logic.Game;
 
 /**
  * Blackjack Game, child of Game. Simulates the functionality of real BlackJack.

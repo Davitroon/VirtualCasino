@@ -23,14 +23,14 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import controller.Controller;
+import dao.DBManagement;
 import exceptions.BetException;
 import exceptions.GameException;
-import logic.Blackjack;
-import logic.Client;
-import logic.Controller;
-import logic.Game;
-import logic.Model;
-import logic.Slotmachine;
+import model.Blackjack;
+import model.Client;
+import model.Game;
+import model.Slotmachine;
 import ui.PlayUI;
 import ui.HomeUI;
 
@@ -50,7 +50,7 @@ public class PlayUI extends JFrame {
 	private DefaultTableModel modelClients;
 	private DefaultTableModel modelGames;
 
-	private Model model;
+	private DBManagement model;
 	private Controller controller;
 	private JButton btnPlay;
 	private HomeUI menu;
@@ -63,7 +63,7 @@ public class PlayUI extends JFrame {
 	 * @param controller The controller for handling events
 	 * @since 3.0
 	 */
-	public PlayUI(HomeUI menu, Model model, Controller controller) {
+	public PlayUI(HomeUI menu, DBManagement model, Controller controller) {
 
 		this.menu = menu;
 		this.model = model;

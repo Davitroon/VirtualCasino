@@ -1,4 +1,4 @@
-package logic;
+package model;
 
 /**
  * Class for casino clients (customers).

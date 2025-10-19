@@ -15,13 +15,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.Controller;
+import dao.DBManagement;
 import exceptions.BetException;
 import exceptions.GameException;
-import logic.Client;
-import logic.Controller;
-import logic.Game;
-import logic.Model;
-import logic.Slotmachine;
+import model.Client;
+import model.Game;
+import model.Slotmachine;
 import ui.PlayUI;
 
 /**
@@ -65,7 +65,7 @@ public class SlotmachineUI extends JFrame {
 	 * @param bet        The amount of money the client is betting for this game.
 	 * @since 3.0
 	 */
-	public SlotmachineUI(Controller controller, Model model, PlayUI playUI, Client client, Game game, double bet) {
+	public SlotmachineUI(Controller controller, DBManagement model, PlayUI playUI, Client client, Game game, double bet) {
 
 		this.controller = controller;
 		this.playUI = playUI;

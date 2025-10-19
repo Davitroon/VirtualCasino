@@ -12,10 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logic.Controller;
-import logic.Model;
-import logic.Session;
-import logic.Validator;
+import controller.Controller;
+import controller.Session;
+import controller.Validator;
+import dao.DBManagement;
 import ui.ConnectUI;
 import ui.SignInUI;
 import ui.LogInUI;
@@ -47,7 +47,7 @@ public class ConnectUI extends JFrame {
 	 * @param menu       Reference to the home menu window.
 	 * @since 3.0
 	 */
-	public ConnectUI(Model model, Controller controller, Session session, Validator validator, HomeUI menu) {
+	public ConnectUI(DBManagement model, Controller controller, Session session, Validator validator, HomeUI menu) {
 		this.menu = menu;
 
 		setResizable(false);

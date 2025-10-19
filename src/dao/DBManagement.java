@@ -1,16 +1,19 @@
-package logic;
+package dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLSyntaxErrorException;
 import java.sql.Statement;
 
+import controller.Session;
 import exceptions.MailException;
 import exceptions.MessageException;
+import model.Blackjack;
+import model.Client;
+import model.Game;
+import model.Slotmachine;
+import model.User;
 
 /**
  * MVC Model class. Connects to the DB and manages information.
@@ -18,19 +21,13 @@ import exceptions.MessageException;
  * @author David
  * @since 3.0
  */
-public class Model {
+public class DBManagement {
 
-	private static Connection connection;
-	private String database = "casino25";
-	private String login = "root";
-	private String pwd = "Coco2006";
-	private String url = "jdbc:mysql://localhost/" + database;
-
-	private Client defaultClient;
-	private Game defaultGame;
-
+	private DBConnection dbConnection;
+	private Session session;
 	private MessageException exceptionMessage;
-	private int currentUser;
+	private GameDAO gameDAO;
+	private ClientDAO clientDAO;
 
 	/**
 	 * Model constructor, where it makes the connection to the database.
@@ -40,14 +37,13 @@ public class Model {
 	 * @throws ClassNotFoundException
 	 * @since 3.0
 	 */
-	public Model(MessageException exceptionMessage) throws SQLException, ClassNotFoundException {
+	public DBManagement(MessageException exceptionMessage, DBConnection dbConnection, Session session)
+			throws SQLException, ClassNotFoundException {
 		this.exceptionMessage = exceptionMessage;
-		if (database == "") {
-			throw new SQLSyntaxErrorException();
-		}
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		connection = DriverManager.getConnection(url, login, pwd);
-		System.out.println(" - DB Connection established -");
+		this.dbConnection = dbConnection;
+		this.session = session;
+		gameDAO = new GameDAO(exceptionMessage);
+		clientDAO = new ClientDAO(exceptionMessage);
 	}
 
 	/**
@@ -58,7 +54,7 @@ public class Model {
 	public void updateLastAccess(String name) {
 		String query = "UPDATE users SET last_access = NOW() WHERE username = ?";
 
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+		try (PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query)) {
 			stmt.setString(1, name);
 			stmt.executeUpdate();
 
@@ -68,51 +64,6 @@ public class Model {
 		}
 	}
 
-	/**
-	 * Method to insert a client into the database.
-	 * 
-	 * @param client Client to add.
-	 * @since 3.0
-	 */
-	public void addClient(Client client) {
-		String query = "INSERT INTO customers (customer_name, age, gender, balance, user_profile) VALUES (?, ?, ?, ?, ?);";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setString(1, client.getName());
-			stmt.setInt(2, client.getAge());
-			stmt.setString(3, String.valueOf(client.getGender()));
-			stmt.setDouble(4, client.getBalance());
-			stmt.setInt(5, currentUser);
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while inserting a client.\nCheck the console for more information.");
-		}
-	}
-
-	/**
-	 * Method to insert a game into the database.
-	 * 
-	 * @param game Game to add.
-	 * @since 3.0
-	 */
-	public void addGame(Game game) {
-		String query = "INSERT INTO games (game_type, money_pool, user_profile) VALUES (?, ?, ?);";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setString(1, game.getType());
-			stmt.setDouble(2, game.getMoney());
-			stmt.setInt(3, currentUser);
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while inserting a game.\nCheck the console for more information.");
-		}
-	}
 
 	/**
 	 * Inserts a new game session into the database.
@@ -130,12 +81,12 @@ public class Model {
 				+ "VALUES (?, ?, ?, ?, ?)";
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
+			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
 			stmt.setInt(1, client.getId());
 			stmt.setInt(2, game.getId());
 			stmt.setString(3, game.getType());
 			stmt.setDouble(4, betResult);
-			stmt.setInt(5, currentUser);
+			stmt.setInt(5, session.getCurrentUser());
 
 			stmt.executeUpdate();
 			stmt.close();
@@ -161,7 +112,8 @@ public class Model {
 			throws MailException, SQLIntegrityConstraintViolationException {
 		String query = "INSERT INTO users (username, user_password, email) VALUES (?, ?, ?);";
 
-		try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query,
+				Statement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, user.getName());
 			stmt.setString(2, user.getPassword());
 			stmt.setString(3, user.getEmail());
@@ -212,14 +164,14 @@ public class Model {
 	public void toggleRememberLogin(String name, boolean activate) {
 		try {
 			// Remove the flag from all other users who have remember session checked
-			try (PreparedStatement stmt2 = connection
+			try (PreparedStatement stmt2 = dbConnection.getConnection()
 					.prepareStatement("UPDATE users SET remember_login = FALSE WHERE remember_login = TRUE")) {
 				stmt2.executeUpdate();
 			}
 
 			if (activate) {
 				// Set this user to remember session
-				try (PreparedStatement stmt3 = connection
+				try (PreparedStatement stmt3 = dbConnection.getConnection()
 						.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
 					stmt3.setString(1, name);
 					stmt3.executeUpdate();
@@ -244,7 +196,7 @@ public class Model {
 		String query = "DELETE FROM " + table + " WHERE id = ?;";
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
+			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
 			stmt.setInt(1, id);
 
 			stmt.executeUpdate();
@@ -267,8 +219,8 @@ public class Model {
 		String query = "DELETE FROM " + table + " WHERE user_profile = ?";
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
-			stmt.setInt(1, currentUser);
+			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
+			stmt.setInt(1, session.getCurrentUser());
 			stmt.executeUpdate();
 			stmt.close();
 
@@ -292,7 +244,7 @@ public class Model {
 		ResultSet rset = null;
 		PreparedStatement stmt;
 		try {
-			stmt = connection.prepareStatement(query);
+			stmt = dbConnection.getConnection().prepareStatement(query);
 			rset = stmt.executeQuery();
 
 		} catch (SQLException e) {
@@ -321,8 +273,8 @@ public class Model {
 		}
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
-			stmt.setInt(1, currentUser);
+			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
+			stmt.setInt(1, session.getCurrentUser());
 			rset = stmt.executeQuery();
 
 		} catch (SQLException e) {
@@ -348,7 +300,7 @@ public class Model {
 		ResultSet rset = null;
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
+			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
 			stmt.setInt(1, id);
 			rset = stmt.executeQuery();
 			rset.next();
@@ -373,7 +325,7 @@ public class Model {
 		ResultSet rset;
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
+			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
 			stmt.setString(1, name);
 
 			rset = stmt.executeQuery();
@@ -392,77 +344,7 @@ public class Model {
 		return null;
 	}
 
-	/**
-	 * Method to modify a client in the database.
-	 * 
-	 * @param client Client to modify.
-	 * @since 3.0
-	 */
-	public void modifyClient(Client client) {
-		String query = "UPDATE customers SET customer_name = ?, age = ?, gender = ?, active_status = ?, balance = ? WHERE id = ?;";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setString(1, client.getName());
-			stmt.setInt(2, client.getAge());
-			stmt.setString(3, String.valueOf(client.getGender()));
-			stmt.setBoolean(4, client.isActive());
-			stmt.setDouble(5, client.getBalance());
-			stmt.setInt(6, client.getId());
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying a client.\nCheck the console for more information.");
-		}
-	}
-
-	/**
-	 * Method to modify a game's money pool in the database.
-	 * 
-	 * @param game Game to modify.
-	 * @since 3.0
-	 */
-	public void updateGameMoney(Game game) {
-		String query = "UPDATE games SET money_pool = ? WHERE id = ?;";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setDouble(1, game.getMoney());
-			stmt.setInt(2, game.getId());
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying the game's money pool.\nCheck the console for more information."); // Assumes
-																																				// 'mensajeExcepcion'
-																																				// is
-																																				// 'exceptionMessage'
-		}
-	}
-
-	/**
-	 * Method to modify a game in the database.
-	 * 
-	 * @param game Game to modify.
-	 * @since 3.0
-	 */
-	public void updateGame(Game game) {
-		String query = "UPDATE games SET game_type = ?, active_status = ?, money_pool = ? WHERE id = ?;";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setString(1, game.getType());
-			stmt.setBoolean(2, game.isActive());
-			stmt.setDouble(3, game.getMoney());
-			stmt.setInt(4, game.getId());
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying a game.\nCheck the console for more information.");
-		}
-	}
+	
 
 	/**
 	 * Method to modify only a client's balance in the database.
@@ -473,7 +355,7 @@ public class Model {
 	public void updateClientBalance(Client client) {
 		String query = "UPDATE customers SET balance = ? WHERE id = ?;";
 
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+		try (PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query)) {
 			stmt.setDouble(1, client.getBalance());
 			stmt.setInt(2, client.getId());
 
@@ -485,36 +367,22 @@ public class Model {
 		}
 	}
 
-	public void setCurrentUser(int currentUser) {
-		this.currentUser = currentUser;
-	}
-
 	/**
 	 * * Method that adds default users and games when creating a user.
 	 */
 	public void addDefaultUser() {
-		defaultClient = new Client("user", 32, 'O', 2000);
-		addClient(defaultClient);
-
-		defaultGame = new Blackjack(10000);
-		addGame(defaultGame);
-
-		defaultGame = new Slotmachine(10000);
-		addGame(defaultGame);
+			clientDAO.addClient(new Client("user", 32, 'O', 2000), session.getCurrentUser(), dbConnection.getConnection());	
+			gameDAO.addGame(new Blackjack(10000), session.getCurrentUser(), dbConnection.getConnection());
+			gameDAO.addGame(new Slotmachine(10000), session.getCurrentUser(), dbConnection.getConnection());
 	}
 
-	/**
-	 * Method to close the connection to the DB.
-	 */
-	public void closeConnection() {
-		try {
-			if (connection != null && !connection.isClosed()) {
-				connection.close();
-				System.out.println(" - DB Connection closed -");
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public GameDAO getGameDAO() {
+		return gameDAO;
 	}
+
+	public ClientDAO getClientDAO() {
+		return clientDAO;
+	}
+	
+	
 }
