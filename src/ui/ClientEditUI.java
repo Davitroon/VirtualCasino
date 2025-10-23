@@ -22,9 +22,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
+import controller.MainController;
 import controller.Validator;
-import dao.DBManagement;
+import dao.DatabaseManager;
 import model.Client;
 import ui.ClientEditUI;
 import ui.ManagementUI;
@@ -44,7 +44,7 @@ public class ClientEditUI extends JFrame {
 	private JTextField textBalance;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
-	private DBManagement model;
+	private DatabaseManager model;
 
 	private boolean nameValid;
 	private boolean ageValid;
@@ -74,7 +74,7 @@ public class ClientEditUI extends JFrame {
 	 *                   format of user input (e.g., name, age, balance).
 	 * @since 3.0
 	 */
-	public ClientEditUI(ManagementUI management, Controller controller, DBManagement model, Validator validator) {
+	public ClientEditUI(ManagementUI management, MainController controller, DatabaseManager model, Validator validator) {
 
 		this.model = model;
 

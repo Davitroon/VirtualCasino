@@ -26,9 +26,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import controller.Controller;
+import controller.MainController;
 import controller.Validator;
-import dao.DBManagement;
+import dao.DatabaseManager;
 import ui.ClientUI;
 import ui.ClientEditUI;
 import ui.GameUI;
@@ -55,8 +55,8 @@ public class ManagementUI extends JFrame {
 	private ClientEditUI clientEditForm;
 	private GameUI gameForm;
 	private GameUpdateUI gameEditForm;
-	private DBManagement model;
-	private Controller controller;
+	private DatabaseManager model;
+	private MainController controller;
 
 	private JButton btnEditClient;
 	private JButton btnDeleteClient;
@@ -74,7 +74,7 @@ public class ManagementUI extends JFrame {
 	 * @param controller The controller handling UI actions
 	 * @since 3.0
 	 */
-	public ManagementUI(HomeUI mainMenu, DBManagement model, Controller controller, Validator validator) {
+	public ManagementUI(HomeUI mainMenu, DatabaseManager model, MainController controller) {
 		setResizable(false);
 
 		this.model = model;

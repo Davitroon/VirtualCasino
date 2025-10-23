@@ -8,19 +8,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import controller.Validator;
-import dao.DBManagement;
+import dao.DatabaseManager;
 import exceptions.BetException;
 import model.Blackjack;
 import model.Client;
 import model.Game;
+import model.Session;
 import model.Slotmachine;
+import model.User;
 import ui.BlackjackUI;
 import ui.PlayUI;
 import ui.SlotmachineUI;
-
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  * MVC Controller class. Manages exchanges, validations, and logic.
@@ -28,16 +26,21 @@ import javax.swing.JTextField;
  * @author David
  * @since 3.0
  */
-public class Controller {
+public class MainController {
 
-	private DBManagement dbManagement;
+	private DatabaseManager dbManager;
 	private Validator validator;
+	private ViewController viewController;
+	private Session session;
+	private DataBaseController dbController;
 
 	private double lastBet;
 
-	public Controller(DBManagement dbManagement, Validator validator) {
-		this.dbManagement = dbManagement;
-		this.validator = validator;
+	public MainController(DatabaseManager dbManager) {
+		this.dbManager = dbManager;
+		validator = new Validator();
+		viewController = new ViewController(this, dbManager);
+		dbController = new DataBaseController(this, dbManager);
 	}
 
 	/**
@@ -52,16 +55,17 @@ public class Controller {
 	 */
 	public void openGameWindow(Game game, PlayUI playWindow, Client client, double bet) {
 		if (game instanceof Blackjack) {
-			BlackjackUI blackjackWindow = new BlackjackUI(this, dbManagement, playWindow, client, game, bet);
-			switchWindow(playWindow, blackjackWindow);
+			BlackjackUI blackjackWindow = new BlackjackUI(this, dbManager, client, game, bet);
+			viewController.switchWindow(playWindow, blackjackWindow);
 			blackjackWindow.startGame();
 		}
 
 		if (game instanceof Slotmachine) {
-			SlotmachineUI slotmachineWindow = new SlotmachineUI(this, dbManagement, playWindow, client, game, bet); // Translated
-																												// from
-																												// 'tragaperrasVentana'
-			switchWindow(playWindow, slotmachineWindow);
+			SlotmachineUI slotmachineWindow = new SlotmachineUI(this, dbManager, playWindow, client, game, bet); // Translated
+																													// //
+																													// from
+																													// 'tragaperrasVentana'
+			viewController.switchWindow(playWindow, slotmachineWindow);
 			slotmachineWindow.startGame();
 		}
 	}
@@ -76,6 +80,7 @@ public class Controller {
 	 *                   loss).
 	 * @param gameClosed True if the game was closed before a bet finished, false if
 	 *                   the bet terminated normally.
+	 * @since 3.0
 	 */
 	public void updateBalances(Client client, Game game, double betResult, boolean gameClosed) {
 		if (gameClosed) {
@@ -88,10 +93,10 @@ public class Controller {
 			client.setBalance(client.getBalance() + betResult);
 			game.setMoney(game.getMoney() - betResult);
 		}
-		// Assumes translated model methods
-		dbManagement.updateClientBalance(client);
-		dbManagement.getGameDAO().updateGameMoney(game);
-		dbManagement.addGameSession(client, game, betResult);
+
+		dbManager.updateClientBalance(client);
+		dbManager.updateGameBalance(game);
+		dbManager.addGameSession(client, game, betResult);
 	}
 
 	/**
@@ -158,6 +163,7 @@ public class Controller {
 	 * @param game   Game being played.
 	 * @param bet    Bet for the match.
 	 * @return True if they confirmed exiting, false otherwise.
+	 * @since 3.0
 	 */
 	public boolean warnCloseGame(Client client, Game game, double bet) {
 		int response = JOptionPane.showConfirmDialog(null,
@@ -182,6 +188,7 @@ public class Controller {
 	 * @param blackjack  Blackjack object that was played.
 	 * @param betResult  Result of the bet (amount won/lost).
 	 * @return Message with the status of the end of the match.
+	 * @since 3.0
 	 */
 	public String blackjackEndStatus(boolean clientWins, Client client, Blackjack blackjack, double betResult) {
 
@@ -226,6 +233,7 @@ public class Controller {
 	 * players.
 	 * 
 	 * @param blackjack Blackjack match object.
+	 * @since 3.0
 	 */
 	public void startBlackjack(Blackjack blackjack) {
 		blackjack.shuffleCards();
@@ -238,6 +246,7 @@ public class Controller {
 	 * 
 	 * @param blackjack Blackjack object.
 	 * @return True if the player has busted (exceeded 21), false otherwise.
+	 * @since 3.0
 	 */
 	public boolean blackjackHit(Blackjack blackjack) {
 		blackjack.dealCards(1, "player");
@@ -267,24 +276,12 @@ public class Controller {
 	}
 
 	/**
-	 * Method to hide one window and show a new one.
-	 * 
-	 * @param currentWindow Window to close/hide
-	 * @param newWindow     Window to open/show
-	 * @since 3.0
-	 */
-	public void switchWindow(JFrame currentWindow, JFrame newWindow) {
-		currentWindow.setVisible(false);
-		newWindow.setVisible(true);
-
-	}
-
-	/**
 	 * Method that will show a generic end game window for the games.
 	 * 
 	 * @param statusMessage Custom message depending on the context of the end of
 	 *                      the match.
 	 * @return Player's choice (Go Back / Bet Again).
+	 * @since 3.0
 	 */
 	public int gameEndStatus(String statusMessage) {
 		String[] options = { "Go Back", "Bet Again" };
@@ -299,6 +296,7 @@ public class Controller {
 	 * 
 	 * @param rset        Result of the query to the DB (Database).
 	 * @param clientModel Client table model.
+	 * @since 3.0
 	 */
 	public void fillClientTable(ResultSet rset, DefaultTableModel clientModel) {
 		try {
@@ -318,11 +316,11 @@ public class Controller {
 	}
 
 	/**
-	 * Method that fills the client table in the Management window, with all
-	 * fields.
+	 * Method that fills the client table in the Management window, with all fields.
 	 * 
 	 * @param rset        Result of the query to the DB.
 	 * @param clientModel Client table model.
+	 * @since 3.0
 	 */
 	public void fillFullClientTable(ResultSet rset, DefaultTableModel clientModel) {
 		try {
@@ -349,6 +347,7 @@ public class Controller {
 	 * 
 	 * @param rset      Result of the query to the DB.
 	 * @param gameModel Game table model.
+	 * @since 3.0
 	 */
 	public void fillGameTable(ResultSet rset, DefaultTableModel gameModel) {
 		try {
@@ -374,6 +373,7 @@ public class Controller {
 	 * @param slotmachine Slotmachine class object being played.
 	 * @param betResult   Result of the bet (amount won/lost).
 	 * @return Message with the result of the match.
+	 * @since 3.0
 	 */
 	public String slotmachineEndStatus(Client client, Slotmachine slotmachine, double betResult) {
 		// Assumes 'getNumeros' is 'getNumbers'
@@ -395,4 +395,26 @@ public class Controller {
 		// value here.
 		return String.format("No combination... You lost %.2f$.", Math.abs(betResult));
 	}
+
+	public void closeProgram() {
+		dbManager.closeConnection();
+		System.exit(0);
+	}
+
+	public ViewController getViewController() {
+		return viewController;
+	}
+
+	public DataBaseController getDataBaseController() {
+		return dbController;
+	}
+
+	public Session getSession() {
+		return session;
+	}
+
+	public User getCurrentUser() {
+		return session.getCurrentUser();
+	}
+
 }

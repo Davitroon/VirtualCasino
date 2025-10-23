@@ -16,11 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
-import dao.DBManagement;
+import controller.DataBaseController;
+import controller.MainController;
+import controller.ViewController;
+import dao.DatabaseManager;
 import model.User;
-import ui.HomeUI;
-import ui.ProfileUI;
 
 /**
  * Window that displays information about the user who is currently logged in.
@@ -36,19 +36,21 @@ public class ProfileUI extends JFrame {
 	private JLabel lblLastAccess;
 	private JCheckBox chckbxRememberSession;
 	private JLabel lblEmail;
-	private User user;
 	private JButton btnDeleteUser;
 
 	/**
 	 * Constructs the ProfileUI frame, which displays information about the
 	 * currently logged-in user.
 	 *
-	 * @param menu       The main HomeUI window from which this ProfileUI is opened
 	 * @param controller The controller responsible for handling window changes and
 	 *                   user actions
 	 * @param model      The model used to access and update user data
 	 */
-	public ProfileUI(HomeUI menu, Controller controller, DBManagement model) {
+	public ProfileUI(MainController controller, DatabaseManager model) {
+		
+		ViewController viewController = controller.getViewController();	
+		DataBaseController dbController = controller.getDataBaseController();	
+		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 542, 390);
@@ -102,7 +104,7 @@ public class ProfileUI extends JFrame {
 		// Click back button
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controller.switchWindow(ProfileUI.this, menu);
+				viewController.switchWindow(ProfileUI.this, viewController.getHomeUI());
 			}
 		});
 
@@ -110,22 +112,21 @@ public class ProfileUI extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.switchWindow(ProfileUI.this, menu);
+				viewController.switchWindow(ProfileUI.this, viewController.getHomeUI());
 			}
 		});
 
 		// Log out button
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controller.switchWindow(ProfileUI.this, menu.getConnectUI());
-				model.updateLastAccess(user.getName());
+				viewController.switchWindow(ProfileUI.this, viewController.getConnectUI());
 			}
 		});
 
 		// Toggle remember session
 		chckbxRememberSession.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.toggleRememberLogin(user.getName(), chckbxRememberSession.isSelected());
+				dbController.toggleRememberLogin(controller.getCurrentUser().getName(), chckbxRememberSession.isSelected());
 			}
 		});
 
@@ -136,8 +137,8 @@ public class ProfileUI extends JFrame {
 						"Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 				if (response == JOptionPane.YES_OPTION) {
-					controller.switchWindow(ProfileUI.this, menu.getConnectUI());
-					model.deleteData(user.getId(), "users");
+					viewController.switchWindow(ProfileUI.this, viewController.getConnectUI());
+					dbController.deleteUser(controller.getCurrentUser().getId());
 				}
 			}
 		});
@@ -149,8 +150,7 @@ public class ProfileUI extends JFrame {
 	 * @param user Current user.
 	 * @since 3.0
 	 */
-	public void updateData(User user) {
-		this.user = user;
+	public void displayUserData(User user) {
 		lblUser.setText("Logged in as: " + user.getName());
 		lblEmail.setText("Associated email: " + user.getEmail());
 		lblLastAccess.setText("Last access: " + user.getLastAccess());

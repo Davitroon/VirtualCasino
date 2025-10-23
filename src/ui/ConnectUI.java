@@ -12,14 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
-import controller.Session;
+import controller.MainController;
 import controller.Validator;
-import dao.DBManagement;
-import ui.ConnectUI;
-import ui.SignInUI;
-import ui.LogInUI;
-import ui.HomeUI;
+import controller.ViewController;
+import dao.DatabaseManager;
+import model.Session;
 
 /**
  * Window where the user can log in with a profile from the database. This will
@@ -40,14 +37,11 @@ public class ConnectUI extends JFrame {
 	/**
 	 * Create the frame.
 	 * 
-	 * @param model      Reference to the model that manages data operations.
 	 * @param controller Reference to the controller handling program logic.
-	 * @param session    Current session information.
-	 * @param validator  Reference to the validator for input checks.
-	 * @param menu       Reference to the home menu window.
+	 * @param dbManager      Reference to the dbManager that manages data operations.
 	 * @since 3.0
 	 */
-	public ConnectUI(DBManagement model, Controller controller, Session session, Validator validator, HomeUI menu) {
+	public ConnectUI(MainController controller, DatabaseManager dbManager) {
 		this.menu = menu;
 
 		setResizable(false);
@@ -84,7 +78,7 @@ public class ConnectUI extends JFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				model.closeConnection();
+				controller.closeProgram();
 				System.exit(0);
 			}
 		});
@@ -92,7 +86,7 @@ public class ConnectUI extends JFrame {
 		// Click "Exit" button
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.closeConnection();
+				controller.closeProgram();
 				System.exit(0);
 			}
 		});
@@ -101,7 +95,7 @@ public class ConnectUI extends JFrame {
 		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (createUser == null) {
-					createUser = new SignInUI(model, controller, session, ConnectUI.this, validator);
+					createUser = new SignInUI(dbManager, controller, ConnectUI.this);
 				}
 				setVisible(false);
 				createUser.setVisible(true);
@@ -112,7 +106,7 @@ public class ConnectUI extends JFrame {
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (logIn == null) {
-					logIn = new LogInUI(model, controller, session, ConnectUI.this, validator);
+					logIn = new LogInUI(dbManager, controller, ConnectUI.this);
 				}
 				setVisible(false);
 				logIn.setVisible(true);

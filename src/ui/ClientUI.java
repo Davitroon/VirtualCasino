@@ -19,9 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
+import controller.MainController;
 import controller.Validator;
-import dao.DBManagement;
+import dao.DatabaseManager;
 import model.Client;
 import ui.ClientUI;
 import ui.ManagementUI;
@@ -64,7 +64,7 @@ public class ClientUI extends JFrame {
 	 * @param validator  Reference to the validator that checks form inputs.
 	 * @since 3.0
 	 */
-	public ClientUI(ManagementUI management, Controller controller, DBManagement model, Validator validator) {
+	public ClientUI(ManagementUI management, MainController controller, DatabaseManager model, Validator validator) {
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -2,10 +2,12 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import exceptions.MessageException;
 import model.Client;
+import model.User;
 
 public class ClientDAO {
 
@@ -14,14 +16,14 @@ public class ClientDAO {
 	public ClientDAO(MessageException exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
-	
+
 	/**
 	 * Method to insert a client into the database.
 	 * 
 	 * @param client Client to add.
 	 * @since 3.0
 	 */
-	public void addClient(Client client, int currentUser, Connection connection) {
+	public void addClient(Client client, User user, Connection connection) {
 		String query = "INSERT INTO customers (customer_name, age, gender, balance, user_profile) VALUES (?, ?, ?, ?, ?);";
 
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -29,7 +31,7 @@ public class ClientDAO {
 			stmt.setInt(2, client.getAge());
 			stmt.setString(3, String.valueOf(client.getGender()));
 			stmt.setDouble(4, client.getBalance());
-			stmt.setInt(5, currentUser);
+			stmt.setInt(5, user.getId());
 
 			stmt.executeUpdate();
 
@@ -62,5 +64,39 @@ public class ClientDAO {
 			exceptionMessage.showError(e,
 					"An error occurred in the DB connection while modifying a client.\nCheck the console for more information.");
 		}
+	}
+
+	public void deleteClient(int clientId, Connection connection) {
+		String query = "DELETE FROM customers WHERE id = ?;";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setInt(1, clientId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while modifying a client.\nCheck the console for more information.");
+		}
+	}
+
+	public ResultSet queryClients(boolean onlyActive, Connection connection, int currentUser) {
+		String query = "SELECT * FROM customers WHERE user_profile = ?";
+		ResultSet rset = null;
+
+		if (onlyActive) {
+			query += " AND active_status = 1";
+		}
+
+		try {
+			PreparedStatement stmt = connection.prepareStatement(query);
+			stmt.setInt(1, currentUser);
+			rset = stmt.executeQuery();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while querying the table customers .\nCheck the console for more information.");
+		}
+
+		return rset;
 	}
 }

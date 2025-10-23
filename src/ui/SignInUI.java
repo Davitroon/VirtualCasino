@@ -21,11 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
-import controller.Session;
+import controller.MainController;
 import controller.Validator;
-import dao.DBManagement;
+import dao.DatabaseManager;
 import exceptions.MailException;
+import model.Session;
 import model.User;
 import ui.ConnectUI;
 import ui.SignInUI;
@@ -64,12 +64,11 @@ public class SignInUI extends JFrame {
 	 * 
 	 * @param model        The data model
 	 * @param controller   The controller handling logic
-	 * @param session      The current session manager
 	 * @param login        The login UI to return to
 	 * @param validatorThe validator for form fields
 	 * @since 3.0
 	 */
-	public SignInUI(DBManagement model, Controller controller, Session session, ConnectUI login, Validator validator) {
+	public SignInUI(DatabaseManager model, MainController controller, ConnectUI login) {
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

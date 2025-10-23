@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
+import controller.MainController;
 import controller.Validator;
-import dao.DBManagement;
+import dao.DatabaseManager;
 import exceptions.GameException;
 import model.User;
 import ui.ConnectUI;
@@ -39,7 +39,6 @@ public class HomeUI extends JFrame {
 	private ManagementUI management;
 	private PlayUI play;
 	private StatisticsUI statistics;
-	private User user;
 	private ProfileUI profile;
 	private ConnectUI connectUI;
 
@@ -48,11 +47,10 @@ public class HomeUI extends JFrame {
 	/**
 	 * Creates the frame.
 	 * 
-	 * @param model      The data model.
 	 * @param controller The controller handling interactions.
-	 * @param validator  The validator for input checks.
+	 * @param model      The data model.
 	 */
-	public HomeUI(DBManagement model, Controller controller, Validator validator) {
+	public HomeUI(MainController controller, DatabaseManager model) {
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,9 +100,7 @@ public class HomeUI extends JFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				model.updateLastAccess(user.getName());
-				model.closeConnection();
-				System.exit(0);
+				controller.closeProgram();
 			}
 		});
 
@@ -128,7 +124,7 @@ public class HomeUI extends JFrame {
 		btnManagement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (management == null) {
-					management = new ManagementUI(HomeUI.this, model, controller, validator);
+					management = new ManagementUI(HomeUI.this, model, controller);
 				}
 				controller.switchWindow(HomeUI.this, management);
 			}
@@ -138,10 +134,9 @@ public class HomeUI extends JFrame {
 		btnStatistics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (statistics == null) {
-					statistics = new StatisticsUI(HomeUI.this, model, controller, user);
-				} else {
-					statistics.setUser(user);
+					statistics = new StatisticsUI(HomeUI.this, model, controller);
 				}
+				
 				statistics.updateData();
 				controller.switchWindow(HomeUI.this, statistics);
 			}
@@ -188,9 +183,6 @@ public class HomeUI extends JFrame {
 		});
 	}
 
-	public void setUser(User user) {
-		this.user = user;
-	}
 
 	public ProfileUI getProfile() {
 		return profile;

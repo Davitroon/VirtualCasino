@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import exceptions.MessageException;
 import model.Game;
+import model.User;
 
 public class GameDAO {
 
@@ -22,13 +23,13 @@ public class GameDAO {
 	 * @throws SQLException
 	 * @since 3.0
 	 */
-	public void addGame(Game game, int currentUser, Connection connection) {
+	public void addGame(Game game, User user, Connection connection) {
 		String query = "INSERT INTO games (game_type, money_pool, user_profile) VALUES (?, ?, ?);";
 
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			stmt.setString(1, game.getType());
 			stmt.setDouble(2, game.getMoney());
-			stmt.setInt(3, currentUser);
+			stmt.setInt(3, user.getId());
 
 			stmt.executeUpdate();
 
@@ -46,7 +47,7 @@ public class GameDAO {
 	 * @throws SQLException
 	 * @since 3.0
 	 */
-	public void updateGameMoney(Game game, Connection connection) {
+	public void updateGameBalance(Game game, Connection connection) {
 		String query = "UPDATE games SET money_pool = ? WHERE id = ?;";
 
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {

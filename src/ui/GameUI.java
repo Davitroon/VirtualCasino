@@ -19,9 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
+import controller.MainController;
 import controller.Validator;
-import dao.DBManagement;
+import dao.DatabaseManager;
 import model.Blackjack;
 import model.Slotmachine;
 import ui.GameUI;
@@ -55,7 +55,7 @@ public class GameUI extends JFrame {
 	 * @param validator  Reference to the validator for input checks.
 	 * @since 3.0
 	 */
-	public GameUI(ManagementUI management, Controller controller, DBManagement model, Validator validator) {
+	public GameUI(ManagementUI management, MainController controller, DatabaseManager model, Validator validator) {
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -7,9 +7,10 @@ import javax.swing.UIManager;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
-import dao.DBConnection;
-import dao.DBManagement;
+import dao.DataBaseConnector;
+import dao.DatabaseManager;
 import exceptions.MessageException;
+import model.Session;
 import ui.ConnectUI;
 import ui.HomeUI;
 import ui.ProfileUI;
@@ -25,13 +26,11 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		MessageException exceptionMessage = new MessageException();
-		DBConnection dbConnection;
-		DBManagement dbManagement = null;
-		Session session;
+		Session session = new Session();
+		DatabaseManager dbManager = null;
 
 		try {
-			dbConnection = new DBConnection(exceptionMessage);
-			dbManagement = new DBManagement(exceptionMessage, dbConnection, session);
+			dbManager = new DatabaseManager(exceptionMessage, session);
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
 		} catch (SQLSyntaxErrorException e) {
@@ -56,16 +55,9 @@ public class Launcher {
 			exceptionMessage.showError(e, "An unexpected error occurred.\nCheck the console for more information.");
 		}
 
-		Validator validator = new Validator();
-		Controller controller = new Controller(dbManagement, validator);
-		HomeUI mainMenu = new HomeUI(dbManagement, controller, validator);
-		Session session = new Session(mainMenu, null, controller, dbManagement);
-		ConnectUI connect = new ConnectUI(dbManagement, controller, session, validator, mainMenu);
-		ProfileUI profile = new ProfileUI(mainMenu, controller, dbManagement);
+		MainController controller = new MainController(dbManager);
+		
 
-		mainMenu.setProfile(profile);
-		mainMenu.setConnect(connect);
-		session.setConnect(connect);
-		session.checkStartup();
+		session.checkStartup(dbManager, controller);
 	}
 }

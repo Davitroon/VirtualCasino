@@ -5,9 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 
-import exceptions.MessageException;
-
-public class DBConnection {
+public class DataBaseConnector {
 
 	private static Connection connection;
 	private String database = "casino25";
@@ -23,7 +21,7 @@ public class DBConnection {
 	 * @throws ClassNotFoundException
 	 * @since 3.3
 	 */
-	public DBConnection(MessageException exceptionMessage) throws SQLException, ClassNotFoundException {
+	public DataBaseConnector() throws SQLException, ClassNotFoundException {
 		if (database == "") {
 			throw new SQLSyntaxErrorException();
 		}

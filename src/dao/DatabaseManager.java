@@ -4,30 +4,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Statement;
 
-import controller.Session;
 import exceptions.MailException;
 import exceptions.MessageException;
 import model.Blackjack;
 import model.Client;
 import model.Game;
+import model.Session;
 import model.Slotmachine;
 import model.User;
 
 /**
  * MVC Model class. Connects to the DB and manages information.
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
-public class DBManagement {
+public class DatabaseManager {
 
-	private DBConnection dbConnection;
+	private DataBaseConnector dbConnection;
 	private Session session;
 	private MessageException exceptionMessage;
 	private GameDAO gameDAO;
 	private ClientDAO clientDAO;
+	private UserDAO userDAO;
 
 	/**
 	 * Model constructor, where it makes the connection to the database.
@@ -37,33 +37,15 @@ public class DBManagement {
 	 * @throws ClassNotFoundException
 	 * @since 3.0
 	 */
-	public DBManagement(MessageException exceptionMessage, DBConnection dbConnection, Session session)
+	public DatabaseManager(MessageException exceptionMessage, Session session)
 			throws SQLException, ClassNotFoundException {
 		this.exceptionMessage = exceptionMessage;
-		this.dbConnection = dbConnection;
 		this.session = session;
+		dbConnection = new DataBaseConnector();
 		gameDAO = new GameDAO(exceptionMessage);
 		clientDAO = new ClientDAO(exceptionMessage);
+
 	}
-
-	/**
-	 * Updates the last access time for a user in the program.
-	 * 
-	 * @param name Username to update.
-	 */
-	public void updateLastAccess(String name) {
-		String query = "UPDATE users SET last_access = NOW() WHERE username = ?";
-
-		try (PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query)) {
-			stmt.setString(1, name);
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying a user.\nCheck the console for more information.");
-		}
-	}
-
 
 	/**
 	 * Inserts a new game session into the database.
@@ -86,7 +68,7 @@ public class DBManagement {
 			stmt.setInt(2, game.getId());
 			stmt.setString(3, game.getType());
 			stmt.setDouble(4, betResult);
-			stmt.setInt(5, session.getCurrentUser());
+			stmt.setInt(5, session.getCurrentUser().getId());
 
 			stmt.executeUpdate();
 			stmt.close();
@@ -94,93 +76,6 @@ public class DBManagement {
 		} catch (SQLException e) {
 			exceptionMessage.showError(e,
 					"An error occurred in the DB connection while inserting a game session.\nCheck the console for more information.");
-		}
-	}
-
-	/**
-	 * Method that adds a user to the DB.
-	 * 
-	 * @param user            User object to add.
-	 * @param rememberSession True if it has been indicated to save the login
-	 *                        session.
-	 * @return The User object with the generated ID.
-	 * @throws MailException                            Exception thrown if the
-	 *                                                  email is invalid.
-	 * @throws SQLIntegrityConstraintViolationException
-	 */
-	public User addUser(User user, boolean rememberSession)
-			throws MailException, SQLIntegrityConstraintViolationException {
-		String query = "INSERT INTO users (username, user_password, email) VALUES (?, ?, ?);";
-
-		try (PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query,
-				Statement.RETURN_GENERATED_KEYS)) {
-			stmt.setString(1, user.getName());
-			stmt.setString(2, user.getPassword());
-			stmt.setString(3, user.getEmail());
-
-			stmt.executeUpdate();
-
-			// Get the generated ID
-			int generatedId = -1;
-			try (ResultSet rs = stmt.getGeneratedKeys()) {
-				if (rs.next()) {
-					generatedId = rs.getInt(1);
-				}
-			}
-
-			ResultSet rset = queryUser(user.getName());
-
-			if (rememberSession) {
-				toggleRememberLogin(user.getName(), rememberSession);
-			}
-
-			user = new User(generatedId, rset.getString("username"), rset.getString("user_password"),
-					rset.getString("email"), rset.getString("last_access"), rememberSession);
-
-			return user;
-
-		} catch (SQLIntegrityConstraintViolationException e) {
-			throw new SQLIntegrityConstraintViolationException(
-					"The user " + user.getName() + " is already registered.");
-
-		} catch (SQLException e) {
-			if ("45000".equals(e.getSQLState())) {
-				throw new MailException("Invalid email domain");
-
-			} else {
-				exceptionMessage.showError(e,
-						"An error occurred in the DB connection while adding a user.\nCheck the console for more information.");
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Method that will toggle a user's automatic login.
-	 * 
-	 * @param name     Username to toggle.
-	 * @param activate True if the session has been marked to be remembered.
-	 */
-	public void toggleRememberLogin(String name, boolean activate) {
-		try {
-			// Remove the flag from all other users who have remember session checked
-			try (PreparedStatement stmt2 = dbConnection.getConnection()
-					.prepareStatement("UPDATE users SET remember_login = FALSE WHERE remember_login = TRUE")) {
-				stmt2.executeUpdate();
-			}
-
-			if (activate) {
-				// Set this user to remember session
-				try (PreparedStatement stmt3 = dbConnection.getConnection()
-						.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
-					stmt3.setString(1, name);
-					stmt3.executeUpdate();
-				}
-			}
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying a user.\nCheck the console for more information.");
 		}
 	}
 
@@ -220,7 +115,7 @@ public class DBManagement {
 
 		try {
 			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
-			stmt.setInt(1, session.getCurrentUser());
+			stmt.setInt(1, session.getCurrentUser().getId());
 			stmt.executeUpdate();
 			stmt.close();
 
@@ -274,7 +169,7 @@ public class DBManagement {
 
 		try {
 			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
-			stmt.setInt(1, session.getCurrentUser());
+			stmt.setInt(1, session.getCurrentUser().getId());
 			rset = stmt.executeQuery();
 
 		} catch (SQLException e) {
@@ -314,39 +209,6 @@ public class DBManagement {
 	}
 
 	/**
-	 * Queries a user from the database. The name and password must be exactly the
-	 * same.
-	 * 
-	 * @param name Username.
-	 * @return Result of the SQL query.
-	 */
-	public ResultSet queryUser(String name) {
-		String query = "SELECT * FROM users WHERE username = ?";
-		ResultSet rset;
-
-		try {
-			PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query);
-			stmt.setString(1, name);
-
-			rset = stmt.executeQuery();
-
-			// If a user with that password was found (Note: Original comment said
-			// 'password' but logic uses 'username')
-			if (rset.next()) {
-				return rset;
-			}
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while querying the users table.\nCheck the console for more information.");
-		}
-
-		return null;
-	}
-
-	
-
-	/**
 	 * Method to modify only a client's balance in the database.
 	 * 
 	 * @param client Client to modify.
@@ -371,18 +233,75 @@ public class DBManagement {
 	 * * Method that adds default users and games when creating a user.
 	 */
 	public void addDefaultUser() {
-			clientDAO.addClient(new Client("user", 32, 'O', 2000), session.getCurrentUser(), dbConnection.getConnection());	
-			gameDAO.addGame(new Blackjack(10000), session.getCurrentUser(), dbConnection.getConnection());
-			gameDAO.addGame(new Slotmachine(10000), session.getCurrentUser(), dbConnection.getConnection());
+		clientDAO.addClient(new Client("user", 32, 'O', 2000), session.getCurrentUser(), dbConnection.getConnection());
+		gameDAO.addGame(new Blackjack(10000), session.getCurrentUser(), dbConnection.getConnection());
+		gameDAO.addGame(new Slotmachine(10000), session.getCurrentUser(), dbConnection.getConnection());
 	}
 
-	public GameDAO getGameDAO() {
-		return gameDAO;
+	public void modifyClient(Client client) {
+		clientDAO.modifyClient(client, dbConnection.getConnection());
 	}
 
-	public ClientDAO getClientDAO() {
-		return clientDAO;
+	public void addClient(Client client) {
+		clientDAO.addClient(client, session.getCurrentUser(), dbConnection.getConnection());
 	}
-	
-	
+
+	public void closeConnection() {
+		dbConnection.closeConnection();
+	}
+
+	public void addGame(Game game) {
+		gameDAO.addGame(game, session.getCurrentUser(), dbConnection.getConnection());
+	}
+
+	public void updateGame(Game game) {
+		gameDAO.updateGame(game, dbConnection.getConnection());
+	}
+
+	public void updateGameBalance(Game game) {
+		gameDAO.updateGameBalance(game, dbConnection.getConnection());
+	}
+
+	public ResultSet checkRememberLogin() {
+		return userDAO.checkRememberLogin(dbConnection.getConnection());
+	}
+
+	public ResultSet queryUser(User user) {
+		return userDAO.queryUser(user, dbConnection.getConnection());
+	}
+
+	public User addUser(User user, boolean rememberSession)
+			throws SQLIntegrityConstraintViolationException, MailException {
+		try {
+			return userDAO.addUser(user, rememberSession, dbConnection.getConnection());
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+			throw new SQLIntegrityConstraintViolationException(
+					"The user " + user.getName() + " is already registered.");
+
+		} catch (MailException e) {
+			throw new MailException("Invalid email domain");
+		}
+	}
+
+	public void toggleRememberLogin(String name, boolean activate) {
+		userDAO.toggleRememberLogin(name, activate, dbConnection.getConnection());
+	}
+
+	public void updateLastAccess(String name) {
+		userDAO.updateLastAccess(name, dbConnection.getConnection());
+	}
+
+	public void deleteClient(int clientId) {
+		clientDAO.deleteClient(clientId, dbConnection.getConnection());
+	}
+
+	public void deleteUser(int userId) {
+		userDAO.deleteUser(userId, dbConnection.getConnection());
+	}
+
+	public ResultSet queryClients(boolean onlyActive) {
+		return clientDAO.queryClients(onlyActive, dbConnection.getConnection(), session.getCurrentUser().getId());
+	}
+
 }

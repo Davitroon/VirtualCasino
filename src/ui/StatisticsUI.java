@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
-import dao.DBManagement;
+import controller.MainController;
+import dao.DatabaseManager;
 import model.User;
 import ui.StatisticsUI;
 import ui.HomeUI;
@@ -45,7 +45,7 @@ public class StatisticsUI extends JFrame {
 	private JLabel lblMoneyWonVal;
 	private JButton btnDeleteStatistics;
 
-	private DBManagement model;
+	private DatabaseManager model;
 	private User user;
 	private JLabel lblUser;
 
@@ -55,9 +55,8 @@ public class StatisticsUI extends JFrame {
      * @param mainMenu The main menu window.
      * @param model The data model used to retrieve statistics.
      * @param controller The controller handling application logic.
-     * @param user The user whose statistics are displayed.
      */
-    public StatisticsUI(HomeUI mainMenu, DBManagement model, Controller controller, User user) {
+    public StatisticsUI(HomeUI mainMenu, DatabaseManager model, MainController controller) {
         this.model = model;
         this.user = user;
 

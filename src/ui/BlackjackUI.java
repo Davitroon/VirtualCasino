@@ -15,8 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
-import dao.DBManagement;
+import controller.MainController;
+import controller.ViewController;
+import dao.DatabaseManager;
 import exceptions.BetException;
 import exceptions.GameException;
 import model.Blackjack;
@@ -27,13 +28,15 @@ import ui.PlayUI;
 
 /**
  * Window where Blackjack will be played.
+ * @author Davitroon
+ * @since 3.0
  */
 public class BlackjackUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	private Controller controller;
+	private MainController controller;
 	private PlayUI play;
 	private JLabel lblDealerCardsList;
 	private JLabel lblYourCardsList;
@@ -50,6 +53,7 @@ public class BlackjackUI extends JFrame {
 	private boolean gameFinished;
 	private JButton btnBack;
 	private JButton btnInfo;
+	private ViewController viewController;
 
 	/**
 	 * Constructor for the Blackjack game window. Initializes UI components and
@@ -70,11 +74,12 @@ public class BlackjackUI extends JFrame {
 	 *                   session.
 	 * @since 3.0
 	 */
-	public BlackjackUI(Controller controller, DBManagement model, PlayUI play, Client client, Game game, double bet) {
+	public BlackjackUI(MainController controller, DatabaseManager model, Client client, Game game, double bet) {
+		viewController = controller.getViewController();
 		setResizable(false);
 
 		this.controller = controller;
-		this.play = play;
+		play = viewController.getPlayUI();
 		this.client = client;
 		this.blackjack = (Blackjack) game;
 		this.bet = bet;
@@ -215,21 +220,19 @@ public class BlackjackUI extends JFrame {
 	 * Method that calls the controller to show a warning message when attempting to
 	 * close the window.
 	 */
-	public void closeWindow() {
+	public void closeWindow() {		
 		if (!gameFinished) {
 			if (!controller.warnCloseGame(client, blackjack, bet)) {
 				return;
 			}
 		}
 
-		dispose();
-
 		try {
 			play.updateTables();
 			play.setVisible(true);
 
 		} catch (GameException e) {
-			controller.switchWindow(play, play.getMenu());
+			controller.getViewController().switchWindow(play, play);
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}

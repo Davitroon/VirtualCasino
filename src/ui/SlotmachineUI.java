@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import controller.Controller;
-import dao.DBManagement;
+import controller.MainController;
+import dao.DatabaseManager;
 import exceptions.BetException;
 import exceptions.GameException;
 import model.Client;
@@ -35,7 +35,7 @@ public class SlotmachineUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	private Controller controller;
+	private MainController controller;
 	private PlayUI playUI;
 	private JButton btnSpin;
 
@@ -65,7 +65,7 @@ public class SlotmachineUI extends JFrame {
 	 * @param bet        The amount of money the client is betting for this game.
 	 * @since 3.0
 	 */
-	public SlotmachineUI(Controller controller, DBManagement model, PlayUI playUI, Client client, Game game, double bet) {
+	public SlotmachineUI(MainController controller, DatabaseManager model, PlayUI playUI, Client client, Game game, double bet) {
 
 		this.controller = controller;
 		this.playUI = playUI;
