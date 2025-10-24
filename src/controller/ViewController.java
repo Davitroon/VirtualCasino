@@ -24,11 +24,12 @@ import ui.SlotmachineUI;
 import ui.StatsUI;
 
 /**
- * @author Davitroon
- * @since 3.3
- */
+ * @author Davitroon
+ * @since 3.3
+ */
 public class ViewController {
 
+	// ----------------------------- UI INSTANCES -----------------------------
 	private HomeUI homeUI;
 	private ConnectUI connectUI;
 	private ProfileUI profileUI;
@@ -61,9 +62,68 @@ public class ViewController {
 		gameUI = new GameUI(controller);
 	}
 
+	// -------------------------- WINDOW CONTROL METHODS --------------------------
+
+	/**
+	 * Method to display a JFrame window.
+	 * * @param window Window to open/show.
+	 */
 	public void openWindow(JFrame window) {
 		window.setVisible(true);
 	}
+
+	/**
+	 * Method to hide one window and show a new one.
+	 * 
+	 * @param currentWindow Window to close/hide
+	 * @param newWindow     Window to open/show
+	 * @since 3.0
+	 */
+	public void switchWindow(JFrame currentWindow, JFrame newWindow) {
+		currentWindow.setVisible(false);
+		newWindow.setVisible(true);
+
+	}
+
+	/**
+	 * Method to open a game window. Depending on the instance of the received game,
+	 * it will open a different type of window.
+	 * 
+	 * @param playWindow "Play" window from which this method should be called.
+	 * @param game       Game class to play.
+	 * @param client     Client who will play.
+	 * @param bet        Amount of the bet.
+	 * @since 3.0
+	 */
+	public void openGameWindow(PlayUI playWindow, Game game, Client client, double bet) {
+
+		if (game instanceof Blackjack) {
+			// Initialize the Blackjack UI with game data and start the game
+			blackjackUI.initializeData(client, (Blackjack) game, bet);
+			switchWindow(playWindow, blackjackUI);
+			blackjackUI.startGame();
+		}
+
+		if (game instanceof Slotmachine) {
+			// Initialize the Slotmachine UI with game data and start the game
+			slotmachineUI.initializeData(client, (Slotmachine) game, bet);
+			switchWindow(playWindow, slotmachineUI);
+			slotmachineUI.startGame();
+		}
+	}
+
+	// ---------------------------- DATA LOADING METHODS ----------------------------
+
+	/**
+	 * Loads the current user's data and updates the Profile UI.
+	 * * @since 3.3
+	 */
+	public void loadUserData() {
+		User user = controller.getCurrentUser();
+		profileUI.upateUserData(user);
+	}
+
+	// --------------------------------- GETTERS ----------------------------------
 
 	public HomeUI getHomeUI() {
 		return homeUI;
@@ -81,56 +141,8 @@ public class ViewController {
 		return playUI;
 	}
 
-	/**
-	 * 
-	 * @param userId
-	 * @since 3.3
-	 */
-	public void loadUserData() {
-		User user = controller.getCurrentUser();
-		profileUI.upateUserData(user);
-	}
-
-	/**
-	 * Method to hide one window and show a new one.
-	 * 
-	 * @param currentWindow Window to close/hide
-	 * @param newWindow     Window to open/show
-	 * @since 3.0
-	 */
-	public void switchWindow(JFrame currentWindow, JFrame newWindow) {
-		currentWindow.setVisible(false);
-		newWindow.setVisible(true);
-
-	}
-
 	public ManagementUI getManagementUI() {
 		return managementUI;
-	}
-
-	/**
-	 * Method to open a game window. Depending on the instance of the received game,
-	 * it will open a different type of window.
-	 * 
-	 * @param playWindow "Play" window from which this method should be called.
-	 * @param game       Game class to play.
-	 * @param client     Client who will play.
-	 * @param bet        Amount of the bet.
-	 * @since 3.0
-	 */
-	public void openGameWindow(PlayUI playWindow, Game game, Client client, double bet) {
-
-		if (game instanceof Blackjack) {
-			blackjackUI.initializeData(client, (Blackjack) game, bet);
-			switchWindow(playWindow, blackjackUI);
-			blackjackUI.startGame();
-		}
-
-		if (game instanceof Slotmachine) {
-			slotmachineUI.initializeData(client, (Slotmachine) game, bet);
-			switchWindow(playWindow, slotmachineUI);
-			slotmachineUI.startGame();
-		}
 	}
 
 	public StatsUI getStatsUI() {
@@ -157,10 +169,6 @@ public class ViewController {
 		return clientUI;
 	}
 
-	public MainController getController() {
-		return controller;
-	}
-
 	public ClientEditUI getClientEditUI() {
 		return clientEditUI;
 	}
@@ -173,10 +181,7 @@ public class ViewController {
 		return gameUI;
 	}
 	
-	
-	
-	
-	
-	
-	
+	public MainController getController() {
+		return controller;
+	}
 }

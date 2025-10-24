@@ -13,8 +13,9 @@ import model.Session;
 
 /**
  * Class responsible for instantiating the most important classes and executing
- * the program.
- * 
+ * the program's main entry point. It handles initial setup, including database
+ * connection and setting the application's Look and Feel (L&F).
+ *
  * @author David
  * @since 3.0
  */

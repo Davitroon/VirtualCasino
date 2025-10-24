@@ -12,9 +12,9 @@ import exceptions.ExceptionMessage;
 import model.User;
 
 /**
- * @author deivi Davitroon
- * @since 3.3
- */
+ * @author deivi Davitroon
+ * @since 3.3
+ */
 public class UserDAO {
 	private ExceptionMessage exceptionMessage;
 
@@ -22,70 +22,17 @@ public class UserDAO {
 		this.exceptionMessage = exceptionMessage;
 	}
 
-	/**
-	 * Executes a query to retrieve all users who have the "remember_login" flag
-	 * set. This method is intended for checking if any user should be automatically
-	 * logged in.
-	 *
-	 * @param connection Database connection to use for the query
-	 * @return ResultSet containing users with remember_login = 1
-	 * @since 3.0
-	 */
-	public ResultSet checkRememberLogin(Connection connection) {
-
-		ResultSet rset = null;
-		
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE remember_login = 1");) {
-			rset = stmt.executeQuery();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while performing a read operation.\nCheck the console for more information.");
-		}
-
-		return rset;
-	}
-
-	/**
-	 * Queries a user from the database. The name and password must be exactly the
-	 * same.
-	 * 
-	 * @param name Username.
-	 * @return Result of the SQL query.
-	 * @since 3.0
-	 */
-	public ResultSet queryUser(User user, Connection connection) {
-		String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-		ResultSet rset;
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setString(1, user.getName());
-			stmt.setString(2, user.getPassword());
-
-			rset = stmt.executeQuery();
-
-			// If a user with that password was found
-			if (rset.next()) {
-				return rset;
-			}
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while querying the users table.\nCheck the console for more information.");
-		}
-
-		return null;
-	}
+	// --------------------- CREATE ---------------------
 
 	/**
 	 * Method that adds a user to the DB.
-	 * 
-	 * @param user            User object to add.
+	 * 
+	 * @param user            User object to add.
 	 * @param rememberSession True if it has been indicated to save the login
-	 *                        session.
+	 *                        session.
 	 * @return The User object with the generated ID.
-	 * @throws MailException                            Exception thrown if the
-	 *                                                  email is invalid.
+	 * @throws MailException                            Exception thrown if the
+	 *                                                  email is invalid.
 	 * @throws SQLIntegrityConstraintViolationException
 	 * @since 3.0
 	 */
@@ -135,10 +82,69 @@ public class UserDAO {
 		return null;
 	}
 
+	// --------------------- READ ---------------------
+
+	/**
+	 * Executes a query to retrieve all users who have the "remember_login" flag
+	 * set. This method is intended for checking if any user should be automatically
+	 * logged in.
+	 *
+	 * @param connection Database connection to use for the query
+	 * @return ResultSet containing users with remember_login = 1
+	 * @since 3.0
+	 */
+	public ResultSet checkRememberLogin(Connection connection) {
+
+		ResultSet rset = null;
+		
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE remember_login = 1");) {
+			rset = stmt.executeQuery();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while performing a read operation.\nCheck the console for more information.");
+		}
+
+		return rset;
+	}
+
+	/**
+	 * Queries a user from the database. The name and password must be exactly the
+	 * same.
+	 * 
+	 * @param name Username.
+	 * @return Result of the SQL query.
+	 * @since 3.0
+	 */
+	public ResultSet queryUser(User user, Connection connection) {
+		String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+		ResultSet rset;
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setString(1, user.getName());
+			stmt.setString(2, user.getPassword());
+
+			rset = stmt.executeQuery();
+
+			// If a user with that password was found
+			if (rset.next()) {
+				return rset;
+			}
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while querying the users table.\nCheck the console for more information.");
+		}
+
+		return null;
+	}
+
+	// --------------------- UPDATE ---------------------
+
 	/**
 	 * Method that will toggle a user's automatic login.
-	 * 
-	 * @param name     Username to toggle.
+	 * 
+	 * @param name     Username to toggle.
 	 * @param activate True if the session has been marked to be remembered.
 	 * @since 3.0
 	 */
@@ -167,7 +173,7 @@ public class UserDAO {
 	
 	/**
 	 * Updates the last access time for a user in the program.
-	 * 
+	 * 
 	 * @param name Username to update.
 	 */
 	public void updateLastAccess(String name, Connection connection) {
@@ -182,9 +188,11 @@ public class UserDAO {
 					"An error occurred in the DB connection while modifying a user.\nCheck the console for more information.");
 		}
 	}
-	
+
+	// --------------------- DELETE ---------------------
+
 	/**
-	 * 
+	 * 
 	 * @param connection
 	 * @since 3.3
 	 */

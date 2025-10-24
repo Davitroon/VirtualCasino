@@ -16,10 +16,11 @@ public class ClientDAO {
 		this.exceptionMessage = exceptionMessage;
 	}
 
+	// --------------------- CREATE ---------------------
+
 	/**
 	 * Method to insert a client into the database.
-	 * 
-	 * @param client Client to add.
+	 * * @param client Client to add.
 	 * @since 3.0
 	 */
 	public void addClient(Client client, int userID, Connection connection) {
@@ -40,53 +41,31 @@ public class ClientDAO {
 		}
 	}
 
-	/**
-	 * Method to modify a client in the database.
-	 * 
-	 * @param client Client to modify.
-	 * @since 3.0
-	 */
-	public void modifyClient(Client client, Connection connection) {
-		String query = "UPDATE clients SET client_name = ?, age = ?, gender = ?, active_status = ?, balance = ? WHERE id = ?;";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setString(1, client.getName());
-			stmt.setInt(2, client.getAge());
-			stmt.setString(3, String.valueOf(client.getGender()));
-			stmt.setBoolean(4, client.isActive());
-			stmt.setDouble(5, client.getBalance());
-			stmt.setInt(6, client.getId());
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while udpating a client.\nCheck the console for more information.");
-		}
-	}
+	// --------------------- READ ---------------------
 
 	/**
-	 * 
-	 * @param clientId
+	 * * @param clientId
 	 * @param connection
+	 * @return
 	 * @since 3.3
 	 */
-	public void deleteClient(int clientId, Connection connection) {
-		String query = "DELETE FROM clients WHERE id = ?;";
+	public ResultSet queryClient(int clientId, Connection connection) {
+		ResultSet rset = null;
 
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clients WHERE client_id = ?")) {		
 			stmt.setInt(1, clientId);
-			stmt.executeUpdate();
+			rset = stmt.executeQuery();
 
 		} catch (SQLException e) {
 			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while deleting a client.\nCheck the console for more information.");
+					"An error occurred in the DB connection while querying the clients table. \nCheck the console for more information.");
 		}
+
+		return rset;
 	}
 
 	/**
-	 * 
-	 * @param onlyActive
+	 * * @param onlyActive
 	 * @param currentUser
 	 * @param connection
 	 * @return
@@ -112,32 +91,35 @@ public class ClientDAO {
 		return rset;
 	}
 
-	/**
-	 * 
-	 * @param clientId
-	 * @param connection
-	 * @return
-	 * @since 3.3
-	 */
-	public ResultSet queryClient(int clientId, Connection connection) {
-		ResultSet rset = null;
+	// --------------------- UPDATE ---------------------
 
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clients WHERE client_id = ?")) {		
-			stmt.setInt(1, clientId);
-			rset = stmt.executeQuery();
+	/**
+	 * Method to modify a client in the database.
+	 * * @param client Client to modify.
+	 * @since 3.0
+	 */
+	public void modifyClient(Client client, Connection connection) {
+		String query = "UPDATE clients SET client_name = ?, age = ?, gender = ?, active_status = ?, balance = ? WHERE id = ?;";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setString(1, client.getName());
+			stmt.setInt(2, client.getAge());
+			stmt.setString(3, String.valueOf(client.getGender()));
+			stmt.setBoolean(4, client.isActive());
+			stmt.setDouble(5, client.getBalance());
+			stmt.setInt(6, client.getId());
+
+			stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while querying the clients table. \nCheck the console for more information.");
+					"An error occurred in the DB connection while udpating a client.\nCheck the console for more information.");
 		}
-
-		return rset;
 	}
 
 	/**
 	 * Method to modify only a client's balance in the database.
-	 * 
-	 * @param client Client to modify.
+	 * * @param client Client to modify.
 	 * @since 3.0
 	 */
 	public void updateClientBalance(Client client, Connection connection) {
@@ -155,9 +137,28 @@ public class ClientDAO {
 		}
 	}
 
+	// --------------------- DELETE ---------------------
+
 	/**
-	 * 
-	 * @param userId
+	 * * @param clientId
+	 * @param connection
+	 * @since 3.3
+	 */
+	public void deleteClient(int clientId, Connection connection) {
+		String query = "DELETE FROM clients WHERE id = ?;";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setInt(1, clientId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while deleting a client.\nCheck the console for more information.");
+		}
+	}
+
+	/**
+	 * * @param userId
 	 * @param connection
 	 * @since 3.3
 	 */

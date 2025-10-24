@@ -39,28 +39,6 @@ public class DatabaseManager {
 
 	}
 
-	/**
-	 * Method to delete an entry from the database.
-	 * 
-	 * @param id    ID of the entry to delete.
-	 * @param table Table from which the entry will be deleted.
-	 * @since 3.0
-	 */
-	public void deleteData(int id, String table) {
-
-		String query = "DELETE FROM " + table + " WHERE id = ?;";
-
-		try (PreparedStatement stmt = dbConnection.getConnection().prepareStatement(query)) {
-			stmt.setInt(1, id);
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while deleting an entry from the table " + table
-							+ ".\nCheck the console for more information.");
-		}
-	}
-
 	public DataBaseConnector getDbConnection() {
 		return dbConnection;
 	}

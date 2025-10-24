@@ -16,9 +16,11 @@ public class GameDAO {
 		this.exceptionMessage = exceptionMessage;
 	}
 
+	// --------------------- CREATE ---------------------
+
 	/**
 	 * Method to insert a game into the database.
-	 * 
+	 * 
 	 * @param game Game to add.
 	 * @throws SQLException
 	 * @since 3.0
@@ -40,56 +42,10 @@ public class GameDAO {
 		}
 	}
 
-	/**
-	 * Method to modify a game's money pool in the database.
-	 * 
-	 * @param game Game to modify.
-	 * @throws SQLException
-	 * @since 3.0
-	 */
-	public void updateGameBalance(Game game, Connection connection) {
-		String query = "UPDATE games SET money_pool = ? WHERE id = ?;";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setDouble(1, game.getMoney());
-			stmt.setInt(2, game.getId());
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying a game's balance.\nCheck the console for more information.");
-
-		}
-	}
+	// --------------------- READ ---------------------
 
 	/**
-	 * Method to modify a game in the database.
-	 * 
-	 * @param game Game to modify.
-	 * @throws SQLException
-	 * @since 3.0
-	 */
-	public void updateGame(Game game, Connection connection) {
-		String query = "UPDATE games SET game_type = ?, active_status = ?, money_pool = ? WHERE id = ?;";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setString(1, game.getType());
-			stmt.setBoolean(2, game.isActive());
-			stmt.setDouble(3, game.getMoney());
-			stmt.setInt(4, game.getId());
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while updating a game.\nCheck the console for more information.");
-
-		}
-	}
-
-	/**
-	 * 
+	 * 
 	 * @param gameId
 	 * @param connection
 	 * @return
@@ -111,45 +67,7 @@ public class GameDAO {
 	}
 
 	/**
-	 * 
-	 * @param userId
-	 * @param connection
-	 * @since 3.3
-	 */
-	public void deleteGames(int userId, Connection connection) {
-		String query = "DELETE FROM games WHERE user_profile = ?";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setInt(1, userId);
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while deleting entries from the games table.\nCheck the console for more information.");
-		}
-	}
-	
-	/**
-	 * 
-	 * @param gameId
-	 * @param connection
-	 * @since 3.3
-	 */
-	public void deleteGame(int gameId, Connection connection) {
-		String query = "DELETE FROM games WHERE id = ?;";
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
-			stmt.setInt(1, gameId);
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while deleting a game.\nCheck the console for more information.");
-		}
-	}
-
-	/**
-	 * 
+	 * 
 	 * @param onlyActive
 	 * @param userId
 	 * @param connection
@@ -174,5 +92,95 @@ public class GameDAO {
 		}
 
 		return rset;
+	}
+	
+	// --------------------- UPDATE ---------------------
+
+	/**
+	 * Method to modify a game in the database.
+	 * 
+	 * @param game Game to modify.
+	 * @throws SQLException
+	 * @since 3.0
+	 */
+	public void updateGame(Game game, Connection connection) {
+		String query = "UPDATE games SET game_type = ?, active_status = ?, money_pool = ? WHERE id = ?;";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setString(1, game.getType());
+			stmt.setBoolean(2, game.isActive());
+			stmt.setDouble(3, game.getMoney());
+			stmt.setInt(4, game.getId());
+
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while updating a game.\nCheck the console for more information.");
+
+		}
+	}
+
+	/**
+	 * Method to modify a game's money pool in the database.
+	 * 
+	 * @param game Game to modify.
+	 * @throws SQLException
+	 * @since 3.0
+	 */
+	public void updateGameBalance(Game game, Connection connection) {
+		String query = "UPDATE games SET money_pool = ? WHERE id = ?;";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setDouble(1, game.getMoney());
+			stmt.setInt(2, game.getId());
+
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while modifying a game's balance.\nCheck the console for more information.");
+
+		}
+	}
+
+	// --------------------- DELETE ---------------------
+
+	/**
+	 * 
+	 * @param gameId
+	 * @param connection
+	 * @since 3.3
+	 */
+	public void deleteGame(int gameId, Connection connection) {
+		String query = "DELETE FROM games WHERE id = ?;";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setInt(1, gameId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while deleting a game.\nCheck the console for more information.");
+		}
+	}
+	
+	/**
+	 * 
+	 * @param userId
+	 * @param connection
+	 * @since 3.3
+	 */
+	public void deleteGames(int userId, Connection connection) {
+		String query = "DELETE FROM games WHERE user_profile = ?";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setInt(1, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while deleting entries from the games table.\nCheck the console for more information.");
+		}
 	}
 }
