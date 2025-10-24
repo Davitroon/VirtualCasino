@@ -20,12 +20,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
-import controller.Validator;
-import dao.DatabaseManager;
+import controller.ViewController;
 import model.Blackjack;
 import model.Slotmachine;
-import ui.GameUI;
-import ui.ManagementUI;
 
 /**
  * Window for the game form.
@@ -55,7 +52,10 @@ public class GameUI extends JFrame {
 	 * @param validator  Reference to the validator for input checks.
 	 * @since 3.0
 	 */
-	public GameUI(ManagementUI management, MainController controller, DatabaseManager model, Validator validator) {
+	public GameUI(MainController controller) {
+
+		ViewController viewController = controller.getViewController();
+		ManagementUI managementUI = viewController.getManagementUI();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -116,7 +116,7 @@ public class GameUI extends JFrame {
 				moneyValid = false;
 				String text = textMoney.getText();
 
-				if (validator.validateGameMoney(text, lblErrorMoney)) {
+				if (controller.getValidator().validateGameMoney(text, lblErrorMoney)) {
 					moneyValid = true;
 				}
 
@@ -128,7 +128,7 @@ public class GameUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				controller.switchWindow(GameUI.this, management);
+				viewController.switchWindow(GameUI.this, managementUI);
 			}
 		});
 
@@ -139,17 +139,15 @@ public class GameUI extends JFrame {
 				String type = String.valueOf(comboType.getSelectedItem());
 
 				if (type.equalsIgnoreCase("Blackjack")) {
-					Blackjack blackjack = new Blackjack(money);
-					model.addGame(blackjack);
+					controller.getDataBaseController().addGame(new Blackjack(money));
 				}
 
 				if (type.equalsIgnoreCase("SlotMachine")) {
-					Slotmachine slotMachine = new Slotmachine(money);
-					model.addGame(slotMachine);
+					controller.getDataBaseController().addGame(new Slotmachine(money));
 				}
 
 				clearFields();
-				controller.switchWindow(GameUI.this, management);
+				viewController.switchWindow(GameUI.this, managementUI);
 			}
 		});
 
@@ -158,7 +156,7 @@ public class GameUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				clearFields();
-				controller.switchWindow(GameUI.this, management);
+				viewController.switchWindow(GameUI.this, managementUI);
 			}
 		});
 	}

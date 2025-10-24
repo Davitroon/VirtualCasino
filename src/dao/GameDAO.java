@@ -2,17 +2,17 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import exceptions.MessageException;
+import exceptions.ExceptionMessage;
 import model.Game;
-import model.User;
 
 public class GameDAO {
 
-	private MessageException exceptionMessage;
+	private ExceptionMessage exceptionMessage;
 
-	public GameDAO(MessageException exceptionMessage) {
+	public GameDAO(ExceptionMessage exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
 
@@ -23,13 +23,13 @@ public class GameDAO {
 	 * @throws SQLException
 	 * @since 3.0
 	 */
-	public void addGame(Game game, User user, Connection connection) {
+	public void addGame(Game game, int userId, Connection connection) {
 		String query = "INSERT INTO games (game_type, money_pool, user_profile) VALUES (?, ?, ?);";
 
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			stmt.setString(1, game.getType());
 			stmt.setDouble(2, game.getMoney());
-			stmt.setInt(3, user.getId());
+			stmt.setInt(3, userId);
 
 			stmt.executeUpdate();
 
@@ -58,7 +58,7 @@ public class GameDAO {
 
 		} catch (SQLException e) {
 			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying the game's money pool.\nCheck the console for more information.");
+					"An error occurred in the DB connection while modifying a game's balance.\nCheck the console for more information.");
 
 		}
 	}
@@ -83,8 +83,96 @@ public class GameDAO {
 
 		} catch (SQLException e) {
 			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while modifying a game.\nCheck the console for more information.");
+					"An error occurred in the DB connection while updating a game.\nCheck the console for more information.");
 
 		}
+	}
+
+	/**
+	 * 
+	 * @param gameId
+	 * @param connection
+	 * @return
+	 * @since 3.3
+	 */
+	public ResultSet queryGame(int gameId, Connection connection) {
+		ResultSet rset = null;
+		
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM games WHERE game_id = ?")){			
+			stmt.setInt(1, gameId);
+			rset = stmt.executeQuery();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while querying the game table. \nCheck the console for more information.");
+		}
+
+		return rset;
+	}
+
+	/**
+	 * 
+	 * @param userId
+	 * @param connection
+	 * @since 3.3
+	 */
+	public void deleteGames(int userId, Connection connection) {
+		String query = "DELETE FROM games WHERE user_profile = ?";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setInt(1, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while deleting entries from the games table.\nCheck the console for more information.");
+		}
+	}
+	
+	/**
+	 * 
+	 * @param gameId
+	 * @param connection
+	 * @since 3.3
+	 */
+	public void deleteGame(int gameId, Connection connection) {
+		String query = "DELETE FROM games WHERE id = ?;";
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setInt(1, gameId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while deleting a game.\nCheck the console for more information.");
+		}
+	}
+
+	/**
+	 * 
+	 * @param onlyActive
+	 * @param userId
+	 * @param connection
+	 * @return
+	 * @since 3.3
+	 */
+	public ResultSet queryGames(boolean onlyActive, int userId, Connection connection) {
+		String query = "SELECT * FROM games WHERE user_profile = ?";
+		ResultSet rset = null;
+
+		if (onlyActive) {
+			query += " AND active_status = 1";
+		}
+
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			stmt.setInt(1, userId);
+			rset = stmt.executeQuery();
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while querying the games table .\nCheck the console for more information.");
+		}
+
+		return rset;
 	}
 }

@@ -17,14 +17,11 @@ import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
-import dao.DatabaseManager;
 import exceptions.BetException;
 import exceptions.GameException;
 import model.Blackjack;
 import model.Client;
 import model.Game;
-import ui.BlackjackUI;
-import ui.PlayUI;
 
 /**
  * Window where Blackjack will be played.
@@ -74,7 +71,7 @@ public class BlackjackUI extends JFrame {
 	 *                   session.
 	 * @since 3.0
 	 */
-	public BlackjackUI(MainController controller, DatabaseManager model, Client client, Game game, double bet) {
+	public BlackjackUI(MainController controller, Client client, Game game, double bet) {
 		viewController = controller.getViewController();
 		setResizable(false);
 
@@ -321,5 +318,11 @@ public class BlackjackUI extends JFrame {
 			endGame(true);
 		if (dealerHand == 21)
 			endGame(false);
+	}
+	
+	public void initializeData(Client client, Blackjack blackjack, double bet) {
+		this.client = client;
+		this.blackjack = blackjack;
+		this.bet = bet;
 	}
 }

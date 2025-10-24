@@ -23,12 +23,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
-import controller.Validator;
-import dao.DatabaseManager;
-import model.Session;
+import controller.ViewController;
 import model.User;
-import ui.ConnectUI;
-import ui.LogInUI;
 
 /**
  * Window where the user can log in.
@@ -60,7 +56,9 @@ public class LogInUI extends JFrame {
 	 * @param login      the ConnectUI window to return to
 	 * @since 3.0
 	 */
-	public LogInUI(DatabaseManager model, MainController controller, ConnectUI login) {
+	public LogInUI(MainController controller) {
+
+		ViewController viewController = controller.getViewController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -130,7 +128,7 @@ public class LogInUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetContent();
-				controller.switchWindow(LogInUI.this, login);
+				viewController.switchWindow(LogInUI.this, viewController.getLogInUI());
 			}
 		});
 
@@ -141,7 +139,7 @@ public class LogInUI extends JFrame {
 				usernameValid = false;
 				String text = textUsername.getText();
 
-				if (validator.validateName(text, lblUsernameError)) {
+				if (controller.getValidator().validateName(text, lblUsernameError)) {
 					usernameValid = true;
 				}
 
@@ -182,9 +180,11 @@ public class LogInUI extends JFrame {
 				char[] passwordChars = passwordField.getPassword();
 				String password = new String(passwordChars);
 
+				user = new User(textUsername.getText(), password);
+
 				// Check if the user exists
 				try {
-					ResultSet rset = (model.queryUser(textUsername.getText()));
+					ResultSet rset = (controller.getDataBaseController().queryUser(user));
 					if (rset != null) {
 						user = new User(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"),
 								rset.getString("email"), rset.getString("last_access"),
@@ -194,12 +194,15 @@ public class LogInUI extends JFrame {
 						if (!user.getPassword().equals(password)) {
 							JOptionPane.showMessageDialog(null, "Incorrect password", "Warning",
 									JOptionPane.WARNING_MESSAGE);
+
 						} else {
 							// If "remember login" is checked, update before logging in
 							if (chckbxRememberSession.isSelected()) {
-								model.toggleRememberLogin(user.getName(), true);
+								controller.getDataBaseController().toggleRememberLogin(user.getName(), true);
 							}
-							session.startSession(user, LogInUI.this);
+							
+							controller.updateUser(user);
+							viewController.switchWindow(LogInUI.this, viewController.getHomeUI());
 							resetContent();
 						}
 						rset.close();
@@ -220,7 +223,7 @@ public class LogInUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				resetContent();
-				controller.switchWindow(LogInUI.this, login);
+				viewController.switchWindow(LogInUI.this, viewController.getConnectUI());
 			}
 		});
 	}

@@ -17,18 +17,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.DataBaseController;
 import controller.MainController;
-import dao.DatabaseManager;
+import controller.ViewController;
 import model.User;
-import ui.StatisticsUI;
-import ui.HomeUI;
 
 /**
  * Window where game statistics are stored.
  * @author David
  * @since 3.0
  */
-public class StatisticsUI extends JFrame {
+public class StatsUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -45,20 +44,19 @@ public class StatisticsUI extends JFrame {
 	private JLabel lblMoneyWonVal;
 	private JButton btnDeleteStatistics;
 
-	private DatabaseManager model;
+	private DataBaseController dbController;
 	private User user;
 	private JLabel lblUser;
 
 	/**
      * Creates the frame.
      * 
-     * @param mainMenu The main menu window.
-     * @param model The data model used to retrieve statistics.
      * @param controller The controller handling application logic.
      */
-    public StatisticsUI(HomeUI mainMenu, DatabaseManager model, MainController controller) {
-        this.model = model;
-        this.user = user;
+    public StatsUI(MainController controller) {
+    	dbController = controller.getDataBaseController();
+        user = controller.getCurrentUser();
+        ViewController viewController = controller.getViewController();
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -196,14 +194,14 @@ public class StatisticsUI extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                controller.switchWindow(StatisticsUI.this, mainMenu);
+            	viewController.switchWindow(StatsUI.this, viewController.getHomeUI());
             }
         });
 
         // Click "Back" button
         btnBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                controller.switchWindow(StatisticsUI.this, mainMenu);
+            	viewController.switchWindow(StatsUI.this, viewController.getHomeUI());
             }
         });
 
@@ -215,7 +213,7 @@ public class StatisticsUI extends JFrame {
                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                 if (option == JOptionPane.YES_OPTION) {
-                    model.deleteTableData("game_sessions");
+                	dbController.deleteGameSessions();
                     updateData();
                 }
             }
@@ -231,7 +229,7 @@ public class StatisticsUI extends JFrame {
 		ResultSet rset = null;
 		try {
 
-			rset = model.queryTableData("game_sessions", false);
+			rset = dbController.queryGameSessions();
 			if (!rset.next()) {
 				btnDeleteStatistics.setEnabled(false);
 
@@ -240,38 +238,38 @@ public class StatisticsUI extends JFrame {
 			}
 
 			// Games played
-			rset = model.specificQuery("SELECT COUNT(*) FROM game_sessions WHERE user_profile = " + user.getId() + ";");
+			rset = dbController.specificQuery("SELECT COUNT(*) FROM game_sessions WHERE user_profile = " + user.getId() + ";");
 			rset.next();
 			lblGamesPlayedVal.setText(rset.getString(1));
 
 			// Games won (bet_result > 0)
-			rset = model.specificQuery(
+			rset = dbController.specificQuery(
 					"SELECT COUNT(*) FROM game_sessions WHERE bet_result > 0 AND user_profile = " + user.getId() + ";");
 			rset.next();
 			lblGamesWonVal.setText(rset.getString(1));
 
 			// Games lost (bet_result < 0)
-			rset = model.specificQuery(
+			rset = dbController.specificQuery(
 					"SELECT COUNT(*) FROM game_sessions WHERE bet_result < 0 AND user_profile = " + user.getId() + ";");
 			rset.next();
 			lblGamesLostVal.setText(rset.getString(1));
 
 			// Blackjack games
-			rset = model.specificQuery(
+			rset = dbController.specificQuery(
 					"SELECT COUNT(*) FROM game_sessions WHERE game_type = 'Blackjack' AND user_profile = "
 							+ user.getId() + ";");
 			rset.next();
 			lblBlackjackGamesVal.setText(rset.getString(1));
 
 			// Slot Machine games
-			rset = model.specificQuery(
+			rset = dbController.specificQuery(
 					"SELECT COUNT(*) FROM game_sessions WHERE game_type = 'SlotMachine' AND user_profile = "
 							+ user.getId() + ";");
 			rset.next();
 			lblSlotGamesVal.setText(rset.getString(1));
 
 			// Money won (sum of positive bet_result)
-			rset = model
+			rset = dbController
 					.specificQuery("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result > 0 AND user_profile = "
 							+ user.getId() + ";");
 			rset.next();
@@ -284,20 +282,22 @@ public class StatisticsUI extends JFrame {
 			lblMoneyWonVal.setText(String.format("%.2f$", moneyWon));
 
 			// Money lost (sum of negative bet_result)
-			rset = model
+			rset = dbController
 					.specificQuery("SELECT SUM(bet_result) FROM game_sessions WHERE bet_result < 0 AND user_profile = "
 							+ user.getId() + ";");
 			rset.next();
 			double moneyLost;
 			if (rset.wasNull()) {
 				moneyLost = 0.0;
+				
 			} else {
 				moneyLost = rset.getDouble(1);
 			}
+			
 			lblMoneyLostVal.setText(String.format("%.2f$", moneyLost));
 
 			// Client with highest balance
-			rset = model.specificQuery("SELECT customer_name, balance FROM customers WHERE user_profile = "
+			rset = dbController.specificQuery("SELECT customer_name, balance FROM customers WHERE user_profile = "
 					+ user.getId() + " ORDER BY balance DESC LIMIT 1;");
 			if (rset.next()) {
 				lblClientBalanceVal.setText(String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));
@@ -306,7 +306,7 @@ public class StatisticsUI extends JFrame {
 			}
 
 			// Game with highest money pool
-			rset = model.specificQuery("SELECT id, money_pool FROM games WHERE user_profile = " + user.getId()
+			rset = dbController.specificQuery("SELECT id, money_pool FROM games WHERE user_profile = " + user.getId()
 					+ " ORDER BY money_pool DESC LIMIT 1;");
 			if (rset.next()) {
 				lblGameMoneyVal.setText(String.format("Game %d (%.2f$)", rset.getInt(1), rset.getDouble(2)));
@@ -315,7 +315,7 @@ public class StatisticsUI extends JFrame {
 			}
 
 			// Last game played
-			rset = model.specificQuery("SELECT session_date FROM game_sessions WHERE user_profile = " + user.getId()
+			rset = dbController.specificQuery("SELECT session_date FROM game_sessions WHERE user_profile = " + user.getId()
 					+ " ORDER BY session_date DESC LIMIT 1;");
 			if (rset.next()) {
 				lblLastGameVal.setText(rset.getString(1));

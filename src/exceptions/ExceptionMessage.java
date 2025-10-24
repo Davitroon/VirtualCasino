@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
  * program. It is the first class to be instantiated in the program, so it can
  * be called before the model has been created.
  */
-public class MessageException {
+public class ExceptionMessage {
 
 	/**
 	 * Method to display an error message when an exception occurs.

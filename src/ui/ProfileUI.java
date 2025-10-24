@@ -19,7 +19,6 @@ import javax.swing.border.EmptyBorder;
 import controller.DataBaseController;
 import controller.MainController;
 import controller.ViewController;
-import dao.DatabaseManager;
 import model.User;
 
 /**
@@ -44,9 +43,8 @@ public class ProfileUI extends JFrame {
 	 *
 	 * @param controller The controller responsible for handling window changes and
 	 *                   user actions
-	 * @param model      The model used to access and update user data
 	 */
-	public ProfileUI(MainController controller, DatabaseManager model) {
+	public ProfileUI(MainController controller) {
 		
 		ViewController viewController = controller.getViewController();	
 		DataBaseController dbController = controller.getDataBaseController();	
@@ -150,7 +148,7 @@ public class ProfileUI extends JFrame {
 	 * @param user Current user.
 	 * @since 3.0
 	 */
-	public void displayUserData(User user) {
+	public void upateUserData(User user) {
 		lblUser.setText("Logged in as: " + user.getName());
 		lblEmail.setText("Associated email: " + user.getEmail());
 		lblLastAccess.setText("Last access: " + user.getLastAccess());

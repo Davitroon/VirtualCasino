@@ -14,16 +14,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
-import controller.Validator;
-import dao.DatabaseManager;
+import controller.ViewController;
 import exceptions.GameException;
-import model.User;
-import ui.ConnectUI;
-import ui.StatisticsUI;
-import ui.ManagementUI;
-import ui.PlayUI;
-import ui.HomeUI;
-import ui.ProfileUI;
 
 /**
  * Main menu window.
@@ -36,11 +28,10 @@ public class HomeUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	private ManagementUI management;
-	private PlayUI play;
-	private StatisticsUI statistics;
-	private ProfileUI profile;
-	private ConnectUI connectUI;
+	private ManagementUI managementUI;
+	private PlayUI playUI;
+	private StatsUI statsUI;
+	private ProfileUI profileUI;
 
 	private JButton btnStatistics;
 
@@ -48,9 +39,13 @@ public class HomeUI extends JFrame {
 	 * Creates the frame.
 	 * 
 	 * @param controller The controller handling interactions.
-	 * @param model      The data model.
 	 */
-	public HomeUI(MainController controller, DatabaseManager model) {
+	public HomeUI(MainController controller) {
+
+		ViewController viewController = controller.getViewController();
+		playUI = viewController.getPlayUI();
+		statsUI = viewController.getStatsUI();
+		managementUI = viewController.getManagementUI();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,11 +103,8 @@ public class HomeUI extends JFrame {
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (play == null) {
-						play = new PlayUI(HomeUI.this, model, controller);
-					}
-					play.updateTables();
-					controller.switchWindow(HomeUI.this, play);
+					playUI.updateTables();
+					viewController.switchWindow(HomeUI.this, playUI);
 
 				} catch (GameException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
@@ -123,38 +115,31 @@ public class HomeUI extends JFrame {
 		// Click management button
 		btnManagement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (management == null) {
-					management = new ManagementUI(HomeUI.this, model, controller);
-				}
-				controller.switchWindow(HomeUI.this, management);
+				viewController.switchWindow(HomeUI.this, managementUI);
 			}
 		});
 
 		// Click statistics button
 		btnStatistics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (statistics == null) {
-					statistics = new StatisticsUI(HomeUI.this, model, controller);
-				}
-				
-				statistics.updateData();
-				controller.switchWindow(HomeUI.this, statistics);
+
+				statsUI.updateData();
+				viewController.switchWindow(HomeUI.this, statsUI);
 			}
 		});
 
 		// Click profile button
 		btnProfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				profile.updateData(user);
-				controller.switchWindow(HomeUI.this, profile);
+				profileUI.upateUserData(controller.getCurrentUser());
+				viewController.switchWindow(HomeUI.this, profileUI);
 			}
 		});
 
 		// Click exit button
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.updateLastAccess(user.getName());
-				model.closeConnection();
+				controller.closeProgram();
 				System.exit(0);
 			}
 		});
@@ -181,22 +166,5 @@ public class HomeUI extends JFrame {
 				JOptionPane.showMessageDialog(null, message, "Application Guide", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-	}
-
-
-	public ProfileUI getProfile() {
-		return profile;
-	}
-
-	public void setProfile(ProfileUI profile) {
-		this.profile = profile;
-	}
-
-	public ConnectUI getConnectUI() {
-		return connectUI;
-	}
-
-	public void setConnect(ConnectUI connectUI) {
-		this.connectUI = connectUI;
 	}
 }

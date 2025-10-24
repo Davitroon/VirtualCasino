@@ -7,13 +7,9 @@ import javax.swing.UIManager;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
-import dao.DataBaseConnector;
 import dao.DatabaseManager;
-import exceptions.MessageException;
+import exceptions.ExceptionMessage;
 import model.Session;
-import ui.ConnectUI;
-import ui.HomeUI;
-import ui.ProfileUI;
 
 /**
  * Class responsible for instantiating the most important classes and executing
@@ -25,12 +21,12 @@ import ui.ProfileUI;
 public class Launcher {
 
 	public static void main(String[] args) {
-		MessageException exceptionMessage = new MessageException();
+		ExceptionMessage exceptionMessage = new ExceptionMessage();
 		Session session = new Session();
 		DatabaseManager dbManager = null;
 
 		try {
-			dbManager = new DatabaseManager(exceptionMessage, session);
+			dbManager = new DatabaseManager(exceptionMessage);
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
 		} catch (SQLSyntaxErrorException e) {
@@ -56,8 +52,7 @@ public class Launcher {
 		}
 
 		MainController controller = new MainController(dbManager);
-		
 
-		session.checkStartup(dbManager, controller);
+		session.checkStartup(controller.getDataBaseController(), controller);
 	}
 }

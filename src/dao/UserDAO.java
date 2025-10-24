@@ -8,7 +8,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 
 import exceptions.MailException;
-import exceptions.MessageException;
+import exceptions.ExceptionMessage;
 import model.User;
 
 /**
@@ -16,9 +16,9 @@ import model.User;
  * @since 3.3
  */
 public class UserDAO {
-	private MessageException exceptionMessage;
+	private ExceptionMessage exceptionMessage;
 
-	public UserDAO(MessageException exceptionMessage) {
+	public UserDAO(ExceptionMessage exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
 
@@ -34,9 +34,8 @@ public class UserDAO {
 	public ResultSet checkRememberLogin(Connection connection) {
 
 		ResultSet rset = null;
-		PreparedStatement stmt;
-		try {
-			stmt = connection.prepareStatement("SELECT * FROM users WHERE remember_login = 1");
+		
+		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE remember_login = 1");) {
 			rset = stmt.executeQuery();
 
 		} catch (SQLException e) {
@@ -59,8 +58,7 @@ public class UserDAO {
 		String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 		ResultSet rset;
 
-		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			stmt.setString(1, user.getName());
 			stmt.setString(2, user.getPassword());
 
@@ -193,12 +191,10 @@ public class UserDAO {
 	public void deleteUser(int userId, Connection connection) {
 		String query = "DELETE FROM customers WHERE id = ?;";
 
-		try {
-			PreparedStatement stmt = connection.prepareStatement(query);
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			stmt.setInt(1, userId);
 
 			stmt.executeUpdate();
-			stmt.close();
 
 		} catch (SQLException e) {
 			exceptionMessage.showError(e,

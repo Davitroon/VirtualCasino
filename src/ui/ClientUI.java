@@ -21,10 +21,8 @@ import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.Validator;
-import dao.DatabaseManager;
+import controller.ViewController;
 import model.Client;
-import ui.ClientUI;
-import ui.ManagementUI;
 
 /**
  * Window for the client form.
@@ -64,7 +62,10 @@ public class ClientUI extends JFrame {
 	 * @param validator  Reference to the validator that checks form inputs.
 	 * @since 3.0
 	 */
-	public ClientUI(ManagementUI management, MainController controller, DatabaseManager model, Validator validator) {
+	public ClientUI(MainController controller) {
+		
+		Validator validator = controller.getValidator();
+		ViewController viewController = controller.getViewController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -237,11 +238,10 @@ public class ClientUI extends JFrame {
 				char gender = getGender();
 				double balance = Double.parseDouble(textBalance.getText());
 
-				Client client = new Client(name, age, gender, balance);
-				model.addClient(client);
+				controller.getDataBaseController().addClient(new Client(name, age, gender, balance));
 
 				clearFields();
-				controller.switchWindow(ClientUI.this, management);
+				viewController.switchWindow(ClientUI.this, viewController.getManagementUI());
 			}
 		});
 
@@ -249,7 +249,7 @@ public class ClientUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				controller.switchWindow(ClientUI.this, management);
+				viewController.switchWindow(ClientUI.this, viewController.getManagementUI());
 			}
 		});
 
@@ -258,7 +258,7 @@ public class ClientUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				clearFields();
-				controller.switchWindow(ClientUI.this, management);
+				viewController.switchWindow(ClientUI.this, viewController.getManagementUI());
 			}
 		});
 	}

@@ -3,7 +3,6 @@ package controller;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -17,8 +16,6 @@ import model.Session;
 import model.Slotmachine;
 import model.User;
 import ui.BlackjackUI;
-import ui.PlayUI;
-import ui.SlotmachineUI;
 
 /**
  * MVC Controller class. Manages exchanges, validations, and logic.
@@ -28,7 +25,6 @@ import ui.SlotmachineUI;
  */
 public class MainController {
 
-	private DatabaseManager dbManager;
 	private Validator validator;
 	private ViewController viewController;
 	private Session session;
@@ -37,37 +33,9 @@ public class MainController {
 	private double lastBet;
 
 	public MainController(DatabaseManager dbManager) {
-		this.dbManager = dbManager;
 		validator = new Validator();
 		viewController = new ViewController(this, dbManager);
 		dbController = new DataBaseController(this, dbManager);
-	}
-
-	/**
-	 * Method to open a game window. Depending on the instance of the received game,
-	 * it will open a different type of window.
-	 * 
-	 * @param game       Game class to play.
-	 * @param playWindow "Play" window from which this method should be called.
-	 * @param client     Client who will play.
-	 * @param bet        Amount of the bet.
-	 * @since 3.0
-	 */
-	public void openGameWindow(Game game, PlayUI playWindow, Client client, double bet) {
-		if (game instanceof Blackjack) {
-			BlackjackUI blackjackWindow = new BlackjackUI(this, dbManager, client, game, bet);
-			viewController.switchWindow(playWindow, blackjackWindow);
-			blackjackWindow.startGame();
-		}
-
-		if (game instanceof Slotmachine) {
-			SlotmachineUI slotmachineWindow = new SlotmachineUI(this, dbManager, playWindow, client, game, bet); // Translated
-																													// //
-																													// from
-																													// 'tragaperrasVentana'
-			viewController.switchWindow(playWindow, slotmachineWindow);
-			slotmachineWindow.startGame();
-		}
 	}
 
 	/**
@@ -94,9 +62,9 @@ public class MainController {
 			game.setMoney(game.getMoney() - betResult);
 		}
 
-		dbManager.updateClientBalance(client);
-		dbManager.updateGameBalance(game);
-		dbManager.addGameSession(client, game, betResult);
+		dbController.updateClientBalance(client);
+		dbController.updateGameBalance(game);
+		dbController.addGameSession(client, game, betResult);
 	}
 
 	/**
@@ -397,7 +365,7 @@ public class MainController {
 	}
 
 	public void closeProgram() {
-		dbManager.closeConnection();
+		dbController.closeConnection();
 		System.exit(0);
 	}
 
@@ -416,5 +384,15 @@ public class MainController {
 	public User getCurrentUser() {
 		return session.getCurrentUser();
 	}
+
+	public Validator getValidator() {
+		return validator;
+	}
+	
+	public void updateUser(User user) {
+		session.setCurrentUser(user);
+	}
+	
+	
 
 }

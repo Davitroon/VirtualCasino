@@ -26,15 +26,12 @@ import javax.swing.table.DefaultTableModel;
 import controller.DataBaseController;
 import controller.MainController;
 import controller.ViewController;
-import dao.DatabaseManager;
 import exceptions.BetException;
 import exceptions.GameException;
 import model.Blackjack;
 import model.Client;
 import model.Game;
 import model.Slotmachine;
-import ui.PlayUI;
-import ui.HomeUI;
 
 /**
  * Window for starting games.
@@ -56,7 +53,7 @@ public class PlayUI extends JFrame {
 	private JButton btnPlay;
 	
 	private ViewController viewController;
-	DataBaseController dbController;
+	private DataBaseController dbController;
 
 	/**
 	 * Creates the frame.
@@ -197,7 +194,7 @@ public class PlayUI extends JFrame {
 					double bet = controller.promptBet(client, game);
 
 					if (bet != 0) {
-						controller.openGameWindow(game, PlayUI.this, client, bet);
+						viewController.openGameWindow(PlayUI.this, game, client, bet);
 						btnPlay.setEnabled(false);
 					}
 
@@ -233,7 +230,7 @@ public class PlayUI extends JFrame {
 	public void updateTables() throws GameException {
 
 		ResultSet clientsResult = dbController.queryClients(true);
-		ResultSet gamesResult = model.queryTableData("games", true);
+		ResultSet gamesResult = dbController.queryGames(true);
 		boolean hasData = false;
 
 		modelClients.setRowCount(0);

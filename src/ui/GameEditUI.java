@@ -23,12 +23,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
-import controller.Validator;
-import dao.DatabaseManager;
+import controller.ViewController;
 import model.Blackjack;
 import model.Slotmachine;
-import ui.GameUpdateUI;
-import ui.ManagementUI;
 
 /**
  * Window for the game edit form.
@@ -36,7 +33,7 @@ import ui.ManagementUI;
  * @author David
  * @since 3.0
  */
-public class GameUpdateUI extends JFrame {
+public class GameEditUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -45,13 +42,13 @@ public class GameUpdateUI extends JFrame {
 	private boolean moneyValid;
 	private JButton btnUpdate;
 
-	private DatabaseManager model;
-
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
 	private JTextField textId;
 	private JLabel lblId;
 	private JCheckBox chckbxActive;
+	
+	private MainController controller;
 
 	/**
 	 * Create the frame.
@@ -62,9 +59,11 @@ public class GameUpdateUI extends JFrame {
 	 * @param validator  Reference to the validator for input checks.
 	 * @since 3.0
 	 */
-	public GameUpdateUI(ManagementUI management, MainController controller, DatabaseManager model, Validator validator) {
+	public GameEditUI(MainController controller) {
 
-		this.model = model;
+		this.controller = controller;
+		ViewController viewController = controller.getViewController();
+		ManagementUI managementUI = viewController.getManagementUI();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -141,7 +140,7 @@ public class GameUpdateUI extends JFrame {
 				moneyValid = false;
 				String text = textMoney.getText();
 
-				if (validator.validateGameMoney(text, lblErrorMoney)) {
+				if (controller.getValidator().validateGameMoney(text, lblErrorMoney)) {
 					moneyValid = true;
 				}
 
@@ -153,7 +152,7 @@ public class GameUpdateUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				controller.switchWindow(GameUpdateUI.this, management);
+				viewController.switchWindow(GameEditUI.this, managementUI);
 			}
 		});
 
@@ -166,15 +165,15 @@ public class GameUpdateUI extends JFrame {
 				Double money = Double.parseDouble(textMoney.getText());
 
 				if (type.equalsIgnoreCase("Blackjack")) {
-					model.updateGame(new Blackjack(id, type, active, money));
+					controller.getDataBaseController().updateGame(new Blackjack(id, type, active, money));
 				}
 
 				if (type.equalsIgnoreCase("SlotMachine")) {
-					model.updateGame(new Slotmachine(id, type, active, money));
+					controller.getDataBaseController().updateGame(new Slotmachine(id, type, active, money));
 				}
 
 				clearFields();
-				controller.switchWindow(GameUpdateUI.this, management);
+				viewController.switchWindow(GameEditUI.this, managementUI);
 			}
 		});
 
@@ -183,7 +182,7 @@ public class GameUpdateUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				clearFields();
-				controller.switchWindow(GameUpdateUI.this, management);
+				viewController.switchWindow(GameEditUI.this, managementUI);
 			}
 		});
 	}
@@ -194,11 +193,11 @@ public class GameUpdateUI extends JFrame {
 	 * @param id Id of the game to retrieve its data
 	 * @since 3.0
 	 */
-	public void loadOriginalGame(int id) {
-		ResultSet rset = model.querySingleData("games", id);
+	public void loadOriginalGame(int gameId) {
+		ResultSet rset = controller.getDataBaseController().queryGame(gameId);
 
 		try {
-			textId.setText(String.valueOf(id));
+			textId.setText(String.valueOf(gameId));
 
 			switch (rset.getString(2)) {
 			case "Blackjack":

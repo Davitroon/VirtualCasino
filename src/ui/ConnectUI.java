@@ -13,10 +13,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
-import controller.Validator;
 import controller.ViewController;
-import dao.DatabaseManager;
-import model.Session;
 
 /**
  * Window where the user can log in with a profile from the database. This will
@@ -29,20 +26,18 @@ public class ConnectUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
-	private LogInUI logIn;
-	private SignInUI createUser;
 	private HomeUI menu;
 
 	/**
 	 * Create the frame.
 	 * 
 	 * @param controller Reference to the controller handling program logic.
-	 * @param dbManager      Reference to the dbManager that manages data operations.
+	 * @param dbManager  Reference to the dbManager that manages data operations.
 	 * @since 3.0
 	 */
-	public ConnectUI(MainController controller, DatabaseManager dbManager) {
-		this.menu = menu;
+	public ConnectUI(MainController controller) {
+
+		ViewController viewController = controller.getViewController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,22 +89,14 @@ public class ConnectUI extends JFrame {
 		// Click "Create User" button
 		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (createUser == null) {
-					createUser = new SignInUI(dbManager, controller, ConnectUI.this);
-				}
-				setVisible(false);
-				createUser.setVisible(true);
+				viewController.switchWindow(ConnectUI.this, viewController.getSignInUI());
 			}
 		});
 
 		// Click "Log In" button
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (logIn == null) {
-					logIn = new LogInUI(dbManager, controller, ConnectUI.this);
-				}
-				setVisible(false);
-				logIn.setVisible(true);
+				viewController.switchWindow(ConnectUI.this, viewController.getLogInUI());
 			}
 		});
 	}

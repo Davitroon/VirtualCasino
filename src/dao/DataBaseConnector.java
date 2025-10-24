@@ -32,6 +32,7 @@ public class DataBaseConnector {
 	
 	/**
 	 * Method to close the connection to the DB.
+	 * @since 3.3
 	 */
 	public void closeConnection() {
 		try {

@@ -3,13 +3,9 @@ package model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.JFrame;
-
+import controller.DataBaseController;
 import controller.MainController;
 import controller.ViewController;
-import dao.DatabaseManager;
-import ui.ConnectUI;
-import ui.HomeUI;
 
 /**
  * Class that handles user login sessions.
@@ -21,9 +17,10 @@ private User currentUser;
 	/**
 	 * Checks if any user has been flagged to remember the login session. If so, it
 	 * will take them to the menu with their session activated.
+	 * @since 3.0
 	 */
-	public void checkStartup(DatabaseManager dbManager, MainController controller) {
-		ResultSet rset = dbManager.checkRememberLogin();
+	public void checkStartup(DataBaseController dbController, MainController controller) {
+		ResultSet rset = dbController.checkRememberLogin();
 		ViewController viewManager = controller.getViewController();
 
 		try {
@@ -31,7 +28,7 @@ private User currentUser;
 				currentUser = new User(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"),
 						rset.getString("email"), rset.getString("last_access"), true);
 
-				viewManager.openWindow(viewManager.getMainMenuUI());
+				viewManager.openWindow(viewManager.getHomeUI());
 
 			} else {
 				viewManager.openWindow(viewManager.getConnectUI());
@@ -45,5 +42,11 @@ private User currentUser;
 	public User getCurrentUser() {
 		return currentUser;
 	}
+
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
+	}
+	
+	
 
 }

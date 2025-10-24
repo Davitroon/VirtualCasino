@@ -3,32 +3,64 @@ package controller;
 import javax.swing.JFrame;
 
 import dao.DatabaseManager;
+import model.Blackjack;
+import model.Client;
+import model.Game;
+import model.Slotmachine;
 import model.User;
+import ui.BlackjackUI;
+import ui.ClientEditUI;
+import ui.ClientUI;
 import ui.ConnectUI;
+import ui.GameEditUI;
+import ui.GameUI;
 import ui.HomeUI;
+import ui.LogInUI;
+import ui.ManagementUI;
 import ui.PlayUI;
 import ui.ProfileUI;
+import ui.SignInUI;
+import ui.SlotmachineUI;
+import ui.StatsUI;
 
 /**
  * @author Davitroon
  * @since 3.3
  */
 public class ViewController {
-	
+
 	private HomeUI homeUI;
 	private ConnectUI connectUI;
 	private ProfileUI profileUI;
 	private MainController controller;
 	private PlayUI playUI;
-	
+	private ManagementUI managementUI;
+	private BlackjackUI blackjackUI;
+	private SlotmachineUI slotmachineUI;
+	private StatsUI statsUI;
+	private LogInUI logInUI;	
+	private SignInUI SignInUI;
+	private ClientUI clientUI;
+	private ClientEditUI clientEditUI;
+	private GameEditUI gameEditUI;
+	private GameUI gameUI;
+
 	public ViewController(MainController controller, DatabaseManager dbManager) {
 		this.controller = controller;
-		homeUI = new HomeUI(controller, dbManager);
-		connectUI = new ConnectUI(controller, dbManager);
-		profileUI = new ProfileUI(controller, dbManager);
+		homeUI = new HomeUI(controller);
+		connectUI = new ConnectUI(controller);
+		profileUI = new ProfileUI(controller);
 		playUI = new PlayUI(controller);
+		managementUI = new ManagementUI(controller);
+		statsUI = new StatsUI(controller);
+		logInUI = new LogInUI(controller);
+		SignInUI = new SignInUI(controller);
+		clientUI = new ClientUI(controller);
+		clientEditUI = new ClientEditUI(controller);
+		gameEditUI = new GameEditUI(controller);
+		gameUI = new GameUI(controller);
 	}
-	
+
 	public void openWindow(JFrame window) {
 		window.setVisible(true);
 	}
@@ -44,21 +76,21 @@ public class ViewController {
 	public ProfileUI getProfileUI() {
 		return profileUI;
 	}
-	
+
 	public PlayUI getPlayUI() {
 		return playUI;
 	}
-	
+
 	/**
 	 * 
 	 * @param userId
 	 * @since 3.3
 	 */
-	public void loadUserData(int userId) {
-	    User user = controller.getCurrentUser();
-	    profileUI.displayUserData(user);
+	public void loadUserData() {
+		User user = controller.getCurrentUser();
+		profileUI.upateUserData(user);
 	}
-	
+
 	/**
 	 * Method to hide one window and show a new one.
 	 * 
@@ -71,6 +103,80 @@ public class ViewController {
 		newWindow.setVisible(true);
 
 	}
+
+	public ManagementUI getManagementUI() {
+		return managementUI;
+	}
+
+	/**
+	 * Method to open a game window. Depending on the instance of the received game,
+	 * it will open a different type of window.
+	 * 
+	 * @param playWindow "Play" window from which this method should be called.
+	 * @param game       Game class to play.
+	 * @param client     Client who will play.
+	 * @param bet        Amount of the bet.
+	 * @since 3.0
+	 */
+	public void openGameWindow(PlayUI playWindow, Game game, Client client, double bet) {
+
+		if (game instanceof Blackjack) {
+			blackjackUI.initializeData(client, (Blackjack) game, bet);
+			switchWindow(playWindow, blackjackUI);
+			blackjackUI.startGame();
+		}
+
+		if (game instanceof Slotmachine) {
+			slotmachineUI.initializeData(client, (Slotmachine) game, bet);
+			switchWindow(playWindow, slotmachineUI);
+			slotmachineUI.startGame();
+		}
+	}
+
+	public StatsUI getStatsUI() {
+		return statsUI;
+	}
+
+	public LogInUI getLogInUI() {
+		return logInUI;
+	}
+
+	public SignInUI getSignInUI() {
+		return SignInUI;
+	}
+
+	public BlackjackUI getBlackjackUI() {
+		return blackjackUI;
+	}
+
+	public SlotmachineUI getSlotmachineUI() {
+		return slotmachineUI;
+	}
+
+	public ClientUI getClientUI() {
+		return clientUI;
+	}
+
+	public MainController getController() {
+		return controller;
+	}
+
+	public ClientEditUI getClientEditUI() {
+		return clientEditUI;
+	}
+
+	public GameEditUI getGameEditUI() {
+		return gameEditUI;
+	}
+
+	public GameUI getGameUI() {
+		return gameUI;
+	}
+	
+	
+	
+	
+	
 	
 	
 }
