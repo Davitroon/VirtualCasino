@@ -12,9 +12,8 @@ import exceptions.ExceptionMessage;
 import model.User;
 
 /**
- * @author deivi Davitroon
- * @since 3.3
- */
+ *  * @author deivi Davitroon  * @since 3.3  
+ */
 public class UserDAO {
 	private ExceptionMessage exceptionMessage;
 
@@ -25,14 +24,17 @@ public class UserDAO {
 	// --------------------- CREATE ---------------------
 
 	/**
-	 * Method that adds a user to the DB.
-	 * 
-	 * @param user            User object to add.
-	 * @param rememberSession True if it has been indicated to save the login
-	 *                        session.
+	 * Method that adds a user to the DB.  
+	 * 
+	 * @param user                      User object to add.
+	 * @param rememberSession True if it has been indicated to save the login      
+	 *                                          session.
 	 * @return The User object with the generated ID.
-	 * @throws MailException                            Exception thrown if the
-	 *                                                  email is invalid.
+	 * @throws MailException                                                     
+	 *                                                  Exception thrown if the    
+	 *                                                                             
+	 *                                                                    email is
+	 *                                                  invalid.
 	 * @throws SQLIntegrityConstraintViolationException
 	 * @since 3.0
 	 */
@@ -96,8 +98,9 @@ public class UserDAO {
 	public ResultSet checkRememberLogin(Connection connection) {
 
 		ResultSet rset = null;
-		
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE remember_login = 1");) {
+
+		try {
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE remember_login = 1");
 			rset = stmt.executeQuery();
 
 		} catch (SQLException e) {
@@ -110,8 +113,8 @@ public class UserDAO {
 
 	/**
 	 * Queries a user from the database. The name and password must be exactly the
-	 * same.
-	 * 
+	 * same.  
+	 * 
 	 * @param name Username.
 	 * @return Result of the SQL query.
 	 * @since 3.0
@@ -142,9 +145,9 @@ public class UserDAO {
 	// --------------------- UPDATE ---------------------
 
 	/**
-	 * Method that will toggle a user's automatic login.
-	 * 
-	 * @param name     Username to toggle.
+	 * Method that will toggle a user's automatic login.  
+	 * 
+	 * @param name        Username to toggle.
 	 * @param activate True if the session has been marked to be remembered.
 	 * @since 3.0
 	 */
@@ -170,10 +173,10 @@ public class UserDAO {
 					"An error occurred in the DB connection while modifying a user.\nCheck the console for more information.");
 		}
 	}
-	
+
 	/**
-	 * Updates the last access time for a user in the program.
-	 * 
+	 * Updates the last access time for a user in the program.  
+	 * 
 	 * @param name Username to update.
 	 */
 	public void updateLastAccess(String name, Connection connection) {
@@ -192,7 +195,8 @@ public class UserDAO {
 	// --------------------- DELETE ---------------------
 
 	/**
-	 * 
+	 *  
+	 * 
 	 * @param connection
 	 * @since 3.3
 	 */
