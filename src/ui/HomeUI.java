@@ -32,8 +32,9 @@ public class HomeUI extends JFrame {
 	private PlayUI playUI;
 	private StatsUI statsUI;
 	private ProfileUI profileUI;
-
 	private JButton btnStatistics;
+	
+	private ViewController viewController;
 
 	/**
 	 * Creates the frame.
@@ -42,10 +43,7 @@ public class HomeUI extends JFrame {
 	 */
 	public HomeUI(MainController controller) {
 
-		ViewController viewController = controller.getViewController();
-		playUI = viewController.getPlayUI();
-		statsUI = viewController.getStatsUI();
-		managementUI = viewController.getManagementUI();
+		viewController = controller.getViewController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -123,16 +121,19 @@ public class HomeUI extends JFrame {
 		btnStatistics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				statsUI.updateData();
-				viewController.switchWindow(HomeUI.this, statsUI);
+				StatsUI tempStatsUI = HomeUI.this.getStatsUI();
+				tempStatsUI.updateUser(controller);
+				tempStatsUI.updateData();
+				viewController.switchWindow(HomeUI.this, tempStatsUI);
 			}
 		});
 
 		// Click profile button
 		btnProfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				profileUI.upateUserData(controller.getCurrentUser());
-				viewController.switchWindow(HomeUI.this, profileUI);
+				ProfileUI tempProfileUI = HomeUI.this.getProfileUI();
+				tempProfileUI.upateUserData(controller.getCurrentUser());
+				viewController.switchWindow(HomeUI.this, tempProfileUI);
 			}
 		});
 
@@ -167,4 +168,25 @@ public class HomeUI extends JFrame {
 			}
 		});
 	}
+	
+	public void initializeClassesUI() {
+		playUI = viewController.getPlayUI();
+		profileUI = viewController.getProfileUI();
+		statsUI = viewController.getStatsUI();
+		managementUI = viewController.getManagementUI();
+	}
+
+	public PlayUI getPlayUI() {
+		return playUI;
+	}
+
+	public StatsUI getStatsUI() {
+		return statsUI;
+	}
+
+	public ProfileUI getProfileUI() {
+		return profileUI;
+	}
+	
+	
 }

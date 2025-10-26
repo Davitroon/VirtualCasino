@@ -123,7 +123,8 @@ public class UserDAO {
 		String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 		ResultSet rset;
 
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+		try {
+			PreparedStatement stmt = connection.prepareStatement(query);
 			stmt.setString(1, user.getName());
 			stmt.setString(2, user.getPassword());
 

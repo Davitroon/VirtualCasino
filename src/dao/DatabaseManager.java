@@ -75,7 +75,8 @@ public class DatabaseManager {
 
 		ResultSet rset = null;
 
-		try (PreparedStatement stmt = connection.prepareStatement(specificQuery)) {
+		try {
+			PreparedStatement stmt = connection.prepareStatement(specificQuery);
 			rset = stmt.executeQuery();
 
 		} catch (SQLException e) {

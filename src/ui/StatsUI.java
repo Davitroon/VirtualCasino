@@ -55,7 +55,6 @@ public class StatsUI extends JFrame {
      */
     public StatsUI(MainController controller) {
     	dbController = controller.getDataBaseController();
-        user = controller.getCurrentUser();
         ViewController viewController = controller.getViewController();
 
         setResizable(false);
@@ -329,8 +328,8 @@ public class StatsUI extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
-	public void setUser(User user) {
-		this.user = user;
+	
+	public void updateUser(MainController controller) {
+		 user = controller.getCurrentUser();
 	}
 }

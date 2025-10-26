@@ -65,7 +65,8 @@ public class GameSessionDAO {
 		String query = "SELECT * FROM game_sessions WHERE user_profile = ?";
 		ResultSet rset = null;
 
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+		try {
+			PreparedStatement stmt = connection.prepareStatement(query);
 			stmt.setInt(1, userId);
 			rset = stmt.executeQuery();
 

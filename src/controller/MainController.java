@@ -52,9 +52,10 @@ public class MainController {
 	 */
 	public void initializeClasses(DatabaseManager dbManager) {
 		validator = new Validator();
+		dbController = new DataBaseController(this, dbManager);
 		viewController = new ViewController();
 		viewController.initializeClasses(this, dbManager);
-		dbController = new DataBaseController(this, dbManager);
+		
 	}
 
 	// ---------------------- DATABASE / DATA ACCESS METHODS ----------------------

@@ -60,6 +60,8 @@ public class ViewController {
 		clientEditUI = new ClientEditUI(controller);
 		gameEditUI = new GameEditUI(controller);
 		gameUI = new GameUI(controller);
+		
+		homeUI.initializeClassesUI();
 	}
 
 	// -------------------------- WINDOW CONTROL METHODS --------------------------

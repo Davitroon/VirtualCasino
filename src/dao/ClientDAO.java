@@ -52,7 +52,8 @@ public class ClientDAO {
 	public ResultSet queryClient(int clientId, Connection connection) {
 		ResultSet rset = null;
 
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clients WHERE client_id = ?")) {		
+		try {		
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clients WHERE client_id = ?");
 			stmt.setInt(1, clientId);
 			rset = stmt.executeQuery();
 
@@ -79,7 +80,8 @@ public class ClientDAO {
 			query += " AND active_status = 1";
 		}
 
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+		try {
+			PreparedStatement stmt = connection.prepareStatement(query);
 			stmt.setInt(1, currentUser);
 			rset = stmt.executeQuery();
 

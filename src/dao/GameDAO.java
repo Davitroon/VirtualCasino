@@ -54,7 +54,8 @@ public class GameDAO {
 	public ResultSet queryGame(int gameId, Connection connection) {
 		ResultSet rset = null;
 		
-		try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM games WHERE game_id = ?")){			
+		try {	
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM games WHERE game_id = ?");
 			stmt.setInt(1, gameId);
 			rset = stmt.executeQuery();
 
@@ -82,7 +83,8 @@ public class GameDAO {
 			query += " AND active_status = 1";
 		}
 
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+		try {
+			PreparedStatement stmt = connection.prepareStatement(query);
 			stmt.setInt(1, userId);
 			rset = stmt.executeQuery();
 
