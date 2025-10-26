@@ -144,7 +144,7 @@ public class Validator {
 			errorMessage.setText("Amount too large (" + MAX_MONEY + " max.)");
 			return false;
 		}
-
+ 
 		errorMessage.setText("");
 		return true;
 	}

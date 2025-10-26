@@ -21,6 +21,12 @@ public class DatabaseManager {
 	private ClientDAO clientDAO;
 	private UserDAO userDAO;
 	private GameSessionDAO gameSessionDAO;
+	
+	
+
+	public DatabaseManager(ExceptionMessage exceptionMessage) {
+		this.exceptionMessage = exceptionMessage;
+	}
 
 	/**
 	 * Model constructor, where it makes the connection to the database.
@@ -30,13 +36,12 @@ public class DatabaseManager {
 	 * @throws ClassNotFoundException
 	 * @since 3.0
 	 */
-	public DatabaseManager(ExceptionMessage exceptionMessage) throws SQLException, ClassNotFoundException {
-		this.exceptionMessage = exceptionMessage;
+	public void initializeClasses() throws SQLException, ClassNotFoundException {
 		dbConnection = new DataBaseConnector();
 		gameDAO = new GameDAO(exceptionMessage);
 		clientDAO = new ClientDAO(exceptionMessage);
 		gameSessionDAO = new GameSessionDAO(exceptionMessage);
-
+		userDAO = new UserDAO(exceptionMessage);
 	}
 
 	public DataBaseConnector getDbConnection() {

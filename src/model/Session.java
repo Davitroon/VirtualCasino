@@ -12,11 +12,12 @@ import controller.ViewController;
  */
 public class Session {
 
-private User currentUser;
+	private User currentUser;
 
 	/**
 	 * Checks if any user has been flagged to remember the login session. If so, it
 	 * will take them to the menu with their session activated.
+	 * 
 	 * @since 3.0
 	 */
 	public void checkStartup(DataBaseController dbController, MainController controller) {
@@ -29,13 +30,15 @@ private User currentUser;
 						rset.getString("email"), rset.getString("last_access"), true);
 
 				viewManager.openWindow(viewManager.getHomeUI());
-
+				
 			} else {
 				viewManager.openWindow(viewManager.getConnectUI());
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+
 		}
 	}
 
@@ -46,7 +49,5 @@ private User currentUser;
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
 	}
-	
-	
 
 }

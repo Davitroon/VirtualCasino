@@ -38,14 +38,22 @@ public class MainController {
 	private DataBaseController dbController;
 
 	private double lastBet;
+	
+	
+	
+
+	public MainController(Session session) {
+		this.session = session;
+	}
 
 	/**
-	 * Constructs the MainController, initializing its essential components.
+	 * Initiliaze its essential components.
 	 * @param dbManager The central database access manager, used to initialize DataBaseController.
 	 */
-	public MainController(DatabaseManager dbManager) {
+	public void initializeClasses(DatabaseManager dbManager) {
 		validator = new Validator();
-		viewController = new ViewController(this, dbManager);
+		viewController = new ViewController();
+		viewController.initializeClasses(this, dbManager);
 		dbController = new DataBaseController(this, dbManager);
 	}
 

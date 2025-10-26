@@ -46,7 +46,7 @@ public class ViewController {
 	private GameEditUI gameEditUI;
 	private GameUI gameUI;
 
-	public ViewController(MainController controller, DatabaseManager dbManager) {
+	public void initializeClasses(MainController controller, DatabaseManager dbManager) {
 		this.controller = controller;
 		homeUI = new HomeUI(controller);
 		connectUI = new ConnectUI(controller);

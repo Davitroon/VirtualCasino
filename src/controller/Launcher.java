@@ -24,10 +24,10 @@ public class Launcher {
 	public static void main(String[] args) {
 		ExceptionMessage exceptionMessage = new ExceptionMessage();
 		Session session = new Session();
-		DatabaseManager dbManager = null;
+		DatabaseManager dbManager = new DatabaseManager(exceptionMessage);
 
 		try {
-			dbManager = new DatabaseManager(exceptionMessage);
+			dbManager.initializeClasses();
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
 		} catch (SQLSyntaxErrorException e) {
@@ -52,7 +52,8 @@ public class Launcher {
 			exceptionMessage.showError(e, "An unexpected error occurred.\nCheck the console for more information.");
 		}
 
-		MainController controller = new MainController(dbManager);
+		MainController controller = new MainController(session);
+		controller.initializeClasses(dbManager);
 
 		session.checkStartup(controller.getDataBaseController(), controller);
 	}
