@@ -296,7 +296,7 @@ public class StatsUI extends JFrame {
 			lblMoneyLostVal.setText(String.format("%.2f$", moneyLost));
 
 			// Client with highest balance
-			rset = dbController.specificQuery("SELECT customer_name, balance FROM customers WHERE user_profile = "
+			rset = dbController.specificQuery("SELECT client_name, balance FROM clients WHERE user_profile = "
 					+ user.getId() + " ORDER BY balance DESC LIMIT 1;");
 			if (rset.next()) {
 				lblClientBalanceVal.setText(String.format("%s (%.2f$)", rset.getString(1), rset.getDouble(2)));

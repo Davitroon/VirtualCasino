@@ -163,7 +163,7 @@ public class SignInUI extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetContent();
-				viewController.switchWindow(SignInUI.this, viewController.getLogInUI());
+				viewController.switchWindow(SignInUI.this, viewController.getConnectUI());
 			}
 		});
 
@@ -266,6 +266,7 @@ public class SignInUI extends JFrame {
 						controller.updateUser(user);
 
 						dbController.addDefaultUser();
+						viewController.switchWindow(SignInUI.this, viewController.getHomeUI());
 						resetContent();
 
 					} catch (MailException e1) {

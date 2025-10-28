@@ -26,7 +26,7 @@ public class Session {
 
 		try {
 			if (rset.next()) {
-				currentUser = new User(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"),
+				currentUser = new User(rset.getInt("id"), rset.getString("username"), rset.getString("password"),
 						rset.getString("email"), rset.getString("last_access"), true);
 
 				rset.close();

@@ -421,10 +421,12 @@ public class ManagementUI extends JFrame {
 			if (!hasData) {
 				resetButtons();
 				btnDeleteGames.setEnabled(false);
+			
 			} else {
 				controller.fillGameTable(rset, modelGames);
 				btnDeleteGames.setEnabled(true);
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

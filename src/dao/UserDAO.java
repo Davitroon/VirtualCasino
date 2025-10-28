@@ -40,7 +40,7 @@ public class UserDAO {
 	 */
 	public User addUser(User user, boolean rememberSession, Connection connection)
 			throws MailException, SQLIntegrityConstraintViolationException {
-		String query = "INSERT INTO users (username, user_password, email) VALUES (?, ?, ?);";
+		String query = "INSERT INTO users (username, password, email) VALUES (?, ?, ?);";
 
 		try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, user.getName());
@@ -63,7 +63,7 @@ public class UserDAO {
 				toggleRememberLogin(user.getName(), rememberSession, connection);
 			}
 
-			user = new User(generatedId, rset.getString("username"), rset.getString("user_password"),
+			user = new User(generatedId, rset.getString("username"), rset.getString("password"),
 					rset.getString("email"), rset.getString("last_access"), rememberSession);
 
 			return user;
@@ -202,7 +202,7 @@ public class UserDAO {
 	 * @since 3.3
 	 */
 	public void deleteUser(int userId, Connection connection) {
-		String query = "DELETE FROM customers WHERE id = ?;";
+		String query = "DELETE FROM users WHERE id = ?;";
 
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			stmt.setInt(1, userId);

@@ -330,7 +330,7 @@ public class MainController {
 	 */
 	public void fillClientTable(ResultSet rset, DefaultTableModel clientModel) {
 		try {
-			while (rset.next()) {
+			do {
 				// "ID", "Name", "Active", "Balance"
 				Object[] clientList = new Object[4];
 				clientList[0] = rset.getInt(1); // ID
@@ -339,7 +339,7 @@ public class MainController {
 				clientList[3] = rset.getDouble(6); // Balance
 
 				clientModel.addRow(clientList);
-			}
+			} while (rset.next());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -354,7 +354,7 @@ public class MainController {
 	 */
 	public void fillFullClientTable(ResultSet rset, DefaultTableModel clientModel) {
 		try {
-			while (rset.next()) {
+			do {
 				// "ID", "Name", "Age", "Gender", "Active", "Balance" (Based on column indices
 				// 1-6)
 				Object[] clientList = new Object[6];
@@ -366,7 +366,7 @@ public class MainController {
 				clientList[5] = rset.getDouble(6); // Balance
 
 				clientModel.addRow(clientList);
-			}
+			} while (rset.next());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -381,7 +381,7 @@ public class MainController {
 	 */
 	public void fillGameTable(ResultSet rset, DefaultTableModel gameModel) {
 		try {
-			while (rset.next()) {
+			do  {
 				// "ID", "Type", "Active", "Money"
 				Object[] gameList = new Object[4];
 				gameList[0] = rset.getInt(1); // ID
@@ -390,7 +390,7 @@ public class MainController {
 				gameList[3] = rset.getDouble(4); // Money
 
 				gameModel.addRow(gameList);
-			}
+			} while (rset.next());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

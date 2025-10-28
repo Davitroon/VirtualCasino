@@ -128,7 +128,7 @@ public class LogInUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetContent();
-				viewController.switchWindow(LogInUI.this, viewController.getLogInUI());
+				viewController.switchWindow(LogInUI.this, viewController.getConnectUI());
 			}
 		});
 
@@ -186,7 +186,7 @@ public class LogInUI extends JFrame {
 				try {
 					ResultSet rset = (controller.getDataBaseController().queryUser(user));
 					if (rset != null) {
-						user = new User(rset.getInt("id"), rset.getString("username"), rset.getString("user_password"),
+						user = new User(rset.getInt("id"), rset.getString("username"), rset.getString("password"),
 								rset.getString("email"), rset.getString("last_access"),
 								rset.getBoolean("remember_login"));
 
