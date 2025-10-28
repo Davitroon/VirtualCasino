@@ -118,7 +118,7 @@ public class ProfileUI extends JFrame {
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				dbController.disableRememberLogin(controller.getCurrentUser().getName());
+				dbController.disableRememberLogin();
 				viewController.switchWindow(ProfileUI.this, viewController.getConnectUI());
 			}
 		});
@@ -130,7 +130,7 @@ public class ProfileUI extends JFrame {
 		            dbController.enableRememberLogin(controller.getCurrentUser().getName());
 		            
 		        } else {
-		            dbController.disableRememberLogin(controller.getCurrentUser().getName());
+		            dbController.disableRememberLogin();
 		        }
 		    }
 		});

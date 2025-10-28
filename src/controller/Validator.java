@@ -5,7 +5,18 @@ import javax.swing.JLabel;
 import exceptions.BetException;
 
 /**
- * Class responsible for validating data input and output.
+ * Class responsible for validating input and output data in the application.
+ * <p>
+ * This class handles validations for:
+ * <ul>
+ *   <li>Bets and minimum balances</li>
+ *   <li>Client balances and game money pools</li>
+ *   <li>Client information (name, age)</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Davitroon
+ * @since 3.0
  */
 public class Validator {
 
@@ -22,11 +33,17 @@ public class Validator {
 	// -------------------------- BET / MINIMUM VALIDATIONS --------------------------
 
 	/**
-	 * Method to validate that a bet is valid. Throws an exception if it is not.
-	 * * @param betTxt        Bet amount as text
-	 * @param clientBalance Client's balance
-	 * @param gameMoney     Game's money pool
-	 * @throws BetException Exception thrown if the bet is not valid
+	 * Validates a bet amount.
+	 * <p>
+	 * Throws a {@link BetException} if the bet is not valid due to format,
+	 * minimum/maximum limits, or exceeding client/game balances.
+	 * </p>
+	 *
+	 * @param betTxt        Bet amount as a string.
+	 * @param clientBalance The client's current balance.
+	 * @param gameMoney     The money available in the game.
+	 * @throws BetException if the bet is invalid.
+	 * @since 3.0
 	 */
 	public void validateBet(String betTxt, double clientBalance, double gameMoney) throws BetException {
 		double bet;
@@ -52,11 +69,11 @@ public class Validator {
 	}
 
 	/**
-	 * Method that checks that both the client and the game have more money than the
-	 * minimum bet.
-	 * * @param clientBalance Client's balance.
-	 * @param gameMoney     Game's money pool.
-	 * @throws BetException Exception thrown if they do not have enough money.
+	 * Validates that both the client and the game have sufficient funds to play.
+	 *
+	 * @param clientBalance The client's balance.
+	 * @param gameMoney     The money available in the game.
+	 * @throws BetException if either balance is below the minimum bet.
 	 * @since 3.0
 	 */
 	public void validateMinimumBalances(double clientBalance, double gameMoney) throws BetException {
@@ -74,14 +91,14 @@ public class Validator {
 	// -------------------------- BALANCE / MONEY VALIDATIONS --------------------------
 
 	/**
-	 * Method to validate a client's balance.
-	 * * @param text         Client's balance
-	 * @param errorMessage Visual text where the error will be shown (if any)
-	 * @return True if the balance is valid, false otherwise
+	 * Validates a client's balance input.
+	 *
+	 * @param text         Text input representing the client's balance.
+	 * @param errorMessage JLabel where any validation error message will be displayed.
+	 * @return True if the balance is valid, false otherwise.
 	 * @since 3.0
 	 */
 	public boolean validateClientBalance(String text, JLabel errorMessage) {
-
 		double balance;
 
 		if (text.isBlank()) {
@@ -91,7 +108,6 @@ public class Validator {
 
 		try {
 			balance = Double.parseDouble(text);
-
 		} catch (NumberFormatException ee) {
 			errorMessage.setText("Enter numbers only");
 			return false;
@@ -112,14 +128,14 @@ public class Validator {
 	}
 
 	/**
-	 * Method to validate a game's money pool.
-	 * * @param text         Game's money pool
-	 * @param errorMessage Visual text where the error will be shown (if any)
-	 * @return True if the money is valid, false otherwise
+	 * Validates a game's money pool input.
+	 *
+	 * @param text         Text input representing the game's money pool.
+	 * @param errorMessage JLabel where any validation error message will be displayed.
+	 * @return True if the money pool is valid, false otherwise.
 	 * @since 3.0
 	 */
 	public boolean validateGameMoney(String text, JLabel errorMessage) {
-
 		double balance;
 
 		if (text.isBlank()) {
@@ -129,7 +145,6 @@ public class Validator {
 
 		try {
 			balance = Double.parseDouble(text);
-
 		} catch (NumberFormatException ee) {
 			errorMessage.setText("Enter numbers only");
 			return false;
@@ -144,7 +159,7 @@ public class Validator {
 			errorMessage.setText("Amount too large (" + MAX_MONEY + " max.)");
 			return false;
 		}
- 
+
 		errorMessage.setText("");
 		return true;
 	}
@@ -152,10 +167,11 @@ public class Validator {
 	// -------------------------- CLIENT DATA VALIDATIONS --------------------------
 
 	/**
-	 * Method to validate a client's name.
-	 * * @param text         Client's name
-	 * @param errorMessage Visual text where the error will be shown (if any)
-	 * @return True if the name is valid, false otherwise
+	 * Validates a client's name.
+	 *
+	 * @param text         Client's name input.
+	 * @param errorMessage JLabel where any validation error message will be displayed.
+	 * @return True if the name is valid (no numbers or special characters, max length), false otherwise.
 	 * @since 3.0
 	 */
 	public boolean validateName(String text, JLabel errorMessage) {
@@ -180,10 +196,11 @@ public class Validator {
 	}
 
 	/**
-	 * Method to validate a client's age.
-	 * * @param text         Client's age
-	 * @param errorMessage Visual text where the error will be shown (if any)
-	 * @return True if the age is valid, false otherwise
+	 * Validates a client's age.
+	 *
+	 * @param text         Client's age input.
+	 * @param errorMessage JLabel where any validation error message will be displayed.
+	 * @return True if the age is valid (between 18 and MAX_AGE), false otherwise.
 	 * @since 3.0
 	 */
 	public boolean validateClientAge(String text, JLabel errorMessage) {

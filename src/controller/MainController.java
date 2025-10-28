@@ -18,16 +18,21 @@ import model.User;
 import ui.BlackjackUI;
 
 /**
- * This class serves as the central Controller in the application's MVC 
- * architecture. It coordinates the flow of control between the UI (Views) 
- * and the data/logic (Models and DAOs).
+ * The central controller of the application, coordinating between the Model
+ * (game logic, clients, users) and the View (UI windows).
+ * <p>
+ * Responsibilities:
  * <ul>
- * <li>Handling user actions from the UI and translating them into application logic.</li>
- * <li>Managing game logic, status updates, and transaction processing.</li>
- * <li>Interfacing with the database layer (via {@link DataBaseController}) and validation layer (via {@link Validator}).</li>
- * <li>Maintaining the current user session state (via {@link Session}).</li>
+ * <li>Handling user actions from the UI and translating them into application
+ * logic.</li>
+ * <li>Managing game logic, bets, results, and client/game balance updates.</li>
+ * <li>Interfacing with the database layer via {@link DataBaseController}.</li>
+ * <li>Maintaining the current user session via {@link Session}.</li>
+ * <li>Performing input validation through {@link Validator}.</li>
  * </ul>
- * @author David
+ * </p>
+ * 
+ * @author Davitroon
  * @since 3.0
  */
 public class MainController {
@@ -38,42 +43,44 @@ public class MainController {
 	private DataBaseController dbController;
 
 	private double lastBet;
-	
-	
-	
 
+	/**
+	 * Constructs the MainController with a session.
+	 *
+	 * @param session The current session object.
+	 * @since 3.0
+	 */
 	public MainController(Session session) {
 		this.session = session;
 	}
 
 	/**
-	 * Initiliaze its essential components.
-	 * @param dbManager The central database access manager, used to initialize DataBaseController.
+	 * Initializes essential components: Validator, DatabaseController, and
+	 * ViewController.
+	 *
+	 * @param dbManager Database manager used to initialize the database controller.
+	 * @since 3.3
 	 */
 	public void initializeClasses(DatabaseManager dbManager) {
 		validator = new Validator();
 		dbController = new DataBaseController(this, dbManager);
 		viewController = new ViewController();
 		viewController.initializeClasses(this, dbManager);
-		
 	}
 
 	// ---------------------- DATABASE / DATA ACCESS METHODS ----------------------
 
 	/**
-	 * Updates the balance and game money for the client and the game after a match
-	 * ends.
-	 * 
-	 * @param client     Client to update.
-	 * @param game       Game to update.
-	 * @param betResult  Result of the bet (positive for win, negative/zero for
-	 *                   loss).
-	 * @param gameClosed True if the game was closed before a bet finished, false if
-	 *                   the bet terminated normally.
+	 * Updates the balances of a client and a game after a match and stores the
+	 * session.
+	 *
+	 * @param client     The client whose balance is to be updated.
+	 * @param game       The game whose balance is to be updated.
+	 * @param betResult  Amount won or lost (positive for win, negative for loss).
+	 * @param gameClosed True if the game was closed prematurely, false otherwise.
 	 * @since 3.0
 	 */
 	public void updateBalances(Client client, Game game, double betResult, boolean gameClosed) {
-		
 		double clientAdjustment = gameClosed ? (-1 * betResult) : betResult;
 		double gameAdjustment = gameClosed ? betResult : (-1 * betResult);
 
@@ -85,29 +92,32 @@ public class MainController {
 		dbController.addGameSession(client, game, betResult);
 	}
 
+	/**
+	 * Closes the program safely by closing the DB connection and exiting.
+	 * 
+	 * @since 3.0
+	 */
 	public void closeProgram() {
 		dbController.closeConnection();
 		System.exit(0);
 	}
-	
+
 	// -------------------------- GAME LOGIC METHODS --------------------------
-	// (Methods that contain game-specific logic, prompts, and status messages)
 
 	/**
-	 * Throws an exception if betting is not possible. Prompts the user for a valid
-	 * bet.
-	 * 
-	 * @param client Client object who will play.
-	 * @param game   Game object that will be played.
-	 * @return The entered bet, returns 0 if invalid or canceled.
-	 * @throws BetException if the client or the game does not have enough money.
+	 * Prompts the client for a valid bet, with options to repeat the last bet or
+	 * cancel.
+	 *
+	 * @param client The client making the bet.
+	 * @param game   The game in which the bet is placed.
+	 * @return The validated bet amount, or 0 if canceled.
+	 * @throws BetException If the client or game balance is insufficient or the
+	 *                      input is invalid.
 	 * @since 3.0
 	 */
 	public double promptBet(Client client, Game game) throws BetException {
-
 		validator.validateMinimumBalances(client.getBalance(), game.getMoney());
 
-		// Show window
 		while (true) {
 			JTextField betField = new JTextField();
 			Object[] message = { "Enter a bet:", betField };
@@ -116,32 +126,20 @@ public class MainController {
 			int option = JOptionPane.showOptionDialog(null, message, "Bet", JOptionPane.DEFAULT_OPTION,
 					JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
-			// User canceled
 			if (option == 0 || option == JOptionPane.CLOSED_OPTION) {
 				return 0;
-
-				// Repeat Last Bet
 			} else if (option == 1) {
 				if (lastBet == 0) {
 					JOptionPane.showMessageDialog(null, "There is no previous bet.");
 					continue;
 				}
-
-				try {
-					validator.validateBet(String.valueOf(lastBet), client.getBalance(), game.getMoney());
-					return lastBet;
-				} catch (BetException ex) {
-					throw ex;
-				}
-
-				// Normal Bet
+				validator.validateBet(String.valueOf(lastBet), client.getBalance(), game.getMoney());
+				return lastBet;
 			} else {
-				String betText = betField.getText();
 				try {
-					validator.validateBet(betText, client.getBalance(), game.getMoney());
-					lastBet = Double.parseDouble(betText);
+					validator.validateBet(betField.getText(), client.getBalance(), game.getMoney());
+					lastBet = Double.parseDouble(betField.getText());
 					return lastBet;
-
 				} catch (BetException ex) {
 					throw ex;
 				}
@@ -150,13 +148,12 @@ public class MainController {
 	}
 
 	/**
-	 * Method that will show the user a warning if they try to close a game without
-	 * having finished it.
-	 * 
-	 * @param client Client playing.
-	 * @param game   Game being played.
-	 * @param bet    Bet for the match.
-	 * @return True if they confirmed exiting, false otherwise.
+	 * Warns the user when attempting to close a game mid-match.
+	 *
+	 * @param client The client playing.
+	 * @param game   The game being played.
+	 * @param bet    The bet amount for the match.
+	 * @return True if the user confirms exit, false otherwise.
 	 * @since 3.0
 	 */
 	public boolean warnCloseGame(Client client, Game game, double bet) {
@@ -165,37 +162,31 @@ public class MainController {
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 		if (response == JOptionPane.YES_OPTION) {
-			// Assume 'updateBalances' uses the original bet amount as a loss when
-			// 'gameClosed' is true
 			updateBalances(client, game, bet, true);
 			return true;
 		}
-
 		return false;
 	}
-	
+
 	/**
-	 * Method that will show a generic end game window for the games.
-	 * 
-	 * @param statusMessage Custom message depending on the context of the end of
-	 *                      the match.
-	 * @return Player's choice (Go Back / Bet Again).
+	 * Displays a generic end-of-game window to prompt the user for next action.
+	 *
+	 * @param statusMessage Message describing the end of the match.
+	 * @return User choice (0: Go Back, 1: Bet Again)
 	 * @since 3.0
 	 */
 	public int gameEndStatus(String statusMessage) {
 		String[] options = { "Go Back", "Bet Again" };
-		int choice = JOptionPane.showOptionDialog(null, statusMessage + " What do you want to do?", "End of Match",
+		return JOptionPane.showOptionDialog(null, statusMessage + " What do you want to do?", "End of Match",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-		return choice;
 	}
 
 	// --------------------- BLACKJACK GAME LOGIC METHODS ---------------------
 
 	/**
-	 * Starts a blackjack match by shuffling the cards and dealing the cards to the
-	 * players.
-	 * 
+	 * Initializes a blackjack match by shuffling and dealing cards to dealer and
+	 * player.
+	 *
 	 * @param blackjack Blackjack match object.
 	 * @since 3.0
 	 */
@@ -206,10 +197,10 @@ public class MainController {
 	}
 
 	/**
-	 * The player hits (asks for a card) in the Blackjack game.
-	 * 
+	 * Executes a hit action for the player.
+	 *
 	 * @param blackjack Blackjack object.
-	 * @return True if the player has busted (exceeded 21), false otherwise.
+	 * @return True if the player busts, false otherwise.
 	 * @since 3.0
 	 */
 	public boolean blackjackHit(Blackjack blackjack) {
@@ -218,67 +209,53 @@ public class MainController {
 	}
 
 	/**
-	 * Handles the Stand action in Blackjack.
-	 * 
-	 * @param blackjack Blackjack Game.
-	 * @param window    Blackjack window (UI).
-	 * @return true if the client wins, false if the client loses.
+	 * Executes the stand action in Blackjack and resolves the dealer's moves.
+	 *
+	 * @param blackjack Blackjack object.
+	 * @param window    UI window to update dealer cards.
+	 * @return True if the client wins, false if the client loses.
+	 * @since 3.0
 	 */
 	public boolean blackjackStand(Blackjack blackjack, BlackjackUI window) {
 		while (blackjack.dealerShouldHit()) {
 			blackjack.dealCards(1, "dealer");
 			if (blackjack.playerLoses("dealer")) {
-				// The player has won (dealer busted)
 				window.updateDealerCards(blackjack.showCards(false, "dealer"),
 						blackjack.sumCards(blackjack.getDealerCards()));
 				return true;
 			}
 		}
-		// The player has lost (dealer stands with a higher or equal score)
 		window.updateDealerCards(blackjack.showCards(false, "dealer"), blackjack.sumCards(blackjack.getDealerCards()));
 		return false;
 	}
 
 	/**
-	 * * Shows the final result of a blackjack match.
-	 * 
-	 * @param clientWins True if the player won, false if the player lost.
-	 * @param client     Client object who played.
-	 * @param blackjack  Blackjack object that was played.
-	 * @param betResult  Result of the bet (amount won/lost).
-	 * @return Message with the status of the end of the match.
+	 * Returns a formatted message with the outcome of a blackjack match.
+	 *
+	 * @param clientWins True if the player won.
+	 * @param client     The client object.
+	 * @param blackjack  Blackjack object.
+	 * @param betResult  Amount won/lost.
+	 * @return Message describing the outcome.
 	 * @since 3.0
 	 */
 	public String blackjackEndStatus(boolean clientWins, Client client, Blackjack blackjack, double betResult) {
-
-		// Assumes 'sumCards' and 'getPlayerCards/getDealerCards' are the translated
-		// methods
 		int playerCardsSum = blackjack.sumCards(blackjack.getPlayerCards());
 		int dealerCardsSum = blackjack.sumCards(blackjack.getDealerCards());
 
-		// Player loses
 		if (!clientWins) {
-			// Player busts (exceeds 21)
 			if (playerCardsSum > 21) {
 				return "You busted (exceeded 21), you lost " + String.format("%.2f", betResult) + "$!";
-
-				// Player loses normally (dealer had higher non-busting score)
 			} else {
 				return "You lost " + String.format("%.2f", betResult) + "$!";
 			}
-
-			// Player wins or pushes
 		} else {
-			// Tie (Push)
 			if (playerCardsSum == dealerCardsSum) {
 				if (playerCardsSum == 21) {
 					return "Tie with Blackjack (Push), you won " + String.format("%.2f", betResult) + "$!";
 				}
 				return "Tie (Push), you won " + String.format("%.2f", betResult) + "$!";
-
-				// Victory
 			} else {
-				// Natural Blackjack (21 on first two cards)
 				if (playerCardsSum == 21 && blackjack.getPlayerCards().size() == 2) {
 					return "Victory with a Blackjack, you won " + String.format("%.2f", betResult) + "$!";
 				}
@@ -290,16 +267,15 @@ public class MainController {
 	// --------------------- SLOTMACHINE GAME LOGIC METHODS ---------------------
 
 	/**
-	 * Shows the final result of a slot machine match.
-	 * 
-	 * @param client      Client playing.
-	 * @param slotmachine Slotmachine class object being played.
-	 * @param betResult   Result of the bet (amount won/lost).
-	 * @return Message with the result of the match.
+	 * Returns a formatted message with the outcome of a slot machine match.
+	 *
+	 * @param client      The client playing.
+	 * @param slotmachine Slotmachine object.
+	 * @param betResult   Amount won/lost.
+	 * @return Message describing the outcome.
 	 * @since 3.0
 	 */
 	public String slotmachineEndStatus(Client client, Slotmachine slotmachine, double betResult) {
-		// Assumes 'getNumeros' is 'getNumbers'
 		int[] numbers = slotmachine.getNumbers();
 
 		if (numbers[0] == 7 && numbers[1] == 7 && numbers[2] == 7) {
@@ -314,29 +290,30 @@ public class MainController {
 			return String.format("Double combination, you won %.2f$!", betResult);
 		}
 
-		// Since 'betResult' is the result (negative for loss), we show the absolute
-		// value here.
 		return String.format("No combination... You lost %.2f$.", Math.abs(betResult));
 	}
 
 	// ------------------------- TABLE FILLING METHODS -------------------------
 
 	/**
-	 * Method that fills the client table in the Games window.
-	 * 
-	 * @param rset        Result of the query to the DB (Database).
-	 * @param clientModel Client table model.
+	 * Fills the client table in the Games window with a subset of client information.
+	 * <p>
+	 * The table will contain the following columns: ID, Name, Active status, Balance.
+	 * </p>
+	 *
+	 * @param rset        ResultSet obtained from querying the clients from the database. 
+	 *                    It is expected to have the required columns in the correct order.
+	 * @param clientModel The table model that will be filled with the client data.
 	 * @since 3.0
 	 */
 	public void fillClientTable(ResultSet rset, DefaultTableModel clientModel) {
 		try {
 			do {
-				// "ID", "Name", "Active", "Balance"
 				Object[] clientList = new Object[4];
-				clientList[0] = rset.getInt(1); // ID
-				clientList[1] = rset.getString(2); // Name
-				clientList[2] = (rset.getBoolean(5) == true ? "YES" : "NO"); // Active
-				clientList[3] = rset.getDouble(6); // Balance
+				clientList[0] = rset.getInt(1);              // ID
+				clientList[1] = rset.getString(2);           // Name
+				clientList[2] = rset.getBoolean(5) ? "YES" : "NO"; // Active
+				clientList[3] = rset.getDouble(6);          // Balance
 
 				clientModel.addRow(clientList);
 			} while (rset.next());
@@ -346,24 +323,26 @@ public class MainController {
 	}
 
 	/**
-	 * Method that fills the client table in the Management window, with all fields.
-	 * 
-	 * @param rset        Result of the query to the DB.
-	 * @param clientModel Client table model.
+	 * Fills the client table in the Management window with full client details.
+	 * <p>
+	 * The table will contain the following columns: ID, Name, Age, Gender, Active status, Balance.
+	 * </p>
+	 *
+	 * @param rset        ResultSet obtained from querying the clients from the database. 
+	 *                    It is expected to have all columns required for the full client view.
+	 * @param clientModel The table model that will be filled with the client data.
 	 * @since 3.0
 	 */
 	public void fillFullClientTable(ResultSet rset, DefaultTableModel clientModel) {
 		try {
 			do {
-				// "ID", "Name", "Age", "Gender", "Active", "Balance" (Based on column indices
-				// 1-6)
 				Object[] clientList = new Object[6];
-				clientList[0] = rset.getInt(1); // ID
-				clientList[1] = rset.getString(2); // Name
-				clientList[2] = rset.getInt(3); // Age
-				clientList[3] = rset.getString(4); // Gender
-				clientList[4] = (rset.getBoolean(5) == true ? "YES" : "NO"); // Active
-				clientList[5] = rset.getDouble(6); // Balance
+				clientList[0] = rset.getInt(1);              // ID
+				clientList[1] = rset.getString(2);           // Name
+				clientList[2] = rset.getInt(3);              // Age
+				clientList[3] = rset.getString(4);           // Gender
+				clientList[4] = rset.getBoolean(5) ? "YES" : "NO"; // Active
+				clientList[5] = rset.getDouble(6);          // Balance
 
 				clientModel.addRow(clientList);
 			} while (rset.next());
@@ -373,21 +352,24 @@ public class MainController {
 	}
 
 	/**
-	 * Method that fills the game table.
-	 * 
-	 * @param rset      Result of the query to the DB.
-	 * @param gameModel Game table model.
+	 * Fills the game table with information about the available games.
+	 * <p>
+	 * The table will contain the following columns: ID, Type, Active status, Money.
+	 * </p>
+	 *
+	 * @param rset      ResultSet obtained from querying the games from the database.
+	 *                  It is expected to have the required columns in the correct order.
+	 * @param gameModel The table model that will be filled with the game data.
 	 * @since 3.0
 	 */
 	public void fillGameTable(ResultSet rset, DefaultTableModel gameModel) {
 		try {
-			do  {
-				// "ID", "Type", "Active", "Money"
+			do {
 				Object[] gameList = new Object[4];
-				gameList[0] = rset.getInt(1); // ID
-				gameList[1] = rset.getString(2); // Type
-				gameList[2] = (rset.getBoolean(3) == true ? "YES" : "NO"); // Active
-				gameList[3] = rset.getDouble(4); // Money
+				gameList[0] = rset.getInt(1);              // ID
+				gameList[1] = rset.getString(2);           // Type
+				gameList[2] = rset.getBoolean(3) ? "YES" : "NO"; // Active
+				gameList[3] = rset.getDouble(4);           // Money
 
 				gameModel.addRow(gameList);
 			} while (rset.next());
@@ -395,6 +377,7 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
+
 
 	// ----------------------------- GETTERS / SETTERS -----------------------------
 
@@ -417,7 +400,7 @@ public class MainController {
 	public Validator getValidator() {
 		return validator;
 	}
-	
+
 	public void updateUser(User user) {
 		session.setCurrentUser(user);
 	}
