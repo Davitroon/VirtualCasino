@@ -23,21 +23,20 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import controller.DataBaseController;
+import controller.MainController;
+import controller.ViewController;
 import exceptions.BetException;
 import exceptions.GameException;
-import logic.Blackjack;
-import logic.Client;
-import logic.Controller;
-import logic.Game;
-import logic.Model;
-import logic.Slotmachine;
-import ui.PlayUI;
-import ui.HomeUI;
+import model.Blackjack;
+import model.Client;
+import model.Game;
+import model.Slotmachine;
 
 /**
  * Window for starting games.
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class PlayUI extends JFrame {
@@ -50,10 +49,11 @@ public class PlayUI extends JFrame {
 	private DefaultTableModel modelClients;
 	private DefaultTableModel modelGames;
 
-	private Model model;
-	private Controller controller;
+	private MainController controller;
 	private JButton btnPlay;
-	private HomeUI menu;
+	
+	private ViewController viewController;
+	private DataBaseController dbController;
 
 	/**
 	 * Creates the frame.
@@ -63,11 +63,11 @@ public class PlayUI extends JFrame {
 	 * @param controller The controller for handling events
 	 * @since 3.0
 	 */
-	public PlayUI(HomeUI menu, Model model, Controller controller) {
+	public PlayUI(MainController controller) {
 
-		this.menu = menu;
-		this.model = model;
 		this.controller = controller;
+		viewController = controller.getViewController();
+		dbController = controller.getDataBaseController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -154,7 +154,7 @@ public class PlayUI extends JFrame {
 		// Click the back button
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controller.switchWindow(PlayUI.this, menu);
+				viewController.switchWindow(PlayUI.this, viewController.getHomeUI());
 				btnPlay.setEnabled(false);
 			}
 		});
@@ -163,7 +163,7 @@ public class PlayUI extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.switchWindow(PlayUI.this, menu);
+				viewController.switchWindow(PlayUI.this, viewController.getHomeUI());
 				btnPlay.setEnabled(false);
 			}
 		});
@@ -172,34 +172,31 @@ public class PlayUI extends JFrame {
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				ResultSet clientResult = model.querySingleData("customers",
-						Integer.parseInt(tableClients.getValueAt(tableClients.getSelectedRow(), 0).toString()));
-				ResultSet gameResult = model.querySingleData("games",
-						Integer.parseInt(tableGames.getValueAt(tableGames.getSelectedRow(), 0).toString()));
+				// Create both client and game from the selected ones in the tables
+				Client client = new Client((int) tableClients.getValueAt(tableClients.getSelectedRow(), 0),
+						(String) tableClients.getValueAt(tableClients.getSelectedRow(), 1),
+						(double) tableClients.getValueAt(tableClients.getSelectedRow(), 3));
 
-				Client client = null;
+				int gameId = (int) tableGames.getValueAt(tableGames.getSelectedRow(), 0);
+				String gameType = (String) tableGames.getValueAt(tableGames.getSelectedRow(), 1);
+				double moneyPool = (double) tableGames.getValueAt(tableGames.getSelectedRow(), 3);
 				Game game = null;
+				
+				if (gameType.equals("Blackjack")) {
+					game = new Blackjack(gameId, moneyPool);
 
+				} else if (gameType.equals("SlotMachine")) {
+					game = new Slotmachine(gameId, moneyPool);
+				}
+
+				// Insert the bet
 				try {
-					client = new Client(clientResult.getInt("id"), clientResult.getString("customer_name"),
-							clientResult.getDouble("balance"));
-
-					if (gameResult.getString("game_type").equals("Blackjack")) {
-						game = new Blackjack(gameResult.getInt("id"), gameResult.getDouble("money_pool"));
-
-					} else if (gameResult.getString("game_type").equals("SlotMachine")) {
-						game = new Slotmachine(gameResult.getInt("id"), gameResult.getDouble("money_pool"));
-					}
-
 					double bet = controller.promptBet(client, game);
 
 					if (bet != 0) {
-						controller.openGameWindow(game, PlayUI.this, client, bet);
+						viewController.openGameWindow(PlayUI.this, game, client, bet);
 						btnPlay.setEnabled(false);
 					}
-
-				} catch (SQLException ex) {
-					ex.printStackTrace();
 
 				} catch (BetException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -232,8 +229,8 @@ public class PlayUI extends JFrame {
 	 */
 	public void updateTables() throws GameException {
 
-		ResultSet clientsResult = model.queryTableData("customers", true);
-		ResultSet gamesResult = model.queryTableData("games", true);
+		ResultSet clientsResult = dbController.queryClients(true);
+		ResultSet gamesResult = dbController.queryGames(true);
 		boolean hasData = false;
 
 		modelClients.setRowCount(0);
@@ -275,9 +272,5 @@ public class PlayUI extends JFrame {
 		}
 
 		btnPlay.setEnabled(true);
-	}
-
-	public HomeUI getMenu() {
-		return menu;
 	}
 }

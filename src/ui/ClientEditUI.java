@@ -22,12 +22,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logic.Client;
-import logic.Controller;
-import logic.Model;
-import logic.Validator;
-import ui.ClientEditUI;
-import ui.ManagementUI;
+import controller.DataBaseController;
+import controller.MainController;
+import controller.Validator;
+import controller.ViewController;
+import model.Client;
 
 /**
  * Window for the client edit form.
@@ -44,8 +43,6 @@ public class ClientEditUI extends JFrame {
 	private JTextField textBalance;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
-	private Model model;
-
 	private boolean nameValid;
 	private boolean ageValid;
 	private boolean balanceValid;
@@ -59,6 +56,7 @@ public class ClientEditUI extends JFrame {
 	private JLabel lblErrorBalance;
 	private JTextField textId;
 	private JCheckBox chckbxActive;
+	private DataBaseController dbController;
 
 	/**
 	 * Create the frame.
@@ -74,9 +72,12 @@ public class ClientEditUI extends JFrame {
 	 *                   format of user input (e.g., name, age, balance).
 	 * @since 3.0
 	 */
-	public ClientEditUI(ManagementUI management, Controller controller, Model model, Validator validator) {
+	public ClientEditUI(MainController controller) {
 
-		this.model = model;
+		ViewController viewController = controller.getViewController();
+		Validator validator = controller.getValidator();
+		dbController = controller.getDataBaseController();
+		ManagementUI managementUI = viewController.getManagementUI();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -264,10 +265,10 @@ public class ClientEditUI extends JFrame {
 				int id = Integer.parseInt(textId.getText());
 				boolean active = chckbxActive.isSelected() ? true : false;
 
-				model.modifyClient(new Client(name, age, gender, balance, id, active));
+				dbController.modifyClient(new Client(name, age, gender, balance, id, active));
 
 				clearFields();
-				controller.switchWindow(ClientEditUI.this, management);
+				viewController.switchWindow(ClientEditUI.this, managementUI);
 			}
 		});
 
@@ -275,7 +276,7 @@ public class ClientEditUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				controller.switchWindow(ClientEditUI.this, management);
+				viewController.switchWindow(ClientEditUI.this, managementUI);
 			}
 		});
 
@@ -284,7 +285,7 @@ public class ClientEditUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				clearFields();
-				controller.switchWindow(ClientEditUI.this, management);
+				viewController.switchWindow(ClientEditUI.this, managementUI);
 			}
 		});
 	}
@@ -297,7 +298,7 @@ public class ClientEditUI extends JFrame {
 	 */
 	public void loadOriginalClient(int id) {
 
-		ResultSet rset = model.querySingleData("customers", id);
+		ResultSet rset = dbController.queryClient(id);
 		String gender = "";
 
 		try {

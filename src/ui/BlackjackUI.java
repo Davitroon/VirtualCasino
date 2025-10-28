@@ -15,26 +15,26 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.MainController;
+import controller.ViewController;
 import exceptions.BetException;
 import exceptions.GameException;
-import logic.Blackjack;
-import logic.Client;
-import logic.Controller;
-import logic.Game;
-import logic.Model;
-import ui.BlackjackUI;
-import ui.PlayUI;
+import model.Blackjack;
+import model.Client;
+import model.Game;
 
 /**
  * Window where Blackjack will be played.
+ * @author Davitroon
+ * @since 3.0
  */
 public class BlackjackUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	private Controller controller;
-	private PlayUI play;
+	private MainController controller;
+	private PlayUI playUI;
 	private JLabel lblDealerCardsList;
 	private JLabel lblYourCardsList;
 	private JLabel lblYourCards;
@@ -50,6 +50,7 @@ public class BlackjackUI extends JFrame {
 	private boolean gameFinished;
 	private JButton btnBack;
 	private JButton btnInfo;
+	private ViewController viewController;
 
 	/**
 	 * Constructor for the Blackjack game window. Initializes UI components and
@@ -62,22 +63,14 @@ public class BlackjackUI extends JFrame {
 	 *                   application data.
 	 * @param play       The parent 'Play' window (PlayUI) to return to when the
 	 *                   game is closed.
-	 * @param client     The Client object representing the player currently
-	 *                   engaging in the game.
-	 * @param game       The specific Game object (which is cast to Blackjack)
-	 *                   containing the game's state (cards, money pool).
-	 * @param bet        The initial amount placed by the client for this game
-	 *                   session.
 	 * @since 3.0
 	 */
-	public BlackjackUI(Controller controller, Model model, PlayUI play, Client client, Game game, double bet) {
+	public BlackjackUI(MainController controller) {
+		viewController = controller.getViewController();
 		setResizable(false);
 
 		this.controller = controller;
-		this.play = play;
-		this.client = client;
-		this.blackjack = (Blackjack) game;
-		this.bet = bet;
+		playUI = viewController.getPlayUI();
 
 		setBounds(100, 100, 577, 442);
 		setLocationRelativeTo(null);
@@ -215,21 +208,18 @@ public class BlackjackUI extends JFrame {
 	 * Method that calls the controller to show a warning message when attempting to
 	 * close the window.
 	 */
-	public void closeWindow() {
+	public void closeWindow() {		
 		if (!gameFinished) {
 			if (!controller.warnCloseGame(client, blackjack, bet)) {
 				return;
 			}
 		}
 
-		dispose();
-
 		try {
-			play.updateTables();
-			play.setVisible(true);
+			playUI.updateTables();
+			controller.getViewController().switchWindow(this, playUI);
 
 		} catch (GameException e) {
-			controller.switchWindow(play, play.getMenu());
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
@@ -318,5 +308,11 @@ public class BlackjackUI extends JFrame {
 			endGame(true);
 		if (dealerHand == 21)
 			endGame(false);
+	}
+	
+	public void initializeData(Client client, Blackjack blackjack, double bet) {
+		this.client = client;
+		this.blackjack = blackjack;
+		this.bet = bet;
 	}
 }

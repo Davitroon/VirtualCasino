@@ -15,14 +15,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.MainController;
+import controller.ViewController;
 import exceptions.BetException;
 import exceptions.GameException;
-import logic.Client;
-import logic.Controller;
-import logic.Game;
-import logic.Model;
-import logic.Slotmachine;
-import ui.PlayUI;
+import model.Client;
+import model.Slotmachine;
 
 /**
  * Window where the Slot Machine game will be played.
@@ -35,7 +33,7 @@ public class SlotmachineUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	private Controller controller;
+	private MainController controller;
 	private PlayUI playUI;
 	private JButton btnSpin;
 
@@ -52,6 +50,8 @@ public class SlotmachineUI extends JFrame {
 	private JLabel lblGame;
 	private JButton btnBack;
 
+	private ViewController viewController;
+
 	/**
 	 * Constructs the SlotmachineUI window where the Slot Machine game will be
 	 * played.
@@ -65,13 +65,11 @@ public class SlotmachineUI extends JFrame {
 	 * @param bet        The amount of money the client is betting for this game.
 	 * @since 3.0
 	 */
-	public SlotmachineUI(Controller controller, Model model, PlayUI playUI, Client client, Game game, double bet) {
+	public SlotmachineUI(MainController controller) {
 
 		this.controller = controller;
-		this.playUI = playUI;
-		this.client = client;
-		this.slotMachine = (Slotmachine) game;
-		this.bet = bet;
+		viewController = controller.getViewController();
+		playUI = viewController.getPlayUI();
 
 		setResizable(false);
 		setBounds(100, 100, 523, 421);
@@ -201,14 +199,11 @@ public class SlotmachineUI extends JFrame {
 			}
 		}
 
-		dispose();
-
 		try {
 			playUI.updateTables();
-			playUI.setVisible(true);
+			controller.getViewController().switchWindow(this, playUI);
 
 		} catch (GameException e) {
-			controller.switchWindow(playUI, playUI.getMenu());
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
@@ -270,4 +265,11 @@ public class SlotmachineUI extends JFrame {
 		lblClient.setText(String.format("%s's Balance: %.2f$", client.getName(), client.getBalance()));
 		lblGame.setText(String.format("Game Money: %.2f$", slotMachine.getMoney()));
 	}
+
+	public void initializeData(Client client, Slotmachine slotmachine, double bet) {
+		this.client = client;
+		this.slotMachine = slotmachine;
+		this.bet = bet;
+	}
+
 }

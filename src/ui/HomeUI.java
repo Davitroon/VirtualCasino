@@ -13,17 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.MainController;
+import controller.ViewController;
 import exceptions.GameException;
-import logic.Controller;
-import logic.Model;
-import logic.User;
-import logic.Validator;
-import ui.ConnectUI;
-import ui.StatisticsUI;
-import ui.ManagementUI;
-import ui.PlayUI;
-import ui.HomeUI;
-import ui.ProfileUI;
 
 /**
  * Main menu window.
@@ -36,23 +28,22 @@ public class HomeUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
-	private ManagementUI management;
-	private PlayUI play;
-	private StatisticsUI statistics;
-	private User user;
-	private ProfileUI profile;
-	private ConnectUI connectUI;
-
+	private ManagementUI managementUI;
+	private PlayUI playUI;
+	private StatsUI statsUI;
+	private ProfileUI profileUI;
 	private JButton btnStatistics;
+	
+	private ViewController viewController;
 
 	/**
 	 * Creates the frame.
 	 * 
-	 * @param model      The data model.
 	 * @param controller The controller handling interactions.
-	 * @param validator  The validator for input checks.
 	 */
-	public HomeUI(Model model, Controller controller, Validator validator) {
+	public HomeUI(MainController controller) {
+
+		viewController = controller.getViewController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,9 +93,7 @@ public class HomeUI extends JFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				model.updateLastAccess(user.getName());
-				model.closeConnection();
-				System.exit(0);
+				controller.closeProgram();
 			}
 		});
 
@@ -112,11 +101,8 @@ public class HomeUI extends JFrame {
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (play == null) {
-						play = new PlayUI(HomeUI.this, model, controller);
-					}
-					play.updateTables();
-					controller.switchWindow(HomeUI.this, play);
+					playUI.updateTables();
+					viewController.switchWindow(HomeUI.this, playUI);
 
 				} catch (GameException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
@@ -127,39 +113,34 @@ public class HomeUI extends JFrame {
 		// Click management button
 		btnManagement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (management == null) {
-					management = new ManagementUI(HomeUI.this, model, controller, validator);
-				}
-				controller.switchWindow(HomeUI.this, management);
+				viewController.switchWindow(HomeUI.this, managementUI);
 			}
 		});
 
 		// Click statistics button
 		btnStatistics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (statistics == null) {
-					statistics = new StatisticsUI(HomeUI.this, model, controller, user);
-				} else {
-					statistics.setUser(user);
-				}
-				statistics.updateData();
-				controller.switchWindow(HomeUI.this, statistics);
+
+				StatsUI tempStatsUI = HomeUI.this.getStatsUI();
+				tempStatsUI.updateUser(controller);
+				tempStatsUI.updateData();
+				viewController.switchWindow(HomeUI.this, tempStatsUI);
 			}
 		});
 
 		// Click profile button
 		btnProfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				profile.updateData(user);
-				controller.switchWindow(HomeUI.this, profile);
+				ProfileUI tempProfileUI = HomeUI.this.getProfileUI();
+				tempProfileUI.upateUserData(controller.getCurrentUser());
+				viewController.switchWindow(HomeUI.this, tempProfileUI);
 			}
 		});
 
 		// Click exit button
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.updateLastAccess(user.getName());
-				model.closeConnection();
+				controller.closeProgram();
 				System.exit(0);
 			}
 		});
@@ -187,24 +168,25 @@ public class HomeUI extends JFrame {
 			}
 		});
 	}
-
-	public void setUser(User user) {
-		this.user = user;
+	
+	public void initializeClassesUI() {
+		playUI = viewController.getPlayUI();
+		profileUI = viewController.getProfileUI();
+		statsUI = viewController.getStatsUI();
+		managementUI = viewController.getManagementUI();
 	}
 
-	public ProfileUI getProfile() {
-		return profile;
+	public PlayUI getPlayUI() {
+		return playUI;
 	}
 
-	public void setProfile(ProfileUI profile) {
-		this.profile = profile;
+	public StatsUI getStatsUI() {
+		return statsUI;
 	}
 
-	public ConnectUI getConnectUI() {
-		return connectUI;
+	public ProfileUI getProfileUI() {
+		return profileUI;
 	}
-
-	public void setConnect(ConnectUI connectUI) {
-		this.connectUI = connectUI;
-	}
+	
+	
 }

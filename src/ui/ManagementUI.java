@@ -26,15 +26,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import logic.Controller;
-import logic.Model;
-import logic.Validator;
-import ui.ClientUI;
-import ui.ClientEditUI;
-import ui.GameUI;
-import ui.GameUpdateUI;
-import ui.ManagementUI;
-import ui.HomeUI;
+import controller.DataBaseController;
+import controller.MainController;
+import controller.ViewController;
 
 /**
  * Window for managing users and games.
@@ -51,12 +45,8 @@ public class ManagementUI extends JFrame {
 	private DefaultTableModel modelClients;
 	private DefaultTableModel modelGames;
 
-	private ClientUI clientForm;
-	private ClientEditUI clientEditForm;
-	private GameUI gameForm;
-	private GameUpdateUI gameEditForm;
-	private Model model;
-	private Controller controller;
+	private DataBaseController dbController;
+	private MainController controller;
 
 	private JButton btnEditClient;
 	private JButton btnDeleteClient;
@@ -69,16 +59,15 @@ public class ManagementUI extends JFrame {
 	/**
 	 * Creates the frame.
 	 * 
-	 * @param mainMenu   The main menu window
-	 * @param model      The data model of the application
 	 * @param controller The controller handling UI actions
 	 * @since 3.0
 	 */
-	public ManagementUI(HomeUI mainMenu, Model model, Controller controller, Validator validator) {
+	public ManagementUI(MainController controller) {
 		setResizable(false);
 
-		this.model = model;
 		this.controller = controller;
+		dbController = controller.getDataBaseController();
+		ViewController viewController = controller.getViewController();
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 802, 399);
@@ -234,7 +223,7 @@ public class ManagementUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				resetButtons();
-				controller.switchWindow(ManagementUI.this, mainMenu);
+				viewController.switchWindow(ManagementUI.this, viewController.getHomeUI());
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
@@ -267,11 +256,7 @@ public class ManagementUI extends JFrame {
 		// Click add client button
 		btnAddClient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (clientForm == null) {
-					clientForm = new ClientUI(ManagementUI.this, controller, model, validator);
-				}
-
-				controller.switchWindow(ManagementUI.this, clientForm);
+				viewController.switchWindow(ManagementUI.this, viewController.getClientUI());
 				resetButtons();
 			}
 		});
@@ -279,13 +264,10 @@ public class ManagementUI extends JFrame {
 		// Click edit client button
 		btnEditClient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (clientEditForm == null) {
-					clientEditForm = new ClientEditUI(ManagementUI.this, controller, model, validator);
-				}
-
 				int id = Integer.parseInt(tableClients.getValueAt(tableClients.getSelectedRow(), 0).toString());
-				clientEditForm.loadOriginalClient(id);
-				controller.switchWindow(ManagementUI.this, clientEditForm);
+
+				viewController.getClientEditUI().loadOriginalClient(id);
+				viewController.switchWindow(ManagementUI.this, viewController.getClientEditUI());
 				resetButtons();
 			}
 		});
@@ -298,7 +280,7 @@ public class ManagementUI extends JFrame {
 					return;
 
 				int id = (int) tableClients.getValueAt(row, 0);
-				model.deleteData(id, "customers");
+				dbController.deleteClient(id);
 
 				updateClientsTable();
 				resetButtons();
@@ -312,7 +294,7 @@ public class ManagementUI extends JFrame {
 						"Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 				if (option == JOptionPane.YES_OPTION) {
-					model.deleteTableData("customers");
+					dbController.deleteClients();
 					btnDeleteClients.setEnabled(false);
 					updateClientsTable();
 				}
@@ -323,7 +305,7 @@ public class ManagementUI extends JFrame {
 		btnBackClient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetButtons();
-				controller.switchWindow(ManagementUI.this, mainMenu);
+				viewController.switchWindow(ManagementUI.this, viewController.getHomeUI());
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
@@ -348,11 +330,7 @@ public class ManagementUI extends JFrame {
 		// Click add game button
 		btnAddGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (gameForm == null) {
-					gameForm = new GameUI(ManagementUI.this, controller, model, validator);
-				}
-
-				controller.switchWindow(ManagementUI.this, gameForm);
+				viewController.switchWindow(ManagementUI.this, viewController.getGameUI());
 				resetButtons();
 			}
 		});
@@ -360,13 +338,10 @@ public class ManagementUI extends JFrame {
 		// Click edit game button
 		btnEditGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (gameEditForm == null) {
-					gameEditForm = new GameUpdateUI(ManagementUI.this, controller, model, validator);
-				}
-
 				int id = Integer.parseInt(tableGames.getValueAt(tableGames.getSelectedRow(), 0).toString());
-				gameEditForm.loadOriginalGame(id);
-				controller.switchWindow(ManagementUI.this, gameEditForm);
+				viewController.getGameEditUI().loadOriginalGame(id);
+
+				viewController.switchWindow(ManagementUI.this, viewController.getGameEditUI());
 				resetButtons();
 			}
 		});
@@ -378,8 +353,8 @@ public class ManagementUI extends JFrame {
 				if (row == -1)
 					return;
 
-				int id = (int) tableGames.getValueAt(row, 0);
-				model.deleteData(id, "games");
+				int gameId = (int) tableGames.getValueAt(row, 0);
+				dbController.deleteGame(gameId);
 
 				updateGamesTable();
 				resetButtons();
@@ -393,7 +368,7 @@ public class ManagementUI extends JFrame {
 						"Confirm Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 				if (option == JOptionPane.YES_OPTION) {
-					model.deleteTableData("games");
+					dbController.deleteGames();
 					updateGamesTable();
 				}
 			}
@@ -403,7 +378,7 @@ public class ManagementUI extends JFrame {
 		btnBackGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetButtons();
-				controller.switchWindow(ManagementUI.this, mainMenu);
+				viewController.switchWindow(ManagementUI.this, viewController.getHomeUI());
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
@@ -415,18 +390,19 @@ public class ManagementUI extends JFrame {
 	 */
 	public void updateClientsTable() {
 		modelClients.setRowCount(0);
-
-		ResultSet rset = model.queryTableData("customers", false);
+		ResultSet rset = dbController.queryClients(false);
 
 		try {
 			boolean hasData = rset.next();
 			if (!hasData) {
 				resetButtons();
 				btnDeleteClients.setEnabled(false);
+				
 			} else {
 				controller.fillFullClientTable(rset, modelClients);
 				btnDeleteClients.setEnabled(true);
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -438,17 +414,19 @@ public class ManagementUI extends JFrame {
 	 */
 	public void updateGamesTable() {
 		modelGames.setRowCount(0);
-		ResultSet rset = model.queryTableData("games", false);
+		ResultSet rset = dbController.queryGames(false);
 
 		try {
 			boolean hasData = rset.next();
 			if (!hasData) {
 				resetButtons();
 				btnDeleteGames.setEnabled(false);
+			
 			} else {
 				controller.fillGameTable(rset, modelGames);
 				btnDeleteGames.setEnabled(true);
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

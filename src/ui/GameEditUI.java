@@ -8,9 +8,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,26 +28,30 @@ import model.Blackjack;
 import model.Slotmachine;
 
 /**
- * Window for the game form.
+ * Window for the game edit form.
  * 
  * @author David
  * @since 3.0
  */
-public class GameUI extends JFrame {
+public class GameEditUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
 	private JTextField textMoney;
-
 	private boolean moneyValid;
-	private JButton btnAdd;
+	private JButton btnUpdate;
 
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
+	private JTextField textId;
+	private JLabel lblId;
+	private JCheckBox chckbxActive;
+	
+	private MainController controller;
 
 	/**
-	 * Constructor for the game form window
+	 * Create the frame.
 	 * 
 	 * @param management Reference to the management window.
 	 * @param controller Reference to the controller handling logic.
@@ -52,14 +59,15 @@ public class GameUI extends JFrame {
 	 * @param validator  Reference to the validator for input checks.
 	 * @since 3.0
 	 */
-	public GameUI(MainController controller) {
+	public GameEditUI(MainController controller) {
 
+		this.controller = controller;
 		ViewController viewController = controller.getViewController();
 		ManagementUI managementUI = viewController.getManagementUI();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 414, 314);
+		setBounds(100, 100, 440, 314);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -67,47 +75,63 @@ public class GameUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblAddGame = new JLabel("Add Game", SwingConstants.CENTER);
-		lblAddGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblAddGame.setBounds(10, 21, 387, 39);
-		contentPane.add(lblAddGame);
+		JLabel lblEditGame = new JLabel("Edit Game", SwingConstants.CENTER);
+		lblEditGame.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblEditGame.setBounds(6, 21, 412, 39);
+		contentPane.add(lblEditGame);
 
-		btnAdd = new JButton("Add");
-		btnAdd.setBackground(new Color(128, 128, 255));
-		btnAdd.setEnabled(false);
-		btnAdd.setBounds(270, 228, 111, 32);
-		contentPane.add(btnAdd);
+		btnUpdate = new JButton("Update");
+		btnUpdate.setBackground(new Color(128, 128, 255));
+		btnUpdate.setEnabled(false);
+		btnUpdate.setBounds(292, 228, 111, 32);
+		contentPane.add(btnUpdate);
 
 		JButton btnBack = new JButton("Back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(20, 228, 111, 32);
+		btnBack.setBounds(24, 228, 111, 32);
 		contentPane.add(btnBack);
 
 		JLabel lblType = new JLabel("Type");
 		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblType.setBounds(36, 84, 49, 14);
+		lblType.setBounds(129, 84, 49, 14);
 		contentPane.add(lblType);
 
 		JLabel lblMoney = new JLabel("Money");
 		lblMoney.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMoney.setBounds(36, 146, 49, 14);
+		lblMoney.setBounds(40, 152, 49, 14);
 		contentPane.add(lblMoney);
 
 		textMoney = new JTextField();
-		textMoney.setBounds(97, 137, 182, 32);
+		textMoney.setBounds(101, 143, 236, 32);
 		contentPane.add(textMoney);
 		textMoney.setColumns(10);
 
 		lblErrorMoney = new JLabel("");
 		lblErrorMoney.setForeground(new Color(255, 0, 0));
 		lblErrorMoney.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorMoney.setBounds(36, 172, 233, 14);
+		lblErrorMoney.setBounds(40, 178, 297, 14);
 		contentPane.add(lblErrorMoney);
 
 		comboType = new JComboBox<Object>();
 		comboType.setModel(new DefaultComboBoxModel<Object>(new String[] { "Blackjack", "SlotMachine" }));
-		comboType.setBounds(97, 80, 111, 22);
+		comboType.setBounds(172, 80, 111, 22);
 		contentPane.add(comboType);
+
+		lblId = new JLabel("ID");
+		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblId.setBounds(40, 84, 26, 14);
+		contentPane.add(lblId);
+
+		textId = new JTextField();
+		textId.setEnabled(false);
+		textId.setEditable(false);
+		textId.setBounds(64, 77, 38, 29);
+		contentPane.add(textId);
+		textId.setColumns(10);
+
+		chckbxActive = new JCheckBox("Active");
+		chckbxActive.setBounds(304, 80, 89, 23);
+		contentPane.add(chckbxActive);
 
 		// When typing in the money field
 		textMoney.addKeyListener(new KeyAdapter() {
@@ -128,26 +152,28 @@ public class GameUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
+				viewController.switchWindow(GameEditUI.this, managementUI);
 			}
 		});
 
-		// Click "Add" button
-		btnAdd.addActionListener(new ActionListener() {
+		// Click "Update" button
+		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Double money = Double.parseDouble(textMoney.getText());
+				int id = Integer.parseInt(textId.getText());
 				String type = String.valueOf(comboType.getSelectedItem());
+				boolean active = chckbxActive.isSelected() ? true : false;
+				Double money = Double.parseDouble(textMoney.getText());
 
 				if (type.equalsIgnoreCase("Blackjack")) {
-					controller.getDataBaseController().addGame(new Blackjack(money));
+					controller.getDataBaseController().updateGame(new Blackjack(id, type, active, money));
 				}
 
 				if (type.equalsIgnoreCase("SlotMachine")) {
-					controller.getDataBaseController().addGame(new Slotmachine(money));
+					controller.getDataBaseController().updateGame(new Slotmachine(id, type, active, money));
 				}
 
 				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
+				viewController.switchWindow(GameEditUI.this, managementUI);
 			}
 		});
 
@@ -156,34 +182,68 @@ public class GameUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
+				viewController.switchWindow(GameEditUI.this, managementUI);
 			}
 		});
 	}
 
 	/**
-	 * Method to clear all fields in the form.
+	 * Method to fill the form fields with the data of the game to be edited.
+	 * 
+	 * @param id Id of the game to retrieve its data
+	 * @since 3.0
+	 */
+	public void loadOriginalGame(int gameId) {
+		ResultSet rset = controller.getDataBaseController().queryGame(gameId);
+
+		try {
+			textId.setText(String.valueOf(gameId));
+
+			switch (rset.getString(2)) {
+			case "Blackjack":
+				comboType.setSelectedIndex(0);
+				break;
+
+			case "SlotMachine":
+				comboType.setSelectedIndex(1);
+				break;
+			}
+
+			if (rset.getBoolean(3))
+				chckbxActive.setSelected(true);
+			textMoney.setText(String.valueOf(rset.getString(4)));
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		moneyValid = true;
+		checkForm();
+	}
+
+	/**
+	 * Method to clear all the form fields.
 	 * 
 	 * @since 3.0
 	 */
 	public void clearFields() {
-		btnAdd.setEnabled(false);
+		btnUpdate.setEnabled(false);
 		textMoney.setText("");
 		comboType.setSelectedIndex(0);
 		lblErrorMoney.setText("");
 	}
 
 	/**
-	 * Method to check that the user has filled in all form fields.
+	 * Method to check that the user has filled in all the form data.
 	 * 
 	 * @since 3.0
 	 */
 	public void checkForm() {
 		if (moneyValid) {
-			btnAdd.setEnabled(true);
+			btnUpdate.setEnabled(true);
 			return;
 		}
 
-		btnAdd.setEnabled(false);
+		btnUpdate.setEnabled(false);
 	}
 }

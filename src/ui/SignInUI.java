@@ -21,14 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import controller.DataBaseController;
+import controller.MainController;
+import controller.ViewController;
 import exceptions.MailException;
-import logic.Controller;
-import logic.Model;
-import logic.Session;
-import logic.User;
-import logic.Validator;
-import ui.ConnectUI;
-import ui.SignInUI;
+import model.User;
 
 /**
  * Window where a user can be created and log in as that user.
@@ -64,12 +61,13 @@ public class SignInUI extends JFrame {
 	 * 
 	 * @param model        The data model
 	 * @param controller   The controller handling logic
-	 * @param session      The current session manager
-	 * @param login        The login UI to return to
 	 * @param validatorThe validator for form fields
 	 * @since 3.0
 	 */
-	public SignInUI(Model model, Controller controller, Session session, ConnectUI login, Validator validator) {
+	public SignInUI(MainController controller) {
+
+		DataBaseController dbController = controller.getDataBaseController();
+		ViewController viewController = controller.getViewController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -165,7 +163,7 @@ public class SignInUI extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetContent();
-				controller.switchWindow(SignInUI.this, login);
+				viewController.switchWindow(SignInUI.this, viewController.getConnectUI());
 			}
 		});
 
@@ -176,7 +174,7 @@ public class SignInUI extends JFrame {
 				validUsername = false;
 				String text = txtUsername.getText();
 
-				if (validator.validateName(text, lblUsernameError)) {
+				if (controller.getValidator().validateName(text, lblUsernameError)) {
 					validUsername = true;
 				}
 				checkForm();
@@ -263,9 +261,12 @@ public class SignInUI extends JFrame {
 					try {
 						user = new User(txtUsername.getText(), password, txtEmail.getText(),
 								chkRememberLogin.isSelected());
-						user = model.addUser(user, chkRememberLogin.isSelected());
-						session.startSession(user, SignInUI.this);
-						model.addDefaultUser();
+						
+						user = dbController.addUser(user, chkRememberLogin.isSelected());
+						controller.updateUser(user);
+
+						dbController.addDefaultUser();
+						viewController.switchWindow(SignInUI.this, viewController.getHomeUI());
 						resetContent();
 
 					} catch (MailException e1) {
@@ -285,7 +286,7 @@ public class SignInUI extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				resetContent();
-				controller.switchWindow(SignInUI.this, login);
+				viewController.switchWindow(SignInUI.this, viewController.getLogInUI());
 			}
 		});
 	}

@@ -12,14 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import logic.Controller;
-import logic.Model;
-import logic.Session;
-import logic.Validator;
-import ui.ConnectUI;
-import ui.SignInUI;
-import ui.LogInUI;
-import ui.HomeUI;
+import controller.MainController;
+import controller.ViewController;
 
 /**
  * Window where the user can log in with a profile from the database. This will
@@ -32,23 +26,18 @@ public class ConnectUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
-	private LogInUI logIn;
-	private SignInUI createUser;
 	private HomeUI menu;
 
 	/**
 	 * Create the frame.
 	 * 
-	 * @param model      Reference to the model that manages data operations.
 	 * @param controller Reference to the controller handling program logic.
-	 * @param session    Current session information.
-	 * @param validator  Reference to the validator for input checks.
-	 * @param menu       Reference to the home menu window.
+	 * @param dbManager  Reference to the dbManager that manages data operations.
 	 * @since 3.0
 	 */
-	public ConnectUI(Model model, Controller controller, Session session, Validator validator, HomeUI menu) {
-		this.menu = menu;
+	public ConnectUI(MainController controller) {
+
+		ViewController viewController = controller.getViewController();
 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,7 +73,7 @@ public class ConnectUI extends JFrame {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				model.closeConnection();
+				controller.closeProgram();
 				System.exit(0);
 			}
 		});
@@ -92,7 +81,7 @@ public class ConnectUI extends JFrame {
 		// Click "Exit" button
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.closeConnection();
+				controller.closeProgram();
 				System.exit(0);
 			}
 		});
@@ -100,22 +89,14 @@ public class ConnectUI extends JFrame {
 		// Click "Create User" button
 		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (createUser == null) {
-					createUser = new SignInUI(model, controller, session, ConnectUI.this, validator);
-				}
-				setVisible(false);
-				createUser.setVisible(true);
+				viewController.switchWindow(ConnectUI.this, viewController.getSignInUI());
 			}
 		});
 
 		// Click "Log In" button
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (logIn == null) {
-					logIn = new LogInUI(model, controller, session, ConnectUI.this, validator);
-				}
-				setVisible(false);
-				logIn.setVisible(true);
+				viewController.switchWindow(ConnectUI.this, viewController.getLogInUI());
 			}
 		});
 	}
