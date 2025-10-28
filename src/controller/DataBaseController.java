@@ -45,8 +45,12 @@ public class DataBaseController {
 		return dbManager.getUserDAO().queryUser(user, connection);
 	}
 
-	public void toggleRememberLogin(String name, Boolean active) {
-		dbManager.getUserDAO().toggleRememberLogin(name, active, connection);
+	public void enableRememberLogin(String name) {
+		dbManager.getUserDAO().enableRememberLogin(name, connection);
+	}
+	
+	public void disableRememberLogin(String name) {
+		dbManager.getUserDAO().disableRememberLogin(connection);
 	}
 
 	public void updateLastAccess(String name) {

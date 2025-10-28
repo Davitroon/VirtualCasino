@@ -198,7 +198,7 @@ public class LogInUI extends JFrame {
 						} else {
 							// If "remember login" is checked, update before logging in
 							if (chckbxRememberSession.isSelected()) {
-								controller.getDataBaseController().toggleRememberLogin(user.getName(), true);
+								controller.getDataBaseController().enableRememberLogin(user.getName());
 							}
 							
 							controller.updateUser(user);

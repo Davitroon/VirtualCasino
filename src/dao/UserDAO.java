@@ -60,7 +60,7 @@ public class UserDAO {
 			ResultSet rset = queryUser(user, connection);
 
 			if (rememberSession) {
-				toggleRememberLogin(user.getName(), rememberSession, connection);
+				enableRememberLogin(user.getName(), connection);
 			}
 
 			user = new User(generatedId, rset.getString("username"), rset.getString("password"),
@@ -150,23 +150,38 @@ public class UserDAO {
 	 * 
 	 * @param name        Username to toggle.
 	 * @param activate True if the session has been marked to be remembered.
-	 * @since 3.0
+	 * @since 3.3
 	 */
-	public void toggleRememberLogin(String name, boolean activate, Connection connection) {
+	public void enableRememberLogin(String name, Connection connection) {
+		try {
+			disableRememberLogin(connection);
+
+			// Set this user to remember session
+			try (PreparedStatement stmt3 = connection
+					.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
+				stmt3.setString(1, name);
+				stmt3.executeUpdate();
+			}
+
+		} catch (SQLException e) {
+			exceptionMessage.showError(e,
+					"An error occurred in the DB connection while modifying a user.\nCheck the console for more information.");
+		}
+	}
+	
+	/**
+	 * Method that will toggle a user's automatic login.  
+	 * 
+	 * @param name        Username to toggle.
+	 * @param activate True if the session has been marked to be remembered.
+	 * @since 3.3
+	 */
+	public void disableRememberLogin(Connection connection) {
 		try {
 			// Remove the flag from all other users who have remember session checked
 			try (PreparedStatement stmt2 = connection
 					.prepareStatement("UPDATE users SET remember_login = FALSE WHERE remember_login = TRUE")) {
 				stmt2.executeUpdate();
-			}
-
-			if (activate) {
-				// Set this user to remember session
-				try (PreparedStatement stmt3 = connection
-						.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
-					stmt3.setString(1, name);
-					stmt3.executeUpdate();
-				}
 			}
 
 		} catch (SQLException e) {
@@ -179,6 +194,7 @@ public class UserDAO {
 	 * Updates the last access time for a user in the program.  
 	 * 
 	 * @param name Username to update.
+	 * @since 3.0
 	 */
 	public void updateLastAccess(String name, Connection connection) {
 		String query = "UPDATE users SET last_access = NOW() WHERE username = ?";

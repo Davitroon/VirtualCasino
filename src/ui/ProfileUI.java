@@ -117,15 +117,22 @@ public class ProfileUI extends JFrame {
 		// Log out button
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				dbController.disableRememberLogin(controller.getCurrentUser().getName());
 				viewController.switchWindow(ProfileUI.this, viewController.getConnectUI());
 			}
 		});
 
 		// Toggle remember session
 		chckbxRememberSession.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dbController.toggleRememberLogin(controller.getCurrentUser().getName(), chckbxRememberSession.isSelected());
-			}
+		    public void actionPerformed(ActionEvent e) {
+		        if (chckbxRememberSession.isSelected()) {
+		            dbController.enableRememberLogin(controller.getCurrentUser().getName());
+		            
+		        } else {
+		            dbController.disableRememberLogin(controller.getCurrentUser().getName());
+		        }
+		    }
 		});
 
 		// Delete user button
