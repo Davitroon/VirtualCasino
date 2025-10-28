@@ -34,7 +34,7 @@ public class BlackjackUI extends JFrame {
 	private JPanel contentPane;
 
 	private MainController controller;
-	private PlayUI play;
+	private PlayUI playUI;
 	private JLabel lblDealerCardsList;
 	private JLabel lblYourCardsList;
 	private JLabel lblYourCards;
@@ -63,23 +63,14 @@ public class BlackjackUI extends JFrame {
 	 *                   application data.
 	 * @param play       The parent 'Play' window (PlayUI) to return to when the
 	 *                   game is closed.
-	 * @param client     The Client object representing the player currently
-	 *                   engaging in the game.
-	 * @param game       The specific Game object (which is cast to Blackjack)
-	 *                   containing the game's state (cards, money pool).
-	 * @param bet        The initial amount placed by the client for this game
-	 *                   session.
 	 * @since 3.0
 	 */
-	public BlackjackUI(MainController controller, Client client, Game game, double bet) {
+	public BlackjackUI(MainController controller) {
 		viewController = controller.getViewController();
 		setResizable(false);
 
 		this.controller = controller;
-		play = viewController.getPlayUI();
-		this.client = client;
-		this.blackjack = (Blackjack) game;
-		this.bet = bet;
+		playUI = viewController.getPlayUI();
 
 		setBounds(100, 100, 577, 442);
 		setLocationRelativeTo(null);
@@ -225,11 +216,10 @@ public class BlackjackUI extends JFrame {
 		}
 
 		try {
-			play.updateTables();
-			play.setVisible(true);
+			playUI.updateTables();
+			controller.getViewController().switchWindow(this, playUI);
 
 		} catch (GameException e) {
-			controller.getViewController().switchWindow(play, play);
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}

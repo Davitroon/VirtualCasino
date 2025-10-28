@@ -67,6 +67,7 @@ public class SlotmachineUI extends JFrame {
 	 */
 	public SlotmachineUI(MainController controller) {
 
+		this.controller = controller;
 		viewController = controller.getViewController();
 		playUI = viewController.getPlayUI();
 
@@ -198,14 +199,11 @@ public class SlotmachineUI extends JFrame {
 			}
 		}
 
-		dispose();
-
 		try {
 			playUI.updateTables();
-			playUI.setVisible(true);
+			controller.getViewController().switchWindow(this, playUI);
 
 		} catch (GameException e) {
-			viewController.switchWindow(SlotmachineUI.this, playUI);
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}

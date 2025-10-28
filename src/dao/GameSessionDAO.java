@@ -36,7 +36,7 @@ public class GameSessionDAO {
 	 */
 	public void addGameSession(Client client, Game game, double betResult, int userId ,Connection connection) {
 
-		String query = "INSERT INTO game_sessions (customer_id, game_id, game_type, bet_result, user_profile) "
+		String query = "INSERT INTO game_sessions (client_id, game_id, game_type, bet_result, user_profile) "
 				+ "VALUES (?, ?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {
