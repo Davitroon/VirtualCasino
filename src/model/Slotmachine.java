@@ -1,20 +1,25 @@
 package model;
 
 /**
- * Slot machine game, child of the Game class. Simulates the real operation of a
- * slot machine.
+ * Represents a Slot Machine game, child of the {@link Game} class.
+ * <p>
+ * Simulates the behavior of a real slot machine, with three slots that generate
+ * random numbers between 1 and 9. The payout depends on the combination of the
+ * numbers obtained.
+ * </p>
  * 
- * @author David Forero
+ * @author Davitroon
  * @since 2.0
  */
 public class Slotmachine extends Game {
 
-	int[] numbers = new int[3];
+	/** Array representing the three slots of the machine. */
+	private int[] numbers = new int[3];
 
 	/**
-	 * Constructor for the slot machine, sends its type to the Game constructor.
+	 * Constructor for creating a Slot Machine with a specific money pool.
 	 * 
-	 * @param money Money that the game will count for bets.
+	 * @param money Money available in the game for bets.
 	 * @since 2.0
 	 */
 	public Slotmachine(double money) {
@@ -22,10 +27,11 @@ public class Slotmachine extends Game {
 	}
 
 	/**
-	 * Slot machine constructor for necessary data (to save in the game).
+	 * Constructor for creating a Slot Machine with an ID and money pool, typically
+	 * used when loading saved games.
 	 * 
 	 * @param id    Game ID
-	 * @param money Game money
+	 * @param money Money available in the game for bets
 	 * @since 3.0
 	 */
 	public Slotmachine(int id, double money) {
@@ -33,13 +39,12 @@ public class Slotmachine extends Game {
 	}
 
 	/**
-	 * Complete constructor (to be edited) for the slot machine, sends parameters to
-	 * the Game constructor.
+	 * Complete constructor for the Slot Machine, allowing full initialization.
 	 * 
 	 * @param id     Game ID
 	 * @param type   Game type
-	 * @param active Game status
-	 * @param money  Game money
+	 * @param active Game status (active or inactive)
+	 * @param money  Money available in the game for bets
 	 * @since 2.0
 	 */
 	public Slotmachine(int id, String type, boolean active, double money) {
@@ -47,27 +52,42 @@ public class Slotmachine extends Game {
 	}
 
 	/**
-	 * Method that fills the 3 slots with a random number from 1 to 9.
+	 * Fills the three slots with random numbers between 1 and 9 (inclusive).
+	 * <p>
+	 * This simulates a spin of the slot machine.
+	 * </p>
 	 * 
 	 * @since 2.0
 	 */
 	public void generateNumbers() {
-
 		for (int i = 0; i < numbers.length; i++) {
 			numbers[i] = (int) Math.round(Math.random() * 8) + 1;
 		}
 	}
 
+	/**
+	 * Returns the array of numbers currently in the slots.
+	 * 
+	 * @return An array of 3 integers representing the slot results.
+	 */
 	public int[] getNumbers() {
 		return numbers;
 	}
 
 	/**
-	 * Checks the number of repeated slots (numbers).<br>
-	 * - If there are none, the bet is lost.<br>
-	 * - If there are 2, the bet is multiplied by 1.9.<br>
-	 * - If there are 3, the bet is multiplied by 3.5.<br>
-	 * - If there are three sevens, the bet is multiplied by 6.5.<br>
+	 * Calculates the result of a bet based on the numbers in the slots.
+	 * <p>
+	 * Payout rules:
+	 * <ul>
+	 * <li>No matching numbers: player loses the bet.</li>
+	 * <li>Two matching numbers: bet multiplied by 1.9.</li>
+	 * <li>Three matching numbers: bet multiplied by 3.5.</li>
+	 * <li>Three sevens: bet multiplied by 6.5 (jackpot).</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @param bet The amount of money bet by the player.
+	 * @return The payout based on the slot result. Negative if the player loses.
 	 */
 	@Override
 	public double play(double bet) {
@@ -79,12 +99,10 @@ public class Slotmachine extends Game {
 
 		if (n1 == n2 && n1 == n3) {
 			return bet * 3.5;
-
 		}
 
 		if (n1 == n2 || n1 == n3 || n2 == n3) {
 			return bet * 1.9;
-
 		}
 
 		return -bet;

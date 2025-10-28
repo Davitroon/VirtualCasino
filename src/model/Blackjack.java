@@ -5,9 +5,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 /**
- * Blackjack Game, child of Game. Simulates the functionality of real BlackJack.
+ * Blackjack game, child of {@link Game}. Simulates the functionality of real
+ * Blackjack, including card shuffling, dealing, hand evaluation, and game
+ * logic.
  * 
- * @author David Forero
+ * @author David
  * @since 2.0
  */
 public class Blackjack extends Game {
@@ -17,9 +19,9 @@ public class Blackjack extends Game {
 	private ArrayList<Integer> dealerCards = new ArrayList<>();
 
 	/**
-	 * Constructor for Blackjack, sends its type to the Game constructor.
+	 * Constructs a Blackjack game with the specified initial money for bets.
 	 * 
-	 * @param money Money that the game will count for bets.
+	 * @param money The initial money for bets in this game.
 	 * @since 2.0
 	 */
 	public Blackjack(double money) {
@@ -27,10 +29,11 @@ public class Blackjack extends Game {
 	}
 
 	/**
-	 * Blackjack constructor for necessary data (to save in the game).
+	 * Constructs a Blackjack game with an ID and initial money. Useful when loading
+	 * a saved game.
 	 * 
 	 * @param id    Game ID
-	 * @param money Game money
+	 * @param money Initial money for bets
 	 * @since 3.0
 	 */
 	public Blackjack(int id, double money) {
@@ -38,13 +41,12 @@ public class Blackjack extends Game {
 	}
 
 	/**
-	 * Complete constructor (to be edited) for Blackjack, sends parameters to the
-	 * Game constructor.
+	 * Full constructor specifying ID, type, active status, and money.
 	 * 
 	 * @param id     Game ID
 	 * @param type   Game type
-	 * @param active Game status
-	 * @param money  Game money
+	 * @param active Whether the game is active
+	 * @param money  Initial money for bets
 	 * @since 3.0
 	 */
 	public Blackjack(int id, String type, boolean active, double money) {
@@ -52,15 +54,18 @@ public class Blackjack extends Game {
 	}
 
 	/**
-	 * Shuffles the cards. First, it empties all card decks, then it fills the total
-	 * card deck, and finally shuffles them.
+	 * Shuffles the card deck.
+	 * <p>
+	 * Clears all player, dealer, and total card lists, fills the total deck with 52
+	 * cards, and shuffles them randomly.
+	 * </p>
+	 * 
+	 * @since 2.0
 	 */
 	public void shuffleCards() {
-
 		totalCards.clear();
 		playerCards.clear();
-		dealerCards.clear(); // NOTE: 'cartasTotales' translated to 'totalCards', etc., in the previous
-								// response
+		dealerCards.clear();
 
 		for (int i = 1; i < 14; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -72,155 +77,137 @@ public class Blackjack extends Game {
 	}
 
 	/**
-	 * Indicates whether the dealer should ask for a card in different situations.
+	 * Determines whether the dealer should hit (draw another card) based on
+	 * Blackjack rules.
 	 * 
-	 * @return Whether or not to ask for a card.
+	 * @return true if the dealer should hit, false otherwise
 	 * @since 2.0
 	 */
 	public boolean dealerShouldHit() {
-
 		int dealerSum = sumCards(dealerCards);
 		int playerSum = sumCards(playerCards);
 
-		// If their cards sum less than 16, they must hit (ask for a card).
 		if (dealerSum < 16) {
 			return true;
-
-			// If they have more points than the player and don't exceed 21, they stand.
 		} else if (dealerSum > playerSum && dealerSum < 22) {
 			return false;
-
-			// They have fewer points than the player and more than 16, so they must hit to
-			// win.
 		} else {
 			return true;
 		}
 	}
 
+	/**
+	 * Gets the player's cards.
+	 * 
+	 * @return List of integers representing the player's cards
+	 */
 	public ArrayList<Integer> getPlayerCards() {
 		return playerCards;
 	}
 
+	/**
+	 * Gets the dealer's cards.
+	 * 
+	 * @return List of integers representing the dealer's cards
+	 */
 	public ArrayList<Integer> getDealerCards() {
 		return dealerCards;
 	}
 
 	/**
-	 * Checks if the player has exceeded 21 (busted).
+	 * Checks if the specified player has exceeded 21 (busted).
 	 * 
-	 * @param player Player to check.
-	 * @return True if the player has exceeded 21, otherwise false.
+	 * @param player "player" or "dealer" to indicate which hand to check
+	 * @return true if the player's total exceeds 21, false otherwise
 	 * @since 2.0
 	 */
 	public boolean playerLoses(String player) {
-
 		ArrayList<Integer> cardList = player.equalsIgnoreCase("player") ? playerCards : dealerCards;
-
-		// Assumes 'sumCards' is a method accessible in this class, corresponding to
-		// 'sumarCartas'
 		return sumCards(cardList) > 21;
 	}
 
 	/**
-	 * Compares the sum of the player's and the dealer's cards.<br>
-	 * - If the player wins with a blackjack, the bet is multiplied by 2.5.<br>
-	 * - If there is a tie with a blackjack or the player wins with a normal hand,
-	 * the bet is multiplied by 1.5.<br>
-	 * - If there is a tie without a blackjack, the original bet is recovered.<br>
-	 * - If the player loses, they lose their bet.<br>
+	 * Plays a round of Blackjack and calculates the resulting payout.
+	 * <p>
+	 * - Player busts: loses the bet.<br>
+	 * - Dealer busts: player wins 1.75x the bet.<br>
+	 * - Tie with blackjack: player wins 1.5x the bet.<br>
+	 * - Tie without blackjack: player gets original bet (push).<br>
+	 * - Player wins normally: bet multiplied by 1.5 or 2.5 if blackjack.<br>
+	 * - Player loses normally: loses the bet.
+	 * </p>
+	 * 
+	 * @param bet Amount bet by the player
+	 * @return Resulting amount after the round
 	 */
 	@Override
 	public double play(double bet) {
-
-		// Assumes 'sumCards' is a method accessible in this class, corresponding to
-		// 'sumarCartas'
 		int dealerSum = sumCards(dealerCards);
 		int playerSum = sumCards(playerCards);
 
-		// Player busts/loses
 		if (playerSum > 21) {
 			return -bet;
 		}
 
-		// Dealer busts and the player does not
 		if (dealerSum > 21) {
-			// NOTE: The original code uses 1.75 here, which is not standard BlackJack
-			// payout (usually 2.0).
-			// We maintain the logic.
 			return bet * 1.75;
 		}
 
-		// Tie (Push)
 		if (playerSum == dealerSum) {
 			if (playerSum == 21) {
-				return bet * 1.5; // Tie with a blackjack (often just a push/1.0 in real games, but maintaining
-									// the code's logic)
-
+				return bet * 1.5;
 			} else {
-				return bet; // Normal tie (push)
+				return bet;
 			}
 		}
 
-		// Player wins (Blackjack or normal win)
 		if (playerSum > dealerSum) {
-			// Check for natural Blackjack (21 on first 2 cards)
 			return (playerSum == 21 && playerCards.size() == 2) ? bet * 2.5 : bet * 1.5;
 		}
 
-		// Player loses (Dealer score > Player score, and neither busted)
 		return -bet;
-
 	}
 
 	/**
-	 * Reads a card to translate it to the French deck (face card symbols).
+	 * Translates a card value to its face symbol (French deck).
 	 * 
-	 * @param card Card to read.
-	 * @return Translated card symbol.
+	 * @param card Card number (1-13)
+	 * @return Symbolic representation ("A", "J", "Q", "K", or numeric string)
 	 * @since 2.0
 	 */
 	private String readCard(Integer card) {
-
 		switch (card) {
 		case 1:
 			return "A";
-
 		case 11:
 			return "J";
-
 		case 12:
 			return "Q";
-
 		case 13:
 			return "K";
-
 		default:
 			return String.valueOf(card);
 		}
 	}
 
 	/**
-	 * Shows the cards of each player.
+	 * Shows the cards of the specified player.
 	 * 
-	 * @param hideCard Whether or not to hide the dealer's 2nd card.
-	 * @param player   The player whose cards are to be displayed ("player" or
-	 *                 "dealer").
-	 * @return The cards of the specified player.
+	 * @param hideCard Whether to hide the dealer's second card
+	 * @param player   "player" or "dealer"
+	 * @return String representation of the cards
 	 * @since 2.0
 	 */
 	public String showCards(boolean hideCard, String player) {
-
 		String cards = "";
 
 		if (player.equals("player")) {
-			// Assumes 'playerCards' is used for the client/player
 			for (Integer card : playerCards) {
 				cards += "[" + readCard(card) + "] ";
 			}
 		}
 
 		if (player.equals("dealer")) {
-			// Assumes 'dealerCards' is used for the dealer/crupier
 			for (int i = 0; i < dealerCards.size(); i++) {
 				if (hideCard && i == 1) {
 					cards += "[?] ";
@@ -234,21 +221,18 @@ public class Blackjack extends Game {
 	}
 
 	/**
-	 * Deals a number of cards to the indicated player, removing the cards from the
-	 * total deck.
+	 * Deals a specified number of cards to a player or dealer.
 	 * 
-	 * @param numCards Number of cards to deal.
-	 * @param player   Player to whom the cards will be dealt.
+	 * @param numCards Number of cards to deal
+	 * @param player   "player" or "dealer"
 	 * @since 2.0
 	 */
 	public void dealCards(int numCards, String player) {
-
 		if (player.equalsIgnoreCase("player")) {
 			for (int i = 0; i < numCards; i++) {
 				playerCards.add(totalCards.getFirst());
 				totalCards.removeFirst();
 			}
-
 		} else if (player.equalsIgnoreCase("dealer")) {
 			for (int i = 0; i < numCards; i++) {
 				dealerCards.add(totalCards.getFirst());
@@ -258,33 +242,27 @@ public class Blackjack extends Game {
 	}
 
 	/**
-	 * Sums the value of the player's cards.
+	 * Sums the value of a list of cards, treating Aces as 1 or 11 as appropriate.
 	 * 
-	 * @param cardList Player's cards.
-	 * @return The total sum, taking Aces into account.
+	 * @param cardList List of cards
+	 * @return Total sum of cards
 	 * @since 2.0
 	 */
 	public int sumCards(ArrayList<Integer> cardList) {
-
 		int sum = 0;
 		int numAces = 0;
 
 		for (int card : cardList) {
-			// Counts if there are any Aces.
 			if (card == 1) {
 				numAces++;
 				sum += 11;
-
-				// Considers J, Q, and K as 10.
 			} else if (card > 10) {
 				sum += 10;
-
 			} else {
 				sum += card;
 			}
 		}
 
-		// Converts an Ace from 11 to 1 if the player busts (exceeds 21).
 		while (sum > 21 && numAces > 0) {
 			sum -= 10;
 			numAces--;
