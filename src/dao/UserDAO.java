@@ -12,11 +12,25 @@ import exceptions.ExceptionMessage;
 import model.User;
 
 /**
- *  * @author deivi Davitroon  * @since 3.3  
+ * DAO class for managing users in the database.
+ * <p>
+ * Provides CRUD operations and methods for handling login session preferences.
+ * </p>
+ * 
+ * @author Davitroon
+ * @since 3.3
  */
 public class UserDAO {
 	private ExceptionMessage exceptionMessage;
 
+	/**
+	 * Constructs a {@code UserDAO} with a reference to the exception handling
+	 * system.
+	 * 
+	 * @param exceptionMessage class responsible for displaying or logging
+	 *                         database-related errors.
+	 * @since 3.3
+	 */
 	public UserDAO(ExceptionMessage exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
@@ -24,19 +38,17 @@ public class UserDAO {
 	// --------------------- CREATE ---------------------
 
 	/**
-	 * Method that adds a user to the DB.  
+	 * Adds a new user to the database.
 	 * 
-	 * @param user                      User object to add.
-	 * @param rememberSession True if it has been indicated to save the login      
-	 *                                          session.
-	 * @return The User object with the generated ID.
-	 * @throws MailException                                                     
-	 *                                                  Exception thrown if the    
-	 *                                                                             
-	 *                                                                    email is
-	 *                                                  invalid.
-	 * @throws SQLIntegrityConstraintViolationException
-	 * @since 3.0
+	 * @param user            {@link User} object to add.
+	 * @param rememberSession {@code true} if the login session should be
+	 *                        remembered.
+	 * @param connection      active database {@link Connection}.
+	 * @return The {@link User} object with the generated ID.
+	 * @throws MailException                            if the email is invalid.
+	 * @throws SQLIntegrityConstraintViolationException if the username already
+	 *                                                  exists.
+	 * @since 3.3
 	 */
 	public User addUser(User user, boolean rememberSession, Connection connection)
 			throws MailException, SQLIntegrityConstraintViolationException {
@@ -87,13 +99,14 @@ public class UserDAO {
 	// --------------------- READ ---------------------
 
 	/**
-	 * Executes a query to retrieve all users who have the "remember_login" flag
-	 * set. This method is intended for checking if any user should be automatically
-	 * logged in.
-	 *
-	 * @param connection Database connection to use for the query
-	 * @return ResultSet containing users with remember_login = 1
-	 * @since 3.0
+	 * Retrieves users who have the "remember_login" flag set.
+	 * <p>
+	 * Used to automatically log in users who opted for remembering their session.
+	 * </p>
+	 * 
+	 * @param connection active database {@link Connection}.
+	 * @return {@link ResultSet} containing users with {@code remember_login = 1}.
+	 * @since 3.3
 	 */
 	public ResultSet checkRememberLogin(Connection connection) {
 
@@ -112,12 +125,12 @@ public class UserDAO {
 	}
 
 	/**
-	 * Queries a user from the database. The name and password must be exactly the
-	 * same.  
+	 * Queries a user from the database using exact username and password.
 	 * 
-	 * @param name Username.
-	 * @return Result of the SQL query.
-	 * @since 3.0
+	 * @param user       {@link User} object containing the credentials to search.
+	 * @param connection active database {@link Connection}.
+	 * @return {@link ResultSet} containing the user if found, or {@code null}.
+	 * @since 3.3
 	 */
 	public ResultSet queryUser(User user, Connection connection) {
 		String query = "SELECT * FROM users WHERE username = ? AND password = ?";
@@ -130,7 +143,6 @@ public class UserDAO {
 
 			rset = stmt.executeQuery();
 
-			// If a user with that password was found
 			if (rset.next()) {
 				return rset;
 			}
@@ -146,17 +158,16 @@ public class UserDAO {
 	// --------------------- UPDATE ---------------------
 
 	/**
-	 * Method that will toggle a user's automatic login.  
+	 * Enables automatic login for a user, and disables it for all other users.
 	 * 
-	 * @param name        Username to toggle.
-	 * @param activate True if the session has been marked to be remembered.
+	 * @param name       Username to enable remembering session.
+	 * @param connection active database {@link Connection}.
 	 * @since 3.3
 	 */
 	public void enableRememberLogin(String name, Connection connection) {
 		try {
 			disableRememberLogin(connection);
 
-			// Set this user to remember session
 			try (PreparedStatement stmt3 = connection
 					.prepareStatement("UPDATE users SET remember_login = TRUE WHERE username = ?")) {
 				stmt3.setString(1, name);
@@ -168,17 +179,15 @@ public class UserDAO {
 					"An error occurred in the DB connection while modifying a user.\nCheck the console for more information.");
 		}
 	}
-	
+
 	/**
-	 * Method that will toggle a user's automatic login.  
+	 * Disables automatic login for all users.
 	 * 
-	 * @param name        Username to toggle.
-	 * @param activate True if the session has been marked to be remembered.
+	 * @param connection active database {@link Connection}.
 	 * @since 3.3
 	 */
 	public void disableRememberLogin(Connection connection) {
 		try {
-			// Remove the flag from all other users who have remember session checked
 			try (PreparedStatement stmt2 = connection
 					.prepareStatement("UPDATE users SET remember_login = FALSE WHERE remember_login = TRUE")) {
 				stmt2.executeUpdate();
@@ -191,10 +200,11 @@ public class UserDAO {
 	}
 
 	/**
-	 * Updates the last access time for a user in the program.  
+	 * Updates the last access timestamp for a user.
 	 * 
-	 * @param name Username to update.
-	 * @since 3.0
+	 * @param name       Username to update.
+	 * @param connection active database {@link Connection}.
+	 * @since 3.3
 	 */
 	public void updateLastAccess(String name, Connection connection) {
 		String query = "UPDATE users SET last_access = NOW() WHERE username = ?";
@@ -212,9 +222,10 @@ public class UserDAO {
 	// --------------------- DELETE ---------------------
 
 	/**
-	 *  
+	 * Deletes a user from the database.
 	 * 
-	 * @param connection
+	 * @param userId     ID of the user to delete.
+	 * @param connection active database {@link Connection}.
 	 * @since 3.3
 	 */
 	public void deleteUser(int userId, Connection connection) {
@@ -222,12 +233,11 @@ public class UserDAO {
 
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			stmt.setInt(1, userId);
-
 			stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			exceptionMessage.showError(e,
-					"An error occurred in the DB connection while deleting an entry from the table users.\nCheck the console for more information.");
+					"An error occurred in the DB connection while deleting an entry from the users table.\nCheck the console for more information.");
 		}
 	}
 }
