@@ -6,7 +6,7 @@ package model;
  * (e.g., Blackjack, Slotmachine) will extend this class and implement its own
  * logic.
  * 
- * @author David
+ * @author Davitroon
  * @since 2.0
  */
 public abstract class Game {

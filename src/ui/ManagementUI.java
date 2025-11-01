@@ -31,9 +31,14 @@ import controller.MainController;
 import controller.ViewController;
 
 /**
- * Window for managing users and games.
+ * Window for managing users (clients) and games.
+ * <p>
+ * Provides tabs for Users and Games. Each tab displays a table with current
+ * data and allows adding, editing, and deleting entries.
+ * Buttons are dynamically enabled depending on table selection.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class ManagementUI extends JFrame {
@@ -57,9 +62,13 @@ public class ManagementUI extends JFrame {
 	private JButton btnDeleteGames;
 
 	/**
-	 * Creates the frame.
+	 * Constructs the management window frame.
+	 * <p>
+	 * Initializes all UI components, tables, and buttons for managing clients and games.
+	 * Adds event listeners for table row selection, add/edit/delete actions, and window events.
+	 * </p>
 	 * 
-	 * @param controller The controller handling UI actions
+	 * @param controller the main controller handling UI actions and database operations
 	 * @since 3.0
 	 */
 	public ManagementUI(MainController controller) {
@@ -385,8 +394,13 @@ public class ManagementUI extends JFrame {
 	}
 
 	/**
-	 * Method that queries the clients table in the database to update the visual
-	 * table.
+	 * Updates the clients table with current data from the database.
+	 * <p>
+	 * Queries the database for clients and populates the table model.
+	 * Enables or disables the delete all clients button based on data presence.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void updateClientsTable() {
 		modelClients.setRowCount(0);
@@ -409,8 +423,13 @@ public class ManagementUI extends JFrame {
 	}
 
 	/**
-	 * Method that queries the games table in the database to update the visual
-	 * table.
+	 * Updates the games table with current data from the database.
+	 * <p>
+	 * Queries the database for games and populates the table model.
+	 * Enables or disables the delete all games button based on data presence.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void updateGamesTable() {
 		modelGames.setRowCount(0);
@@ -433,7 +452,13 @@ public class ManagementUI extends JFrame {
 	}
 
 	/**
-	 * Method that resets the buttons to their original state.
+	 * Resets all edit and delete buttons to their default disabled state.
+	 * <p>
+	 * Called when switching tabs, after deletion, or after table refresh to prevent
+	 * invalid operations.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void resetButtons() {
 		btnEditClient.setEnabled(false);

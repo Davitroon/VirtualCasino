@@ -15,11 +15,16 @@ import javax.swing.border.EmptyBorder;
 import controller.MainController;
 import controller.ViewController;
 
+
 /**
- * Window where the user can log in with a profile from the database. This will
- * be the program's start screen if automatic login has not been set.
+ * Window that allows the user to log in or create a profile.
+ * <p>
+ * This window serves as the start screen of the application if automatic
+ * login is not enabled. Users can choose to create a new account, log in
+ * with an existing account, or exit the application.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class ConnectUI extends JFrame {
@@ -28,13 +33,17 @@ public class ConnectUI extends JFrame {
 	private JPanel contentPane;
 	private HomeUI menu;
 
-	/**
-	 * Create the frame.
-	 * 
-	 * @param controller Reference to the controller handling program logic.
-	 * @param dbManager  Reference to the dbManager that manages data operations.
-	 * @since 3.0
-	 */
+    /**
+     * Constructs the ConnectUI window.
+     * <p>
+     * Initializes all UI components, sets up event listeners for buttons,
+     * and handles closing the application.
+     * </p>
+     * 
+     * @param controller Reference to the MainController that handles program
+     *                   logic and window transitions.
+     * @since 3.0
+     */
 	public ConnectUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
@@ -101,6 +110,13 @@ public class ConnectUI extends JFrame {
 		});
 	}
 
+    /**
+     * Returns the reference to the main menu window (HomeUI) associated with this
+     * ConnectUI.
+     * 
+     * @return the HomeUI menu window
+     * @since 3.3
+     */
 	public HomeUI getMenu() {
 		return menu;
 	}

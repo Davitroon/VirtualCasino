@@ -4,7 +4,7 @@ package model;
  * Represents a client (customer) in the casino system. Stores personal
  * information and account balance.
  * 
- * @author David
+ * @author Davitroon
  * @since 2.0
  */
 public class Client {

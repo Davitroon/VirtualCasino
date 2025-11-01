@@ -20,7 +20,7 @@ import java.sql.SQLSyntaxErrorException;
  * Connection conn = connector.getConnection();
  * </pre>
  *
- * @author David
+ * @author Davitroon
  * @since 3.3
  */
 public class DataBaseConnector {

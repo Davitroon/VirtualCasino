@@ -28,9 +28,13 @@ import exceptions.MailException;
 import model.User;
 
 /**
- * Window where a user can be created and log in as that user.
+ * Window that allows a user to create a new account and log in.
+ * <p>
+ * Provides fields for username, password, repeated password, and email.
+ * Includes options to remember the login and show/hide the password.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class SignInUI extends JFrame {
@@ -57,11 +61,13 @@ public class SignInUI extends JFrame {
 	private JLabel lblPasswordNotice;
 
 	/**
-	 * Creates the frame for creating a user and signing in as them.
+	 * Constructs the SignInUI frame.
+	 * <p>
+	 * Initializes the window layout, text fields, buttons, labels, and event listeners
+	 * for user creation, validation, and login functionality.
+	 * </p>
 	 * 
-	 * @param model        The data model
-	 * @param controller   The controller handling logic
-	 * @param validatorThe validator for form fields
+	 * @param controller The main controller handling user actions and window changes
 	 * @since 3.0
 	 */
 	public SignInUI(MainController controller) {
@@ -292,7 +298,12 @@ public class SignInUI extends JFrame {
 	}
 
 	/**
-	 * Resets the page content when closing.
+	 * Resets all form fields and error messages to their default state.
+	 * <p>
+	 * Used when closing the window or switching to another UI.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void resetContent() {
 		lblUsernameError.setText("");
@@ -308,7 +319,12 @@ public class SignInUI extends JFrame {
 	}
 
 	/**
-	 * Checks the form to ensure the data is valid.
+	 * Validates the form fields and enables or disables the Accept button accordingly.
+	 * <p>
+	 * Ensures username, password, repeated password, and email are valid.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void checkForm() {
 		if (validPassword && validPassword2 && validUsername && validEmail) {

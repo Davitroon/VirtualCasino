@@ -9,7 +9,7 @@ import java.util.LinkedList;
  * Blackjack, including card shuffling, dealing, hand evaluation, and game
  * logic.
  * 
- * @author David
+ * @author Davitroon
  * @since 2.0
  */
 public class Blackjack extends Game {

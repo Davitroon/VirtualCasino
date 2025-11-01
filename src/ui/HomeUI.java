@@ -18,9 +18,13 @@ import controller.ViewController;
 import exceptions.GameException;
 
 /**
- * Main menu window.
+ * Main menu window of the casino simulator.
+ * <p>
+ * This window allows navigation to Play, Management, Statistics, Profile sections,
+ * as well as exiting the application. It also provides an information guide.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class HomeUI extends JFrame {
@@ -36,11 +40,12 @@ public class HomeUI extends JFrame {
 	
 	private ViewController viewController;
 
-	/**
-	 * Creates the frame.
-	 * 
-	 * @param controller The controller handling interactions.
-	 */
+	   /**
+     * Constructs the main menu window.
+     * 
+     * @param controller The main controller handling logic and interactions.
+     * @since 3.0
+     */
 	public HomeUI(MainController controller) {
 
 		viewController = controller.getViewController();
@@ -169,6 +174,13 @@ public class HomeUI extends JFrame {
 		});
 	}
 	
+    /**
+     * Initializes references to other UI windows.
+     * <p>
+     * Must be called after all UI classes are created in ViewController.
+     * </p>
+     * @since 3.0
+     */
 	public void initializeClassesUI() {
 		playUI = viewController.getPlayUI();
 		profileUI = viewController.getProfileUI();
@@ -176,17 +188,26 @@ public class HomeUI extends JFrame {
 		managementUI = viewController.getManagementUI();
 	}
 
-	public PlayUI getPlayUI() {
-		return playUI;
-	}
+    /** @return the PlayUI instance 
+     * @since 3.0
+     */
+    public PlayUI getPlayUI() {
+        return playUI;
+    }
 
-	public StatsUI getStatsUI() {
-		return statsUI;
-	}
+    /** @return the StatsUI instance 
+     * @since 3.0
+     */
+    public StatsUI getStatsUI() {
+        return statsUI;
+    }
 
-	public ProfileUI getProfileUI() {
-		return profileUI;
-	}
+    /** @return the ProfileUI instance 
+     * @since 3.0
+     */
+    public ProfileUI getProfileUI() {
+        return profileUI;
+    }
 	
 	
 }

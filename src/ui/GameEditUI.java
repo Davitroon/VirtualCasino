@@ -28,9 +28,14 @@ import model.Blackjack;
 import model.Slotmachine;
 
 /**
- * Window for the game edit form.
+ * Window for editing existing game data.
+ * <p>
+ * This window allows the user to modify a game's type, balance, and active
+ * status. It validates the money input and updates the game data in the
+ * database upon submission.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class GameEditUI extends JFrame {
@@ -50,15 +55,17 @@ public class GameEditUI extends JFrame {
 	
 	private MainController controller;
 
-	/**
-	 * Create the frame.
-	 * 
-	 * @param management Reference to the management window.
-	 * @param controller Reference to the controller handling logic.
-	 * @param model      Reference to the model managing data operations.
-	 * @param validator  Reference to the validator for input checks.
-	 * @since 3.0
-	 */
+    /**
+     * Constructs the GameEditUI window.
+     * <p>
+     * Initializes UI components, sets up listeners for the update and back
+     * buttons, validates inputs, and handles window closing.
+     * </p>
+     * 
+     * @param controller Reference to the MainController handling program logic
+     *                   and data operations.
+     * @since 3.0
+     */
 	public GameEditUI(MainController controller) {
 
 		this.controller = controller;
@@ -187,12 +194,12 @@ public class GameEditUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Method to fill the form fields with the data of the game to be edited.
-	 * 
-	 * @param id Id of the game to retrieve its data
-	 * @since 3.0
-	 */
+    /**
+     * Loads the original game data into the form fields for editing.
+     * 
+     * @param gameId ID of the game to retrieve from the database
+     * @since 3.0
+     */
 	public void loadOriginalGame(int gameId) {
 		ResultSet rset = controller.getDataBaseController().queryGame(gameId);
 
@@ -221,11 +228,11 @@ public class GameEditUI extends JFrame {
 		checkForm();
 	}
 
-	/**
-	 * Method to clear all the form fields.
-	 * 
-	 * @since 3.0
-	 */
+    /**
+     * Clears all form fields and resets validation states.
+     * 
+     * @since 3.0
+     */
 	public void clearFields() {
 		btnUpdate.setEnabled(false);
 		textMoney.setText("");
@@ -233,11 +240,11 @@ public class GameEditUI extends JFrame {
 		lblErrorMoney.setText("");
 	}
 
-	/**
-	 * Method to check that the user has filled in all the form data.
-	 * 
-	 * @since 3.0
-	 */
+    /**
+     * Checks if all required fields are valid to enable the update button.
+     * 
+     * @since 3.0
+     */
 	public void checkForm() {
 		if (moneyValid) {
 			btnUpdate.setEnabled(true);

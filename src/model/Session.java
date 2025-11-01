@@ -14,6 +14,7 @@ import controller.ViewController;
  * automatic login and stores the currently logged-in user.
  * </p>
  * 
+ * @author Davitroon
  * @since 3.0
  */
 public class Session {

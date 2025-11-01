@@ -27,9 +27,14 @@ import controller.ViewController;
 import model.User;
 
 /**
- * Window where the user can log in.
+ * Window where the user can log in to the application.
+ * <p>
+ * Provides fields for username and password, with optional "remember login"
+ * and "show password" functionality. Validates input before enabling the
+ * accept button.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class LogInUI extends JFrame {
@@ -50,10 +55,13 @@ public class LogInUI extends JFrame {
 
 	/**
 	 * Constructs the login window frame.
-	 *
-	 * @param model      the data model of the application
-	 * @param controller the controller handling UI actions
-	 * @param login      the ConnectUI window to return to
+	 * <p>
+	 * Sets up all UI components, event listeners, and validation logic for
+	 * the login process.
+	 * </p>
+	 * 
+	 * @param controller the main controller handling UI actions and data
+	 *                   operations
 	 * @since 3.0
 	 */
 	public LogInUI(MainController controller) {
@@ -229,7 +237,14 @@ public class LogInUI extends JFrame {
 	}
 
 	/**
-	 * Resets the content of the page before closing.
+	 * Resets all content in the login form.
+	 * <p>
+	 * Clears the username and password fields, resets validation flags, and
+	 * unchecks all checkboxes. Used before closing the window or returning to
+	 * ConnectUI.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void resetContent() {
 		lblUsernameError.setText("");
@@ -241,7 +256,12 @@ public class LogInUI extends JFrame {
 	}
 
 	/**
-	 * Checks the form to ensure the data is valid.
+	 * Checks whether the form is valid.
+	 * <p>
+	 * Enables the accept button only if both username and password pass validation.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void checkForm() {
 		if (usernameValid && passwordValid) {
@@ -251,6 +271,12 @@ public class LogInUI extends JFrame {
 		}
 	}
 
+	/**
+	 * Sets the user associated with this login window.
+	 * 
+	 * @param user the User object to set
+	 * @since 3.3
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}

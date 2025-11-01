@@ -29,9 +29,15 @@ import controller.ViewController;
 import model.Client;
 
 /**
- * Window for the client edit form.
+ * User interface window for editing client information.
+ * <p>
+ * This window allows an administrator to modify the details of a client,
+ * including name, age, gender, balance, and active status. It integrates
+ * with the MVC architecture through {@link MainController}, {@link DataBaseController},
+ * and {@link ViewController}.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class ClientEditUI extends JFrame {
@@ -58,20 +64,18 @@ public class ClientEditUI extends JFrame {
 	private JCheckBox chckbxActive;
 	private DataBaseController dbController;
 
-	/**
-	 * Create the frame.
-	 * 
-	 * @param management The parent management window (GestionUI) from which this
-	 *                   editing window was opened, used for returning or refreshing
-	 *                   data.
-	 * @param controller The Controller instance used to manage logic, handle button
-	 *                   actions, and perform data manipulations.
-	 * @param model      The Model instance providing connectivity to the database
-	 *                   and data management services.
-	 * @param validator  The Validator instance used to check the integrity and
-	 *                   format of user input (e.g., name, age, balance).
-	 * @since 3.0
-	 */
+
+    /**
+     * Constructor for the client edit window.
+     * <p>
+     * Initializes all UI components, sets up event listeners for form validation,
+     * and connects the window to MVC controllers.
+     * </p>
+     * 
+     * @param controller MainController instance used to handle actions, validation,
+     *                   and database communication.
+     * @since 3.0
+     */
 	public ClientEditUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
@@ -290,12 +294,12 @@ public class ClientEditUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Method to fill the form fields with the data of the client to be edited.
-	 * 
-	 * @param id ID of the client to retrieve their data
-	 * @since 3.0
-	 */
+    /**
+     * Loads the original client data into the form fields for editing.
+     * 
+     * @param id ID of the client to retrieve from the database.
+     * @since 3.0
+     */
 	public void loadOriginalClient(int id) {
 
 		ResultSet rset = dbController.queryClient(id);
@@ -332,11 +336,13 @@ public class ClientEditUI extends JFrame {
 		checkForm();
 	}
 
-	/**
-	 * Method to clear all form fields.
-	 * 
-	 * @since 3.0
-	 */
+
+    /**
+     * Clears all form fields, resets validation flags, and disables the
+     * modification button.
+     * 
+     * @since 3.0
+     */
 	public void clearFields() {
 		btnModify.setEnabled(false);
 		buttonGroup.clearSelection();
@@ -348,12 +354,12 @@ public class ClientEditUI extends JFrame {
 		lblErrorBalance.setText("");
 	}
 
-	/**
-	 * Method to get the gender based on the selected radio button.
-	 * 
-	 * @return Gender as a char.
-	 * @since 3.0
-	 */
+    /**
+     * Returns the gender selected in the form.
+     * 
+     * @return 'M' for male, 'F' for female, 'O' for other, or 0 if none selected.
+     * @since 3.0
+     */
 	public char getGender() {
 		if (rdbtnMale.isSelected())
 			return 'M';
@@ -364,11 +370,12 @@ public class ClientEditUI extends JFrame {
 		return 0;
 	}
 
-	/**
-	 * Method to check if the user has filled all fields in the form.
-	 * 
-	 * @since 3.0
-	 */
+    /**
+     * Checks whether all form fields have valid values and a gender is selected.
+     * Enables or disables the modification button accordingly.
+     * 
+     * @since 3.0
+     */
 	public void checkForm() {
 
 		if (ageValid && balanceValid && nameValid && getGender() != 0) {
