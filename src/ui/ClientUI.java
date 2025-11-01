@@ -25,7 +25,7 @@ import controller.ViewController;
 import model.Client;
 
 /**
- * User interface window for adding a new client.
+ * Window for adding new clients to the system.
  * <p>
  * This window allows an administrator to input information for a new client,
  * including name, age, gender, and balance. It performs real-time validation

@@ -9,10 +9,11 @@ import java.sql.Statement;
 
 import exceptions.MailException;
 import exceptions.ExceptionMessage;
+import model.Game;
 import model.User;
 
 /**
- * DAO class for managing users in the database.
+ * DAO class for managing {@link User} in the database.
  * <p>
  * Provides CRUD operations and methods for handling login session preferences.
  * </p>

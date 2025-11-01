@@ -7,13 +7,14 @@ import java.sql.SQLException;
 
 import exceptions.ExceptionMessage;
 import model.Client;
+import model.Game;
 
 /**
- * Data Access Object (DAO) responsible for managing CRUD operations (Create,
- * Read, Update, Delete) for {@link Client} objects in the database.
+ * DAO class for managing {@link Client} entities in the database.
  * <p>
- * All database errors are handled and reported through
- * {@link ExceptionMessage}.
+ * Provides CRUD operations (Create, Read, Update, Delete) for games associated
+ * with specific clients. Uses {@link ExceptionMessage} to handle database-related
+ * errors.
  * </p>
  *
  * @author Davitroon

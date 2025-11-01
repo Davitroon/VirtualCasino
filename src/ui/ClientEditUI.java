@@ -29,7 +29,7 @@ import controller.ViewController;
 import model.Client;
 
 /**
- * User interface window for editing client information.
+ * Window for editing existing client data.
  * <p>
  * This window allows an administrator to modify the details of a client,
  * including name, age, gender, balance, and active status. It integrates

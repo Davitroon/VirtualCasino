@@ -23,7 +23,7 @@ import model.Client;
 import model.Slotmachine;
 
 /**
- * Window where the Slot Machine game is played.
+ * Window where the {@link Slotmachine} game is played.
  * <p>
  * Displays the slot machine interface with three number slots, spin button,
  * current bet, client balance, and game balance. Allows the player to play

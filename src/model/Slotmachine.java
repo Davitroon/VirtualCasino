@@ -1,7 +1,7 @@
 package model;
 
 /**
- * Represents a Slot Machine game, child of the {@link Game} class.
+ * Slotmachine game, child of {@link Game}.
  * <p>
  * Simulates the behavior of a real slot machine, with three slots that generate
  * random numbers between 1 and 9. The payout depends on the combination of the

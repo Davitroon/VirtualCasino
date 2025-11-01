@@ -23,7 +23,7 @@ import model.Blackjack;
 import model.Client;
 
 /**
- * User interface window for playing Blackjack.
+ * Window where the {@link Blackjack} game is played.
  * <p>
  * This window allows the user to play a Blackjack game, interact with the
  * dealer, place bets, and visualize card hands. It is integrated with the
