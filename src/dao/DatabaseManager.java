@@ -8,10 +8,21 @@ import java.sql.SQLException;
 import exceptions.ExceptionMessage;
 
 /**
- * MVC Model class. Connects to the DB and manages information.
- * 
+ * Central manager class for database operations within the MVC architecture.
+ * <p>
+ * This class acts as an intermediary between the controllers and the specific
+ * DAO classes ({@link GameDAO}, {@link ClientDAO}, {@link UserDAO},
+ * {@link GameSessionDAO}). It initializes the database connection through
+ * {@link DataBaseConnector} and provides access to all DAO instances.
+ * </p>
+ *
+ * <p>
+ * Additionally, it allows executing custom SQL queries directly using the
+ * {@link #specificQuery(String, Connection)} method.
+ * </p>
+ *
  * @author Davitroon
- * @since 3.0
+ * @since 3.3
  */
 public class DatabaseManager {
 
@@ -21,20 +32,31 @@ public class DatabaseManager {
 	private ClientDAO clientDAO;
 	private UserDAO userDAO;
 	private GameSessionDAO gameSessionDAO;
-	
-	
 
+	/**
+	 * Constructs a {@code DatabaseManager} with a reference to the exception
+	 * handling system.
+	 *
+	 * @param exceptionMessage class responsible for displaying or logging
+	 *                         database-related errors.
+	 * @since 3.3
+	 */
 	public DatabaseManager(ExceptionMessage exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
 
 	/**
-	 * Model constructor, where it makes the connection to the database.
-	 * 
-	 * @param exceptionMessage Class that handles the exception warnings.
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 * @since 3.0
+	 * Initializes the database connection and all DAO classes used to interact with
+	 * different entities in the database.
+	 * <p>
+	 * This method should be called once during the application's startup to prepare
+	 * all database-related modules.
+	 * </p>
+	 *
+	 * @throws SQLException           if an error occurs while establishing the
+	 *                                database connection.
+	 * @throws ClassNotFoundException if the JDBC driver is not found.
+	 * @since 3.3
 	 */
 	public void initializeClasses() throws SQLException, ClassNotFoundException {
 		dbConnection = new DataBaseConnector();
@@ -44,32 +66,73 @@ public class DatabaseManager {
 		userDAO = new UserDAO(exceptionMessage);
 	}
 
+	// --------------------------- GETTERS ---------------------------
+
+	/**
+	 * Retrieves the current database connector instance.
+	 *
+	 * @return the {@link DataBaseConnector} responsible for managing the
+	 *         connection.
+	 * @since 3.3
+	 */
 	public DataBaseConnector getDbConnection() {
 		return dbConnection;
 	}
 
+	/**
+	 * Retrieves the {@link GameDAO} instance.
+	 *
+	 * @return the DAO used for managing game data.
+	 * @since 3.3
+	 */
 	public GameDAO getGameDAO() {
 		return gameDAO;
 	}
 
+	/**
+	 * Retrieves the {@link ClientDAO} instance.
+	 *
+	 * @return the DAO used for managing client data.
+	 * @since 3.3
+	 */
 	public ClientDAO getClientDAO() {
 		return clientDAO;
 	}
 
+	/**
+	 * Retrieves the {@link UserDAO} instance.
+	 *
+	 * @return the DAO used for managing user data.
+	 * @since 3.3
+	 */
 	public UserDAO getUserDAO() {
 		return userDAO;
 	}
 
+	/**
+	 * Retrieves the {@link GameSessionDAO} instance.
+	 *
+	 * @return the DAO used for managing game session data.
+	 * @since 3.3
+	 */
 	public GameSessionDAO getGameSessionDAO() {
 		return gameSessionDAO;
 	}
 
+	// --------------------------- QUERY METHODS ---------------------------
+
 	/**
-	 * 
-	 * @param specificQuery
-	 * @param connection
-	 * @return
-	 * @since 3.0
+	 * Executes a custom SQL query and returns its {@link ResultSet}.
+	 * <p>
+	 * This method allows running dynamic SQL queries that are not covered by the
+	 * predefined DAO methods.
+	 * </p>
+	 *
+	 * @param specificQuery the SQL query to execute.
+	 * @param connection    the active {@link Connection} to use.
+	 * @return a {@link ResultSet} containing the results of the query, or
+	 *         {@code null} if an exception occurs.
+	 * @since 3.3
 	 */
 	public ResultSet specificQuery(String specificQuery, Connection connection) {
 

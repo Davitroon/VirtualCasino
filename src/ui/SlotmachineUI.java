@@ -23,7 +23,12 @@ import model.Client;
 import model.Slotmachine;
 
 /**
- * Window where the Slot Machine game will be played.
+ * Window where the {@link Slotmachine} game is played.
+ * <p>
+ * Displays the slot machine interface with three number slots, spin button,
+ * current bet, client balance, and game balance. Allows the player to play
+ * the game, view instructions, and navigate back to the previous window.
+ * </p>
  * 
  * @author David
  * @since 3.0
@@ -53,16 +58,13 @@ public class SlotmachineUI extends JFrame {
 	private ViewController viewController;
 
 	/**
-	 * Constructs the SlotmachineUI window where the Slot Machine game will be
-	 * played.
-	 *
+	 * Constructs the SlotmachineUI window.
+	 * <p>
+	 * Initializes all GUI components, buttons, labels, and event listeners
+	 * required to play a slot machine game.
+	 * </p>
+	 * 
 	 * @param controller The main controller handling game logic and window changes.
-	 * @param model      The data model used to access and update game and client
-	 *                   information.
-	 * @param playUI     The parent PlayUI window from which this game was started.
-	 * @param client     The client who is playing the slot machine.
-	 * @param game       The game instance being played, cast to Slotmachine.
-	 * @param bet        The amount of money the client is betting for this game.
 	 * @since 3.0
 	 */
 	public SlotmachineUI(MainController controller) {
@@ -189,8 +191,13 @@ public class SlotmachineUI extends JFrame {
 	}
 
 	/**
-	 * Method that calls the controller to show a warning message when trying to
-	 * close the window.
+	 * Closes the Slot Machine window safely.
+	 * <p>
+	 * Calls the controller to warn about unsaved game state and updates tables
+	 * before switching back to the PlayUI window.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void closeWindow() {
 		if (!gameFinished) {
@@ -209,8 +216,13 @@ public class SlotmachineUI extends JFrame {
 	}
 
 	/**
-	 * Method to finish a Slot Machine game, adjusting balances according to the
-	 * result.
+	 * Ends the current Slot Machine game.
+	 * <p>
+	 * Calculates winnings/losses, updates client and game balances, disables the
+	 * spin button, and manages end-of-game options.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void endGame() {
 		double resultBet = slotMachine.play(bet);
@@ -254,7 +266,12 @@ public class SlotmachineUI extends JFrame {
 	}
 
 	/**
-	 * Method to start a Slot Machine game, resetting fields and updating labels.
+	 * Starts or resets the Slot Machine game.
+	 * <p>
+	 * Updates GUI labels, resets numbers to zero, and enables the spin button.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void startGame() {
 		btnSpin.setEnabled(true);
@@ -266,6 +283,14 @@ public class SlotmachineUI extends JFrame {
 		lblGame.setText(String.format("Game Money: %.2f$", slotMachine.getMoney()));
 	}
 
+	/**
+	 * Initializes the Slot Machine game data.
+	 * 
+	 * @param client      The client playing the game.
+	 * @param slotmachine The Slotmachine game instance.
+	 * @param bet         The current bet amount.
+	 * @since 3.3
+	 */
 	public void initializeData(Client client, Slotmachine slotmachine, double bet) {
 		this.client = client;
 		this.slotMachine = slotmachine;

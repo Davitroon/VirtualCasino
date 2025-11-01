@@ -1,10 +1,12 @@
 package model;
 
 /**
- * Abstract class that provides the format for games. Each game will have its
- * own logic, methods, and attributes.
+ * Abstract class representing a casino game. Provides a general structure for
+ * all games, including common attributes and behavior. Each concrete game
+ * (e.g., Blackjack, Slotmachine) will extend this class and implement its own
+ * logic.
  * 
- * @author David Forero
+ * @author Davitroon
  * @since 2.0
  */
 public abstract class Game {
@@ -15,10 +17,11 @@ public abstract class Game {
 	private double money;
 
 	/**
-	 * Constructor for the games.
+	 * Constructor for creating a new game with a specific type and starting money.
+	 * The game is active by default.
 	 * 
-	 * @param money Money that the game will count for bets
-	 * @param type  Game type
+	 * @param money Initial amount of money associated with the game.
+	 * @param type  Type of the game (e.g., "Blackjack", "Slotmachine").
 	 * @since 2.0
 	 */
 	public Game(double money, String type) {
@@ -27,11 +30,13 @@ public abstract class Game {
 	}
 
 	/**
-	 * Minimum constructor for playing, only the money and the id will be needed.
+	 * Constructor for creating a game with a specific ID, type, and money. Useful
+	 * for loading existing games from a database.
 	 * 
-	 * @param id    Game ID
-	 * @param money Game money
-	 * @param type  Game type
+	 * @param id    Unique identifier for the game.
+	 * @param money Amount of money associated with the game.
+	 * @param type  Type of the game.
+	 * @since 2.0
 	 */
 	public Game(int id, double money, String type) {
 		this.id = id;
@@ -40,12 +45,12 @@ public abstract class Game {
 	}
 
 	/**
-	 * Complete constructor (to be edited) for games.
+	 * Complete constructor for a game with all attributes specified.
 	 * 
-	 * @param id     Game ID
-	 * @param type   Game type
-	 * @param active Game status
-	 * @param money  Money that the game will count for bets
+	 * @param id     Unique identifier for the game.
+	 * @param type   Type of the game.
+	 * @param active Whether the game is active or not.
+	 * @param money  Amount of money associated with the game.
 	 * @since 2.0
 	 */
 	public Game(int id, String type, boolean active, double money) {
@@ -55,37 +60,68 @@ public abstract class Game {
 		this.type = type;
 	}
 
+	/**
+	 * Gets the amount of money currently associated with the game.
+	 * 
+	 * @return Current game money.
+	 */
 	public double getMoney() {
 		return money;
 	}
 
+	/**
+	 * Gets the unique identifier of the game.
+	 * 
+	 * @return Game ID.
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Gets the type of the game.
+	 * 
+	 * @return Game type (e.g., "Blackjack").
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * Checks if the game is currently active.
+	 * 
+	 * @return true if active, false otherwise.
+	 */
 	public boolean isActive() {
 		return active;
 	}
 
 	/**
-	 * Method for playing the game. Each game type calculates the bet modification
-	 * based on its own rules, depending on whether the client wins or loses.
+	 * Abstract method to play the game. Each concrete game must implement this
+	 * method to define its own rules for calculating winnings or losses based on
+	 * the player's bet.
 	 * 
-	 * @param bet Client's bet.
-	 * @return Modified bet (positive for winnings, negative for losses, zero/same
-	 *         for push).
+	 * @param bet Amount of the player's bet.
+	 * @return Modified bet: positive for winnings, negative for losses, or
+	 *         same/zero for a push.
 	 * @since 2.0
 	 */
 	public abstract double play(double bet);
 
+	/**
+	 * Sets the active status of the game.
+	 * 
+	 * @param active true to mark the game as active, false to mark it as inactive.
+	 */
 	public void setActive(boolean active) {
 		this.active = active;
 	}
 
+	/**
+	 * Sets the amount of money associated with the game.
+	 * 
+	 * @param money New money amount.
+	 */
 	public void setMoney(double money) {
 		this.money = money;
 	}

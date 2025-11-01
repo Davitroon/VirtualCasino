@@ -35,6 +35,11 @@ import model.Slotmachine;
 
 /**
  * Window for starting games.
+ * <p>
+ * Displays a list of clients and games in separate tables. Allows selecting
+ * a client and a game to start playing. Handles bet insertion and opens the
+ * corresponding game window.
+ * </p>
  * 
  * @author Davitroon
  * @since 3.0
@@ -56,11 +61,13 @@ public class PlayUI extends JFrame {
 	private DataBaseController dbController;
 
 	/**
-	 * Creates the frame.
+	 * Constructs the play window frame.
+	 * <p>
+	 * Initializes UI components, tables, and buttons for selecting clients and
+	 * games. Adds event listeners for selection, button clicks, and window events.
+	 * </p>
 	 * 
-	 * @param menu       The main menu window
-	 * @param model      The data model
-	 * @param controller The controller for handling events
+	 * @param controller The main controller handling UI actions and database operations
 	 * @since 3.0
 	 */
 	public PlayUI(MainController controller) {
@@ -222,10 +229,14 @@ public class PlayUI extends JFrame {
 	}
 
 	/**
-	 * Method to update the clients and games tables by querying the database
-	 * through the model class.
+	 * Updates the clients and games tables with current data from the database.
+	 * <p>
+	 * Queries the database and fills the table models. Throws a GameException
+	 * if there are no clients or no games registered.
+	 * </p>
 	 * 
-	 * @throws GameException
+	 * @throws GameException if no clients or games are available for playing
+	 * @since 3.0
 	 */
 	public void updateTables() throws GameException {
 
@@ -261,9 +272,14 @@ public class PlayUI extends JFrame {
 		}
 	}
 
+
 	/**
-	 * Method that checks whether rows have been selected in both the clients and
-	 * games tables.
+	 * Checks whether rows have been selected in both the clients and games tables.
+	 * <p>
+	 * Enables the play button only if both a client and a game have been selected.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void checkTables() {
 		if (tableClients.getSelectedRow() == -1 || tableGames.getSelectedRow() == -1) {

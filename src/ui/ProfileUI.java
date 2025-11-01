@@ -22,9 +22,13 @@ import controller.ViewController;
 import model.User;
 
 /**
- * Window that displays information about the user who is currently logged in.
+ * Window that displays information about the currently logged-in user.
+ * <p>
+ * Shows the user's name, email, last access date, and session preferences.
+ * Provides buttons to log out, go back to the home window, or delete the user.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class ProfileUI extends JFrame {
@@ -38,11 +42,14 @@ public class ProfileUI extends JFrame {
 	private JButton btnDeleteUser;
 
 	/**
-	 * Constructs the ProfileUI frame, which displays information about the
-	 * currently logged-in user.
-	 *
-	 * @param controller The controller responsible for handling window changes and
-	 *                   user actions
+	 * Constructs the ProfileUI frame.
+	 * <p>
+	 * Initializes the window layout, labels, buttons, and event listeners for
+	 * logging out, going back, toggling session remember, and deleting the user.
+	 * </p>
+	 * 
+	 * @param controller The main controller handling user actions and window changes
+	 * @since 3.0
 	 */
 	public ProfileUI(MainController controller) {
 		
@@ -150,9 +157,12 @@ public class ProfileUI extends JFrame {
 	}
 
 	/**
-	 * Loads the data of the currently logged-in user.
+	 * Loads and displays the data of the currently logged-in user.
+	 * <p>
+	 * Updates labels for username, email, last access, and the remember session checkbox.
+	 * </p>
 	 * 
-	 * @param user Current user.
+	 * @param user The currently logged-in user
 	 * @since 3.0
 	 */
 	public void upateUserData(User user) {

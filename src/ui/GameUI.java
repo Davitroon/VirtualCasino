@@ -25,9 +25,13 @@ import model.Blackjack;
 import model.Slotmachine;
 
 /**
- * Window for the game form.
+ * Window for adding new games to the system.
+ * <p>
+ * This window allows the user to select the game type and set the initial
+ * balance. It validates the money input before enabling the "Add" button.
+ * </p>
  * 
- * @author David
+ * @author Davitroon
  * @since 3.0
  */
 public class GameUI extends JFrame {
@@ -43,15 +47,17 @@ public class GameUI extends JFrame {
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
 
-	/**
-	 * Constructor for the game form window
-	 * 
-	 * @param management Reference to the management window.
-	 * @param controller Reference to the controller handling logic.
-	 * @param model      Reference to the model managing data operations.
-	 * @param validator  Reference to the validator for input checks.
-	 * @since 3.0
-	 */
+    /**
+     * Constructs the GameUI window.
+     * <p>
+     * Initializes UI components, sets up listeners for buttons and input fields,
+     * and handles window closing events.
+     * </p>
+     * 
+     * @param controller Reference to the MainController handling program logic
+     *                   and data operations.
+     * @since 3.0
+     */
 	public GameUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
@@ -161,11 +167,11 @@ public class GameUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Method to clear all fields in the form.
-	 * 
-	 * @since 3.0
-	 */
+    /**
+     * Clears all form fields and resets validation states.
+     * 
+     * @since 3.0
+     */
 	public void clearFields() {
 		btnAdd.setEnabled(false);
 		textMoney.setText("");
@@ -173,11 +179,11 @@ public class GameUI extends JFrame {
 		lblErrorMoney.setText("");
 	}
 
-	/**
-	 * Method to check that the user has filled in all form fields.
-	 * 
-	 * @since 3.0
-	 */
+    /**
+     * Checks if all required fields are valid to enable the add button.
+     * 
+     * @since 3.0
+     */
 	public void checkForm() {
 		if (moneyValid) {
 			btnAdd.setEnabled(true);

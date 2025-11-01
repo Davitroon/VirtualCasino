@@ -22,9 +22,19 @@ import controller.MainController;
 import controller.ViewController;
 import model.User;
 
+
 /**
- * Window where game statistics are stored.
- * @author David
+ * Window displaying game statistics for a specific user.
+ * <p>
+ * Shows information such as games played, games won/lost, money won/lost,
+ * number of Blackjack and Slot Machine games, last game played, client with
+ * highest balance, and game with most money.
+ * </p>
+ * <p>
+ * Provides the ability to delete all statistics and return to the main menu.
+ * </p>
+ * 
+ * @author Davitroon
  * @since 3.0
  */
 public class StatsUI extends JFrame {
@@ -49,10 +59,15 @@ public class StatsUI extends JFrame {
 	private JLabel lblUser;
 
 	/**
-     * Creates the frame.
-     * 
-     * @param controller The controller handling application logic.
-     */
+	 * Constructs the StatsUI window.
+	 * <p>
+	 * Initializes all labels, buttons, and layout for displaying user statistics.
+	 * Adds event listeners for the Back and Delete Statistics buttons.
+	 * </p>
+	 * 
+	 * @param controller The main controller handling application logic and window changes.
+	 * @since 3.0
+	 */
     public StatsUI(MainController controller) {
     	dbController = controller.getDataBaseController();
         ViewController viewController = controller.getViewController();
@@ -220,8 +235,14 @@ public class StatsUI extends JFrame {
     }
 
 	/**
-	 * Updates the statistics by querying the database. If a query returns no data,
-	 * it will be marked as null.
+	 * Updates all statistics displayed in the window.
+	 * <p>
+	 * Queries the database to refresh values such as games played, money won/lost,
+	 * client balances, last game played, and other relevant information. Handles
+	 * cases where data might be missing.
+	 * </p>
+	 * 
+	 * @since 3.0
 	 */
 	public void updateData() {
 		lblUser.setText("Statistics for " + user.getName());
@@ -329,6 +350,15 @@ public class StatsUI extends JFrame {
 		}
 	}
 	
+	/**
+	 * Updates the current user for which statistics are displayed.
+	 * <p>
+	 * This method should be called whenever the active user changes.
+	 * </p>
+	 * 
+	 * @param controller The main controller to retrieve the current user from.
+	 * @since 3.3
+	 */
 	public void updateUser(MainController controller) {
 		 user = controller.getCurrentUser();
 	}

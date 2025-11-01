@@ -21,10 +21,15 @@ import exceptions.BetException;
 import exceptions.GameException;
 import model.Blackjack;
 import model.Client;
-import model.Game;
 
 /**
- * Window where Blackjack will be played.
+ * Window where the {@link Blackjack} game is played.
+ * <p>
+ * This window allows the user to play a Blackjack game, interact with the
+ * dealer, place bets, and visualize card hands. It is integrated with the
+ * MVC architecture through {@link MainController} and {@link ViewController}.
+ * </p>
+ * 
  * @author Davitroon
  * @since 3.0
  */
@@ -52,19 +57,17 @@ public class BlackjackUI extends JFrame {
 	private JButton btnInfo;
 	private ViewController viewController;
 
-	/**
-	 * Constructor for the Blackjack game window. Initializes UI components and
-	 * links the window to the MVC architecture elements and the current game
-	 * session data.
-	 * 
-	 * @param controller The Controller instance used to manage game logic, state
-	 *                   updates, and window changes.
-	 * @param model      The Model instance providing access to database and overall
-	 *                   application data.
-	 * @param play       The parent 'Play' window (PlayUI) to return to when the
-	 *                   game is closed.
-	 * @since 3.0
-	 */
+    /**
+     * Constructor to create the Blackjack game window.
+     * <p>
+     * Initializes all UI components, configures event listeners, and links the
+     * window to the MVC controllers.
+     * </p>
+     * 
+     * @param controller MainController instance to handle game logic and
+     *                   communication with the model and other UI windows.
+     * @since 3.0
+     */
 	public BlackjackUI(MainController controller) {
 		viewController = controller.getViewController();
 		setResizable(false);
@@ -194,20 +197,25 @@ public class BlackjackUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Updates the dealer's card list.
-	 * 
-	 * @param cards Their cards.
-	 * @param sum   The sum of their cards.
-	 */
+    /**
+     * Updates the display of the dealer's card list.
+     * 
+     * @param cards The string representation of the dealer's cards.
+     * @param sum   The sum of the dealer's cards.
+     * @since 3.0
+     */
 	public void updateDealerCards(String cards, int sum) {
 		lblDealerCardsList.setText(cards + " (" + sum + ")");
 	}
 
-	/**
-	 * Method that calls the controller to show a warning message when attempting to
-	 * close the window.
-	 */
+    /**
+     * Handles closing the Blackjack window.
+     * <p>
+     * Prompts the user if a game is in progress and ensures balances and tables
+     * are updated before switching windows.
+     * </p>
+     * @since 3.0
+     */
 	public void closeWindow() {		
 		if (!gameFinished) {
 			if (!controller.warnCloseGame(client, blackjack, bet)) {
@@ -224,12 +232,16 @@ public class BlackjackUI extends JFrame {
 		}
 	}
 
-	/**
-	 * Method to finalize a Blackjack match, comparing the client's and dealer's
-	 * hands and adjusting their balances based on the bet.
-	 * 
-	 * @param clientWins True if the client has won and false otherwise.
-	 */
+    /**
+     * Ends the current Blackjack match.
+     * <p>
+     * Compares player and dealer hands, calculates the result of the bet, updates
+     * balances, and optionally allows starting a new game.
+     * </p>
+     * 
+     * @param clientWins True if the client has won the round, false otherwise.
+     * @since 3.0
+     */
 	public void endGame(boolean clientWins) {
 
 		double betResult = blackjack.play(bet);
@@ -280,10 +292,13 @@ public class BlackjackUI extends JFrame {
 		} while (goToFinalMessage);
 	}
 
-	/**
-	 * Method to start a Blackjack match. Cards are dealt to each player and shown.
-	 * If the player gets 21, they win automatically.
-	 */
+    /**
+     * Starts a new Blackjack game.
+     * <p>
+     * Deals cards to the player and dealer, updates UI labels, and handles
+     * automatic wins if 21 is reached.
+     * @since 3.0
+     */
 	public void startGame() {
 		controller.startBlackjack(blackjack);
 		int dealerHand = blackjack.sumCards(blackjack.getDealerCards());
@@ -310,6 +325,14 @@ public class BlackjackUI extends JFrame {
 			endGame(false);
 	}
 	
+    /**
+     * Initializes the necessary data to start the game.
+     * 
+     * @param client    Current client playing.
+     * @param blackjack Blackjack game instance.
+     * @param bet       Bet amount to be played.
+     * @since 3.3
+     */
 	public void initializeData(Client client, Blackjack blackjack, double bet) {
 		this.client = client;
 		this.blackjack = blackjack;

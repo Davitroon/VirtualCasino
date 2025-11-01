@@ -1,16 +1,26 @@
 package exceptions;
 
 /**
- * Exception that will be thrown when the user tries to open the games window
- * without any user or game having been created before.
+ * Exception thrown when an attempt is made to open the games window
+ * without any existing user or game created beforehand.
+ * <p>
+ * This is used to enforce that the application cannot start a game
+ * session unless the necessary prerequisites (user and game) exist.
+ * </p>
  * 
- * @param message The error message.
+ * @author Davitroon
+ * @since 3.0
  */
 public class GameException extends Exception {
 
-	private static final long serialVersionUID = -633752982384900116L;
+    private static final long serialVersionUID = -633752982384900116L;
 
-	public GameException(String message) {
-		super(message);
-	}
+    /**
+     * Constructs a new {@code GameException} with the specified detail message.
+     * 
+     * @param message The error message describing the reason for the exception.
+     */
+    public GameException(String message) {
+        super(message);
+    }
 }
