@@ -14,13 +14,12 @@ import javax.swing.border.EmptyBorder;
 import controller.MainController;
 import controller.ViewController;
 
-
 /**
  * Window that allows the user to log in or create a profile.
  * <p>
- * This window serves as the start screen of the application if automatic
- * login is not enabled. Users can choose to create a new account, log in
- * with an existing account, or exit the application.
+ * This window serves as the start screen of the application if automatic login
+ * is not enabled. Users can choose to create a new account, log in with an
+ * existing account, or exit the application.
  * </p>
  * 
  * @author Davitroon
@@ -31,17 +30,17 @@ public class ConnectUI extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private HomeUI menu;
 
-    /**
-     * Constructs the ConnectUI window.
-     * <p>
-     * Initializes all UI components, sets up event listeners for buttons,
-     * and handles closing the application.
-     * </p>
-     * 
-     * @param controller Reference to the MainController that handles program
-     *                   logic and window transitions.
-     * @since 3.0
-     */
+	/**
+	 * Constructs the ConnectUI window.
+	 * <p>
+	 * Initializes all UI components, sets up event listeners for buttons, and
+	 * handles closing the application.
+	 * </p>
+	 * 
+	 * @param controller Reference to the MainController that handles program logic
+	 *                   and window transitions.
+	 * @since 3.0
+	 */
 	public ConnectUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
@@ -93,13 +92,13 @@ public class ConnectUI extends JPanel {
 		});
 	}
 
-    /**
-     * Returns the reference to the main menu window (HomeUI) associated with this
-     * ConnectUI.
-     * 
-     * @return the HomeUI menu window
-     * @since 3.3
-     */
+	/**
+	 * Returns the reference to the main menu window (HomeUI) associated with this
+	 * ConnectUI.
+	 * 
+	 * @return the HomeUI menu window
+	 * @since 3.3
+	 */
 	public HomeUI getMenu() {
 		return menu;
 	}

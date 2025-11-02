@@ -1,16 +1,17 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
@@ -23,8 +24,8 @@ import model.Slotmachine;
  * Window where the {@link Slotmachine} game is played.
  * <p>
  * Displays the slot machine interface with three number slots, spin button,
- * current bet, client balance, and game balance. Allows the player to play
- * the game, view instructions, and navigate back to the previous window.
+ * current bet, client balance, and game balance. Allows the player to play the
+ * game, view instructions, and navigate back to the previous window.
  * </p>
  * 
  * @author David
@@ -33,7 +34,6 @@ import model.Slotmachine;
 public class SlotmachineUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 
 	private MainController controller;
 	private PlayUI playUI;
@@ -57,8 +57,8 @@ public class SlotmachineUI extends JPanel {
 	/**
 	 * Constructs the SlotmachineUI window.
 	 * <p>
-	 * Initializes all GUI components, buttons, labels, and event listeners
-	 * required to play a slot machine game.
+	 * Initializes all GUI components, buttons, labels, and event listeners required
+	 * to play a slot machine game.
 	 * </p>
 	 * 
 	 * @param controller The main controller handling game logic and window changes.
@@ -70,75 +70,71 @@ public class SlotmachineUI extends JPanel {
 		viewController = controller.getViewController();
 		playUI = viewController.getPlayUI();
 
-		setBounds(100, 100, 523, 421);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
 		JLabel lblSlotMachine = new JLabel("Slot Machine");
 		lblSlotMachine.setFont(new Font("Stencil", Font.PLAIN, 28));
 		lblSlotMachine.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSlotMachine.setBounds(49, 56, 421, 30);
-		contentPane.add(lblSlotMachine);
+		lblSlotMachine.setBounds(10, 56, 782, 30);
+		add(lblSlotMachine);
 
 		btnSpin = new JButton("Spin");
 		btnSpin.setBackground(new Color(0, 128, 64));
-		btnSpin.setBounds(391, 319, 108, 38);
-		contentPane.add(btnSpin);
+		btnSpin.setBounds(348, 319, 108, 36);
+		add(btnSpin);
 
-		lblNum1 = new JLabel("0");
-		lblNum1.setBackground(new Color(0, 64, 0));
-		lblNum1.setFont(new Font("Cambria Math", Font.BOLD, 18));
-		lblNum1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNum1.setBounds(153, 118, 62, 38);
-		contentPane.add(lblNum1);
+		lblNum1 = createSlotLabel();
+		lblNum1.setBounds(293, 120, 80, 80);
+		add(lblNum1);
 
-		lblNum2 = new JLabel("0");
-		lblNum2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNum2.setFont(new Font("Cambria Math", Font.BOLD, 18));
-		lblNum2.setBounds(225, 118, 62, 38);
-		contentPane.add(lblNum2);
+		lblNum2 = createSlotLabel();
+		lblNum2.setBounds(370, 120, 80, 80);
+		add(lblNum2);
 
-		lblNum3 = new JLabel("0");
-		lblNum3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNum3.setFont(new Font("Cambria Math", Font.BOLD, 18));
-		lblNum3.setBounds(297, 118, 62, 38);
-		contentPane.add(lblNum3);
+		lblNum3 = createSlotLabel();
+		lblNum3.setBounds(450, 120, 80, 80);
+		add(lblNum3);
 
 		lblCurrentBet = new JLabel("lorem");
 		lblCurrentBet.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCurrentBet.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
-		lblCurrentBet.setBounds(10, 287, 489, 21);
-		contentPane.add(lblCurrentBet);
+		lblCurrentBet.setBounds(10, 287, 782, 21);
+		add(lblCurrentBet);
 
 		lblClient = new JLabel("lorem");
 		lblClient.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblClient.setBounds(10, 224, 304, 21);
-		contentPane.add(lblClient);
+		add(lblClient);
 
 		lblGame = new JLabel("lorem");
 		lblGame.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblGame.setBounds(10, 192, 304, 21);
-		contentPane.add(lblGame);
+		add(lblGame);
 
 		btnBack = new JButton("Back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(10, 319, 108, 38);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 384, 132, 36);
+		add(btnBack);
 
 		JButton btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(462, 11, 37, 35);
-		contentPane.add(btnInfo);
+		btnInfo.setBounds(755, 385, 37, 35);
+		add(btnInfo);
 
 		// Click Spin button
 		btnSpin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				slotMachine.generateNumbers();
-				lblNum1.setText(String.valueOf(slotMachine.getNumbers()[0]));
-				lblNum2.setText(String.valueOf(slotMachine.getNumbers()[1]));
-				lblNum3.setText(String.valueOf(slotMachine.getNumbers()[2]));
-				endGame();
+				animateSpin();
+				// Espera un poco y luego genera el resultado real
+				new javax.swing.Timer(1200, ev -> {
+					slotMachine.generateNumbers();
+					lblNum1.setText(String.valueOf(slotMachine.getNumbers()[0]));
+					lblNum2.setText(String.valueOf(slotMachine.getNumbers()[1]));
+					lblNum3.setText(String.valueOf(slotMachine.getNumbers()[2]));
+					endGame();
+					((javax.swing.Timer) ev.getSource()).stop();
+				}).start();
 			}
 		});
 
@@ -279,6 +275,49 @@ public class SlotmachineUI extends JPanel {
 		this.client = client;
 		this.slotMachine = slotmachine;
 		this.bet = bet;
+	}
+
+	/**
+	 * Creates and styles a slot label for the slot machine interface.
+	 *
+	 * @return A fully styled {@code JLabel} component initialized with the value
+	 *         "0".
+	 * @since 3.3
+	 */
+	private JLabel createSlotLabel() {
+		JLabel label = new JLabel("0", SwingConstants.CENTER);
+		label.setOpaque(true);
+		label.setBackground(new Color(30, 30, 30)); // Fondo oscuro elegante
+		label.setForeground(Color.WHITE); // Texto blanco
+		label.setFont(new Font("Digital-7 Mono", Font.BOLD, 36)); // Fuente estilo digital (o elige otra)
+		label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 3, true)); // Bordes redondeados
+		label.setPreferredSize(new Dimension(80, 80)); // Tamaño cuadrado
+		return label;
+	}
+
+	/**
+	 * Animates the slot machine spin effect.
+	 *
+	 * <p>
+	 * <b>Note:</b> This method uses {@link Thread#sleep(long)} for timing and
+	 * should not be called from the Event Dispatch Thread (EDT).
+	 * </p>
+	 *
+	 * @since 3.3
+	 */
+	private void animateSpin() {
+		new Thread(() -> {
+			try {
+				for (int i = 0; i < 10; i++) {
+					lblNum1.setText(String.valueOf((int) (Math.random() * 9 + 1)));
+					lblNum2.setText(String.valueOf((int) (Math.random() * 9 + 1)));
+					lblNum3.setText(String.valueOf((int) (Math.random() * 9 + 1)));
+					Thread.sleep(100);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
 	}
 
 }

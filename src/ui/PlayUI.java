@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controller.DataBaseController;
@@ -33,8 +32,8 @@ import model.Slotmachine;
 /**
  * Window for starting games.
  * <p>
- * Displays a list of clients and games in separate tables. Allows selecting
- * a client and a game to start playing. Handles bet insertion and opens the
+ * Displays a list of clients and games in separate tables. Allows selecting a
+ * client and a game to start playing. Handles bet insertion and opens the
  * corresponding game window.
  * </p>
  * 
@@ -44,7 +43,6 @@ import model.Slotmachine;
 public class PlayUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTable tableClients;
 	private JTable tableGames;
 
@@ -53,7 +51,7 @@ public class PlayUI extends JPanel {
 
 	private MainController controller;
 	private JButton btnPlay;
-	
+
 	private ViewController viewController;
 	private DataBaseController dbController;
 
@@ -64,7 +62,8 @@ public class PlayUI extends JPanel {
 	 * games. Adds event listeners for selection, button clicks, and window events.
 	 * </p>
 	 * 
-	 * @param controller The main controller handling UI actions and database operations
+	 * @param controller The main controller handling UI actions and database
+	 *                   operations
 	 * @since 3.0
 	 */
 	public PlayUI(MainController controller) {
@@ -73,25 +72,22 @@ public class PlayUI extends JPanel {
 		viewController = controller.getViewController();
 		dbController = controller.getDataBaseController();
 
-		setBounds(100, 100, 716, 435);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
 		JLabel lblGame = new JLabel("Play", SwingConstants.CENTER);
 		lblGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblGame.setBounds(28, 28, 652, 31);
-		contentPane.add(lblGame);
+		lblGame.setBounds(28, 28, 741, 31);
+		add(lblGame);
 
 		JLabel lblClients = new JLabel("Clients", SwingConstants.CENTER);
 		lblClients.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblClients.setBounds(28, 82, 287, 31);
-		contentPane.add(lblClients);
+		lblClients.setBounds(28, 93, 323, 31);
+		add(lblClients);
 
 		JScrollPane scrollPaneClients = new JScrollPane();
-		scrollPaneClients.setBounds(28, 124, 287, 166);
-		contentPane.add(scrollPaneClients);
+		scrollPaneClients.setBounds(28, 135, 341, 193);
+		add(scrollPaneClients);
 
 		modelClients = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Name", "Active", "Balance" }) {
 			private static final long serialVersionUID = 4840318942523039213L;
@@ -114,12 +110,12 @@ public class PlayUI extends JPanel {
 
 		JLabel lblGames = new JLabel("Games", SwingConstants.CENTER);
 		lblGames.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblGames.setBounds(357, 86, 323, 23);
-		contentPane.add(lblGames);
+		lblGames.setBounds(428, 101, 341, 23);
+		add(lblGames);
 
 		JScrollPane scrollPaneGames = new JScrollPane();
-		scrollPaneGames.setBounds(357, 124, 323, 166);
-		contentPane.add(scrollPaneGames);
+		scrollPaneGames.setBounds(428, 135, 341, 193);
+		add(scrollPaneGames);
 
 		modelGames = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Type", "Active", "Money" }) {
 			private static final long serialVersionUID = -6299895431999927772L;
@@ -143,13 +139,13 @@ public class PlayUI extends JPanel {
 		btnPlay = new JButton("Play");
 		btnPlay.setBackground(new Color(128, 128, 255));
 		btnPlay.setEnabled(false);
-		btnPlay.setBounds(577, 327, 103, 31);
-		contentPane.add(btnPlay);
+		btnPlay.setBounds(660, 386, 132, 36);
+		add(btnPlay);
 
 		JButton btnBack = new JButton("Back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(28, 327, 103, 31);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
 
 		// Click the back button
 		btnBack.addActionListener(new ActionListener() {
@@ -172,7 +168,7 @@ public class PlayUI extends JPanel {
 				String gameType = (String) tableGames.getValueAt(tableGames.getSelectedRow(), 1);
 				double moneyPool = (double) tableGames.getValueAt(tableGames.getSelectedRow(), 3);
 				Game game = null;
-				
+
 				if (gameType.equals("Blackjack")) {
 					game = new Blackjack(gameId, moneyPool);
 
@@ -215,8 +211,8 @@ public class PlayUI extends JPanel {
 	/**
 	 * Updates the clients and games tables with current data from the database.
 	 * <p>
-	 * Queries the database and fills the table models. Throws a GameException
-	 * if there are no clients or no games registered.
+	 * Queries the database and fills the table models. Throws a GameException if
+	 * there are no clients or no games registered.
 	 * </p>
 	 * 
 	 * @throws GameException if no clients or games are available for playing
@@ -255,7 +251,6 @@ public class PlayUI extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * Checks whether rows have been selected in both the clients and games tables.

@@ -58,11 +58,12 @@ public class SignInUI extends JPanel {
 	/**
 	 * Constructs the SignInUI frame.
 	 * <p>
-	 * Initializes the window layout, text fields, buttons, labels, and event listeners
-	 * for user creation, validation, and login functionality.
+	 * Initializes the window layout, text fields, buttons, labels, and event
+	 * listeners for user creation, validation, and login functionality.
 	 * </p>
 	 * 
-	 * @param controller The main controller handling user actions and window changes
+	 * @param controller The main controller handling user actions and window
+	 *                   changes
 	 * @since 3.0
 	 */
 	public SignInUI(MainController controller) {
@@ -255,7 +256,7 @@ public class SignInUI extends JPanel {
 					try {
 						user = new User(txtUsername.getText(), password, txtEmail.getText(),
 								chkRememberLogin.isSelected());
-						
+
 						user = dbController.addUser(user, chkRememberLogin.isSelected());
 						controller.updateUser(user);
 
@@ -298,7 +299,8 @@ public class SignInUI extends JPanel {
 	}
 
 	/**
-	 * Validates the form fields and enables or disables the Accept button accordingly.
+	 * Validates the form fields and enables or disables the Accept button
+	 * accordingly.
 	 * <p>
 	 * Ensures username, password, repeated password, and email are valid.
 	 * </p>

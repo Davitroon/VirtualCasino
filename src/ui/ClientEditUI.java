@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.DataBaseController;
 import controller.MainController;
@@ -29,9 +28,9 @@ import model.Client;
  * Window for editing existing client data.
  * <p>
  * This window allows an administrator to modify the details of a client,
- * including name, age, gender, balance, and active status. It integrates
- * with the MVC architecture through {@link MainController}, {@link DataBaseController},
- * and {@link ViewController}.
+ * including name, age, gender, balance, and active status. It integrates with
+ * the MVC architecture through {@link MainController},
+ * {@link DataBaseController}, and {@link ViewController}.
  * </p>
  * 
  * @author Davitroon
@@ -60,18 +59,17 @@ public class ClientEditUI extends JPanel {
 	private JCheckBox chckbxActive;
 	private DataBaseController dbController;
 
-
-    /**
-     * Constructor for the client edit window.
-     * <p>
-     * Initializes all UI components, sets up event listeners for form validation,
-     * and connects the window to MVC controllers.
-     * </p>
-     * 
-     * @param controller MainController instance used to handle actions, validation,
-     *                   and database communication.
-     * @since 3.0
-     */
+	/**
+	 * Constructor for the client edit window.
+	 * <p>
+	 * Initializes all UI components, sets up event listeners for form validation,
+	 * and connects the window to MVC controllers.
+	 * </p>
+	 * 
+	 * @param controller MainController instance used to handle actions, validation,
+	 *                   and database communication.
+	 * @since 3.0
+	 */
 	public ClientEditUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
@@ -261,6 +259,8 @@ public class ClientEditUI extends JPanel {
 				dbController.modifyClient(new Client(name, age, gender, balance, id, active));
 
 				clearFields();
+				managementUI.updateGamesTable();
+				managementUI.updateClientsTable();
 				viewController.switchPanel(managementUI);
 			}
 		});
@@ -274,18 +274,19 @@ public class ClientEditUI extends JPanel {
 		});
 	}
 
-    /**
-     * Loads the original client data into the form fields for editing.
-     * 
-     * @param id ID of the client to retrieve from the database.
-     * @since 3.0
-     */
+	/**
+	 * Loads the original client data into the form fields for editing.
+	 * 
+	 * @param id ID of the client to retrieve from the database.
+	 * @since 3.0
+	 */
 	public void loadOriginalClient(int id) {
 
 		ResultSet rset = dbController.queryClient(id);
 		String gender = "";
 
 		try {
+			rset.next();
 			textId.setText(String.valueOf(id));
 			textName.setText(rset.getString(2));
 			textAge.setText(String.valueOf(rset.getString(3)));
@@ -316,13 +317,12 @@ public class ClientEditUI extends JPanel {
 		checkForm();
 	}
 
-
-    /**
-     * Clears all form fields, resets validation flags, and disables the
-     * modification button.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Clears all form fields, resets validation flags, and disables the
+	 * modification button.
+	 * 
+	 * @since 3.0
+	 */
 	public void clearFields() {
 		btnModify.setEnabled(false);
 		buttonGroup.clearSelection();
@@ -334,12 +334,12 @@ public class ClientEditUI extends JPanel {
 		lblErrorBalance.setText("");
 	}
 
-    /**
-     * Returns the gender selected in the form.
-     * 
-     * @return 'M' for male, 'F' for female, 'O' for other, or 0 if none selected.
-     * @since 3.0
-     */
+	/**
+	 * Returns the gender selected in the form.
+	 * 
+	 * @return 'M' for male, 'F' for female, 'O' for other, or 0 if none selected.
+	 * @since 3.0
+	 */
 	public char getGender() {
 		if (rdbtnMale.isSelected())
 			return 'M';
@@ -350,12 +350,12 @@ public class ClientEditUI extends JPanel {
 		return 0;
 	}
 
-    /**
-     * Checks whether all form fields have valid values and a gender is selected.
-     * Enables or disables the modification button accordingly.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Checks whether all form fields have valid values and a gender is selected.
+	 * Enables or disables the modification button accordingly.
+	 * 
+	 * @since 3.0
+	 */
 	public void checkForm() {
 
 		if (ageValid && balanceValid && nameValid && getGender() != 0) {

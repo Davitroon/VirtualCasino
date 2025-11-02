@@ -31,8 +31,8 @@ import controller.ViewController;
  * Window for managing users (clients) and games.
  * <p>
  * Provides tabs for Users and Games. Each tab displays a table with current
- * data and allows adding, editing, and deleting entries.
- * Buttons are dynamically enabled depending on table selection.
+ * data and allows adding, editing, and deleting entries. Buttons are
+ * dynamically enabled depending on table selection.
  * </p>
  * 
  * @author Davitroon
@@ -60,15 +60,17 @@ public class ManagementUI extends JPanel {
 	/**
 	 * Constructs the management window frame.
 	 * <p>
-	 * Initializes all UI components, tables, and buttons for managing clients and games.
-	 * Adds event listeners for table row selection, add/edit/delete actions, and window events.
+	 * Initializes all UI components, tables, and buttons for managing clients and
+	 * games. Adds event listeners for table row selection, add/edit/delete actions,
+	 * and window events.
 	 * </p>
 	 * 
-	 * @param controller the main controller handling UI actions and database operations
+	 * @param controller the main controller handling UI actions and database
+	 *                   operations
 	 * @since 3.0
 	 */
 	public ManagementUI(MainController controller) {
-		
+
 		this.controller = controller;
 		dbController = controller.getDataBaseController();
 		ViewController viewController = controller.getViewController();
@@ -205,7 +207,7 @@ public class ManagementUI extends JPanel {
 		btnDeleteGames.setBackground(new Color(242, 77, 77));
 		btnDeleteGames.setBounds(605, 27, 142, 32);
 		panelGames.add(btnDeleteGames);
-		
+
 		JButton btnBack = new JButton("Back");
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
@@ -361,8 +363,8 @@ public class ManagementUI extends JPanel {
 	/**
 	 * Updates the clients table with current data from the database.
 	 * <p>
-	 * Queries the database for clients and populates the table model.
-	 * Enables or disables the delete all clients button based on data presence.
+	 * Queries the database for clients and populates the table model. Enables or
+	 * disables the delete all clients button based on data presence.
 	 * </p>
 	 * 
 	 * @since 3.0
@@ -376,22 +378,22 @@ public class ManagementUI extends JPanel {
 			if (!hasData) {
 				resetButtons();
 				btnDeleteClients.setEnabled(false);
-				
+
 			} else {
 				controller.fillFullClientTable(rset, modelClients);
 				btnDeleteClients.setEnabled(true);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Updates the games table with current data from the database.
+	 * Updates the games table with current data from the database.-
 	 * <p>
-	 * Queries the database for games and populates the table model.
-	 * Enables or disables the delete all games button based on data presence.
+	 * Queries the database for games and populates the table model. Enables or
+	 * disables the delete all games button based on data presence.
 	 * </p>
 	 * 
 	 * @since 3.0
@@ -403,14 +405,16 @@ public class ManagementUI extends JPanel {
 		try {
 			boolean hasData = rset.next();
 			if (!hasData) {
+				System.out.println("true");
 				resetButtons();
 				btnDeleteGames.setEnabled(false);
-			
+
 			} else {
+				System.out.println("false");
 				controller.fillGameTable(rset, modelGames);
 				btnDeleteGames.setEnabled(true);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -430,6 +434,8 @@ public class ManagementUI extends JPanel {
 		btnDeleteClient.setEnabled(false);
 		btnEditGame.setEnabled(false);
 		btnDeleteGame.setEnabled(false);
+		tableClients.clearSelection();
+		tableGames.clearSelection();
 	}
 
 }

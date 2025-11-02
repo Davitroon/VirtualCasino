@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
@@ -43,17 +42,17 @@ public class GameUI extends JPanel {
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
 
-    /**
-     * Constructs the GameUI window.
-     * <p>
-     * Initializes UI components, sets up listeners for buttons and input fields,
-     * and handles window closing events.
-     * </p>
-     * 
-     * @param controller Reference to the MainController handling program logic
-     *                   and data operations.
-     * @since 3.0
-     */
+	/**
+	 * Constructs the GameUI window.
+	 * <p>
+	 * Initializes UI components, sets up listeners for buttons and input fields,
+	 * and handles window closing events.
+	 * </p>
+	 * 
+	 * @param controller Reference to the MainController handling program logic and
+	 *                   data operations.
+	 * @since 3.0
+	 */
 	public GameUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
@@ -147,11 +146,11 @@ public class GameUI extends JPanel {
 		});
 	}
 
-    /**
-     * Clears all form fields and resets validation states.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Clears all form fields and resets validation states.
+	 * 
+	 * @since 3.0
+	 */
 	public void clearFields() {
 		btnAdd.setEnabled(false);
 		textMoney.setText("");
@@ -159,11 +158,11 @@ public class GameUI extends JPanel {
 		lblErrorMoney.setText("");
 	}
 
-    /**
-     * Checks if all required fields are valid to enable the add button.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Checks if all required fields are valid to enable the add button.
+	 * 
+	 * @since 3.0
+	 */
 	public void checkForm() {
 		if (moneyValid) {
 			btnAdd.setEnabled(true);

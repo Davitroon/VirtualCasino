@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
@@ -23,8 +22,8 @@ import model.Client;
  * Window where the {@link Blackjack} game is played.
  * <p>
  * This window allows the user to play a Blackjack game, interact with the
- * dealer, place bets, and visualize card hands. It is integrated with the
- * MVC architecture through {@link MainController} and {@link ViewController}.
+ * dealer, place bets, and visualize card hands. It is integrated with the MVC
+ * architecture through {@link MainController} and {@link ViewController}.
  * </p>
  * 
  * @author Davitroon
@@ -33,7 +32,6 @@ import model.Client;
 public class BlackjackUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 
 	private MainController controller;
 	private PlayUI playUI;
@@ -54,78 +52,80 @@ public class BlackjackUI extends JPanel {
 	private JButton btnInfo;
 	private ViewController viewController;
 
-    /**
-     * Constructor to create the Blackjack game window.
-     * <p>
-     * Initializes all UI components, configures event listeners, and links the
-     * window to the MVC controllers.
-     * </p>
-     * 
-     * @param controller MainController instance to handle game logic and
-     *                   communication with the model and other UI windows.
-     * @since 3.0
-     */
+	/**
+	 * Constructor to create the Blackjack game window.
+	 * <p>
+	 * Initializes all UI components, configures event listeners, and links the
+	 * window to the MVC controllers.
+	 * </p>
+	 * 
+	 * @param controller MainController instance to handle game logic and
+	 *                   communication with the model and other UI windows.
+	 * @since 3.0
+	 */
 	public BlackjackUI(MainController controller) {
 		viewController = controller.getViewController();
 		this.controller = controller;
 		playUI = viewController.getPlayUI();
-		
-		setBounds(100, 100, 577, 442);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
+
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
 		JLabel lblBlackjack = new JLabel("Blackjack");
-		lblBlackjack.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblBlackjack.setFont(new Font("Stencil", Font.PLAIN, 30));
 		lblBlackjack.setHorizontalAlignment(SwingConstants.CENTER);
-		lblBlackjack.setBounds(48, 36, 473, 30);
-		contentPane.add(lblBlackjack);
+		lblBlackjack.setBounds(10, 37, 782, 30);
+		add(lblBlackjack);
 
 		lblDealerCards = new JLabel("lorem");
+		lblDealerCards.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDealerCards.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblDealerCards.setBounds(48, 88, 473, 21);
-		contentPane.add(lblDealerCards);
+		lblDealerCards.setBounds(20, 88, 772, 21);
+		add(lblDealerCards);
 
 		lblYourCards = new JLabel("lorem");
+		lblYourCards.setHorizontalAlignment(SwingConstants.CENTER);
 		lblYourCards.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblYourCards.setBounds(48, 189, 473, 21);
-		contentPane.add(lblYourCards);
+		lblYourCards.setBounds(20, 189, 772, 21);
+		add(lblYourCards);
 
 		btnBack = new JButton("Back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(22, 349, 95, 30);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
 
 		lblDealerCardsList = new JLabel("lorem");
+		lblDealerCardsList.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDealerCardsList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
-		lblDealerCardsList.setBounds(48, 120, 473, 30);
-		contentPane.add(lblDealerCardsList);
+		lblDealerCardsList.setBounds(20, 120, 772, 30);
+		add(lblDealerCardsList);
 
 		lblYourCardsList = new JLabel("lorem");
+		lblYourCardsList.setHorizontalAlignment(SwingConstants.CENTER);
 		lblYourCardsList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
-		lblYourCardsList.setBounds(48, 221, 473, 30);
-		contentPane.add(lblYourCardsList);
+		lblYourCardsList.setBounds(10, 221, 782, 30);
+		add(lblYourCardsList);
 
 		btnHit = new JButton("Hit");
 		btnHit.setBackground(new Color(0, 128, 64));
-		btnHit.setBounds(298, 305, 108, 38);
-		contentPane.add(btnHit);
+		btnHit.setBounds(413, 305, 108, 38);
+		add(btnHit);
 
 		btnStand = new JButton("Stand");
 		btnStand.setBackground(new Color(255, 128, 128));
-		btnStand.setBounds(172, 305, 108, 38);
-		contentPane.add(btnStand);
+		btnStand.setBounds(287, 305, 108, 38);
+		add(btnStand);
 
 		lblCurrentBet = new JLabel("lorem");
 		lblCurrentBet.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCurrentBet.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
-		lblCurrentBet.setBounds(48, 273, 473, 21);
-		contentPane.add(lblCurrentBet);
+		lblCurrentBet.setBounds(20, 273, 772, 21);
+		add(lblCurrentBet);
 
 		btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(514, 11, 37, 38);
-		contentPane.add(btnInfo);
+		btnInfo.setBounds(755, 385, 37, 38);
+		add(btnInfo);
 
 		// Click on back button
 		btnBack.addActionListener(new ActionListener() {
@@ -180,26 +180,27 @@ public class BlackjackUI extends JPanel {
 		});
 	}
 
-    /**
-     * Updates the display of the dealer's card list.
-     * 
-     * @param cards The string representation of the dealer's cards.
-     * @param sum   The sum of the dealer's cards.
-     * @since 3.0
-     */
+	/**
+	 * Updates the display of the dealer's card list.
+	 * 
+	 * @param cards The string representation of the dealer's cards.
+	 * @param sum   The sum of the dealer's cards.
+	 * @since 3.0
+	 */
 	public void updateDealerCards(String cards, int sum) {
 		lblDealerCardsList.setText(cards + " (" + sum + ")");
 	}
 
-    /**
-     * Handles closing the Blackjack window.
-     * <p>
-     * Prompts the user if a game is in progress and ensures balances and tables
-     * are updated before switching windows.
-     * </p>
-     * @since 3.0
-     */
-	public void closeWindow() {		
+	/**
+	 * Handles closing the Blackjack window.
+	 * <p>
+	 * Prompts the user if a game is in progress and ensures balances and tables are
+	 * updated before switching windows.
+	 * </p>
+	 * 
+	 * @since 3.0
+	 */
+	public void closeWindow() {
 		if (!gameFinished) {
 			if (!controller.warnCloseGame(client, blackjack, bet)) {
 				return;
@@ -215,16 +216,16 @@ public class BlackjackUI extends JPanel {
 		}
 	}
 
-    /**
-     * Ends the current Blackjack match.
-     * <p>
-     * Compares player and dealer hands, calculates the result of the bet, updates
-     * balances, and optionally allows starting a new game.
-     * </p>
-     * 
-     * @param clientWins True if the client has won the round, false otherwise.
-     * @since 3.0
-     */
+	/**
+	 * Ends the current Blackjack match.
+	 * <p>
+	 * Compares player and dealer hands, calculates the result of the bet, updates
+	 * balances, and optionally allows starting a new game.
+	 * </p>
+	 * 
+	 * @param clientWins True if the client has won the round, false otherwise.
+	 * @since 3.0
+	 */
 	public void endGame(boolean clientWins) {
 
 		double betResult = blackjack.play(bet);
@@ -275,13 +276,14 @@ public class BlackjackUI extends JPanel {
 		} while (goToFinalMessage);
 	}
 
-    /**
-     * Starts a new Blackjack game.
-     * <p>
-     * Deals cards to the player and dealer, updates UI labels, and handles
-     * automatic wins if 21 is reached.
-     * @since 3.0
-     */
+	/**
+	 * Starts a new Blackjack game.
+	 * <p>
+	 * Deals cards to the player and dealer, updates UI labels, and handles
+	 * automatic wins if 21 is reached.
+	 * 
+	 * @since 3.0
+	 */
 	public void startGame() {
 		controller.startBlackjack(blackjack);
 		int dealerHand = blackjack.sumCards(blackjack.getDealerCards());
@@ -307,15 +309,15 @@ public class BlackjackUI extends JPanel {
 		if (dealerHand == 21)
 			endGame(false);
 	}
-	
-    /**
-     * Initializes the necessary data to start the game.
-     * 
-     * @param client    Current client playing.
-     * @param blackjack Blackjack game instance.
-     * @param bet       Bet amount to be played.
-     * @since 3.3
-     */
+
+	/**
+	 * Initializes the necessary data to start the game.
+	 * 
+	 * @param client    Current client playing.
+	 * @param blackjack Blackjack game instance.
+	 * @param bet       Bet amount to be played.
+	 * @since 3.3
+	 */
 	public void initializeData(Client client, Blackjack blackjack, double bet) {
 		this.client = client;
 		this.blackjack = blackjack;

@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.Validator;
@@ -25,8 +24,8 @@ import model.Client;
  * Window for adding new clients to the system.
  * <p>
  * This window allows an administrator to input information for a new client,
- * including name, age, gender, and balance. It performs real-time validation
- * on each field and integrates with the MVC architecture through
+ * including name, age, gender, and balance. It performs real-time validation on
+ * each field and integrates with the MVC architecture through
  * {@link MainController} and {@link ViewController}.
  * </p>
  * 
@@ -53,22 +52,21 @@ public class ClientUI extends JPanel {
 	private JLabel lblErrorAge;
 	private JLabel lblErrorBalance;
 
-    /**
-     * Constructor for the add-client window.
-     * <p>
-     * Initializes all UI components, sets up event listeners for form validation,
-     * and connects the window to MVC controllers.
-     * </p>
-     * 
-     * @param controller MainController instance used to handle actions, validation,
-     *                   and database communication.
-     * @since 3.0
-     */
+	/**
+	 * Constructor for the add-client window.
+	 * <p>
+	 * Initializes all UI components, sets up event listeners for form validation,
+	 * and connects the window to MVC controllers.
+	 * </p>
+	 * 
+	 * @param controller MainController instance used to handle actions, validation,
+	 *                   and database communication.
+	 * @since 3.0
+	 */
 	public ClientUI(MainController controller) {
-		
+
 		Validator validator = controller.getValidator();
 		ViewController viewController = controller.getViewController();
-
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
@@ -251,14 +249,14 @@ public class ClientUI extends JPanel {
 
 	}
 
-    /**
-     * Clears all fields in the form and disables the Add button.
-     * <p>
-     * Resets text fields, error labels, and radio button selections.
-     * </p>
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Clears all fields in the form and disables the Add button.
+	 * <p>
+	 * Resets text fields, error labels, and radio button selections.
+	 * </p>
+	 * 
+	 * @since 3.0
+	 */
 	public void clearFields() {
 		btnAdd.setEnabled(false);
 		buttonGroup.clearSelection();
@@ -270,12 +268,12 @@ public class ClientUI extends JPanel {
 		lblErrorBalance.setText("");
 	}
 
-    /**
-     * Returns the gender selected in the form.
-     * 
-     * @return 'M' for male, 'F' for female, 'O' for other, or 0 if none selected.
-     * @since 3.0
-     */
+	/**
+	 * Returns the gender selected in the form.
+	 * 
+	 * @return 'M' for male, 'F' for female, 'O' for other, or 0 if none selected.
+	 * @since 3.0
+	 */
 	public char getGender() {
 		if (rdbtnMale.isSelected())
 			return 'M';
@@ -286,12 +284,12 @@ public class ClientUI extends JPanel {
 		return 0;
 	}
 
-    /**
-     * Checks whether all form fields have valid values and a gender is selected.
-     * Enables or disables the Add button accordingly.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Checks whether all form fields have valid values and a gender is selected.
+	 * Enables or disables the Add button accordingly.
+	 * 
+	 * @since 3.0
+	 */
 	public void checkForm() {
 
 		if (ageValid && balanceValid && nameValid && getGender() != 0) {

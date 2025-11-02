@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
@@ -48,26 +47,26 @@ public class GameEditUI extends JPanel {
 	private JTextField textId;
 	private JLabel lblId;
 	private JCheckBox chckbxActive;
-	
+
 	private MainController controller;
 
-    /**
-     * Constructs the GameEditUI window.
-     * <p>
-     * Initializes UI components, sets up listeners for the update and back
-     * buttons, validates inputs, and handles window closing.
-     * </p>
-     * 
-     * @param controller Reference to the MainController handling program logic
-     *                   and data operations.
-     * @since 3.0
-     */
+	/**
+	 * Constructs the GameEditUI window.
+	 * <p>
+	 * Initializes UI components, sets up listeners for the update and back buttons,
+	 * validates inputs, and handles window closing.
+	 * </p>
+	 * 
+	 * @param controller Reference to the MainController handling program logic and
+	 *                   data operations.
+	 * @since 3.0
+	 */
 	public GameEditUI(MainController controller) {
 
 		this.controller = controller;
 		ViewController viewController = controller.getViewController();
 		ManagementUI managementUI = viewController.getManagementUI();
-		
+
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
 
@@ -169,21 +168,24 @@ public class GameEditUI extends JPanel {
 				}
 
 				clearFields();
+				managementUI.updateGamesTable();
+				managementUI.updateClientsTable();
 				viewController.switchPanel(managementUI);
 			}
 		});
 	}
 
-    /**
-     * Loads the original game data into the form fields for editing.
-     * 
-     * @param gameId ID of the game to retrieve from the database
-     * @since 3.0
-     */
+	/**
+	 * Loads the original game data into the form fields for editing.
+	 * 
+	 * @param gameId ID of the game to retrieve from the database
+	 * @since 3.0
+	 */
 	public void loadOriginalGame(int gameId) {
 		ResultSet rset = controller.getDataBaseController().queryGame(gameId);
 
 		try {
+			rset.next();
 			textId.setText(String.valueOf(gameId));
 
 			switch (rset.getString(2)) {
@@ -208,11 +210,11 @@ public class GameEditUI extends JPanel {
 		checkForm();
 	}
 
-    /**
-     * Clears all form fields and resets validation states.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Clears all form fields and resets validation states.
+	 * 
+	 * @since 3.0
+	 */
 	public void clearFields() {
 		btnUpdate.setEnabled(false);
 		textMoney.setText("");
@@ -220,11 +222,11 @@ public class GameEditUI extends JPanel {
 		lblErrorMoney.setText("");
 	}
 
-    /**
-     * Checks if all required fields are valid to enable the update button.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Checks if all required fields are valid to enable the update button.
+	 * 
+	 * @since 3.0
+	 */
 	public void checkForm() {
 		if (moneyValid) {
 			btnUpdate.setEnabled(true);

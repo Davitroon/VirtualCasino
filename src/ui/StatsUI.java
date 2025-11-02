@@ -12,13 +12,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.DataBaseController;
 import controller.MainController;
 import controller.ViewController;
 import model.User;
-
 
 /**
  * Window displaying game statistics for a specific user.
@@ -37,7 +35,6 @@ import model.User;
 public class StatsUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 
 	private JLabel lblGamesPlayedVal;
 	private JLabel lblGamesWonVal;
@@ -62,161 +59,159 @@ public class StatsUI extends JPanel {
 	 * Adds event listeners for the Back and Delete Statistics buttons.
 	 * </p>
 	 * 
-	 * @param controller The main controller handling application logic and window changes.
+	 * @param controller The main controller handling application logic and window
+	 *                   changes.
 	 * @since 3.0
 	 */
-    public StatsUI(MainController controller) {
-    	dbController = controller.getDataBaseController();
-        ViewController viewController = controller.getViewController();
+	public StatsUI(MainController controller) {
+		dbController = controller.getDataBaseController();
+		ViewController viewController = controller.getViewController();
 
-        setBounds(100, 100, 682, 399);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
-        JLabel lblStatistics = new JLabel("Statistics", SwingConstants.CENTER);
-        lblStatistics.setFont(new Font("Stencil", Font.PLAIN, 28));
-        lblStatistics.setBounds(10, 40, 648, 39);
-        contentPane.add(lblStatistics);
+		JLabel lblStatistics = new JLabel("Statistics", SwingConstants.CENTER);
+		lblStatistics.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblStatistics.setBounds(10, 40, 782, 39);
+		add(lblStatistics);
 
-        JButton btnBack = new JButton("Back");
-        btnBack.setBackground(new Color(128, 128, 128));
-        btnBack.setBounds(20, 297, 120, 32);
-        contentPane.add(btnBack);
+		JButton btnBack = new JButton("Back");
+		btnBack.setBackground(new Color(128, 128, 128));
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
 
-        JLabel lblGamesPlayed = new JLabel("Games played:");
-        lblGamesPlayed.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblGamesPlayed.setBounds(20, 122, 142, 24);
-        contentPane.add(lblGamesPlayed);
+		JLabel lblGamesPlayed = new JLabel("Games played:");
+		lblGamesPlayed.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblGamesPlayed.setBounds(88, 154, 142, 24);
+		add(lblGamesPlayed);
 
-        JLabel lblGamesWon = new JLabel("Games won:");
-        lblGamesWon.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblGamesWon.setBounds(20, 157, 142, 24);
-        contentPane.add(lblGamesWon);
+		JLabel lblGamesWon = new JLabel("Games won:");
+		lblGamesWon.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblGamesWon.setBounds(88, 189, 142, 24);
+		add(lblGamesWon);
 
-        JLabel lblGamesLost = new JLabel("Games lost:");
-        lblGamesLost.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblGamesLost.setBounds(20, 192, 142, 24);
-        contentPane.add(lblGamesLost);
+		JLabel lblGamesLost = new JLabel("Games lost:");
+		lblGamesLost.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblGamesLost.setBounds(88, 224, 142, 24);
+		add(lblGamesLost);
 
-        JLabel lblClientBalance = new JLabel("Client with highest balance:");
-        lblClientBalance.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblClientBalance.setBounds(314, 192, 170, 24);
-        contentPane.add(lblClientBalance);
+		JLabel lblClientBalance = new JLabel("Client with highest balance:");
+		lblClientBalance.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblClientBalance.setBounds(382, 224, 170, 24);
+		add(lblClientBalance);
 
-        JLabel lblGameMoney = new JLabel("Game with most money:");
-        lblGameMoney.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblGameMoney.setBounds(314, 227, 162, 24);
-        contentPane.add(lblGameMoney);
+		JLabel lblGameMoney = new JLabel("Game with most money:");
+		lblGameMoney.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblGameMoney.setBounds(382, 259, 162, 24);
+		add(lblGameMoney);
 
-        JLabel lblBlackjackGames = new JLabel("Blackjack games:");
-        lblBlackjackGames.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblBlackjackGames.setBounds(20, 227, 178, 24);
-        contentPane.add(lblBlackjackGames);
+		JLabel lblBlackjackGames = new JLabel("Blackjack games:");
+		lblBlackjackGames.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblBlackjackGames.setBounds(88, 259, 178, 24);
+		add(lblBlackjackGames);
 
-        JLabel lblSlotGames = new JLabel("Slot machine games:");
-        lblSlotGames.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblSlotGames.setBounds(20, 262, 193, 24);
-        contentPane.add(lblSlotGames);
+		JLabel lblSlotGames = new JLabel("Slot machine games:");
+		lblSlotGames.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblSlotGames.setBounds(88, 294, 193, 24);
+		add(lblSlotGames);
 
-        JLabel lblMoneyLost = new JLabel("Money lost:");
-        lblMoneyLost.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblMoneyLost.setBounds(314, 157, 120, 24);
-        contentPane.add(lblMoneyLost);
+		JLabel lblMoneyLost = new JLabel("Money lost:");
+		lblMoneyLost.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblMoneyLost.setBounds(382, 189, 120, 24);
+		add(lblMoneyLost);
 
-        JLabel lblMoneyWon = new JLabel("Money won:");
-        lblMoneyWon.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblMoneyWon.setBounds(314, 122, 120, 24);
-        contentPane.add(lblMoneyWon);
+		JLabel lblMoneyWon = new JLabel("Money won:");
+		lblMoneyWon.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblMoneyWon.setBounds(382, 154, 120, 24);
+		add(lblMoneyWon);
 
-        JLabel lblLastGame = new JLabel("Last game played:");
-        lblLastGame.setFont(new Font("SimSun", Font.BOLD, 14));
-        lblLastGame.setBounds(314, 262, 178, 24);
-        contentPane.add(lblLastGame);
+		JLabel lblLastGame = new JLabel("Last game played:");
+		lblLastGame.setFont(new Font("SimSun", Font.BOLD, 14));
+		lblLastGame.setBounds(382, 294, 178, 24);
+		add(lblLastGame);
 
-        lblGamesPlayedVal = new JLabel("lorem");
-        lblGamesPlayedVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblGamesPlayedVal.setBounds(155, 127, 141, 14);
-        contentPane.add(lblGamesPlayedVal);
+		lblGamesPlayedVal = new JLabel("lorem");
+		lblGamesPlayedVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblGamesPlayedVal.setBounds(223, 159, 141, 14);
+		add(lblGamesPlayedVal);
 
-        lblGamesWonVal = new JLabel("lorem");
-        lblGamesWonVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblGamesWonVal.setBounds(155, 163, 149, 14);
-        contentPane.add(lblGamesWonVal);
+		lblGamesWonVal = new JLabel("lorem");
+		lblGamesWonVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblGamesWonVal.setBounds(223, 195, 149, 14);
+		add(lblGamesWonVal);
 
-        lblGamesLostVal = new JLabel("lorem");
-        lblGamesLostVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblGamesLostVal.setBounds(164, 197, 140, 14);
-        contentPane.add(lblGamesLostVal);
+		lblGamesLostVal = new JLabel("lorem");
+		lblGamesLostVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblGamesLostVal.setBounds(232, 229, 140, 14);
+		add(lblGamesLostVal);
 
-        lblBlackjackGamesVal = new JLabel("lorem");
-        lblBlackjackGamesVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblBlackjackGamesVal.setBounds(197, 233, 108, 14);
-        contentPane.add(lblBlackjackGamesVal);
+		lblBlackjackGamesVal = new JLabel("lorem");
+		lblBlackjackGamesVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblBlackjackGamesVal.setBounds(265, 265, 108, 14);
+		add(lblBlackjackGamesVal);
 
-        lblSlotGamesVal = new JLabel("lorem");
-        lblSlotGamesVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblSlotGamesVal.setBounds(211, 268, 93, 14);
-        contentPane.add(lblSlotGamesVal);
+		lblSlotGamesVal = new JLabel("lorem");
+		lblSlotGamesVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblSlotGamesVal.setBounds(279, 300, 93, 14);
+		add(lblSlotGamesVal);
 
-        lblMoneyWonVal = new JLabel("lorem");
-        lblMoneyWonVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblMoneyWonVal.setBounds(433, 127, 225, 14);
-        contentPane.add(lblMoneyWonVal);
+		lblMoneyWonVal = new JLabel("lorem");
+		lblMoneyWonVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblMoneyWonVal.setBounds(501, 159, 225, 14);
+		add(lblMoneyWonVal);
 
-        lblMoneyLostVal = new JLabel("lorem");
-        lblMoneyLostVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblMoneyLostVal.setBounds(439, 163, 219, 14);
-        contentPane.add(lblMoneyLostVal);
+		lblMoneyLostVal = new JLabel("lorem");
+		lblMoneyLostVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblMoneyLostVal.setBounds(507, 195, 219, 14);
+		add(lblMoneyLostVal);
 
-        lblClientBalanceVal = new JLabel("lorem");
-        lblClientBalanceVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblClientBalanceVal.setBounds(488, 197, 170, 14);
-        contentPane.add(lblClientBalanceVal);
+		lblClientBalanceVal = new JLabel("lorem");
+		lblClientBalanceVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblClientBalanceVal.setBounds(556, 229, 170, 14);
+		add(lblClientBalanceVal);
 
-        lblGameMoneyVal = new JLabel("lorem");
-        lblGameMoneyVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblGameMoneyVal.setBounds(480, 232, 178, 14);
-        contentPane.add(lblGameMoneyVal);
+		lblGameMoneyVal = new JLabel("lorem");
+		lblGameMoneyVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblGameMoneyVal.setBounds(548, 264, 178, 14);
+		add(lblGameMoneyVal);
 
-        lblLastGameVal = new JLabel("lorem");
-        lblLastGameVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-        lblLastGameVal.setBounds(490, 267, 168, 14);
-        contentPane.add(lblLastGameVal);
+		lblLastGameVal = new JLabel("lorem");
+		lblLastGameVal.setFont(new Font("SimSun", Font.PLAIN, 14));
+		lblLastGameVal.setBounds(558, 299, 168, 14);
+		add(lblLastGameVal);
 
-        btnDeleteStatistics = new JButton("Delete statistics");
-        btnDeleteStatistics.setForeground(new Color(0, 0, 0));
-        btnDeleteStatistics.setFont(new Font("SansSerif", Font.BOLD, 12));
-        btnDeleteStatistics.setBackground(new Color(242, 77, 77));
-        btnDeleteStatistics.setBounds(516, 90, 142, 32);
-        contentPane.add(btnDeleteStatistics);
+		btnDeleteStatistics = new JButton("Delete statistics");
+		btnDeleteStatistics.setForeground(new Color(0, 0, 0));
+		btnDeleteStatistics.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnDeleteStatistics.setBackground(new Color(242, 77, 77));
+		btnDeleteStatistics.setBounds(660, 385, 132, 36);
+		add(btnDeleteStatistics);
 
-        lblUser = new JLabel("Statistics for ");
-        lblUser.setFont(new Font("Tahoma", Font.BOLD, 13));
-        lblUser.setBounds(20, 95, 178, 14);
-        contentPane.add(lblUser);
+		lblUser = new JLabel("Statistics for ");
+		lblUser.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblUser.setBounds(88, 127, 178, 14);
+		add(lblUser);
 
-        // Click "Back" button
-        btnBack.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	viewController.switchPanel(viewController.getHomeUI());
-            }
-        });
+		// Click "Back" button
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				viewController.switchPanel(viewController.getHomeUI());
+			}
+		});
 
-        // Click "Delete statistics" button
-        btnDeleteStatistics.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int option = JOptionPane.showConfirmDialog(null,
-                        "Are you sure you want to delete all statistics?", "Confirm deletion",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		// Click "Delete statistics" button
+		btnDeleteStatistics.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete all statistics?",
+						"Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-                if (option == JOptionPane.YES_OPTION) {
-                	dbController.deleteGameSessions();
-                    updateData();
-                }
-            }
-        });
-    }
+				if (option == JOptionPane.YES_OPTION) {
+					dbController.deleteGameSessions();
+					updateData();
+				}
+			}
+		});
+	}
 
 	/**
 	 * Updates all statistics displayed in the window.
@@ -242,7 +237,8 @@ public class StatsUI extends JPanel {
 			}
 
 			// Games played
-			rset = dbController.specificQuery("SELECT COUNT(*) FROM game_sessions WHERE user_profile = " + user.getId() + ";");
+			rset = dbController
+					.specificQuery("SELECT COUNT(*) FROM game_sessions WHERE user_profile = " + user.getId() + ";");
 			rset.next();
 			lblGamesPlayedVal.setText(rset.getString(1));
 
@@ -293,11 +289,11 @@ public class StatsUI extends JPanel {
 			double moneyLost;
 			if (rset.wasNull()) {
 				moneyLost = 0.0;
-				
+
 			} else {
 				moneyLost = rset.getDouble(1);
 			}
-			
+
 			lblMoneyLostVal.setText(String.format("%.2f$", moneyLost));
 
 			// Client with highest balance
@@ -319,8 +315,8 @@ public class StatsUI extends JPanel {
 			}
 
 			// Last game played
-			rset = dbController.specificQuery("SELECT session_date FROM game_sessions WHERE user_profile = " + user.getId()
-					+ " ORDER BY session_date DESC LIMIT 1;");
+			rset = dbController.specificQuery("SELECT session_date FROM game_sessions WHERE user_profile = "
+					+ user.getId() + " ORDER BY session_date DESC LIMIT 1;");
 			if (rset.next()) {
 				lblLastGameVal.setText(rset.getString(1));
 			} else {
@@ -333,7 +329,7 @@ public class StatsUI extends JPanel {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Updates the current user for which statistics are displayed.
 	 * <p>
@@ -344,6 +340,6 @@ public class StatsUI extends JPanel {
 	 * @since 3.3
 	 */
 	public void updateUser(MainController controller) {
-		 user = controller.getCurrentUser();
+		user = controller.getCurrentUser();
 	}
 }

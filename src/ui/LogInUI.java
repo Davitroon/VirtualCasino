@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
@@ -26,9 +25,9 @@ import model.User;
 /**
  * Window where the user can log in to the application.
  * <p>
- * Provides fields for username and password, with optional "remember login"
- * and "show password" functionality. Validates input before enabling the
- * accept button.
+ * Provides fields for username and password, with optional "remember login" and
+ * "show password" functionality. Validates input before enabling the accept
+ * button.
  * </p>
  * 
  * @author Davitroon
@@ -52,12 +51,11 @@ public class LogInUI extends JPanel {
 	/**
 	 * Constructs the login window frame.
 	 * <p>
-	 * Sets up all UI components, event listeners, and validation logic for
-	 * the login process.
+	 * Sets up all UI components, event listeners, and validation logic for the
+	 * login process.
 	 * </p>
 	 * 
-	 * @param controller the main controller handling UI actions and data
-	 *                   operations
+	 * @param controller the main controller handling UI actions and data operations
 	 * @since 3.0
 	 */
 	public LogInUI(MainController controller) {
@@ -197,7 +195,7 @@ public class LogInUI extends JPanel {
 							if (chckbxRememberSession.isSelected()) {
 								controller.getDataBaseController().enableRememberLogin(user.getName());
 							}
-							
+
 							controller.updateUser(user);
 							viewController.switchPanel(viewController.getHomeUI());
 							resetContent();
