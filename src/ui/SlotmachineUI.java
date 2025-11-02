@@ -4,11 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,7 +30,7 @@ import model.Slotmachine;
  * @author David
  * @since 3.0
  */
-public class SlotmachineUI extends JFrame {
+public class SlotmachineUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -73,14 +70,9 @@ public class SlotmachineUI extends JFrame {
 		viewController = controller.getViewController();
 		playUI = viewController.getPlayUI();
 
-		setResizable(false);
 		setBounds(100, 100, 523, 421);
-		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblSlotMachine = new JLabel("Slot Machine");
@@ -138,14 +130,6 @@ public class SlotmachineUI extends JFrame {
 		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(462, 11, 37, 35);
 		contentPane.add(btnInfo);
-
-		addWindowListener(new WindowAdapter() {
-			// When closing the window using the X button
-			@Override
-			public void windowClosing(WindowEvent e) {
-				closeWindow();
-			}
-		});
 
 		// Click Spin button
 		btnSpin.addActionListener(new ActionListener() {
@@ -208,7 +192,7 @@ public class SlotmachineUI extends JFrame {
 
 		try {
 			playUI.updateTables();
-			controller.getViewController().switchWindow(this, playUI);
+			controller.getViewController().switchPanel(playUI);
 
 		} catch (GameException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);

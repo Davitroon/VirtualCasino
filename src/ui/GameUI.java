@@ -6,13 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -34,7 +31,7 @@ import model.Slotmachine;
  * @author Davitroon
  * @since 3.0
  */
-public class GameUI extends JFrame {
+public class GameUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -63,14 +60,9 @@ public class GameUI extends JFrame {
 		ViewController viewController = controller.getViewController();
 		ManagementUI managementUI = viewController.getManagementUI();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 414, 314);
-		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblAddGame = new JLabel("Add Game", SwingConstants.CENTER);
@@ -134,7 +126,7 @@ public class GameUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
+				viewController.switchPanel(managementUI);
 			}
 		});
 
@@ -153,16 +145,7 @@ public class GameUI extends JFrame {
 				}
 
 				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
+				viewController.switchPanel(managementUI);
 			}
 		});
 	}

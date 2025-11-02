@@ -4,11 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,7 +30,7 @@ import model.Client;
  * @author Davitroon
  * @since 3.0
  */
-public class BlackjackUI extends JFrame {
+public class BlackjackUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -70,18 +67,12 @@ public class BlackjackUI extends JFrame {
      */
 	public BlackjackUI(MainController controller) {
 		viewController = controller.getViewController();
-		setResizable(false);
-
 		this.controller = controller;
 		playUI = viewController.getPlayUI();
-
+		
 		setBounds(100, 100, 577, 442);
-		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblBlackjack = new JLabel("Blackjack");
@@ -135,14 +126,6 @@ public class BlackjackUI extends JFrame {
 		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(514, 11, 37, 38);
 		contentPane.add(btnInfo);
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				closeWindow();
-			}
-		});
 
 		// Click on back button
 		btnBack.addActionListener(new ActionListener() {
@@ -225,7 +208,7 @@ public class BlackjackUI extends JFrame {
 
 		try {
 			playUI.updateTables();
-			controller.getViewController().switchWindow(this, playUI);
+			controller.getViewController().switchPanel(playUI);
 
 		} catch (GameException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);

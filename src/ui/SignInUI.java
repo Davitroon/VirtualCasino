@@ -6,20 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.DataBaseController;
 import controller.MainController;
@@ -37,10 +33,9 @@ import model.User;
  * @author Davitroon
  * @since 3.0
  */
-public class SignInUI extends JFrame {
+public class SignInUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTextField txtUsername;
 
 	private boolean validUsername;
@@ -75,101 +70,94 @@ public class SignInUI extends JFrame {
 		DataBaseController dbController = controller.getDataBaseController();
 		ViewController viewController = controller.getViewController();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 658, 363);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
 		JLabel lblCrearuser = new JLabel("Create User", SwingConstants.CENTER);
 		lblCrearuser.setFont(new Font("Stencil", Font.PLAIN, 28));
 		lblCrearuser.setBounds(10, 29, 622, 31);
-		contentPane.add(lblCrearuser);
+		add(lblCrearuser);
 
 		JButton btnVolver = new JButton("Back");
 		btnVolver.setBackground(Color.GRAY);
 		btnVolver.setBounds(27, 276, 105, 32);
-		contentPane.add(btnVolver);
+		add(btnVolver);
 
 		JLabel lblNombre = new JLabel("Username");
 		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblNombre.setBounds(27, 106, 133, 14);
-		contentPane.add(lblNombre);
+		add(lblNombre);
 
 		txtUsername = new JTextField();
 		txtUsername.setBounds(161, 101, 172, 26);
 		txtUsername.setColumns(10);
-		contentPane.add(txtUsername);
+		add(txtUsername);
 
 		JLabel lblContrasena = new JLabel("Password");
 		lblContrasena.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblContrasena.setBounds(27, 161, 129, 15);
-		contentPane.add(lblContrasena);
+		add(lblContrasena);
 
 		btnAccept = new JButton("Accept");
 		btnAccept.setEnabled(false);
 		btnAccept.setBounds(517, 276, 105, 32);
-		contentPane.add(btnAccept);
+		add(btnAccept);
 
 		lblUsernameError = new JLabel("");
 		lblUsernameError.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblUsernameError.setForeground(new Color(255, 0, 0));
 		lblUsernameError.setBounds(27, 131, 306, 14);
-		contentPane.add(lblUsernameError);
+		add(lblUsernameError);
 
 		lblPasswordNotice = new JLabel("Password must be at least 8 characters");
 		lblPasswordNotice.setForeground(Color.RED);
 		lblPasswordNotice.setBounds(27, 187, 272, 20);
-		contentPane.add(lblPasswordNotice);
+		add(lblPasswordNotice);
 
 		passwordField = new JPasswordField();
 		passwordField.setEchoChar('*');
 		passwordField.setBounds(120, 156, 165, 26);
-		contentPane.add(passwordField);
+		add(passwordField);
 
 		chkShowPassword = new JCheckBox("Show");
 		chkShowPassword.setBounds(305, 186, 69, 23);
-		contentPane.add(chkShowPassword);
+		add(chkShowPassword);
 
 		chkRememberLogin = new JCheckBox("Remember login");
 		chkRememberLogin.setBounds(27, 219, 201, 23);
-		contentPane.add(chkRememberLogin);
+		add(chkRememberLogin);
 
 		JLabel lblContrasena2 = new JLabel("Repeat Password");
 		lblContrasena2.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblContrasena2.setBounds(295, 161, 129, 15);
-		contentPane.add(lblContrasena2);
+		add(lblContrasena2);
 
 		passwordField2 = new JPasswordField();
 		passwordField2.setEchoChar('*');
 		passwordField2.setBounds(434, 156, 149, 26);
-		contentPane.add(passwordField2);
+		add(passwordField2);
 
 		lblEmail = new JLabel("Email");
 		lblEmail.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblEmail.setBounds(352, 106, 58, 14);
-		contentPane.add(lblEmail);
+		add(lblEmail);
 
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
 		txtEmail.setBounds(411, 101, 172, 26);
-		contentPane.add(txtEmail);
+		add(txtEmail);
 
 		JLabel lblErrorCorreo = new JLabel("");
 		lblErrorCorreo.setForeground(Color.RED);
 		lblErrorCorreo.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorCorreo.setBounds(351, 131, 232, 14);
-		contentPane.add(lblErrorCorreo);
+		add(lblErrorCorreo);
 
 		// Click back button
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetContent();
-				viewController.switchWindow(SignInUI.this, viewController.getConnectUI());
+				viewController.switchPanel(viewController.getConnectUI());
 			}
 		});
 
@@ -272,7 +260,7 @@ public class SignInUI extends JFrame {
 						controller.updateUser(user);
 
 						dbController.addDefaultUser();
-						viewController.switchWindow(SignInUI.this, viewController.getHomeUI());
+						viewController.switchPanel(viewController.getHomeUI());
 						resetContent();
 
 					} catch (MailException e1) {
@@ -284,15 +272,6 @@ public class SignInUI extends JFrame {
 								JOptionPane.WARNING_MESSAGE);
 					}
 				}
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				resetContent();
-				viewController.switchWindow(SignInUI.this, viewController.getLogInUI());
 			}
 		});
 	}

@@ -6,14 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -37,10 +34,9 @@ import model.User;
  * @author Davitroon
  * @since 3.0
  */
-public class LogInUI extends JFrame {
+public class LogInUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTextField textUsername;
 
 	private User user;
@@ -68,75 +64,68 @@ public class LogInUI extends JFrame {
 
 		ViewController viewController = controller.getViewController();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 533, 367);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
 		JLabel lblLogIn = new JLabel("Log In", SwingConstants.CENTER);
 		lblLogIn.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblLogIn.setBounds(10, 29, 486, 31);
-		contentPane.add(lblLogIn);
+		lblLogIn.setBounds(10, 33, 782, 31);
+		add(lblLogIn);
 
 		JButton btnBack = new JButton("Back");
 		btnBack.setBackground(Color.GRAY);
-		btnBack.setBounds(21, 273, 105, 32);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 390, 105, 32);
+		add(btnBack);
 
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblUsername.setBounds(89, 107, 133, 14);
-		contentPane.add(lblUsername);
+		lblUsername.setBounds(186, 132, 133, 14);
+		add(lblUsername);
 
 		textUsername = new JTextField();
-		textUsername.setBounds(228, 101, 172, 26);
+		textUsername.setBounds(329, 127, 288, 26);
 		textUsername.setColumns(10);
-		contentPane.add(textUsername);
+		add(textUsername);
 
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblPassword.setBounds(89, 165, 129, 15);
-		contentPane.add(lblPassword);
+		lblPassword.setBounds(186, 169, 129, 15);
+		add(lblPassword);
 
 		btnAccept = new JButton("Accept");
 		btnAccept.setEnabled(false);
-		btnAccept.setBounds(391, 273, 105, 32);
-		contentPane.add(btnAccept);
+		btnAccept.setBounds(687, 390, 105, 32);
+		add(btnAccept);
 
 		lblUsernameError = new JLabel("");
 		lblUsernameError.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblUsernameError.setForeground(new Color(255, 0, 0));
 		lblUsernameError.setBounds(89, 132, 311, 14);
-		contentPane.add(lblUsernameError);
+		add(lblUsernameError);
 
 		JLabel lblPasswordNotice = new JLabel("Password must be at least 8 characters");
 		lblPasswordNotice.setForeground(Color.RED);
-		lblPasswordNotice.setBounds(89, 191, 288, 20);
-		contentPane.add(lblPasswordNotice);
+		lblPasswordNotice.setBounds(329, 201, 288, 20);
+		add(lblPasswordNotice);
 
 		passwordField = new JPasswordField();
 		passwordField.setEchoChar('*');
-		passwordField.setBounds(189, 160, 149, 26);
-		contentPane.add(passwordField);
+		passwordField.setBounds(329, 164, 288, 26);
+		add(passwordField);
 
 		chckbxShowPassword = new JCheckBox("Show");
-		chckbxShowPassword.setBounds(344, 162, 69, 23);
-		contentPane.add(chckbxShowPassword);
+		chckbxShowPassword.setBounds(623, 166, 69, 23);
+		add(chckbxShowPassword);
 
 		chckbxRememberSession = new JCheckBox("Remember login");
-		chckbxRememberSession.setBounds(89, 218, 201, 23);
-		contentPane.add(chckbxRememberSession);
+		chckbxRememberSession.setBounds(186, 228, 201, 23);
+		add(chckbxRememberSession);
 
 		// Click back button
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetContent();
-				viewController.switchWindow(LogInUI.this, viewController.getConnectUI());
+				viewController.switchPanel(viewController.getConnectUI());
 			}
 		});
 
@@ -210,7 +199,7 @@ public class LogInUI extends JFrame {
 							}
 							
 							controller.updateUser(user);
-							viewController.switchWindow(LogInUI.this, viewController.getHomeUI());
+							viewController.switchPanel(viewController.getHomeUI());
 							resetContent();
 						}
 						rset.close();
@@ -223,15 +212,6 @@ public class LogInUI extends JFrame {
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-			}
-		});
-
-		// Closing the window with the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				resetContent();
-				viewController.switchWindow(LogInUI.this, viewController.getConnectUI());
 			}
 		});
 	}

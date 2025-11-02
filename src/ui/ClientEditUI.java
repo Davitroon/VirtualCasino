@@ -6,15 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -40,7 +37,7 @@ import model.Client;
  * @author Davitroon
  * @since 3.0
  */
-public class ClientEditUI extends JFrame {
+public class ClientEditUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -83,14 +80,9 @@ public class ClientEditUI extends JFrame {
 		dbController = controller.getDataBaseController();
 		ManagementUI managementUI = viewController.getManagementUI();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 499, 403);
-		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblEditClient = new JLabel("Edit Client", SwingConstants.CENTER);
@@ -272,7 +264,7 @@ public class ClientEditUI extends JFrame {
 				dbController.modifyClient(new Client(name, age, gender, balance, id, active));
 
 				clearFields();
-				viewController.switchWindow(ClientEditUI.this, managementUI);
+				viewController.switchPanel(managementUI);
 			}
 		});
 
@@ -280,16 +272,7 @@ public class ClientEditUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				viewController.switchWindow(ClientEditUI.this, managementUI);
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				clearFields();
-				viewController.switchWindow(ClientEditUI.this, managementUI);
+				viewController.switchPanel(managementUI);
 			}
 		});
 	}

@@ -4,12 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -31,7 +28,7 @@ import model.User;
  * @author Davitroon
  * @since 3.0
  */
-public class ProfileUI extends JFrame {
+public class ProfileUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -56,14 +53,9 @@ public class ProfileUI extends JFrame {
 		ViewController viewController = controller.getViewController();	
 		DataBaseController dbController = controller.getDataBaseController();	
 		
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 542, 390);
-		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblProfile = new JLabel("Profile", SwingConstants.CENTER);
@@ -109,15 +101,7 @@ public class ProfileUI extends JFrame {
 		// Click back button
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewController.switchWindow(ProfileUI.this, viewController.getHomeUI());
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				viewController.switchWindow(ProfileUI.this, viewController.getHomeUI());
+				viewController.switchPanel(viewController.getHomeUI());
 			}
 		});
 
@@ -126,7 +110,7 @@ public class ProfileUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				dbController.disableRememberLogin();
-				viewController.switchWindow(ProfileUI.this, viewController.getConnectUI());
+				viewController.switchPanel(viewController.getConnectUI());
 			}
 		});
 
@@ -149,7 +133,7 @@ public class ProfileUI extends JFrame {
 						"Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 				if (response == JOptionPane.YES_OPTION) {
-					viewController.switchWindow(ProfileUI.this, viewController.getConnectUI());
+					viewController.switchPanel(viewController.getConnectUI());
 					dbController.deleteUser(controller.getCurrentUser().getId());
 				}
 			}

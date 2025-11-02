@@ -4,13 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -37,7 +34,7 @@ import model.User;
  * @author Davitroon
  * @since 3.0
  */
-public class StatsUI extends JFrame {
+public class StatsUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -72,14 +69,9 @@ public class StatsUI extends JFrame {
     	dbController = controller.getDataBaseController();
         ViewController viewController = controller.getViewController();
 
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 682, 399);
-        setLocationRelativeTo(null);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-        setContentPane(contentPane);
         contentPane.setLayout(null);
 
         JLabel lblStatistics = new JLabel("Statistics", SwingConstants.CENTER);
@@ -204,18 +196,10 @@ public class StatsUI extends JFrame {
         lblUser.setBounds(20, 95, 178, 14);
         contentPane.add(lblUser);
 
-     // When closing the window using the X button
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-            	viewController.switchWindow(StatsUI.this, viewController.getHomeUI());
-            }
-        });
-
         // Click "Back" button
         btnBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	viewController.switchWindow(StatsUI.this, viewController.getHomeUI());
+            	viewController.switchPanel(viewController.getHomeUI());
             }
         });
 

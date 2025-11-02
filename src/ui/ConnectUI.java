@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -27,10 +26,9 @@ import controller.ViewController;
  * @author Davitroon
  * @since 3.0
  */
-public class ConnectUI extends JFrame {
+public class ConnectUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private HomeUI menu;
 
     /**
@@ -48,44 +46,29 @@ public class ConnectUI extends JFrame {
 
 		ViewController viewController = controller.getViewController();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 501, 301);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(null);
 
 		JLabel lblTitle = new JLabel("Connect", SwingConstants.CENTER);
-		lblTitle.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblTitle.setBounds(10, 28, 465, 31);
-		contentPane.add(lblTitle);
+		lblTitle.setFont(new Font("Stencil", Font.PLAIN, 30));
+		lblTitle.setBounds(10, 28, 782, 45);
+		add(lblTitle);
 
 		JButton btnCreateUser = new JButton("Create User");
 		btnCreateUser.setBackground(new Color(128, 128, 255));
-		btnCreateUser.setBounds(113, 112, 117, 45);
-		contentPane.add(btnCreateUser);
+		btnCreateUser.setBounds(261, 213, 117, 45);
+		add(btnCreateUser);
 
 		JButton btnLogIn = new JButton("Log In");
 		btnLogIn.setBackground(new Color(128, 128, 255));
-		btnLogIn.setBounds(253, 112, 117, 45);
-		contentPane.add(btnLogIn);
+		btnLogIn.setBounds(410, 213, 117, 45);
+		add(btnLogIn);
 
 		JButton btnExit = new JButton("Exit");
 		btnExit.setBackground(Color.GRAY);
-		btnExit.setBounds(10, 219, 105, 32);
-		contentPane.add(btnExit);
-
-		// Close window
-		addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				controller.closeProgram();
-				System.exit(0);
-			}
-		});
+		btnExit.setBounds(10, 386, 132, 36);
+		add(btnExit);
 
 		// Click "Exit" button
 		btnExit.addActionListener(new ActionListener() {
@@ -98,14 +81,14 @@ public class ConnectUI extends JFrame {
 		// Click "Create User" button
 		btnCreateUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewController.switchWindow(ConnectUI.this, viewController.getSignInUI());
+				viewController.switchPanel(viewController.getSignInUI());
 			}
 		});
 
 		// Click "Log In" button
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewController.switchWindow(ConnectUI.this, viewController.getLogInUI());
+				viewController.switchPanel(viewController.getLogInUI());
 			}
 		});
 	}

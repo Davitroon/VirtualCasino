@@ -6,13 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -44,7 +41,7 @@ import model.Slotmachine;
  * @author Davitroon
  * @since 3.0
  */
-public class PlayUI extends JFrame {
+public class PlayUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -76,14 +73,10 @@ public class PlayUI extends JFrame {
 		viewController = controller.getViewController();
 		dbController = controller.getDataBaseController();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 716, 435);
-		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JLabel lblGame = new JLabel("Play", SwingConstants.CENTER);
@@ -161,16 +154,7 @@ public class PlayUI extends JFrame {
 		// Click the back button
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewController.switchWindow(PlayUI.this, viewController.getHomeUI());
-				btnPlay.setEnabled(false);
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				viewController.switchWindow(PlayUI.this, viewController.getHomeUI());
+				viewController.switchPanel(viewController.getHomeUI());
 				btnPlay.setEnabled(false);
 			}
 		});

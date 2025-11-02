@@ -1,6 +1,6 @@
 package controller;
 
-import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import dao.DatabaseManager;
 import model.Blackjack;
@@ -16,6 +16,7 @@ import ui.GameEditUI;
 import ui.GameUI;
 import ui.HomeUI;
 import ui.LogInUI;
+import ui.MainFrame;
 import ui.ManagementUI;
 import ui.PlayUI;
 import ui.ProfileUI;
@@ -57,6 +58,7 @@ public class ViewController {
 	private ClientEditUI clientEditUI;
 	private GameEditUI gameEditUI;
 	private GameUI gameUI;
+	private MainFrame mainFrame;
 
 	/**
 	 * Initializes all user interface (UI) classes and links them with the main
@@ -87,34 +89,22 @@ public class ViewController {
 		gameUI = new GameUI(controller);
 		blackjackUI = new BlackjackUI(controller);
 		slotmachineUI = new SlotmachineUI(controller);
+		mainFrame = new MainFrame();
 
 		homeUI.initializeClassesUI();
 	}
 
 	// -------------------------- WINDOW CONTROL METHODS --------------------------
 
-	/**
-	 * Displays a specific window (JFrame) on screen.
-	 *
-	 * @param window The window to make visible.
-	 * @since 3.3
-	 */
-	public void openWindow(JFrame window) {
-		window.setVisible(true);
-	}
-
-	/**
-	 * Switches from one window to another by hiding the current one and displaying
-	 * the new one.
-	 *
-	 * @param currentWindow The currently visible window to hide.
-	 * @param newWindow     The new window to display.
-	 * @since 3.3
-	 */
-	public void switchWindow(JFrame currentWindow, JFrame newWindow) {
-		currentWindow.setVisible(false);
-		newWindow.setVisible(true);
-	}
+    /**
+     * Switches the currently displayed panel within the main frame.
+     *
+     * @param newPanel The new panel to display inside the main frame.
+     * @since 3.3
+     */
+    public void switchPanel(JPanel newPanel) {
+        mainFrame.setView(newPanel);
+    }
 
 	/**
 	 * Opens the appropriate game window based on the type of {@link Game} provided.
@@ -134,13 +124,13 @@ public class ViewController {
 
 		if (game instanceof Blackjack) {
 			blackjackUI.initializeData(client, (Blackjack) game, bet);
-			switchWindow(playWindow, blackjackUI);
+			switchPanel(blackjackUI);
 			blackjackUI.startGame();
 		}
 
 		if (game instanceof Slotmachine) {
 			slotmachineUI.initializeData(client, (Slotmachine) game, bet);
-			switchWindow(playWindow, slotmachineUI);
+			switchPanel(slotmachineUI);
 			slotmachineUI.startGame();
 		}
 	}
@@ -265,4 +255,10 @@ public class ViewController {
 	public MainController getController() {
 		return controller;
 	}
+
+	public MainFrame getMainFrame() {
+		return mainFrame;
+	}
+	
+	
 }

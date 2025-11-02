@@ -8,13 +8,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -41,10 +38,9 @@ import controller.ViewController;
  * @author Davitroon
  * @since 3.0
  */
-public class ManagementUI extends JFrame {
+public class ManagementUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTable tableClients;
 	private JTable tableGames;
 	private DefaultTableModel modelClients;
@@ -72,24 +68,17 @@ public class ManagementUI extends JFrame {
 	 * @since 3.0
 	 */
 	public ManagementUI(MainController controller) {
-		setResizable(false);
-
+		
 		this.controller = controller;
 		dbController = controller.getDataBaseController();
 		ViewController viewController = controller.getViewController();
-
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 802, 399);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(null);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(0, 0, 788, 362);
-		contentPane.add(tabbedPane);
+		tabbedPane.setBounds(10, 11, 782, 368);
+		add(tabbedPane);
 
 		JPanel panelUsers = new JPanel();
 		tabbedPane.addTab("Users", null, panelUsers, "User management");
@@ -101,7 +90,7 @@ public class ManagementUI extends JFrame {
 		panelUsers.add(lblMyClients);
 
 		JScrollPane scrollPaneUsers = new JScrollPane();
-		scrollPaneUsers.setBounds(256, 66, 491, 241);
+		scrollPaneUsers.setBounds(227, 66, 520, 274);
 		panelUsers.add(scrollPaneUsers);
 
 		modelClients = new DefaultTableModel(new Object[][] {},
@@ -134,25 +123,25 @@ public class ManagementUI extends JFrame {
 
 		JButton btnAddClient = new JButton("Add Client");
 		btnAddClient.setBackground(new Color(128, 128, 255));
-		btnAddClient.setBounds(60, 94, 132, 36);
+		btnAddClient.setBounds(60, 91, 132, 36);
 		panelUsers.add(btnAddClient);
 
 		btnEditClient = new JButton("Edit Client");
 		btnEditClient.setBackground(new Color(128, 128, 255));
 		btnEditClient.setEnabled(false);
-		btnEditClient.setBounds(60, 141, 132, 36);
+		btnEditClient.setBounds(60, 138, 132, 36);
 		panelUsers.add(btnEditClient);
 
 		btnDeleteClient = new JButton("Delete Client");
 		btnDeleteClient.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDeleteClient.setBackground(new Color(242, 77, 77));
 		btnDeleteClient.setEnabled(false);
-		btnDeleteClient.setBounds(60, 188, 132, 36);
+		btnDeleteClient.setBounds(60, 185, 132, 36);
 		panelUsers.add(btnDeleteClient);
 
 		JButton btnBackClient = new JButton("Back");
 		btnBackClient.setBackground(new Color(128, 128, 128));
-		btnBackClient.setBounds(60, 235, 132, 36);
+		btnBackClient.setBounds(6, 362, 132, 36);
 		panelUsers.add(btnBackClient);
 
 		btnDeleteClients = new JButton("Delete Clients");
@@ -226,16 +215,11 @@ public class ManagementUI extends JFrame {
 		btnDeleteGames.setBackground(new Color(242, 77, 77));
 		btnDeleteGames.setBounds(604, 27, 142, 32);
 		panelGames.add(btnDeleteGames);
-
-		addWindowListener(new WindowAdapter() {
-			// When closing the window using the X button
-			@Override
-			public void windowClosing(WindowEvent e) {
-				resetButtons();
-				viewController.switchWindow(ManagementUI.this, viewController.getHomeUI());
-				tabbedPane.setSelectedIndex(0);
-			}
-		});
+		
+		JButton btnBackClient_1 = new JButton("Back");
+		btnBackClient_1.setBounds(10, 386, 132, 36);
+		add(btnBackClient_1);
+		btnBackClient_1.setBackground(Color.GRAY);
 
 		// When the window is loaded
 		addComponentListener(new ComponentAdapter() {
@@ -265,7 +249,7 @@ public class ManagementUI extends JFrame {
 		// Click add client button
 		btnAddClient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewController.switchWindow(ManagementUI.this, viewController.getClientUI());
+				viewController.switchPanel(viewController.getClientUI());
 				resetButtons();
 			}
 		});
@@ -276,7 +260,7 @@ public class ManagementUI extends JFrame {
 				int id = Integer.parseInt(tableClients.getValueAt(tableClients.getSelectedRow(), 0).toString());
 
 				viewController.getClientEditUI().loadOriginalClient(id);
-				viewController.switchWindow(ManagementUI.this, viewController.getClientEditUI());
+				viewController.switchPanel(viewController.getClientEditUI());
 				resetButtons();
 			}
 		});
@@ -314,7 +298,7 @@ public class ManagementUI extends JFrame {
 		btnBackClient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetButtons();
-				viewController.switchWindow(ManagementUI.this, viewController.getHomeUI());
+				viewController.switchPanel(viewController.getHomeUI());
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
@@ -339,7 +323,7 @@ public class ManagementUI extends JFrame {
 		// Click add game button
 		btnAddGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewController.switchWindow(ManagementUI.this, viewController.getGameUI());
+				viewController.switchPanel(viewController.getGameUI());
 				resetButtons();
 			}
 		});
@@ -350,7 +334,7 @@ public class ManagementUI extends JFrame {
 				int id = Integer.parseInt(tableGames.getValueAt(tableGames.getSelectedRow(), 0).toString());
 				viewController.getGameEditUI().loadOriginalGame(id);
 
-				viewController.switchWindow(ManagementUI.this, viewController.getGameEditUI());
+				viewController.switchPanel(viewController.getGameEditUI());
 				resetButtons();
 			}
 		});
@@ -387,7 +371,7 @@ public class ManagementUI extends JFrame {
 		btnBackGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetButtons();
-				viewController.switchWindow(ManagementUI.this, viewController.getHomeUI());
+				viewController.switchPanel(viewController.getHomeUI());
 				tabbedPane.setSelectedIndex(0);
 			}
 		});
