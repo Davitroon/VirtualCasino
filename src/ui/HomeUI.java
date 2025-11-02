@@ -46,41 +46,41 @@ public class HomeUI extends JPanel {
     public HomeUI(MainController controller) {
         this.viewController = controller.getViewController();
 
+        setBounds(100, 100, 802, 433);
         setLayout(null);
-        setBackground(Color.WHITE);
 
         JLabel lblTitle = new JLabel("Casino Simulator", SwingConstants.CENTER);
         lblTitle.setFont(new Font("Stencil", Font.PLAIN, 28));
-        lblTitle.setBounds(60, 21, 375, 59);
+        lblTitle.setBounds(10, 39, 782, 59);
         add(lblTitle);
 
         JButton btnPlay = new JButton("Play");
         btnPlay.setBackground(new Color(128, 128, 255));
-        btnPlay.setBounds(193, 101, 124, 40);
+        btnPlay.setBounds(320, 156, 124, 40);
         add(btnPlay);
 
         JButton btnManagement = new JButton("Management");
         btnManagement.setBackground(new Color(128, 128, 255));
-        btnManagement.setBounds(193, 152, 124, 40);
+        btnManagement.setBounds(320, 207, 124, 40);
         add(btnManagement);
 
         btnStatistics = new JButton("Statistics");
         btnStatistics.setBackground(new Color(128, 128, 255));
-        btnStatistics.setBounds(193, 203, 124, 40);
+        btnStatistics.setBounds(320, 258, 124, 40);
         add(btnStatistics);
 
         JButton btnExit = new JButton("Exit");
         btnExit.setBackground(new Color(128, 128, 128));
-        btnExit.setBounds(10, 284, 105, 32);
+        btnExit.setBounds(10, 390, 132, 36);
         add(btnExit);
 
         JButton btnInfo = new JButton("?");
         btnInfo.setBackground(new Color(128, 255, 255));
-        btnInfo.setBounds(465, 288, 37, 32);
+        btnInfo.setBounds(755, 390, 37, 32);
         add(btnInfo);
 
         JButton btnProfile = new JButton("Profile");
-        btnProfile.setBounds(445, 11, 57, 32);
+        btnProfile.setBounds(694, 11, 98, 32);
         add(btnProfile);
 
         // --- Event Listeners ---

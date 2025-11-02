@@ -40,7 +40,6 @@ import model.Client;
 public class ClientEditUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTextField textName;
 	private JTextField textAge;
 	private JTextField textBalance;
@@ -80,112 +79,110 @@ public class ClientEditUI extends JPanel {
 		dbController = controller.getDataBaseController();
 		ManagementUI managementUI = viewController.getManagementUI();
 
-		setBounds(100, 100, 499, 403);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
 		JLabel lblEditClient = new JLabel("Edit Client", SwingConstants.CENTER);
 		lblEditClient.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblEditClient.setBounds(10, 25, 463, 39);
-		contentPane.add(lblEditClient);
+		lblEditClient.setBounds(10, 25, 782, 39);
+		add(lblEditClient);
 
 		textName = new JTextField();
-		textName.setBounds(189, 100, 167, 32);
-		contentPane.add(textName);
+		textName.setBounds(305, 121, 233, 32);
+		add(textName);
 		textName.setColumns(10);
 
 		textAge = new JTextField();
-		textAge.setBounds(76, 165, 133, 32);
-		contentPane.add(textAge);
+		textAge.setBounds(305, 296, 233, 32);
+		add(textAge);
 		textAge.setColumns(10);
 
 		rdbtnMale = new JRadioButton("Male");
 		buttonGroup.add(rdbtnMale);
-		rdbtnMale.setBounds(110, 246, 99, 23);
-		contentPane.add(rdbtnMale);
+		rdbtnMale.setBounds(162, 214, 99, 23);
+		add(rdbtnMale);
 
 		rdbtnFemale = new JRadioButton("Female");
 		buttonGroup.add(rdbtnFemale);
-		rdbtnFemale.setBounds(214, 246, 86, 23);
-		contentPane.add(rdbtnFemale);
+		rdbtnFemale.setBounds(162, 240, 86, 23);
+		add(rdbtnFemale);
 
 		rdbtnOther = new JRadioButton("Other");
 		buttonGroup.add(rdbtnOther);
-		rdbtnOther.setBounds(302, 246, 64, 23);
-		contentPane.add(rdbtnOther);
+		rdbtnOther.setBounds(162, 266, 64, 23);
+		add(rdbtnOther);
 
 		textBalance = new JTextField();
-		textBalance.setBounds(280, 165, 151, 32);
-		contentPane.add(textBalance);
+		textBalance.setBounds(305, 212, 233, 32);
+		add(textBalance);
 		textBalance.setColumns(10);
 
 		JLabel lblName = new JLabel("Name");
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblName.setLabelFor(textName);
-		lblName.setBounds(126, 107, 64, 17);
-		contentPane.add(lblName);
+		lblName.setBounds(305, 93, 64, 17);
+		add(lblName);
 
 		JLabel lblAge = new JLabel("Age");
 		lblAge.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblAge.setLabelFor(textAge);
-		lblAge.setBounds(37, 172, 64, 17);
-		contentPane.add(lblAge);
+		lblAge.setBounds(305, 272, 64, 17);
+		add(lblAge);
 
 		JLabel lblBalance = new JLabel("Balance");
 		lblBalance.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblBalance.setLabelFor(textBalance);
-		lblBalance.setBounds(229, 172, 36, 17);
-		contentPane.add(lblBalance);
+		lblBalance.setBounds(305, 186, 174, 17);
+		add(lblBalance);
 
 		JLabel lblGender = new JLabel("Gender", SwingConstants.CENTER);
 		lblGender.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblGender.setBounds(52, 225, 379, 14);
-		contentPane.add(lblGender);
+		lblGender.setBounds(162, 193, 99, 14);
+		add(lblGender);
 
 		btnModify = new JButton("Modify");
 		btnModify.setBackground(new Color(128, 128, 255));
-		btnModify.setBounds(333, 307, 111, 32);
-		contentPane.add(btnModify);
+		btnModify.setBounds(660, 388, 132, 36);
+		add(btnModify);
 
 		JButton btnBack = new JButton("Go back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(25, 307, 111, 32);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 388, 132, 36);
+		add(btnBack);
 
 		lblErrorName = new JLabel("");
 		lblErrorName.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorName.setForeground(new Color(255, 0, 0));
-		lblErrorName.setBounds(126, 134, 267, 14);
-		contentPane.add(lblErrorName);
+		lblErrorName.setBounds(305, 153, 233, 14);
+		add(lblErrorName);
 
 		lblErrorAge = new JLabel("");
 		lblErrorAge.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorAge.setForeground(new Color(255, 0, 0));
-		lblErrorAge.setBounds(37, 200, 172, 14);
-		contentPane.add(lblErrorAge);
+		lblErrorAge.setBounds(305, 331, 233, 14);
+		add(lblErrorAge);
 
 		lblErrorBalance = new JLabel("");
 		lblErrorBalance.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblErrorBalance.setForeground(new Color(255, 0, 0));
-		lblErrorBalance.setBounds(236, 200, 195, 14);
-		contentPane.add(lblErrorBalance);
+		lblErrorBalance.setBounds(305, 247, 233, 14);
+		add(lblErrorBalance);
 
 		JLabel lblId = new JLabel("ID");
 		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblId.setBounds(37, 108, 26, 14);
-		contentPane.add(lblId);
+		lblId.setBounds(168, 93, 26, 14);
+		add(lblId);
 
 		textId = new JTextField();
 		textId.setEnabled(false);
 		textId.setEditable(false);
-		textId.setBounds(57, 100, 44, 32);
-		contentPane.add(textId);
+		textId.setBounds(168, 116, 44, 32);
+		add(textId);
 		textId.setColumns(10);
 
 		chckbxActive = new JCheckBox("Active");
-		chckbxActive.setBounds(368, 105, 76, 23);
-		contentPane.add(chckbxActive);
+		chckbxActive.setBounds(543, 122, 76, 23);
+		add(chckbxActive);
 
 		textName.addKeyListener(new KeyAdapter() {
 			@Override

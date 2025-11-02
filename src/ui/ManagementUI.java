@@ -90,7 +90,7 @@ public class ManagementUI extends JPanel {
 		panelUsers.add(lblMyClients);
 
 		JScrollPane scrollPaneUsers = new JScrollPane();
-		scrollPaneUsers.setBounds(227, 66, 520, 274);
+		scrollPaneUsers.setBounds(239, 66, 508, 263);
 		panelUsers.add(scrollPaneUsers);
 
 		modelClients = new DefaultTableModel(new Object[][] {},
@@ -123,33 +123,28 @@ public class ManagementUI extends JPanel {
 
 		JButton btnAddClient = new JButton("Add Client");
 		btnAddClient.setBackground(new Color(128, 128, 255));
-		btnAddClient.setBounds(60, 91, 132, 36);
+		btnAddClient.setBounds(60, 127, 132, 36);
 		panelUsers.add(btnAddClient);
 
 		btnEditClient = new JButton("Edit Client");
 		btnEditClient.setBackground(new Color(128, 128, 255));
 		btnEditClient.setEnabled(false);
-		btnEditClient.setBounds(60, 138, 132, 36);
+		btnEditClient.setBounds(60, 174, 132, 36);
 		panelUsers.add(btnEditClient);
 
 		btnDeleteClient = new JButton("Delete Client");
 		btnDeleteClient.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDeleteClient.setBackground(new Color(242, 77, 77));
 		btnDeleteClient.setEnabled(false);
-		btnDeleteClient.setBounds(60, 185, 132, 36);
+		btnDeleteClient.setBounds(60, 221, 132, 36);
 		panelUsers.add(btnDeleteClient);
-
-		JButton btnBackClient = new JButton("Back");
-		btnBackClient.setBackground(new Color(128, 128, 128));
-		btnBackClient.setBounds(6, 362, 132, 36);
-		panelUsers.add(btnBackClient);
 
 		btnDeleteClients = new JButton("Delete Clients");
 		btnDeleteClients.setEnabled(false);
 		btnDeleteClients.setForeground(Color.BLACK);
 		btnDeleteClients.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDeleteClients.setBackground(new Color(242, 77, 77));
-		btnDeleteClients.setBounds(605, 26, 142, 32);
+		btnDeleteClients.setBounds(605, 27, 142, 32);
 		panelUsers.add(btnDeleteClients);
 
 		JPanel panelGames = new JPanel();
@@ -162,7 +157,7 @@ public class ManagementUI extends JPanel {
 		panelGames.add(lblMyGames);
 
 		JScrollPane scrollPaneGames = new JScrollPane();
-		scrollPaneGames.setBounds(256, 66, 491, 241);
+		scrollPaneGames.setBounds(239, 66, 508, 263);
 		panelGames.add(scrollPaneGames);
 
 		modelGames = new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Type", "Active", "Money" }) {
@@ -187,39 +182,34 @@ public class ManagementUI extends JPanel {
 
 		JButton btnAddGame = new JButton("Add Game");
 		btnAddGame.setBackground(new Color(128, 128, 255));
-		btnAddGame.setBounds(60, 94, 132, 36);
+		btnAddGame.setBounds(60, 127, 132, 36);
 		panelGames.add(btnAddGame);
 
 		btnEditGame = new JButton("Edit Game");
 		btnEditGame.setBackground(new Color(128, 128, 255));
 		btnEditGame.setEnabled(false);
-		btnEditGame.setBounds(60, 141, 132, 36);
+		btnEditGame.setBounds(60, 174, 132, 36);
 		panelGames.add(btnEditGame);
 
 		btnDeleteGame = new JButton("Delete Game");
 		btnDeleteGame.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDeleteGame.setBackground(new Color(242, 77, 77));
 		btnDeleteGame.setEnabled(false);
-		btnDeleteGame.setBounds(60, 188, 132, 36);
+		btnDeleteGame.setBounds(60, 221, 132, 36);
 		panelGames.add(btnDeleteGame);
-
-		JButton btnBackGame = new JButton("Back");
-		btnBackGame.setBackground(new Color(128, 128, 128));
-		btnBackGame.setBounds(60, 235, 132, 36);
-		panelGames.add(btnBackGame);
 
 		btnDeleteGames = new JButton("Delete Games");
 		btnDeleteGames.setForeground(Color.BLACK);
 		btnDeleteGames.setFont(new Font("SansSerif", Font.BOLD, 12));
 		btnDeleteGames.setEnabled(false);
 		btnDeleteGames.setBackground(new Color(242, 77, 77));
-		btnDeleteGames.setBounds(604, 27, 142, 32);
+		btnDeleteGames.setBounds(605, 27, 142, 32);
 		panelGames.add(btnDeleteGames);
 		
-		JButton btnBackClient_1 = new JButton("Back");
-		btnBackClient_1.setBounds(10, 386, 132, 36);
-		add(btnBackClient_1);
-		btnBackClient_1.setBackground(Color.GRAY);
+		JButton btnBack = new JButton("Back");
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
+		btnBack.setBackground(Color.GRAY);
 
 		// When the window is loaded
 		addComponentListener(new ComponentAdapter() {
@@ -295,7 +285,7 @@ public class ManagementUI extends JPanel {
 		});
 
 		// Click back button (clients)
-		btnBackClient.addActionListener(new ActionListener() {
+		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetButtons();
 				viewController.switchPanel(viewController.getHomeUI());
@@ -364,15 +354,6 @@ public class ManagementUI extends JPanel {
 					dbController.deleteGames();
 					updateGamesTable();
 				}
-			}
-		});
-
-		// Click back button (Games)
-		btnBackGame.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				resetButtons();
-				viewController.switchPanel(viewController.getHomeUI());
-				tabbedPane.setSelectedIndex(0);
 			}
 		});
 	}

@@ -34,7 +34,6 @@ import model.Slotmachine;
 public class GameUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 
 	private JTextField textMoney;
 
@@ -60,52 +59,50 @@ public class GameUI extends JPanel {
 		ViewController viewController = controller.getViewController();
 		ManagementUI managementUI = viewController.getManagementUI();
 
-		setBounds(100, 100, 414, 314);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
 
 		JLabel lblAddGame = new JLabel("Add Game", SwingConstants.CENTER);
-		lblAddGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblAddGame.setBounds(10, 21, 387, 39);
-		contentPane.add(lblAddGame);
+		lblAddGame.setFont(new Font("Stencil", Font.PLAIN, 30));
+		lblAddGame.setBounds(10, 40, 782, 39);
+		add(lblAddGame);
 
 		btnAdd = new JButton("Add");
 		btnAdd.setBackground(new Color(128, 128, 255));
 		btnAdd.setEnabled(false);
-		btnAdd.setBounds(270, 228, 111, 32);
-		contentPane.add(btnAdd);
+		btnAdd.setBounds(660, 386, 132, 36);
+		add(btnAdd);
 
 		JButton btnBack = new JButton("Back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(20, 228, 111, 32);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
 
 		JLabel lblType = new JLabel("Type");
 		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblType.setBounds(36, 84, 49, 14);
-		contentPane.add(lblType);
+		lblType.setBounds(263, 132, 49, 14);
+		add(lblType);
 
 		JLabel lblMoney = new JLabel("Money");
 		lblMoney.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMoney.setBounds(36, 146, 49, 14);
-		contentPane.add(lblMoney);
+		lblMoney.setBounds(263, 182, 49, 14);
+		add(lblMoney);
 
 		textMoney = new JTextField();
-		textMoney.setBounds(97, 137, 182, 32);
-		contentPane.add(textMoney);
+		textMoney.setBounds(263, 207, 182, 32);
+		add(textMoney);
 		textMoney.setColumns(10);
 
 		lblErrorMoney = new JLabel("");
 		lblErrorMoney.setForeground(new Color(255, 0, 0));
 		lblErrorMoney.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorMoney.setBounds(36, 172, 233, 14);
-		contentPane.add(lblErrorMoney);
+		lblErrorMoney.setBounds(263, 244, 233, 14);
+		add(lblErrorMoney);
 
 		comboType = new JComboBox<Object>();
 		comboType.setModel(new DefaultComboBoxModel<Object>(new String[] { "Blackjack", "SlotMachine" }));
-		comboType.setBounds(97, 80, 111, 22);
-		contentPane.add(comboType);
+		comboType.setBounds(260, 149, 111, 22);
+		add(comboType);
 
 		// When typing in the money field
 		textMoney.addKeyListener(new KeyAdapter() {

@@ -74,7 +74,7 @@ public class LogInUI extends JPanel {
 
 		JButton btnBack = new JButton("Back");
 		btnBack.setBackground(Color.GRAY);
-		btnBack.setBounds(10, 390, 105, 32);
+		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
 		JLabel lblUsername = new JLabel("Username");
@@ -94,7 +94,7 @@ public class LogInUI extends JPanel {
 
 		btnAccept = new JButton("Accept");
 		btnAccept.setEnabled(false);
-		btnAccept.setBounds(687, 390, 105, 32);
+		btnAccept.setBounds(660, 386, 132, 36);
 		add(btnAccept);
 
 		lblUsernameError = new JLabel("");
@@ -105,7 +105,7 @@ public class LogInUI extends JPanel {
 
 		JLabel lblPasswordNotice = new JLabel("Password must be at least 8 characters");
 		lblPasswordNotice.setForeground(Color.RED);
-		lblPasswordNotice.setBounds(329, 201, 288, 20);
+		lblPasswordNotice.setBounds(329, 190, 288, 20);
 		add(lblPasswordNotice);
 
 		passwordField = new JPasswordField();

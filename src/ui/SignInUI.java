@@ -74,84 +74,84 @@ public class SignInUI extends JPanel {
 		setLayout(null);
 
 		JLabel lblCrearuser = new JLabel("Create User", SwingConstants.CENTER);
-		lblCrearuser.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblCrearuser.setBounds(10, 29, 622, 31);
+		lblCrearuser.setFont(new Font("Stencil", Font.PLAIN, 30));
+		lblCrearuser.setBounds(10, 27, 782, 41);
 		add(lblCrearuser);
 
 		JButton btnVolver = new JButton("Back");
 		btnVolver.setBackground(Color.GRAY);
-		btnVolver.setBounds(27, 276, 105, 32);
+		btnVolver.setBounds(10, 386, 132, 36);
 		add(btnVolver);
 
 		JLabel lblNombre = new JLabel("Username");
 		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNombre.setBounds(27, 106, 133, 14);
+		lblNombre.setBounds(103, 124, 133, 14);
 		add(lblNombre);
 
 		txtUsername = new JTextField();
-		txtUsername.setBounds(161, 101, 172, 26);
+		txtUsername.setBounds(103, 141, 232, 26);
 		txtUsername.setColumns(10);
 		add(txtUsername);
 
 		JLabel lblContrasena = new JLabel("Password");
 		lblContrasena.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblContrasena.setBounds(27, 161, 129, 15);
+		lblContrasena.setBounds(389, 124, 129, 15);
 		add(lblContrasena);
 
 		btnAccept = new JButton("Accept");
 		btnAccept.setEnabled(false);
-		btnAccept.setBounds(517, 276, 105, 32);
+		btnAccept.setBounds(660, 386, 132, 36);
 		add(btnAccept);
 
 		lblUsernameError = new JLabel("");
 		lblUsernameError.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblUsernameError.setForeground(new Color(255, 0, 0));
-		lblUsernameError.setBounds(27, 131, 306, 14);
+		lblUsernameError.setBounds(103, 174, 258, 14);
 		add(lblUsernameError);
 
 		lblPasswordNotice = new JLabel("Password must be at least 8 characters");
 		lblPasswordNotice.setForeground(Color.RED);
-		lblPasswordNotice.setBounds(27, 187, 272, 20);
+		lblPasswordNotice.setBounds(389, 168, 272, 20);
 		add(lblPasswordNotice);
 
 		passwordField = new JPasswordField();
 		passwordField.setEchoChar('*');
-		passwordField.setBounds(120, 156, 165, 26);
+		passwordField.setBounds(389, 141, 232, 26);
 		add(passwordField);
 
 		chkShowPassword = new JCheckBox("Show");
-		chkShowPassword.setBounds(305, 186, 69, 23);
+		chkShowPassword.setBounds(635, 143, 69, 23);
 		add(chkShowPassword);
 
 		chkRememberLogin = new JCheckBox("Remember login");
-		chkRememberLogin.setBounds(27, 219, 201, 23);
+		chkRememberLogin.setBounds(103, 263, 201, 23);
 		add(chkRememberLogin);
 
 		JLabel lblContrasena2 = new JLabel("Repeat Password");
 		lblContrasena2.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblContrasena2.setBounds(295, 161, 129, 15);
+		lblContrasena2.setBounds(389, 199, 129, 15);
 		add(lblContrasena2);
 
 		passwordField2 = new JPasswordField();
 		passwordField2.setEchoChar('*');
-		passwordField2.setBounds(434, 156, 149, 26);
+		passwordField2.setBounds(389, 219, 232, 26);
 		add(passwordField2);
 
 		lblEmail = new JLabel("Email");
 		lblEmail.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblEmail.setBounds(352, 106, 58, 14);
+		lblEmail.setBounds(103, 199, 58, 14);
 		add(lblEmail);
 
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
-		txtEmail.setBounds(411, 101, 172, 26);
+		txtEmail.setBounds(103, 219, 232, 26);
 		add(txtEmail);
 
-		JLabel lblErrorCorreo = new JLabel("");
-		lblErrorCorreo.setForeground(Color.RED);
-		lblErrorCorreo.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorCorreo.setBounds(351, 131, 232, 14);
-		add(lblErrorCorreo);
+		JLabel lblErrorEmail = new JLabel("");
+		lblErrorEmail.setForeground(Color.RED);
+		lblErrorEmail.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblErrorEmail.setBounds(103, 242, 258, 14);
+		add(lblErrorEmail);
 
 		// Click back button
 		btnVolver.addActionListener(new ActionListener() {
@@ -216,9 +216,9 @@ public class SignInUI extends JPanel {
 
 				if (email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
 					validEmail = true;
-					lblErrorCorreo.setText("");
+					lblErrorEmail.setText("");
 				} else {
-					lblErrorCorreo.setText("Invalid email format");
+					lblErrorEmail.setText("Invalid email format");
 				}
 
 				checkForm();
