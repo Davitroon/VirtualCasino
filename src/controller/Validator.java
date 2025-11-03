@@ -51,7 +51,7 @@ public class Validator {
 		try {
 			bet = Double.parseDouble(betTxt);
 		} catch (NumberFormatException e) {
-			throw new BetException("Enter a valid bet");
+			throw new BetException("Your bet must be a number");
 		}
 
 		if (bet > clientBalance) {

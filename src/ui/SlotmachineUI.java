@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.MainController;
@@ -43,16 +45,26 @@ public class SlotmachineUI extends JPanel {
 	private Slotmachine slotMachine;
 
 	private double bet;
-	private boolean gameFinished;
 	private JLabel lblNum1;
 	private JLabel lblNum2;
 	private JLabel lblNum3;
-	private JLabel lblCurrentBet;
 	private JLabel lblClient;
 	private JLabel lblGame;
 	private JButton btnBack;
 
 	private ViewController viewController;
+	private JButton btn1Bet;
+	private JButton btn5Bet;
+	private JButton btn25Bet;
+	private JButton btn50Bet;
+	private JTextField textCustomBet;
+
+	private JButton selectedButton;
+
+	private JButton btnCustomBet;
+	private JLabel lblBetResult;
+
+	private double resultBet;
 
 	/**
 	 * Constructs the SlotmachineUI window.
@@ -74,14 +86,15 @@ public class SlotmachineUI extends JPanel {
 		setLayout(null);
 
 		JLabel lblSlotMachine = new JLabel("Slot Machine");
-		lblSlotMachine.setFont(new Font("Stencil", Font.PLAIN, 28));
+		lblSlotMachine.setFont(new Font("Stencil", Font.PLAIN, 30));
 		lblSlotMachine.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSlotMachine.setBounds(10, 56, 782, 30);
 		add(lblSlotMachine);
 
 		btnSpin = new JButton("Spin");
+		btnSpin.setEnabled(false);
 		btnSpin.setBackground(new Color(0, 128, 64));
-		btnSpin.setBounds(348, 319, 108, 36);
+		btnSpin.setBounds(641, 386, 151, 36);
 		add(btnSpin);
 
 		lblNum1 = createSlotLabel();
@@ -96,12 +109,6 @@ public class SlotmachineUI extends JPanel {
 		lblNum3.setBounds(450, 120, 80, 80);
 		add(lblNum3);
 
-		lblCurrentBet = new JLabel("lorem");
-		lblCurrentBet.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCurrentBet.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
-		lblCurrentBet.setBounds(10, 287, 782, 21);
-		add(lblCurrentBet);
-
 		lblClient = new JLabel("lorem");
 		lblClient.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblClient.setBounds(10, 224, 304, 21);
@@ -114,17 +121,65 @@ public class SlotmachineUI extends JPanel {
 
 		btnBack = new JButton("Back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(10, 384, 132, 36);
+		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
 		JButton btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(755, 385, 37, 35);
+		btnInfo.setBounds(755, 11, 37, 35);
 		add(btnInfo);
+
+		btn1Bet = createStyledBetButton("1$", 641, 270);
+		btn5Bet = createStyledBetButton("5$", 719, 270);
+		btn25Bet = createStyledBetButton("25$", 641, 311);
+		btn50Bet = createStyledBetButton("50$", 719, 309);
+
+		textCustomBet = new JTextField();
+		textCustomBet.setEnabled(false);
+		textCustomBet.setBounds(729, 350, 63, 25);
+		add(textCustomBet);
+		textCustomBet.setColumns(10);
+
+		btnCustomBet = createStyledBetButton("Custom", 641, 350);
+
+		lblBetResult = new JLabel("");
+		lblBetResult.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBetResult.setBounds(226, 280, 357, 14);
+		add(lblBetResult);
 
 		// Click Spin button
 		btnSpin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (selectedButton == btn1Bet) {
+					bet = 1;
+				}
+
+				if (selectedButton == btn5Bet) {
+					bet = 5;
+				}
+
+				if (selectedButton == btn25Bet) {
+					bet = 25;
+				}
+
+				if (selectedButton == btn50Bet) {
+					bet = 50;
+				}
+
+				if (selectedButton == btnCustomBet) {
+					try {
+						controller.getValidator().validateBet(textCustomBet.getText(), client.getBalance(),
+								slotMachine.getMoney());
+						bet = Integer.parseInt(textCustomBet.getText());
+
+					} catch (BetException e1) {
+						JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+
+				toogleButtons(false);
+				lblBetResult.setText("");
 				animateSpin();
 				// Espera un poco y luego genera el resultado real
 				new javax.swing.Timer(1200, ev -> {
@@ -180,12 +235,6 @@ public class SlotmachineUI extends JPanel {
 	 * @since 3.0
 	 */
 	public void closeWindow() {
-		if (!gameFinished) {
-			if (!controller.warnCloseGame(client, slotMachine, bet)) {
-				return;
-			}
-		}
-
 		try {
 			playUI.updateTables();
 			controller.getViewController().switchPanel(playUI);
@@ -205,44 +254,17 @@ public class SlotmachineUI extends JPanel {
 	 * @since 3.0
 	 */
 	public void endGame() {
-		double resultBet = slotMachine.play(bet);
-		boolean showFinalMessage;
-		gameFinished = true;
+		resultBet = slotMachine.play(bet);
 
 		// If the bet is higher than the game's balance, use the game's balance instead
 		if (slotMachine.getMoney() < resultBet)
 			resultBet = slotMachine.getMoney();
 
 		controller.updateBalances(client, slotMachine, resultBet, false);
-		btnSpin.setEnabled(false);
 		lblClient.setText(String.format("%s's Balance: %.2f$", client.getName(), client.getBalance()));
 		lblGame.setText(String.format("Game Money: %.2f$", slotMachine.getMoney()));
-
-		showFinalMessage = true;
-		do {
-			String endState = controller.slotmachineEndStatus(client, slotMachine, resultBet);
-			int choice = controller.gameEndStatus(endState);
-
-			if (choice == 0) {
-				closeWindow();
-				break;
-			}
-
-			if (choice == 1) {
-				try {
-					double newBet = controller.promptBet(client, slotMachine);
-					if (newBet != 0) {
-						bet = newBet;
-						showFinalMessage = false;
-						startGame();
-					}
-
-				} catch (BetException ex) {
-					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-					showFinalMessage = true; // Repeat the loop until a valid bet is entered or cancelled
-				}
-			}
-		} while (showFinalMessage);
+		toogleButtons(true);
+		showBetMessage();
 	}
 
 	/**
@@ -253,14 +275,20 @@ public class SlotmachineUI extends JPanel {
 	 * 
 	 * @since 3.0
 	 */
-	public void startGame() {
-		btnSpin.setEnabled(true);
+	public void loadUI() {
 		lblNum1.setText("0");
 		lblNum2.setText("0");
 		lblNum3.setText("0");
-		lblCurrentBet.setText(String.format("Current Bet: %.2f$", bet));
 		lblClient.setText(String.format("%s's Balance: %.2f$", client.getName(), client.getBalance()));
 		lblGame.setText(String.format("Game Money: %.2f$", slotMachine.getMoney()));
+		lblBetResult.setText("");
+		textCustomBet.setText("");
+
+		if (selectedButton != null) {
+			selectedButton.setBackground(new Color(30, 30, 30));
+			selectedButton.setForeground(new Color(255, 215, 0));
+			btnSpin.setEnabled(false);
+		}
 	}
 
 	/**
@@ -268,13 +296,11 @@ public class SlotmachineUI extends JPanel {
 	 * 
 	 * @param client      The client playing the game.
 	 * @param slotmachine The Slotmachine game instance.
-	 * @param bet         The current bet amount.
 	 * @since 3.3
 	 */
-	public void initializeData(Client client, Slotmachine slotmachine, double bet) {
+	public void initializeData(Client client, Slotmachine slotmachine) {
 		this.client = client;
 		this.slotMachine = slotmachine;
-		this.bet = bet;
 	}
 
 	/**
@@ -320,4 +346,119 @@ public class SlotmachineUI extends JPanel {
 		}).start();
 	}
 
+	/**
+	 * Highlights the selected bet button and resets the style of the other buttons.
+	 * <p>
+	 * If the selected button is the custom bet button, it also toggles the
+	 * corresponding text field for manual input.
+	 * </p>
+	 *
+	 * @param button The button that was pressed.
+	 * @since 3.3
+	 */
+	private void highlightSelectedButton(JButton button) {
+		if (selectedButton != null) {
+			selectedButton.setBackground(new Color(30, 30, 30));
+			selectedButton.setForeground(new Color(255, 215, 0));
+		}
+
+		if (selectedButton == button) {
+			selectedButton = null;
+			button.setBackground(new Color(30, 30, 30));
+			button.setForeground(new Color(255, 215, 0));
+			btnSpin.setEnabled(false);
+
+		} else {
+			selectedButton = button;
+			button.setBackground(new Color(0, 150, 0));
+			button.setForeground(Color.BLACK);
+			btnSpin.setEnabled(true);
+		}
+
+		if (button == btnCustomBet) {
+			textCustomBet.setEnabled(selectedButton == btnCustomBet);
+		} else {
+			textCustomBet.setEnabled(false);
+		}
+	}
+
+	/**
+	 * Creates a visually styled bet button with a predefined look and feel.
+	 * <p>
+	 * The button will have a gold-on-dark color scheme, custom font, border
+	 * styling, and a hand cursor. Clicking the button will automatically highlight
+	 * it.
+	 * </p>
+	 *
+	 * @param text The text to display on the button.
+	 * @param x    The X coordinate for button placement.
+	 * @param y    The Y coordinate for button placement.
+	 * @return A JButton instance with the applied styling and behavior.
+	 * @since 3.3
+	 */
+	private JButton createStyledBetButton(String text, int x, int y) {
+		JButton button = new JButton(text);
+		button.setBounds(x, y, 71, 30);
+		button.setFocusPainted(false);
+		button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		button.setForeground(new Color(255, 215, 0)); // dorado
+		button.setBackground(new Color(30, 30, 30)); // negro elegante
+		button.setBorder(
+				BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(255, 215, 0), 2, true),
+						BorderFactory.createEmptyBorder(3, 8, 3, 8)));
+		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		button.addActionListener(e -> highlightSelectedButton(button));
+		add(button);
+		return button;
+	}
+
+	/**
+	 * Toggles the enabled/disabled status of all betting-related buttons and input
+	 * fields.
+	 *
+	 * @param newStatus True to enable the buttons and text field, false to disable
+	 *                  them.
+	 * @since 3.3
+	 */
+	public void toogleButtons(boolean newStatus) {
+		btnSpin.setEnabled(newStatus);
+		btn1Bet.setEnabled(newStatus);
+		btn5Bet.setEnabled(newStatus);
+		btn25Bet.setEnabled(newStatus);
+		btn50Bet.setEnabled(newStatus);
+		btnCustomBet.setEnabled(newStatus);
+		textCustomBet.setEnabled(newStatus);
+	}
+
+	/**
+	 * Displays a message describing the result of the current bet.
+	 * <p>
+	 * The message varies depending on the outcome of the slot machine spin (e.g.,
+	 * no match, two matching numbers, three matching numbers, jackpot).
+	 * </p>
+	 * 
+	 * @since 3.3
+	 */
+	public void showBetMessage() {
+		int num1 = slotMachine.getNumbers()[0];
+		int num2 = slotMachine.getNumbers()[1];
+		int num3 = slotMachine.getNumbers()[2];
+		String message;
+
+		if (num1 == 7 && num2 == 7 && num3 == 7) {
+			message = "Jackpot! Three sevens! You gained " + resultBet + "$";
+
+		} else if (num1 == num2 && num2 == num3) {
+			message = "Congratulations! Three matching numbers! You gained " + resultBet + "$";
+
+		} else if (num1 == num2 || num1 == num3 || num2 == num3) {
+			message = "Nice! Two matching numbers! You gained " + resultBet + "$";
+
+		} else {
+			message = "No matching numbers. You lost " + resultBet + "$";
+		}
+
+		lblBetResult.setText(message);
+	}
 }

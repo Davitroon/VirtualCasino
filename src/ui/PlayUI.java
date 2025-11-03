@@ -11,7 +11,6 @@ import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,7 +21,6 @@ import javax.swing.table.DefaultTableModel;
 import controller.DataBaseController;
 import controller.MainController;
 import controller.ViewController;
-import exceptions.BetException;
 import exceptions.GameException;
 import model.Blackjack;
 import model.Client;
@@ -176,18 +174,8 @@ public class PlayUI extends JPanel {
 					game = new Slotmachine(gameId, moneyPool);
 				}
 
-				// Insert the bet
-				try {
-					double bet = controller.promptBet(client, game);
-
-					if (bet != 0) {
-						viewController.openGameWindow(PlayUI.this, game, client, bet);
-						btnPlay.setEnabled(false);
-					}
-
-				} catch (BetException ex) {
-					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				viewController.openGameWindow(PlayUI.this, game, client);
+				btnPlay.setEnabled(false);
 			}
 		});
 

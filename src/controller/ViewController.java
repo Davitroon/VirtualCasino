@@ -117,21 +117,20 @@ public class ViewController {
 	 * @param playWindow The Play UI window from which this method is called.
 	 * @param game       The game instance to be played.
 	 * @param client     The client who will play the game.
-	 * @param bet        The amount of money bet.
 	 * @since 3.0
 	 */
-	public void openGameWindow(PlayUI playWindow, Game game, Client client, double bet) {
+	public void openGameWindow(PlayUI playWindow, Game game, Client client) {
 
 		if (game instanceof Blackjack) {
-			blackjackUI.initializeData(client, (Blackjack) game, bet);
+			blackjackUI.initializeData(client, (Blackjack) game);
 			switchPanel(blackjackUI);
 			blackjackUI.startGame();
 		}
 
 		if (game instanceof Slotmachine) {
-			slotmachineUI.initializeData(client, (Slotmachine) game, bet);
+			slotmachineUI.initializeData(client, (Slotmachine) game);
 			switchPanel(slotmachineUI);
-			slotmachineUI.startGame();
+			slotmachineUI.loadUI();
 		}
 	}
 

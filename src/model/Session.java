@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import controller.DataBaseController;
-import controller.MainController;
-import controller.ViewController;
 
 /**
  * Manages user login sessions in the application.

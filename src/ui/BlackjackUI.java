@@ -124,7 +124,7 @@ public class BlackjackUI extends JPanel {
 
 		btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(755, 385, 37, 38);
+		btnInfo.setBounds(755, 11, 37, 38);
 		add(btnInfo);
 
 		// Click on back button
@@ -315,12 +315,10 @@ public class BlackjackUI extends JPanel {
 	 * 
 	 * @param client    Current client playing.
 	 * @param blackjack Blackjack game instance.
-	 * @param bet       Bet amount to be played.
 	 * @since 3.3
 	 */
-	public void initializeData(Client client, Blackjack blackjack, double bet) {
+	public void initializeData(Client client, Blackjack blackjack) {
 		this.client = client;
 		this.blackjack = blackjack;
-		this.bet = bet;
 	}
 }
