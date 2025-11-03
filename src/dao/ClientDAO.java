@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import exceptions.ExceptionMessage;
 import model.Client;
-import model.Game;
 
 /**
  * DAO class for managing {@link Client} entities in the database.

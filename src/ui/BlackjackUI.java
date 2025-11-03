@@ -1,14 +1,19 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import controller.MainController;
@@ -46,11 +51,25 @@ public class BlackjackUI extends JPanel {
 	private Blackjack blackjack;
 
 	private double bet;
-	private JLabel lblCurrentBet;
-	private boolean gameFinished;
+	private boolean currentlyPlaying;
 	private JButton btnBack;
 	private JButton btnInfo;
 	private ViewController viewController;
+
+	private JComponent selectedBet;
+
+	private JButton btn1Bet;
+	private JButton btn5Bet;
+	private JButton btn25Bet;
+
+	private JButton btnCustomBet;
+	private JButton btn50Bet;
+
+	private JTextField textCustomBet;
+
+	private JButton btnPlay;
+
+	private JLabel lblBetResult;
 
 	/**
 	 * Constructor to create the Blackjack game window.
@@ -94,6 +113,17 @@ public class BlackjackUI extends JPanel {
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
+		btnPlay = new JButton("Play");
+		btnPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				startGame();
+			}
+		});
+		btnPlay.setEnabled(false);
+		btnPlay.setBackground(new Color(0, 128, 64));
+		btnPlay.setBounds(641, 386, 151, 36);
+		add(btnPlay);
+
 		lblDealerCardsList = new JLabel("lorem");
 		lblDealerCardsList.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDealerCardsList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
@@ -107,25 +137,38 @@ public class BlackjackUI extends JPanel {
 		add(lblYourCardsList);
 
 		btnHit = new JButton("Hit");
+		btnHit.setEnabled(false);
 		btnHit.setBackground(new Color(0, 128, 64));
-		btnHit.setBounds(413, 305, 108, 38);
+		btnHit.setBounds(411, 262, 108, 38);
 		add(btnHit);
 
 		btnStand = new JButton("Stand");
+		btnStand.setEnabled(false);
 		btnStand.setBackground(new Color(255, 128, 128));
-		btnStand.setBounds(287, 305, 108, 38);
+		btnStand.setBounds(293, 262, 108, 38);
 		add(btnStand);
 
-		lblCurrentBet = new JLabel("lorem");
-		lblCurrentBet.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCurrentBet.setFont(new Font("Tw Cen MT", Font.BOLD, 15));
-		lblCurrentBet.setBounds(20, 273, 772, 21);
-		add(lblCurrentBet);
+		btn1Bet = createStyledBetButton("1$", 641, 270);
+		btn5Bet = createStyledBetButton("5$", 719, 270);
+		btn25Bet = createStyledBetButton("25$", 641, 311);
+		btn50Bet = createStyledBetButton("50$", 719, 309);
+		btnCustomBet = createStyledBetButton("Custom", 641, 350);
+
+		textCustomBet = new JTextField();
+		textCustomBet.setEnabled(false);
+		textCustomBet.setBounds(729, 350, 63, 25);
+		add(textCustomBet);
+		textCustomBet.setColumns(10);
 
 		btnInfo = new JButton("?");
 		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(755, 11, 37, 38);
 		add(btnInfo);
+		
+		lblBetResult = new JLabel("");
+		lblBetResult.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBetResult.setBounds(220, 312, 374, 14);
+		add(lblBetResult);
 
 		// Click on back button
 		btnBack.addActionListener(new ActionListener() {
@@ -201,7 +244,7 @@ public class BlackjackUI extends JPanel {
 	 * @since 3.0
 	 */
 	public void closeWindow() {
-		if (!gameFinished) {
+		if (currentlyPlaying) {
 			if (!controller.warnCloseGame(client, blackjack, bet)) {
 				return;
 			}
@@ -229,8 +272,7 @@ public class BlackjackUI extends JPanel {
 	public void endGame(boolean clientWins) {
 
 		double betResult = blackjack.play(bet);
-		boolean goToFinalMessage;
-		gameFinished = true;
+		currentlyPlaying = false;
 
 		// If the winning amount is greater than the game's money pool, the game's money
 		// is set directly
@@ -245,35 +287,12 @@ public class BlackjackUI extends JPanel {
 				"(" + blackjack.sumCards(blackjack.getPlayerCards()) + ") " + blackjack.showCards(false, "player"));
 		lblDealerCards.setText(String.format("Dealer's Hand (%.2f$)", blackjack.getMoney()));
 		lblYourCards.setText(String.format("%s's Hand (%.2f$)", client.getName(), client.getBalance()));
+		lblBetResult.setText(controller.blackjackEndStatus(clientWins, client, blackjack, betResult));
 
 		btnHit.setEnabled(false);
 		btnStand.setEnabled(false);
-
-		goToFinalMessage = true;
-		do {
-			String endStatus = controller.blackjackEndStatus(clientWins, client, blackjack, betResult);
-			int choice = controller.gameEndStatus(endStatus); // Translated from 'eleccion'
-
-			if (choice == 0) {
-				closeWindow();
-				break;
-			}
-
-			if (choice == 1) {
-				try {
-					double newBet = controller.promptBet(client, blackjack);
-					if (newBet != 0) {
-						bet = newBet;
-						goToFinalMessage = false;
-						startGame();
-					}
-
-				} catch (BetException ex) {
-					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-					goToFinalMessage = true; // Repeat the loop until a valid bet is entered or canceled
-				}
-			}
-		} while (goToFinalMessage);
+		viewController.alternateBetMenu(true, (selectedBet == btnCustomBet ? textCustomBet : null), btnPlay, btn1Bet,
+				btn5Bet, btn25Bet, btn50Bet, btnCustomBet);
 	}
 
 	/**
@@ -285,27 +304,46 @@ public class BlackjackUI extends JPanel {
 	 * @since 3.0
 	 */
 	public void startGame() {
+
+		Map<JButton, Integer> betOptions = Map.of(btn1Bet, 1, btn5Bet, 5, btn25Bet, 25, btn50Bet, 50);
+		Integer value = betOptions.get(selectedBet);
+
+		if (value != null) {
+			bet = value;
+
+		} else if (selectedBet == btnCustomBet) {
+			try {
+				controller.getValidator().validateBet(textCustomBet.getText(), client.getBalance(),
+						blackjack.getMoney());
+				bet = Integer.parseInt(textCustomBet.getText());
+			} catch (BetException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+
+		currentlyPlaying = true;
 		controller.startBlackjack(blackjack);
 		int dealerHand = blackjack.sumCards(blackjack.getDealerCards());
 		int clientHand = blackjack.sumCards(blackjack.getPlayerCards());
-		gameFinished = false;
 
-		lblDealerCards.setText(String.format("Dealer's Hand (%.2f$)", blackjack.getMoney()));
-		lblYourCards.setText(String.format("%s's Hand (%.2f$)", client.getName(), client.getBalance()));
+		btnHit.setEnabled(true);
+		btnStand.setEnabled(true);
+		lblBetResult.setText("");
+		viewController.alternateBetMenu(false, (selectedBet == btnCustomBet ? textCustomBet : null), btnPlay, btn1Bet,
+				btn5Bet, btn25Bet, btn50Bet, btnCustomBet);
 
 		int dealerFirstCardSum = blackjack.getDealerCards().get(0);
 		if (dealerFirstCardSum > 10)
 			dealerFirstCardSum = 10;
+
 		lblDealerCardsList.setText("(" + ((blackjack.getDealerCards().get(0) == 1 ? "11/1" : dealerFirstCardSum)
 				+ ") - " + blackjack.showCards(true, "dealer")));
 		lblYourCardsList.setText("(" + clientHand + ") - " + blackjack.showCards(false, "player"));
-		lblCurrentBet.setText(String.format("Current Bet: %.2f$", bet));
-
-		btnHit.setEnabled(true);
-		btnStand.setEnabled(true);
 
 		if (clientHand == 21)
 			endGame(true);
+
 		if (dealerHand == 21)
 			endGame(false);
 	}
@@ -320,5 +358,100 @@ public class BlackjackUI extends JPanel {
 	public void initializeData(Client client, Blackjack blackjack) {
 		this.client = client;
 		this.blackjack = blackjack;
+	}
+
+	/**
+	 * Creates a visually styled bet button with a predefined look and feel.
+	 * <p>
+	 * The button will have a gold-on-dark color scheme, custom font, border
+	 * styling, and a hand cursor. Clicking the button will automatically highlight
+	 * it.
+	 * </p>
+	 *
+	 * @param text The text to display on the button.
+	 * @param x    The X coordinate for button placement.
+	 * @param y    The Y coordinate for button placement.
+	 * @return A JButton instance with the applied styling and behavior.
+	 * @since 3.3
+	 */
+	private JButton createStyledBetButton(String text, int x, int y) {
+		JButton button = new JButton(text);
+		button.setBounds(x, y, 71, 30);
+		button.setFocusPainted(false);
+		button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		button.setForeground(new Color(255, 215, 0)); // dorado
+		button.setBackground(new Color(30, 30, 30)); // negro elegante
+		button.setBorder(
+				BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(255, 215, 0), 2, true),
+						BorderFactory.createEmptyBorder(3, 8, 3, 8)));
+		button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		button.addActionListener(e -> highlightSelectedBet(button));
+		add(button);
+		return button;
+	}
+
+	/**
+	 * Highlights the selected bet button and resets the style of the other buttons.
+	 * <p>
+	 * If the selected button is the custom bet button, it also toggles the
+	 * corresponding text field for manual input.
+	 * </p>
+	 *
+	 * @param button The button that was pressed.
+	 * @since 3.3
+	 */
+	private void highlightSelectedBet(JButton button) {
+		// Reset style of the previos selected bet
+		if (selectedBet != null) {
+			selectedBet.setBackground(new Color(30, 30, 30));
+			selectedBet.setForeground(new Color(255, 215, 0));
+		}
+
+		// If the choosen button is the same, disable it
+		if (selectedBet == button) {
+			selectedBet = null;
+			btnPlay.setEnabled(false);
+
+		} else {
+			selectedBet = button;
+			button.setBackground(new Color(0, 150, 0));
+			button.setForeground(Color.BLACK);
+			btnPlay.setEnabled(true);
+		}
+
+		if (button == btnCustomBet) {
+			textCustomBet.setEnabled(selectedBet == btnCustomBet);
+
+		} else {
+			textCustomBet.setEnabled(false);
+		}
+	}
+
+	/**
+	 * Starts or resets the Slot Machine game.
+	 * <p>
+	 * Updates GUI labels, resets numbers to zero, and enables the spin button.
+	 * </p>
+	 * 
+	 * @since 3.3
+	 */
+	public void loadUI() {
+		textCustomBet.setText("");
+		btnHit.setEnabled(false);
+		btnStand.setEnabled(false);
+		currentlyPlaying = false;
+		lblDealerCardsList.setText("");
+		lblYourCardsList.setText("");
+		lblDealerCards.setText(String.format("Dealer's Hand (%.2f$)", blackjack.getMoney()));
+		lblYourCards.setText(String.format("%s's Hand (%.2f$)", client.getName(), client.getBalance()));
+
+		if (selectedBet != null) {
+			selectedBet.setBackground(new Color(30, 30, 30));
+			selectedBet.setForeground(new Color(255, 215, 0));
+			btnPlay.setEnabled(false);
+			textCustomBet.setEnabled(false);
+			selectedBet = null;
+		}
 	}
 }

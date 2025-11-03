@@ -1,6 +1,8 @@
 package controller;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import dao.DatabaseManager;
 import model.Blackjack;
@@ -96,15 +98,15 @@ public class ViewController {
 
 	// -------------------------- WINDOW CONTROL METHODS --------------------------
 
-    /**
-     * Switches the currently displayed panel within the main frame.
-     *
-     * @param newPanel The new panel to display inside the main frame.
-     * @since 3.3
-     */
-    public void switchPanel(JPanel newPanel) {
-        mainFrame.setView(newPanel);
-    }
+	/**
+	 * Switches the currently displayed panel within the main frame.
+	 *
+	 * @param newPanel The new panel to display inside the main frame.
+	 * @since 3.3
+	 */
+	public void switchPanel(JPanel newPanel) {
+		mainFrame.setView(newPanel);
+	}
 
 	/**
 	 * Opens the appropriate game window based on the type of {@link Game} provided.
@@ -124,7 +126,7 @@ public class ViewController {
 		if (game instanceof Blackjack) {
 			blackjackUI.initializeData(client, (Blackjack) game);
 			switchPanel(blackjackUI);
-			blackjackUI.startGame();
+			blackjackUI.loadUI();
 		}
 
 		if (game instanceof Slotmachine) {
@@ -147,8 +149,29 @@ public class ViewController {
 		profileUI.upateUserData(user);
 	}
 
-	// --------------------------------- GETTERS ----------------------------------
+	// ---------------------------- VISUAL METHODS ----------------------------
 
+	/**
+	 * Toggles the enabled/disabled status of the buttons from the bet menu in
+	 * games.
+	 *
+	 * @param newStatus True to enable, false to disable.
+	 * @param textField Optional text field to toggle (e.g., for custom bets). Can
+	 *                  be null.
+	 * @param buttons   The buttons to enable or disable.
+	 * @since 3.3
+	 */
+	public void alternateBetMenu(boolean newStatus, JTextField textField, JButton... buttons) {
+		for (JButton button : buttons) {
+			button.setEnabled(newStatus);
+		}
+
+		if (textField != null) {
+			textField.setEnabled(newStatus);
+		}
+	}
+
+	// --------------------------------- GETTERS ----------------------------------
 
 	/**
 	 * @return The application's home UI.
@@ -258,6 +281,5 @@ public class ViewController {
 	public MainFrame getMainFrame() {
 		return mainFrame;
 	}
-	
-	
+
 }
