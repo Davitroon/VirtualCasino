@@ -288,6 +288,8 @@ public class SlotmachineUI extends JPanel {
 			selectedButton.setBackground(new Color(30, 30, 30));
 			selectedButton.setForeground(new Color(255, 215, 0));
 			btnSpin.setEnabled(false);
+			textCustomBet.setEnabled(false);
+			selectedButton = null;
 		}
 	}
 
@@ -377,6 +379,7 @@ public class SlotmachineUI extends JPanel {
 
 		if (button == btnCustomBet) {
 			textCustomBet.setEnabled(selectedButton == btnCustomBet);
+		
 		} else {
 			textCustomBet.setEnabled(false);
 		}
@@ -422,13 +425,17 @@ public class SlotmachineUI extends JPanel {
 	 * @since 3.3
 	 */
 	public void toogleButtons(boolean newStatus) {
+		btnBack.setEnabled(newStatus);
 		btnSpin.setEnabled(newStatus);
 		btn1Bet.setEnabled(newStatus);
 		btn5Bet.setEnabled(newStatus);
 		btn25Bet.setEnabled(newStatus);
 		btn50Bet.setEnabled(newStatus);
-		btnCustomBet.setEnabled(newStatus);
-		textCustomBet.setEnabled(newStatus);
+		btnCustomBet.setEnabled(newStatus);	
+		
+		if (selectedButton == btnCustomBet) {
+			textCustomBet.setEnabled(newStatus);
+		}
 	}
 
 	/**
@@ -446,18 +453,20 @@ public class SlotmachineUI extends JPanel {
 		int num3 = slotMachine.getNumbers()[2];
 		String message;
 
-		if (num1 == 7 && num2 == 7 && num3 == 7) {
-			message = "Jackpot! Three sevens! You gained " + resultBet + "$";
+	    String formattedBet = String.format("%.2f", resultBet);
 
-		} else if (num1 == num2 && num2 == num3) {
-			message = "Congratulations! Three matching numbers! You gained " + resultBet + "$";
+	    if (num1 == 7 && num2 == 7 && num3 == 7) {
+	        message = "Jackpot! Three sevens! You gained " + formattedBet + "$";
 
-		} else if (num1 == num2 || num1 == num3 || num2 == num3) {
-			message = "Nice! Two matching numbers! You gained " + resultBet + "$";
+	    } else if (num1 == num2 && num2 == num3) {
+	        message = "Congratulations! Three matching numbers! You gained " + formattedBet + "$";
 
-		} else {
-			message = "No matching numbers. You lost " + resultBet + "$";
-		}
+	    } else if (num1 == num2 || num1 == num3 || num2 == num3) {
+	        message = "Nice! Two matching numbers! You gained " + formattedBet + "$";
+
+	    } else {
+	        message = "No matching numbers. You lost " + formattedBet + "$";
+	    }
 
 		lblBetResult.setText(message);
 	}
