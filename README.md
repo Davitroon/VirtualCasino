@@ -5,11 +5,11 @@
 ---
 
 ## 📚 Table of Contents
-- [🧾 Project Overview](#-description "Learn more about the game's concept and purpose")
-- [🏗️ Architecture](#-technologies "See which technologies were used to build the project")
-- [⚙️ Technologies Used](#️-installation "Instructions to install and run the project locally")
-- [🚀 How to Run](#-how-to-play "Step-by-step guide on how to play the game")
-- [🕹️ Using the Application](#-how-to-play "Step-by-step guide on how to play the game")
+- [🧾 Project Overview](#-project-overview "Learn more about the game's concept and purpose")
+- [🏗️ Architecture](#-architecture "See the general structure and design of the project")
+- [🚀 How to Run](#-how-to-run "Instructions to install and run the project locally")
+- [🕹️ Using the Application](#-using-the-application "Step-by-step guide on how to play or use the game")
+- [⚙️ Technologies Used](#-technologies-used "See which technologies were used to build the project")
 
 ## 🧾 Project Overview
 
@@ -97,6 +97,14 @@ The package responsible using custom exceptions and hadling them
 
 ---
 
+## 🚀 How to Run
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/virtual-casino.git
+   ```
+
+   ---
+
 ## ⚙️ Technologies Used
 
 - **Java 17+**
@@ -105,14 +113,5 @@ The package responsible using custom exceptions and hadling them
 - **JDBC** — for database communication.
 - **MVC Architecture** — for clean separation of logic, data, and UI.
 - **DAO Pattern** — for structured and reusable database access.
-
----
-
-## 🚀 How to Run
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/virtual-casino.git
-   ```
 
 ## 🕹️ Using the Application
