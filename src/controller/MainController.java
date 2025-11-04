@@ -24,7 +24,7 @@ import ui.BlackjackUI;
  * <li>Handling user actions from the UI and translating them into application
  * logic.</li>
  * <li>Managing game logic, bets, results, and client/game balance updates.</li>
- * <li>Interfacing with the database layer via {@link DataBaseController}.</li>
+ * <li>Interfacing with the database layer via {@link DatabaseController}.</li>
  * <li>Maintaining the current user session via {@link Session}.</li>
  * <li>Performing input validation through {@link Validator}.</li>
  * </ul>
@@ -38,7 +38,7 @@ public class MainController {
 	private Validator validator;
 	private ViewController viewController;
 	private Session session;
-	private DataBaseController dbController;
+	private DatabaseController dbController;
 
 	/**
 	 * Constructs the MainController with a session.
@@ -59,7 +59,7 @@ public class MainController {
 	 */
 	public void initializeClasses(DatabaseManager dbManager) {
 		validator = new Validator();
-		dbController = new DataBaseController(this, dbManager);
+		dbController = new DatabaseController(this, dbManager);
 		viewController = new ViewController();
 		viewController.initializeClasses(this, dbManager);
 	}
@@ -333,7 +333,7 @@ public class MainController {
 		return viewController;
 	}
 
-	public DataBaseController getDataBaseController() {
+	public DatabaseController getDataBaseController() {
 		return dbController;
 	}
 

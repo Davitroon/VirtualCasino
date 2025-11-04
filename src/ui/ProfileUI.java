@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import controller.DataBaseController;
+import controller.DatabaseController;
 import controller.MainController;
 import controller.ViewController;
 import model.User;
@@ -52,7 +52,7 @@ public class ProfileUI extends JPanel {
 	public ProfileUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
-		DataBaseController dbController = controller.getDataBaseController();
+		DatabaseController dbController = controller.getDataBaseController();
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);

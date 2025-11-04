@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import controller.DataBaseController;
+import controller.DatabaseController;
 import controller.MainController;
 import controller.ViewController;
 import model.User;
@@ -51,7 +51,7 @@ public class StatsUI extends JPanel {
 	private JLabel lblMoneyWonVal;
 	private JButton btnDeleteStatistics;
 
-	private DataBaseController dbController;
+	private DatabaseController dbController;
 	private User user;
 	private JLabel lblUser;
 

@@ -19,7 +19,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import controller.DataBaseController;
+import controller.DatabaseController;
 import controller.MainController;
 import controller.ViewController;
 import exceptions.MailException;
@@ -69,7 +69,7 @@ public class SignInUI extends JPanel {
 	 */
 	public SignInUI(MainController controller) {
 
-		DataBaseController dbController = controller.getDataBaseController();
+		DatabaseController dbController = controller.getDataBaseController();
 		ViewController viewController = controller.getViewController();
 
 		setBounds(100, 100, 802, 433);
