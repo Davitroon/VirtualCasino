@@ -24,7 +24,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-import controller.DataBaseController;
+import controller.DatabaseController;
 import controller.MainController;
 import controller.ViewController;
 
@@ -47,7 +47,7 @@ public class ManagementUI extends JPanel {
 	private DefaultTableModel modelClients;
 	private DefaultTableModel modelGames;
 
-	private DataBaseController dbController;
+	private DatabaseController dbController;
 	private MainController controller;
 
 	private JButton btnEditClient;

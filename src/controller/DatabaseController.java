@@ -23,7 +23,7 @@ import model.User;
  * @author Davitroon
  * @since 3.3
  */
-public class DataBaseController {
+public class DatabaseController {
 
 	private MainController mainController;
 	private DatabaseManager dbManager;
@@ -37,7 +37,7 @@ public class DataBaseController {
 	 * @param mainController reference to the main application controller
 	 * @param dbManager      database manager providing DAO access and connections
 	 */
-	public DataBaseController(MainController mainController, DatabaseManager dbManager) {
+	public DatabaseController(MainController mainController, DatabaseManager dbManager) {
 		this.mainController = mainController;
 		this.dbManager = dbManager;
 		this.connection = dbManager.getDbConnection().getConnection();

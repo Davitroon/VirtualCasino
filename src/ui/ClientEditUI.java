@@ -20,7 +20,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import controller.DataBaseController;
+import controller.DatabaseController;
 import controller.MainController;
 import controller.Validator;
 import controller.ViewController;
@@ -32,7 +32,7 @@ import model.Client;
  * This window allows an administrator to modify the details of a client,
  * including name, age, gender, balance, and active status. It integrates with
  * the MVC architecture through {@link MainController},
- * {@link DataBaseController}, and {@link ViewController}.
+ * {@link DatabaseController}, and {@link ViewController}.
  * </p>
  * 
  * @author Davitroon
@@ -59,7 +59,7 @@ public class ClientEditUI extends JPanel {
 	private JLabel lblErrorBalance;
 	private JTextField textId;
 	private JCheckBox chckbxActive;
-	private DataBaseController dbController;
+	private DatabaseController dbController;
 
 	/**
 	 * Constructor for the client edit window.

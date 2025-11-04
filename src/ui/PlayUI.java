@@ -20,7 +20,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-import controller.DataBaseController;
+import controller.DatabaseController;
 import controller.MainController;
 import controller.ViewController;
 import exceptions.GameException;
@@ -53,7 +53,7 @@ public class PlayUI extends JPanel {
 	private JButton btnPlay;
 
 	private ViewController viewController;
-	private DataBaseController dbController;
+	private DatabaseController dbController;
 
 	/**
 	 * Constructs the play window frame.

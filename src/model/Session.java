@@ -3,7 +3,7 @@ package model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import controller.DataBaseController;
+import controller.DatabaseController;
 
 /**
  * Manages user login sessions in the application.
@@ -34,7 +34,7 @@ public class Session {
 	 *         {@code false} otherwise.
 	 * @since 3.0
 	 */
-	public boolean isRememberLogin(DataBaseController dbController) {
+	public boolean isRememberLogin(DatabaseController dbController) {
 		ResultSet rset = dbController.checkRememberLogin();
 
 		try {

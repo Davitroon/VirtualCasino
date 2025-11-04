@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+
 import exceptions.ExceptionMessage;
 
 /**
@@ -13,7 +16,7 @@ import exceptions.ExceptionMessage;
  * This class acts as an intermediary between the controllers and the specific
  * DAO classes ({@link GameDAO}, {@link ClientDAO}, {@link UserDAO},
  * {@link GameSessionDAO}). It initializes the database connection through
- * {@link DataBaseConnector} and provides access to all DAO instances.
+ * {@link DatabaseConnector} and provides access to all DAO instances.
  * </p>
  *
  * <p>
@@ -26,7 +29,8 @@ import exceptions.ExceptionMessage;
  */
 public class DatabaseManager {
 
-	private DataBaseConnector dbConnection;
+	private DatabaseConnector dbConnection;
+	private DatabaseInitializer dbInitializer;
 	private ExceptionMessage exceptionMessage;
 	private GameDAO gameDAO;
 	private ClientDAO clientDAO;
@@ -59,7 +63,20 @@ public class DatabaseManager {
 	 * @since 3.3
 	 */
 	public void initializeClasses() throws SQLException, ClassNotFoundException {
-		dbConnection = new DataBaseConnector();
+	    JPasswordField passwordField = new JPasswordField();
+	    JOptionPane.showConfirmDialog(
+	        null,
+	        passwordField,
+	        "Enter MySQL root password",
+	        JOptionPane.OK_CANCEL_OPTION,
+	        JOptionPane.PLAIN_MESSAGE
+	    );
+
+	    String password = new String(passwordField.getPassword());
+	    
+		dbInitializer = new DatabaseInitializer();
+		dbInitializer.ensureDatabaseExists(password);
+		dbConnection = new DatabaseConnector(password);
 		gameDAO = new GameDAO(exceptionMessage);
 		clientDAO = new ClientDAO(exceptionMessage);
 		gameSessionDAO = new GameSessionDAO(exceptionMessage);
@@ -71,11 +88,11 @@ public class DatabaseManager {
 	/**
 	 * Retrieves the current database connector instance.
 	 *
-	 * @return the {@link DataBaseConnector} responsible for managing the
+	 * @return the {@link DatabaseConnector} responsible for managing the
 	 *         connection.
 	 * @since 3.3
 	 */
-	public DataBaseConnector getDbConnection() {
+	public DatabaseConnector getDbConnection() {
 		return dbConnection;
 	}
 
@@ -117,6 +134,16 @@ public class DatabaseManager {
 	 */
 	public GameSessionDAO getGameSessionDAO() {
 		return gameSessionDAO;
+	}
+	
+	/**
+	 * Retrieves the {@link GameSessionDAO} instance.
+	 *
+	 * @return the DAO used for managing game session data.
+	 * @since 3.3
+	 */
+	public DatabaseInitializer getDatabaseInitializer() {
+		return dbInitializer;
 	}
 
 	// --------------------------- QUERY METHODS ---------------------------

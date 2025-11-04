@@ -23,13 +23,11 @@ import java.sql.SQLSyntaxErrorException;
  * @author Davitroon
  * @since 3.3
  */
-public class DataBaseConnector {
+public class DatabaseConnector {
 
 	private static Connection connection;
-	private String database = "casino25";
-	private String login = "root";
-	private String pwd = "Coco2006";
-	private String url = "jdbc:mysql://localhost/" + database;
+	private static String DB_NAME = "casino25";
+	private static String URL = "jdbc:mysql://localhost/" + DB_NAME;
 
 	/**
 	 * Constructs a new {@code DataBaseConnector} and establishes a connection
@@ -45,13 +43,12 @@ public class DataBaseConnector {
 	 * @throws ClassNotFoundException   if the JDBC driver class cannot be found.
 	 * @since 3.3
 	 */
-	public DataBaseConnector() throws SQLException, ClassNotFoundException {
-		if (database.isEmpty()) {
+	public DatabaseConnector(String PASSWORD) throws SQLException, ClassNotFoundException {
+		if (DB_NAME.isEmpty()) {
 			throw new SQLSyntaxErrorException();
 		}
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		connection = DriverManager.getConnection(url, login, pwd);
-		System.out.println(" - DB Connection established -");
+		connection = DriverManager.getConnection(URL, "root", PASSWORD);
 	}
 
 	/**
@@ -67,7 +64,6 @@ public class DataBaseConnector {
 		try {
 			if (connection != null && !connection.isClosed()) {
 				connection.close();
-				System.out.println(" - DB Connection closed -");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
