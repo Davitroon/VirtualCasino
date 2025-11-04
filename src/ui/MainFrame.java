@@ -1,10 +1,12 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  * The main application frame that serves as the container for all views.
@@ -31,9 +33,11 @@ public class MainFrame extends JFrame {
 		setBounds(100, 100, 827, 478);
 		setLocationRelativeTo(null);
 		setResizable(false);
+		setBackground(new Color(220, 220, 220));
 
 		contentPane = new JPanel(new BorderLayout());
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(new LineBorder(new Color(220, 220, 220), 5)); // ✅ Borde gris
 		setContentPane(contentPane);
 	}
 

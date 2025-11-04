@@ -52,8 +52,6 @@ public class BlackjackUI extends JPanel {
 
 	private double bet;
 	private boolean currentlyPlaying;
-	private JButton btnBack;
-	private JButton btnInfo;
 	private ViewController viewController;
 
 	private JComponent selectedBet;
@@ -89,31 +87,42 @@ public class BlackjackUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblBlackjack = new JLabel("Blackjack");
-		lblBlackjack.setFont(new Font("Stencil", Font.PLAIN, 30));
+		lblBlackjack.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
 		lblBlackjack.setHorizontalAlignment(SwingConstants.CENTER);
-		lblBlackjack.setBounds(10, 37, 782, 30);
+		lblBlackjack.setBounds(138, 21, 525, 50);
 		add(lblBlackjack);
 
 		lblDealerCards = new JLabel("lorem");
 		lblDealerCards.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDealerCards.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblDealerCards.setBounds(20, 88, 772, 21);
+		lblDealerCards.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblDealerCards.setBounds(10, 106, 782, 30);
 		add(lblDealerCards);
 
 		lblYourCards = new JLabel("lorem");
 		lblYourCards.setHorizontalAlignment(SwingConstants.CENTER);
-		lblYourCards.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblYourCards.setBounds(20, 189, 772, 21);
+		lblYourCards.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblYourCards.setBounds(10, 179, 782, 30);
 		add(lblYourCards);
 
-		btnBack = new JButton("Back");
+		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
 		btnPlay = new JButton("Play");
+		btnPlay.setForeground(Color.WHITE);
+		btnPlay.setFocusPainted(false);
+		btnPlay.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnPlay.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnPlay.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				startGame();
@@ -126,24 +135,35 @@ public class BlackjackUI extends JPanel {
 
 		lblDealerCardsList = new JLabel("lorem");
 		lblDealerCardsList.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDealerCardsList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
-		lblDealerCardsList.setBounds(20, 120, 772, 30);
+		lblDealerCardsList.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
+		lblDealerCardsList.setBounds(10, 138, 782, 30);
 		add(lblDealerCardsList);
 
 		lblYourCardsList = new JLabel("lorem");
 		lblYourCardsList.setHorizontalAlignment(SwingConstants.CENTER);
-		lblYourCardsList.setFont(new Font("VL Gothic", Font.PLAIN, 15));
-		lblYourCardsList.setBounds(10, 221, 782, 30);
+		lblYourCardsList.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 14));
+		lblYourCardsList.setBounds(10, 208, 782, 30);
 		add(lblYourCardsList);
 
 		btnHit = new JButton("Hit");
+		
 		btnHit.setEnabled(false);
+		btnHit.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		btnHit.setForeground(Color.WHITE);
+		btnHit.setFocusPainted(false);
+		btnHit.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnHit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnHit.setBackground(new Color(0, 128, 64));
 		btnHit.setBounds(411, 262, 108, 38);
 		add(btnHit);
 
 		btnStand = new JButton("Stand");
+		btnStand.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnStand.setEnabled(false);
+		btnStand.setForeground(Color.WHITE);
+		btnStand.setFocusPainted(false);
+		btnStand.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnStand.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnStand.setBackground(new Color(255, 128, 128));
 		btnStand.setBounds(293, 262, 108, 38);
 		add(btnStand);
@@ -160,9 +180,13 @@ public class BlackjackUI extends JPanel {
 		add(textCustomBet);
 		textCustomBet.setColumns(10);
 
-		btnInfo = new JButton("?");
+		JButton btnInfo = new JButton("?");
+		btnInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnInfo.setBackground(new Color(128, 255, 255));
 		btnInfo.setBounds(755, 11, 37, 38);
+		btnInfo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		btnInfo.setFocusPainted(false);
+		btnInfo.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 		add(btnInfo);
 		
 		lblBetResult = new JLabel("");

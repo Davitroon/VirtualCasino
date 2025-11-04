@@ -51,7 +51,6 @@ public class SlotmachineUI extends JPanel {
 	private JLabel lblNum3;
 	private JLabel lblClient;
 	private JLabel lblGame;
-	private JButton btnBack;
 
 	private ViewController viewController;
 	private JButton btn1Bet;
@@ -85,14 +84,20 @@ public class SlotmachineUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblSlotMachine = new JLabel("Slot Machine");
-		lblSlotMachine.setFont(new Font("Stencil", Font.PLAIN, 30));
+		lblSlotMachine.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblSlotMachine.setBounds(138, 21, 525, 50);
 		lblSlotMachine.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSlotMachine.setBounds(10, 56, 782, 30);
 		add(lblSlotMachine);
 
-		btnSpin = new JButton("Spin");
+		btnSpin = new JButton("Play");
+		btnSpin.setForeground(Color.WHITE);
+		btnSpin.setFocusPainted(false);
+		btnSpin.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnSpin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnSpin.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnSpin.setEnabled(false);
 		btnSpin.setBackground(new Color(0, 128, 64));
 		btnSpin.setBounds(641, 386, 151, 36);
@@ -111,23 +116,33 @@ public class SlotmachineUI extends JPanel {
 		add(lblNum3);
 
 		lblClient = new JLabel("lorem");
-		lblClient.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblClient.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblClient.setBounds(10, 224, 304, 21);
 		add(lblClient);
 
 		lblGame = new JLabel("lorem");
-		lblGame.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblGame.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblGame.setBounds(10, 192, 304, 21);
 		add(lblGame);
 
-		btnBack = new JButton("Back");
+		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
 		JButton btnInfo = new JButton("?");
+		btnInfo.setToolTipText("");
+		btnInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(755, 11, 37, 35);
+		btnInfo.setBounds(755, 11, 37, 38);
+		btnInfo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		btnInfo.setFocusPainted(false);
+		btnInfo.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 		add(btnInfo);
 
 		btn1Bet = createStyledBetButton("1$", 641, 270);

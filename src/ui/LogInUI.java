@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -64,59 +66,71 @@ public class LogInUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblLogIn = new JLabel("Log In", SwingConstants.CENTER);
-		lblLogIn.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblLogIn.setBounds(10, 33, 782, 31);
+		lblLogIn.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblLogIn.setBounds(138, 21, 525, 50);
 		add(lblLogIn);
 
 		JButton btnBack = new JButton("Back");
-		btnBack.setBackground(Color.GRAY);
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
 		JLabel lblUsername = new JLabel("Username");
-		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblUsername.setBounds(186, 132, 133, 14);
+		lblUsername.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblUsername.setBounds(234, 119, 133, 24);
 		add(lblUsername);
 
 		textUsername = new JTextField();
-		textUsername.setBounds(329, 127, 288, 26);
+		textUsername.setBounds(234, 148, 288, 26);
 		textUsername.setColumns(10);
 		add(textUsername);
 
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblPassword.setBounds(186, 169, 129, 15);
+		lblPassword.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblPassword.setBounds(234, 197, 129, 24);
 		add(lblPassword);
 
 		btnAccept = new JButton("Accept");
+		btnAccept.setBackground(new Color(128, 128, 255));
 		btnAccept.setEnabled(false);
 		btnAccept.setBounds(660, 386, 132, 36);
+		btnAccept.setForeground(Color.WHITE);
+		btnAccept.setFocusPainted(false);
+		btnAccept.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnAccept.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnAccept.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnAccept);
 
 		lblUsernameError = new JLabel("");
 		lblUsernameError.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblUsernameError.setForeground(new Color(255, 0, 0));
-		lblUsernameError.setBounds(89, 132, 311, 14);
+		lblUsernameError.setBounds(234, 179, 311, 14);
 		add(lblUsernameError);
 
 		JLabel lblPasswordNotice = new JLabel("Password must be at least 8 characters");
 		lblPasswordNotice.setForeground(Color.RED);
-		lblPasswordNotice.setBounds(329, 190, 288, 20);
+		lblPasswordNotice.setBounds(234, 251, 288, 20);
 		add(lblPasswordNotice);
 
 		passwordField = new JPasswordField();
 		passwordField.setEchoChar('*');
-		passwordField.setBounds(329, 164, 288, 26);
+		passwordField.setBounds(234, 224, 288, 26);
 		add(passwordField);
 
 		chckbxShowPassword = new JCheckBox("Show");
-		chckbxShowPassword.setBounds(623, 166, 69, 23);
+		chckbxShowPassword.setBounds(528, 226, 69, 23);
 		add(chckbxShowPassword);
 
 		chckbxRememberSession = new JCheckBox("Remember login");
-		chckbxRememberSession.setBounds(186, 228, 201, 23);
+		chckbxRememberSession.setBounds(234, 278, 201, 23);
 		add(chckbxRememberSession);
 
 		// Click back button

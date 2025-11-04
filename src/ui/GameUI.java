@@ -1,12 +1,14 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -60,31 +62,42 @@ public class GameUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblAddGame = new JLabel("Add Game", SwingConstants.CENTER);
-		lblAddGame.setFont(new Font("Stencil", Font.PLAIN, 30));
-		lblAddGame.setBounds(10, 40, 782, 39);
+		lblAddGame.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblAddGame.setBounds(138, 21, 525, 50);
 		add(lblAddGame);
 
 		btnAdd = new JButton("Add");
 		btnAdd.setBackground(new Color(128, 128, 255));
 		btnAdd.setEnabled(false);
 		btnAdd.setBounds(660, 386, 132, 36);
+		btnAdd.setForeground(Color.WHITE);
+		btnAdd.setFocusPainted(false);
+		btnAdd.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnAdd.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnAdd);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
 		JLabel lblType = new JLabel("Type");
-		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblType.setBounds(263, 132, 49, 14);
+		lblType.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblType.setBounds(263, 124, 49, 22);
 		add(lblType);
 
 		JLabel lblMoney = new JLabel("Money");
-		lblMoney.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMoney.setBounds(263, 182, 49, 14);
+		lblMoney.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblMoney.setBounds(263, 182, 63, 22);
 		add(lblMoney);
 
 		textMoney = new JTextField();

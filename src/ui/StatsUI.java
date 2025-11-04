@@ -1,17 +1,20 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 import controller.DataBaseController;
 import controller.MainController;
@@ -69,137 +72,93 @@ public class StatsUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
-		JLabel lblStatistics = new JLabel("Statistics", SwingConstants.CENTER);
-		lblStatistics.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblStatistics.setBounds(10, 40, 782, 39);
-		add(lblStatistics);
+		JLabel lblTitle = new JLabel("Statistics", SwingConstants.CENTER);
+		lblTitle.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblTitle.setBounds(138, 21, 525, 50);
+		add(lblTitle);
+
+		lblUser = new JLabel("Statistics for: <user>", SwingConstants.CENTER);
+		lblUser.setFont(new Font("SansSerif", Font.BOLD, 13));
+		lblUser.setForeground(Color.DARK_GRAY);
+		lblUser.setBounds(10, 70, 782, 20);
+		add(lblUser);
+
+		// ==== Panel 1: Results ====
+		JPanel panelResults = createCategoryPanel("Results", 40, 110, 320, 120);
+		add(panelResults);
+
+		addLabel(panelResults, "Games played:", 20, 35);
+		lblGamesPlayedVal = addValue(panelResults, "—", 180, 35);
+
+		addLabel(panelResults, "Games won:", 20, 60);
+		lblGamesWonVal = addValue(panelResults, "—", 180, 60);
+
+		addLabel(panelResults, "Games lost:", 20, 85);
+		lblGamesLostVal = addValue(panelResults, "—", 180, 85);
+
+		// ==== Panel 2: Money ====
+		JPanel panelMoney = createCategoryPanel("Money", 420, 110, 320, 120);
+		add(panelMoney);
+
+		addLabel(panelMoney, "Money won:", 20, 35);
+		lblMoneyWonVal = addValue(panelMoney, "—", 180, 35);
+
+		addLabel(panelMoney, "Money lost:", 20, 60);
+		lblMoneyLostVal = addValue(panelMoney, "—", 180, 60);
+
+		// ==== Panel 3: Games ====
+		JPanel panelGames = createCategoryPanel("Games", 40, 250, 320, 120);
+		add(panelGames);
+
+		addLabel(panelGames, "Blackjack games:", 20, 35);
+		lblBlackjackGamesVal = addValue(panelGames, "—", 180, 35);
+
+		addLabel(panelGames, "Slot games:", 20, 60);
+		lblSlotGamesVal = addValue(panelGames, "—", 180, 60);
+
+		addLabel(panelGames, "Last game played:", 20, 85);
+		lblLastGameVal = addValue(panelGames, "—", 180, 85);
+
+		// ==== Panel 4: Other ====
+		JPanel panelOther = createCategoryPanel("Other", 420, 250, 320, 120);
+		add(panelOther);
+
+		addLabel(panelOther, "Client with most money:", 20, 35);
+		lblClientBalanceVal = addValue(panelOther, "—", 180, 35);
+
+		addLabel(panelOther, "Game with most money:", 20, 60);
+		lblGameMoneyVal = addValue(panelOther, "—", 180, 60);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
-		JLabel lblGamesPlayed = new JLabel("Games played:");
-		lblGamesPlayed.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblGamesPlayed.setBounds(88, 154, 142, 24);
-		add(lblGamesPlayed);
-
-		JLabel lblGamesWon = new JLabel("Games won:");
-		lblGamesWon.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblGamesWon.setBounds(88, 189, 142, 24);
-		add(lblGamesWon);
-
-		JLabel lblGamesLost = new JLabel("Games lost:");
-		lblGamesLost.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblGamesLost.setBounds(88, 224, 142, 24);
-		add(lblGamesLost);
-
-		JLabel lblClientBalance = new JLabel("Client with highest balance:");
-		lblClientBalance.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblClientBalance.setBounds(382, 224, 170, 24);
-		add(lblClientBalance);
-
-		JLabel lblGameMoney = new JLabel("Game with most money:");
-		lblGameMoney.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblGameMoney.setBounds(382, 259, 162, 24);
-		add(lblGameMoney);
-
-		JLabel lblBlackjackGames = new JLabel("Blackjack games:");
-		lblBlackjackGames.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblBlackjackGames.setBounds(88, 259, 178, 24);
-		add(lblBlackjackGames);
-
-		JLabel lblSlotGames = new JLabel("Slot machine games:");
-		lblSlotGames.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblSlotGames.setBounds(88, 294, 193, 24);
-		add(lblSlotGames);
-
-		JLabel lblMoneyLost = new JLabel("Money lost:");
-		lblMoneyLost.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblMoneyLost.setBounds(382, 189, 120, 24);
-		add(lblMoneyLost);
-
-		JLabel lblMoneyWon = new JLabel("Money won:");
-		lblMoneyWon.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblMoneyWon.setBounds(382, 154, 120, 24);
-		add(lblMoneyWon);
-
-		JLabel lblLastGame = new JLabel("Last game played:");
-		lblLastGame.setFont(new Font("SimSun", Font.BOLD, 14));
-		lblLastGame.setBounds(382, 294, 178, 24);
-		add(lblLastGame);
-
-		lblGamesPlayedVal = new JLabel("lorem");
-		lblGamesPlayedVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblGamesPlayedVal.setBounds(223, 159, 141, 14);
-		add(lblGamesPlayedVal);
-
-		lblGamesWonVal = new JLabel("lorem");
-		lblGamesWonVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblGamesWonVal.setBounds(223, 195, 149, 14);
-		add(lblGamesWonVal);
-
-		lblGamesLostVal = new JLabel("lorem");
-		lblGamesLostVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblGamesLostVal.setBounds(232, 229, 140, 14);
-		add(lblGamesLostVal);
-
-		lblBlackjackGamesVal = new JLabel("lorem");
-		lblBlackjackGamesVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblBlackjackGamesVal.setBounds(265, 265, 108, 14);
-		add(lblBlackjackGamesVal);
-
-		lblSlotGamesVal = new JLabel("lorem");
-		lblSlotGamesVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblSlotGamesVal.setBounds(279, 300, 93, 14);
-		add(lblSlotGamesVal);
-
-		lblMoneyWonVal = new JLabel("lorem");
-		lblMoneyWonVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblMoneyWonVal.setBounds(501, 159, 225, 14);
-		add(lblMoneyWonVal);
-
-		lblMoneyLostVal = new JLabel("lorem");
-		lblMoneyLostVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblMoneyLostVal.setBounds(507, 195, 219, 14);
-		add(lblMoneyLostVal);
-
-		lblClientBalanceVal = new JLabel("lorem");
-		lblClientBalanceVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblClientBalanceVal.setBounds(556, 229, 170, 14);
-		add(lblClientBalanceVal);
-
-		lblGameMoneyVal = new JLabel("lorem");
-		lblGameMoneyVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblGameMoneyVal.setBounds(548, 264, 178, 14);
-		add(lblGameMoneyVal);
-
-		lblLastGameVal = new JLabel("lorem");
-		lblLastGameVal.setFont(new Font("SimSun", Font.PLAIN, 14));
-		lblLastGameVal.setBounds(558, 299, 168, 14);
-		add(lblLastGameVal);
-
 		btnDeleteStatistics = new JButton("Delete statistics");
-		btnDeleteStatistics.setForeground(new Color(0, 0, 0));
-		btnDeleteStatistics.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnDeleteStatistics.setForeground(Color.WHITE);
+		btnDeleteStatistics.setFocusPainted(false);
+		btnDeleteStatistics.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnDeleteStatistics.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnDeleteStatistics.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnDeleteStatistics.setBackground(new Color(242, 77, 77));
-		btnDeleteStatistics.setBounds(660, 385, 132, 36);
+		btnDeleteStatistics.setBounds(660, 386, 132, 36);
 		add(btnDeleteStatistics);
 
-		lblUser = new JLabel("Statistics for ");
-		lblUser.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblUser.setBounds(88, 127, 178, 14);
-		add(lblUser);
-
-		// Click "Back" button
+		// Back button
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				viewController.switchPanel(viewController.getHomeUI());
 			}
 		});
 
-		// Click "Delete statistics" button
+		// Delete button
 		btnDeleteStatistics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete all statistics?",
@@ -211,6 +170,70 @@ public class StatsUI extends JPanel {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Creates a category panel with a border and a title.
+	 *
+	 * @param title  The title text displayed at the top of the panel.
+	 * @param x      The X coordinate of the panel.
+	 * @param y      The Y coordinate of the panel.
+	 * @param width  The width of the panel.
+	 * @param height The height of the panel.
+	 * @return A JPanel instance with the specified layout, border, and title label.
+	 * @since 3.3
+	 */
+	private JPanel createCategoryPanel(String title, int x, int y, int width, int height) {
+		JPanel panel = new JPanel(null);
+		panel.setBackground(new Color(245, 245, 245)); // un poco más claro
+		panel.setBorder(new LineBorder(Color.GRAY, 1));
+		panel.setBounds(x, y, width, height);
+
+		JLabel lblTitle = new JLabel(title, SwingConstants.CENTER);
+		lblTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
+		lblTitle.setForeground(Color.BLACK);
+		lblTitle.setBounds(0, 5, width, 20);
+		panel.add(lblTitle);
+
+		return panel;
+	}
+
+	/**
+	 * Adds a standard text label to the specified panel.
+	 *
+	 * @param panel The parent panel to which the label will be added.
+	 * @param text  The text content of the label.
+	 * @param x     The X coordinate for label placement.
+	 * @param y     The Y coordinate for label placement.
+	 * @return The created JLabel component.
+	 * @since 3.3
+	 */
+	private JLabel addLabel(JPanel panel, String text, int x, int y) {
+		JLabel label = new JLabel(text);
+		label.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		label.setForeground(Color.BLACK);
+		label.setBounds(x, y, 150, 20);
+		panel.add(label);
+		return label;
+	}
+
+	/**
+	 * Adds a value label to the specified panel.
+	 *
+	 * @param panel The parent panel to which the value label will be added.
+	 * @param text  The text content of the value label.
+	 * @param x     The X coordinate for label placement.
+	 * @param y     The Y coordinate for label placement.
+	 * @return The created JLabel component representing the value.
+	 * @since 3.3
+	 */
+	private JLabel addValue(JPanel panel, String text, int x, int y) {
+		JLabel value = new JLabel(text);
+		value.setFont(new Font("SansSerif", Font.BOLD, 13));
+		value.setForeground(Color.BLACK);
+		value.setBounds(x, y, 130, 20);
+		panel.add(value);
+		return value;
 	}
 
 	/**

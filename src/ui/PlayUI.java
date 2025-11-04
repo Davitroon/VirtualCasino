@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -72,19 +74,21 @@ public class PlayUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblGame = new JLabel("Play", SwingConstants.CENTER);
-		lblGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblGame.setBounds(28, 28, 741, 31);
+		lblGame.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblGame.setBounds(138, 21, 525, 50);
 		add(lblGame);
 
 		JLabel lblClients = new JLabel("Clients", SwingConstants.CENTER);
-		lblClients.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblClients.setBounds(28, 93, 323, 31);
+		lblClients.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblClients.setBounds(28, 109, 341, 23);
 		add(lblClients);
 
 		JScrollPane scrollPaneClients = new JScrollPane();
 		scrollPaneClients.setBounds(28, 135, 341, 193);
+		scrollPaneClients.getViewport().setBackground(Color.WHITE);
 		add(scrollPaneClients);
 
 		modelClients = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Name", "Active", "Balance" }) {
@@ -107,12 +111,13 @@ public class PlayUI extends JPanel {
 		scrollPaneClients.setViewportView(tableClients);
 
 		JLabel lblGames = new JLabel("Games", SwingConstants.CENTER);
-		lblGames.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblGames.setBounds(428, 101, 341, 23);
+		lblGames.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblGames.setBounds(428, 109, 341, 23);
 		add(lblGames);
 
 		JScrollPane scrollPaneGames = new JScrollPane();
 		scrollPaneGames.setBounds(428, 135, 341, 193);
+		scrollPaneGames.getViewport().setBackground(Color.WHITE);
 		add(scrollPaneGames);
 
 		modelGames = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Type", "Active", "Money" }) {
@@ -138,9 +143,19 @@ public class PlayUI extends JPanel {
 		btnPlay.setBackground(new Color(128, 128, 255));
 		btnPlay.setEnabled(false);
 		btnPlay.setBounds(660, 386, 132, 36);
+		btnPlay.setForeground(Color.WHITE);
+		btnPlay.setFocusPainted(false);
+		btnPlay.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnPlay.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnPlay.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnPlay);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);

@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -45,7 +47,6 @@ public class GameEditUI extends JPanel {
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
 	private JTextField textId;
-	private JLabel lblId;
 	private JCheckBox chckbxActive;
 
 	private MainController controller;
@@ -69,63 +70,74 @@ public class GameEditUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblEditGame = new JLabel("Edit Game", SwingConstants.CENTER);
-		lblEditGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblEditGame.setBounds(6, 21, 786, 39);
+		lblEditGame.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblEditGame.setBounds(138, 21, 525, 50);
 		add(lblEditGame);
 
 		btnUpdate = new JButton("Update");
 		btnUpdate.setBackground(new Color(128, 128, 255));
 		btnUpdate.setEnabled(false);
 		btnUpdate.setBounds(660, 386, 132, 36);
+		btnUpdate.setForeground(Color.WHITE);
+		btnUpdate.setFocusPainted(false);
+		btnUpdate.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnUpdate.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnUpdate.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnUpdate);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);
 
 		JLabel lblType = new JLabel("Type");
-		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblType.setBounds(233, 237, 49, 14);
+		lblType.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblType.setBounds(225, 252, 49, 27);
 		add(lblType);
 
 		JLabel lblMoney = new JLabel("Money");
-		lblMoney.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMoney.setBounds(233, 159, 49, 14);
+		lblMoney.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblMoney.setBounds(225, 176, 89, 27);
 		add(lblMoney);
 
 		textMoney = new JTextField();
-		textMoney.setBounds(233, 177, 236, 32);
+		textMoney.setBounds(225, 201, 236, 32);
 		add(textMoney);
 		textMoney.setColumns(10);
 
 		lblErrorMoney = new JLabel("");
 		lblErrorMoney.setForeground(new Color(255, 0, 0));
 		lblErrorMoney.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorMoney.setBounds(233, 212, 236, 14);
+		lblErrorMoney.setBounds(225, 236, 236, 14);
 		add(lblErrorMoney);
 
 		comboType = new JComboBox<Object>();
 		comboType.setModel(new DefaultComboBoxModel<Object>(new String[] { "Blackjack", "SlotMachine" }));
-		comboType.setBounds(233, 254, 111, 22);
+		comboType.setBounds(225, 280, 111, 22);
 		add(comboType);
 
-		lblId = new JLabel("ID");
-		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblId.setBounds(233, 95, 26, 14);
+		JLabel lblId = new JLabel("ID");
+		lblId.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblId.setBounds(225, 106, 26, 27);
 		add(lblId);
 
 		textId = new JTextField();
 		textId.setEnabled(false);
 		textId.setEditable(false);
-		textId.setBounds(233, 112, 38, 29);
+		textId.setBounds(225, 136, 38, 29);
 		add(textId);
 		textId.setColumns(10);
 
 		chckbxActive = new JCheckBox("Active");
-		chckbxActive.setBounds(475, 182, 89, 23);
+		chckbxActive.setBounds(467, 206, 89, 23);
 		add(chckbxActive);
 
 		// When typing in the money field

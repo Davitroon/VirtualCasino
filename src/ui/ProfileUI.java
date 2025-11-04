@@ -56,12 +56,12 @@ public class ProfileUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		// Título principal
 		JLabel lblProfile = new JLabel("Profile", SwingConstants.CENTER);
 		lblProfile.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
-		lblProfile.setForeground(new Color(45, 45, 45));
-		lblProfile.setBounds(10, 20, 782, 50);
+		lblProfile.setBounds(138, 21, 525, 50);
 		add(lblProfile);
 
 		// Email

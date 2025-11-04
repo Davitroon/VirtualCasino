@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -79,10 +81,11 @@ public class ClientEditUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblEditClient = new JLabel("Edit Client", SwingConstants.CENTER);
-		lblEditClient.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblEditClient.setBounds(10, 25, 782, 39);
+		lblEditClient.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblEditClient.setBounds(138, 21, 525, 50);
 		add(lblEditClient);
 
 		textName = new JTextField();
@@ -116,36 +119,46 @@ public class ClientEditUI extends JPanel {
 		textBalance.setColumns(10);
 
 		JLabel lblName = new JLabel("Name");
-		lblName.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblName.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblName.setLabelFor(textName);
-		lblName.setBounds(305, 93, 64, 17);
+		lblName.setBounds(305, 82, 64, 28);
 		add(lblName);
 
 		JLabel lblAge = new JLabel("Age");
-		lblAge.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblAge.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblAge.setLabelFor(textAge);
-		lblAge.setBounds(305, 272, 64, 17);
+		lblAge.setBounds(305, 266, 64, 23);
 		add(lblAge);
 
 		JLabel lblBalance = new JLabel("Balance");
-		lblBalance.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblBalance.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblBalance.setLabelFor(textBalance);
-		lblBalance.setBounds(305, 186, 174, 17);
+		lblBalance.setBounds(305, 178, 174, 25);
 		add(lblBalance);
 
-		JLabel lblGender = new JLabel("Gender", SwingConstants.CENTER);
-		lblGender.setFont(new Font("Tahoma", Font.BOLD, 13));
+		JLabel lblGender = new JLabel("Gender", SwingConstants.LEFT);
+		lblGender.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblGender.setBounds(162, 193, 99, 14);
 		add(lblGender);
 
 		btnModify = new JButton("Modify");
 		btnModify.setBackground(new Color(128, 128, 255));
-		btnModify.setBounds(660, 388, 132, 36);
+		btnModify.setBounds(660, 386, 132, 36);
+		btnModify.setFocusPainted(false);
+		btnModify.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnModify.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnModify.setForeground(Color.WHITE);
+		btnModify.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnModify);
 
 		JButton btnBack = new JButton("Go back");
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(10, 388, 132, 36);
+		btnBack.setBounds(10, 386, 132, 36);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnBack);
 
 		lblErrorName = new JLabel("");
@@ -167,7 +180,7 @@ public class ClientEditUI extends JPanel {
 		add(lblErrorBalance);
 
 		JLabel lblId = new JLabel("ID");
-		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblId.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblId.setBounds(168, 93, 26, 14);
 		add(lblId);
 

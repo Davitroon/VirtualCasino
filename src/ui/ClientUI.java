@@ -1,12 +1,14 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -70,10 +72,11 @@ public class ClientUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblAddClient = new JLabel("Add Client", SwingConstants.CENTER);
-		lblAddClient.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblAddClient.setBounds(10, 34, 782, 39);
+		lblAddClient.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblAddClient.setBounds(138, 21, 525, 50);
 		add(lblAddClient);
 
 		textName = new JTextField();
@@ -107,35 +110,45 @@ public class ClientUI extends JPanel {
 		textBalance.setColumns(10);
 
 		JLabel lblName = new JLabel("Name");
-		lblName.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblName.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblName.setLabelFor(textName);
-		lblName.setBounds(309, 110, 64, 17);
+		lblName.setBounds(309, 104, 64, 23);
 		add(lblName);
 
 		JLabel lblAge = new JLabel("Age");
-		lblAge.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblAge.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblAge.setLabelFor(textAge);
-		lblAge.setBounds(309, 272, 64, 17);
+		lblAge.setBounds(309, 269, 64, 20);
 		add(lblAge);
 
 		JLabel lblBalance = new JLabel("Balance");
-		lblBalance.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblBalance.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
 		lblBalance.setLabelFor(textBalance);
-		lblBalance.setBounds(309, 186, 53, 17);
+		lblBalance.setBounds(309, 179, 78, 24);
 		add(lblBalance);
 
 		JLabel lblGender = new JLabel("Gender", SwingConstants.CENTER);
-		lblGender.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblGender.setBounds(149, 179, 64, 14);
+		lblGender.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblGender.setBounds(149, 166, 64, 27);
 		add(lblGender);
 
 		btnAdd = new JButton("Add");
+		btnAdd.setForeground(Color.WHITE);
+		btnAdd.setFocusPainted(false);
+		btnAdd.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnAdd.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnAdd.setBackground(new Color(128, 128, 255));
 		btnAdd.setEnabled(false);
 		btnAdd.setBounds(660, 386, 132, 36);
 		add(btnAdd);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
 		btnBack.setBounds(10, 386, 132, 36);
 		add(btnBack);

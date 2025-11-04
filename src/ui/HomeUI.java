@@ -1,10 +1,12 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,7 +36,6 @@ public class HomeUI extends JPanel {
 	private PlayUI playUI;
 	private StatsUI statsUI;
 	private ProfileUI profileUI;
-	private JButton btnStatistics;
 
 	private ViewController viewController;
 
@@ -49,39 +50,71 @@ public class HomeUI extends JPanel {
 
 		setBounds(100, 100, 802, 433);
 		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
-		JLabel lblTitle = new JLabel("Casino Simulator", SwingConstants.CENTER);
-		lblTitle.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblTitle.setBounds(10, 39, 782, 59);
+		JLabel lblTitle = new JLabel("Virtual Casino", SwingConstants.CENTER);
+		lblTitle.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblTitle.setBounds(138, 21, 525, 50);
 		add(lblTitle);
 
 		JButton btnPlay = new JButton("Play");
 		btnPlay.setBackground(new Color(128, 128, 255));
-		btnPlay.setBounds(320, 156, 124, 40);
+		btnPlay.setBounds(319, 156, 164, 40);
+		btnPlay.setForeground(Color.WHITE);
+		btnPlay.setFocusPainted(false);
+		btnPlay.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnPlay.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnPlay.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnPlay);
 
 		JButton btnManagement = new JButton("Management");
 		btnManagement.setBackground(new Color(128, 128, 255));
-		btnManagement.setBounds(320, 207, 124, 40);
+		btnManagement.setBounds(319, 207, 164, 40);
+		btnManagement.setForeground(Color.WHITE);
+		btnManagement.setFocusPainted(false);
+		btnManagement.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnManagement.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnManagement.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnManagement);
 
-		btnStatistics = new JButton("Statistics");
+		JButton btnStatistics = new JButton("Statistics");
 		btnStatistics.setBackground(new Color(128, 128, 255));
-		btnStatistics.setBounds(320, 258, 124, 40);
+		btnStatistics.setBounds(319, 258, 164, 40);
+		btnStatistics.setForeground(Color.WHITE);
+		btnStatistics.setFocusPainted(false);
+		btnStatistics.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnStatistics.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnStatistics.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnStatistics);
 
 		JButton btnExit = new JButton("Exit");
+		btnExit.setForeground(Color.WHITE);
+		btnExit.setFocusPainted(false);
+		btnExit.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnExit.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnExit.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnExit.setBackground(new Color(128, 128, 128));
 		btnExit.setBounds(10, 386, 132, 36);
 		add(btnExit);
 
 		JButton btnInfo = new JButton("?");
+		btnInfo.setToolTipText("");
+		btnInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnInfo.setBackground(new Color(128, 255, 255));
-		btnInfo.setBounds(755, 390, 37, 32);
+		btnInfo.setBounds(755, 385, 37, 38);
+		btnInfo.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		btnInfo.setFocusPainted(false);
+		btnInfo.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 		add(btnInfo);
 
 		JButton btnProfile = new JButton("Profile");
-		btnProfile.setBounds(694, 11, 98, 32);
+		btnProfile.setBackground(new Color(128, 128, 128));
+		btnProfile.setBounds(713, 11, 79, 32);
+		btnProfile.setForeground(Color.WHITE);
+		btnProfile.setFocusPainted(false);
+		btnProfile.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnProfile.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnProfile.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		add(btnProfile);
 
 		// --- Event Listeners ---
