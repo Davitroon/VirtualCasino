@@ -7,9 +7,8 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 
-import exceptions.MailException;
 import exceptions.ExceptionMessage;
-import model.Game;
+import exceptions.MailException;
 import model.User;
 
 /**

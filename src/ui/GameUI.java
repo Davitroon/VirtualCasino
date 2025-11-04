@@ -1,23 +1,21 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
@@ -34,10 +32,9 @@ import model.Slotmachine;
  * @author Davitroon
  * @since 3.0
  */
-public class GameUI extends JFrame {
+public class GameUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 
 	private JTextField textMoney;
 
@@ -47,73 +44,77 @@ public class GameUI extends JFrame {
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
 
-    /**
-     * Constructs the GameUI window.
-     * <p>
-     * Initializes UI components, sets up listeners for buttons and input fields,
-     * and handles window closing events.
-     * </p>
-     * 
-     * @param controller Reference to the MainController handling program logic
-     *                   and data operations.
-     * @since 3.0
-     */
+	/**
+	 * Constructs the GameUI window.
+	 * <p>
+	 * Initializes UI components, sets up listeners for buttons and input fields,
+	 * and handles window closing events.
+	 * </p>
+	 * 
+	 * @param controller Reference to the MainController handling program logic and
+	 *                   data operations.
+	 * @since 3.0
+	 */
 	public GameUI(MainController controller) {
 
 		ViewController viewController = controller.getViewController();
 		ManagementUI managementUI = viewController.getManagementUI();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 414, 314);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblAddGame = new JLabel("Add Game", SwingConstants.CENTER);
-		lblAddGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblAddGame.setBounds(10, 21, 387, 39);
-		contentPane.add(lblAddGame);
+		lblAddGame.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblAddGame.setBounds(138, 21, 525, 50);
+		add(lblAddGame);
 
 		btnAdd = new JButton("Add");
 		btnAdd.setBackground(new Color(128, 128, 255));
 		btnAdd.setEnabled(false);
-		btnAdd.setBounds(270, 228, 111, 32);
-		contentPane.add(btnAdd);
+		btnAdd.setBounds(660, 386, 132, 36);
+		btnAdd.setForeground(Color.WHITE);
+		btnAdd.setFocusPainted(false);
+		btnAdd.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnAdd.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnAdd.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		add(btnAdd);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(20, 228, 111, 32);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
 
 		JLabel lblType = new JLabel("Type");
-		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblType.setBounds(36, 84, 49, 14);
-		contentPane.add(lblType);
+		lblType.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblType.setBounds(263, 124, 49, 22);
+		add(lblType);
 
 		JLabel lblMoney = new JLabel("Money");
-		lblMoney.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMoney.setBounds(36, 146, 49, 14);
-		contentPane.add(lblMoney);
+		lblMoney.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblMoney.setBounds(263, 182, 63, 22);
+		add(lblMoney);
 
 		textMoney = new JTextField();
-		textMoney.setBounds(97, 137, 182, 32);
-		contentPane.add(textMoney);
+		textMoney.setBounds(263, 207, 182, 32);
+		add(textMoney);
 		textMoney.setColumns(10);
 
 		lblErrorMoney = new JLabel("");
 		lblErrorMoney.setForeground(new Color(255, 0, 0));
 		lblErrorMoney.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorMoney.setBounds(36, 172, 233, 14);
-		contentPane.add(lblErrorMoney);
+		lblErrorMoney.setBounds(263, 244, 233, 14);
+		add(lblErrorMoney);
 
 		comboType = new JComboBox<Object>();
 		comboType.setModel(new DefaultComboBoxModel<Object>(new String[] { "Blackjack", "SlotMachine" }));
-		comboType.setBounds(97, 80, 111, 22);
-		contentPane.add(comboType);
+		comboType.setBounds(260, 149, 111, 22);
+		add(comboType);
 
 		// When typing in the money field
 		textMoney.addKeyListener(new KeyAdapter() {
@@ -134,7 +135,7 @@ public class GameUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
+				viewController.switchPanel(managementUI);
 			}
 		});
 
@@ -153,25 +154,16 @@ public class GameUI extends JFrame {
 				}
 
 				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				clearFields();
-				viewController.switchWindow(GameUI.this, managementUI);
+				viewController.switchPanel(managementUI);
 			}
 		});
 	}
 
-    /**
-     * Clears all form fields and resets validation states.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Clears all form fields and resets validation states.
+	 * 
+	 * @since 3.0
+	 */
 	public void clearFields() {
 		btnAdd.setEnabled(false);
 		textMoney.setText("");
@@ -179,11 +171,11 @@ public class GameUI extends JFrame {
 		lblErrorMoney.setText("");
 	}
 
-    /**
-     * Checks if all required fields are valid to enable the add button.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Checks if all required fields are valid to enable the add button.
+	 * 
+	 * @since 3.0
+	 */
 	public void checkForm() {
 		if (moneyValid) {
 			btnAdd.setEnabled(true);

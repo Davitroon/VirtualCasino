@@ -1,26 +1,24 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import controller.MainController;
 import controller.ViewController;
@@ -38,10 +36,9 @@ import model.Slotmachine;
  * @author Davitroon
  * @since 3.0
  */
-public class GameEditUI extends JFrame {
+public class GameEditUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 
 	private JTextField textMoney;
 	private boolean moneyValid;
@@ -50,95 +47,98 @@ public class GameEditUI extends JFrame {
 	private JLabel lblErrorMoney;
 	private JComboBox<Object> comboType;
 	private JTextField textId;
-	private JLabel lblId;
 	private JCheckBox chckbxActive;
-	
+
 	private MainController controller;
 
-    /**
-     * Constructs the GameEditUI window.
-     * <p>
-     * Initializes UI components, sets up listeners for the update and back
-     * buttons, validates inputs, and handles window closing.
-     * </p>
-     * 
-     * @param controller Reference to the MainController handling program logic
-     *                   and data operations.
-     * @since 3.0
-     */
+	/**
+	 * Constructs the GameEditUI window.
+	 * <p>
+	 * Initializes UI components, sets up listeners for the update and back buttons,
+	 * validates inputs, and handles window closing.
+	 * </p>
+	 * 
+	 * @param controller Reference to the MainController handling program logic and
+	 *                   data operations.
+	 * @since 3.0
+	 */
 	public GameEditUI(MainController controller) {
 
 		this.controller = controller;
 		ViewController viewController = controller.getViewController();
 		ManagementUI managementUI = viewController.getManagementUI();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 440, 314);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblEditGame = new JLabel("Edit Game", SwingConstants.CENTER);
-		lblEditGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblEditGame.setBounds(6, 21, 412, 39);
-		contentPane.add(lblEditGame);
+		lblEditGame.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblEditGame.setBounds(138, 21, 525, 50);
+		add(lblEditGame);
 
 		btnUpdate = new JButton("Update");
 		btnUpdate.setBackground(new Color(128, 128, 255));
 		btnUpdate.setEnabled(false);
-		btnUpdate.setBounds(292, 228, 111, 32);
-		contentPane.add(btnUpdate);
+		btnUpdate.setBounds(660, 386, 132, 36);
+		btnUpdate.setForeground(Color.WHITE);
+		btnUpdate.setFocusPainted(false);
+		btnUpdate.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnUpdate.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnUpdate.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		add(btnUpdate);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(24, 228, 111, 32);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
 
 		JLabel lblType = new JLabel("Type");
-		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblType.setBounds(129, 84, 49, 14);
-		contentPane.add(lblType);
+		lblType.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblType.setBounds(225, 252, 49, 27);
+		add(lblType);
 
 		JLabel lblMoney = new JLabel("Money");
-		lblMoney.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblMoney.setBounds(40, 152, 49, 14);
-		contentPane.add(lblMoney);
+		lblMoney.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblMoney.setBounds(225, 176, 89, 27);
+		add(lblMoney);
 
 		textMoney = new JTextField();
-		textMoney.setBounds(101, 143, 236, 32);
-		contentPane.add(textMoney);
+		textMoney.setBounds(225, 201, 236, 32);
+		add(textMoney);
 		textMoney.setColumns(10);
 
 		lblErrorMoney = new JLabel("");
 		lblErrorMoney.setForeground(new Color(255, 0, 0));
 		lblErrorMoney.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblErrorMoney.setBounds(40, 178, 297, 14);
-		contentPane.add(lblErrorMoney);
+		lblErrorMoney.setBounds(225, 236, 236, 14);
+		add(lblErrorMoney);
 
 		comboType = new JComboBox<Object>();
 		comboType.setModel(new DefaultComboBoxModel<Object>(new String[] { "Blackjack", "SlotMachine" }));
-		comboType.setBounds(172, 80, 111, 22);
-		contentPane.add(comboType);
+		comboType.setBounds(225, 280, 111, 22);
+		add(comboType);
 
-		lblId = new JLabel("ID");
-		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblId.setBounds(40, 84, 26, 14);
-		contentPane.add(lblId);
+		JLabel lblId = new JLabel("ID");
+		lblId.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblId.setBounds(225, 106, 26, 27);
+		add(lblId);
 
 		textId = new JTextField();
 		textId.setEnabled(false);
 		textId.setEditable(false);
-		textId.setBounds(64, 77, 38, 29);
-		contentPane.add(textId);
+		textId.setBounds(225, 136, 38, 29);
+		add(textId);
 		textId.setColumns(10);
 
 		chckbxActive = new JCheckBox("Active");
-		chckbxActive.setBounds(304, 80, 89, 23);
-		contentPane.add(chckbxActive);
+		chckbxActive.setBounds(467, 206, 89, 23);
+		add(chckbxActive);
 
 		// When typing in the money field
 		textMoney.addKeyListener(new KeyAdapter() {
@@ -159,7 +159,7 @@ public class GameEditUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearFields();
-				viewController.switchWindow(GameEditUI.this, managementUI);
+				viewController.switchPanel(managementUI);
 			}
 		});
 
@@ -180,30 +180,24 @@ public class GameEditUI extends JFrame {
 				}
 
 				clearFields();
-				viewController.switchWindow(GameEditUI.this, managementUI);
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				clearFields();
-				viewController.switchWindow(GameEditUI.this, managementUI);
+				managementUI.updateGamesTable();
+				managementUI.updateClientsTable();
+				viewController.switchPanel(managementUI);
 			}
 		});
 	}
 
-    /**
-     * Loads the original game data into the form fields for editing.
-     * 
-     * @param gameId ID of the game to retrieve from the database
-     * @since 3.0
-     */
+	/**
+	 * Loads the original game data into the form fields for editing.
+	 * 
+	 * @param gameId ID of the game to retrieve from the database
+	 * @since 3.0
+	 */
 	public void loadOriginalGame(int gameId) {
 		ResultSet rset = controller.getDataBaseController().queryGame(gameId);
 
 		try {
+			rset.next();
 			textId.setText(String.valueOf(gameId));
 
 			switch (rset.getString(2)) {
@@ -228,11 +222,11 @@ public class GameEditUI extends JFrame {
 		checkForm();
 	}
 
-    /**
-     * Clears all form fields and resets validation states.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Clears all form fields and resets validation states.
+	 * 
+	 * @since 3.0
+	 */
 	public void clearFields() {
 		btnUpdate.setEnabled(false);
 		textMoney.setText("");
@@ -240,11 +234,11 @@ public class GameEditUI extends JFrame {
 		lblErrorMoney.setText("");
 	}
 
-    /**
-     * Checks if all required fields are valid to enable the update button.
-     * 
-     * @since 3.0
-     */
+	/**
+	 * Checks if all required fields are valid to enable the update button.
+	 * 
+	 * @since 3.0
+	 */
 	public void checkForm() {
 		if (moneyValid) {
 			btnUpdate.setEnabled(true);

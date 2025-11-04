@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import exceptions.ExceptionMessage;
 import model.Client;
-import model.Game;
 
 /**
  * DAO class for managing {@link Client} entities in the database.
@@ -78,7 +77,7 @@ public class ClientDAO {
 		ResultSet rset = null;
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clients WHERE client_id = ?");
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clients WHERE id = ?");
 			stmt.setInt(1, clientId);
 			rset = stmt.executeQuery();
 

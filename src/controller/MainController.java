@@ -4,11 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import dao.DatabaseManager;
-import exceptions.BetException;
 import model.Blackjack;
 import model.Client;
 import model.Game;
@@ -41,8 +39,6 @@ public class MainController {
 	private ViewController viewController;
 	private Session session;
 	private DataBaseController dbController;
-
-	private double lastBet;
 
 	/**
 	 * Constructs the MainController with a session.
@@ -105,49 +101,6 @@ public class MainController {
 	// -------------------------- GAME LOGIC METHODS --------------------------
 
 	/**
-	 * Prompts the client for a valid bet, with options to repeat the last bet or
-	 * cancel.
-	 *
-	 * @param client The client making the bet.
-	 * @param game   The game in which the bet is placed.
-	 * @return The validated bet amount, or 0 if canceled.
-	 * @throws BetException If the client or game balance is insufficient or the
-	 *                      input is invalid.
-	 * @since 3.0
-	 */
-	public double promptBet(Client client, Game game) throws BetException {
-		validator.validateMinimumBalances(client.getBalance(), game.getMoney());
-
-		while (true) {
-			JTextField betField = new JTextField();
-			Object[] message = { "Enter a bet:", betField };
-
-			String[] options = { "Cancel", "Repeat Last Bet", "Accept" };
-			int option = JOptionPane.showOptionDialog(null, message, "Bet", JOptionPane.DEFAULT_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-
-			if (option == 0 || option == JOptionPane.CLOSED_OPTION) {
-				return 0;
-			} else if (option == 1) {
-				if (lastBet == 0) {
-					JOptionPane.showMessageDialog(null, "There is no previous bet.");
-					continue;
-				}
-				validator.validateBet(String.valueOf(lastBet), client.getBalance(), game.getMoney());
-				return lastBet;
-			} else {
-				try {
-					validator.validateBet(betField.getText(), client.getBalance(), game.getMoney());
-					lastBet = Double.parseDouble(betField.getText());
-					return lastBet;
-				} catch (BetException ex) {
-					throw ex;
-				}
-			}
-		}
-	}
-
-	/**
 	 * Warns the user when attempting to close a game mid-match.
 	 *
 	 * @param client The client playing.
@@ -166,19 +119,6 @@ public class MainController {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Displays a generic end-of-game window to prompt the user for next action.
-	 *
-	 * @param statusMessage Message describing the end of the match.
-	 * @return User choice (0: Go Back, 1: Bet Again)
-	 * @since 3.0
-	 */
-	public int gameEndStatus(String statusMessage) {
-		String[] options = { "Go Back", "Bet Again" };
-		return JOptionPane.showOptionDialog(null, statusMessage + " What do you want to do?", "End of Match",
-				JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 	}
 
 	// --------------------- BLACKJACK GAME LOGIC METHODS ---------------------
@@ -246,15 +186,18 @@ public class MainController {
 		if (!clientWins) {
 			if (playerCardsSum > 21) {
 				return "You busted (exceeded 21), you lost " + String.format("%.2f", betResult) + "$!";
+			
 			} else {
-				return "You lost " + String.format("%.2f", betResult) + "$!";
+				return "You lost " + String.format("%.2f", betResult) + "$.";
 			}
+		
 		} else {
 			if (playerCardsSum == dealerCardsSum) {
 				if (playerCardsSum == 21) {
-					return "Tie with Blackjack (Push), you won " + String.format("%.2f", betResult) + "$!";
+					return "Tie with Blackjack (Push), you won " + String.format("%.2f", betResult) + "$.";
 				}
-				return "Tie (Push), you won " + String.format("%.2f", betResult) + "$!";
+				return "Tie (Push), you won " + String.format("%.2f", betResult) + "$.";
+			
 			} else {
 				if (playerCardsSum == 21 && blackjack.getPlayerCards().size() == 2) {
 					return "Victory with a Blackjack, you won " + String.format("%.2f", betResult) + "$!";
@@ -279,7 +222,7 @@ public class MainController {
 		int[] numbers = slotmachine.getNumbers();
 
 		if (numbers[0] == 7 && numbers[1] == 7 && numbers[2] == 7) {
-			return String.format("!!Jackpot, you won %.2f$!", betResult);
+			return String.format("Jackpot, you won %.2f$!", betResult);
 		}
 
 		if (numbers[0] == numbers[1] && numbers[0] == numbers[2]) {
@@ -296,13 +239,16 @@ public class MainController {
 	// ------------------------- TABLE FILLING METHODS -------------------------
 
 	/**
-	 * Fills the client table in the Games window with a subset of client information.
+	 * Fills the client table in the Games window with a subset of client
+	 * information.
 	 * <p>
-	 * The table will contain the following columns: ID, Name, Active status, Balance.
+	 * The table will contain the following columns: ID, Name, Active status,
+	 * Balance.
 	 * </p>
 	 *
-	 * @param rset        ResultSet obtained from querying the clients from the database. 
-	 *                    It is expected to have the required columns in the correct order.
+	 * @param rset        ResultSet obtained from querying the clients from the
+	 *                    database. It is expected to have the required columns in
+	 *                    the correct order.
 	 * @param clientModel The table model that will be filled with the client data.
 	 * @since 3.0
 	 */
@@ -310,10 +256,10 @@ public class MainController {
 		try {
 			do {
 				Object[] clientList = new Object[4];
-				clientList[0] = rset.getInt(1);              // ID
-				clientList[1] = rset.getString(2);           // Name
+				clientList[0] = rset.getInt(1); // ID
+				clientList[1] = rset.getString(2); // Name
 				clientList[2] = rset.getBoolean(5) ? "YES" : "NO"; // Active
-				clientList[3] = rset.getDouble(6);          // Balance
+				clientList[3] = rset.getDouble(6); // Balance
 
 				clientModel.addRow(clientList);
 			} while (rset.next());
@@ -325,11 +271,13 @@ public class MainController {
 	/**
 	 * Fills the client table in the Management window with full client details.
 	 * <p>
-	 * The table will contain the following columns: ID, Name, Age, Gender, Active status, Balance.
+	 * The table will contain the following columns: ID, Name, Age, Gender, Active
+	 * status, Balance.
 	 * </p>
 	 *
-	 * @param rset        ResultSet obtained from querying the clients from the database. 
-	 *                    It is expected to have all columns required for the full client view.
+	 * @param rset        ResultSet obtained from querying the clients from the
+	 *                    database. It is expected to have all columns required for
+	 *                    the full client view.
 	 * @param clientModel The table model that will be filled with the client data.
 	 * @since 3.0
 	 */
@@ -337,12 +285,12 @@ public class MainController {
 		try {
 			do {
 				Object[] clientList = new Object[6];
-				clientList[0] = rset.getInt(1);              // ID
-				clientList[1] = rset.getString(2);           // Name
-				clientList[2] = rset.getInt(3);              // Age
-				clientList[3] = rset.getString(4);           // Gender
+				clientList[0] = rset.getInt(1); // ID
+				clientList[1] = rset.getString(2); // Name
+				clientList[2] = rset.getInt(3); // Age
+				clientList[3] = rset.getString(4); // Gender
 				clientList[4] = rset.getBoolean(5) ? "YES" : "NO"; // Active
-				clientList[5] = rset.getDouble(6);          // Balance
+				clientList[5] = rset.getDouble(6); // Balance
 
 				clientModel.addRow(clientList);
 			} while (rset.next());
@@ -357,8 +305,9 @@ public class MainController {
 	 * The table will contain the following columns: ID, Type, Active status, Money.
 	 * </p>
 	 *
-	 * @param rset      ResultSet obtained from querying the games from the database.
-	 *                  It is expected to have the required columns in the correct order.
+	 * @param rset      ResultSet obtained from querying the games from the
+	 *                  database. It is expected to have the required columns in the
+	 *                  correct order.
 	 * @param gameModel The table model that will be filled with the game data.
 	 * @since 3.0
 	 */
@@ -366,10 +315,10 @@ public class MainController {
 		try {
 			do {
 				Object[] gameList = new Object[4];
-				gameList[0] = rset.getInt(1);              // ID
-				gameList[1] = rset.getString(2);           // Type
+				gameList[0] = rset.getInt(1); // ID
+				gameList[1] = rset.getString(2); // Type
 				gameList[2] = rset.getBoolean(3) ? "YES" : "NO"; // Active
-				gameList[3] = rset.getDouble(4);           // Money
+				gameList[3] = rset.getDouble(4); // Money
 
 				gameModel.addRow(gameList);
 			} while (rset.next());
@@ -377,7 +326,6 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-
 
 	// ----------------------------- GETTERS / SETTERS -----------------------------
 

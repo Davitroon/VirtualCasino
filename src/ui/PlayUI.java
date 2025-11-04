@@ -1,32 +1,28 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controller.DataBaseController;
 import controller.MainController;
 import controller.ViewController;
-import exceptions.BetException;
 import exceptions.GameException;
 import model.Blackjack;
 import model.Client;
@@ -36,18 +32,17 @@ import model.Slotmachine;
 /**
  * Window for starting games.
  * <p>
- * Displays a list of clients and games in separate tables. Allows selecting
- * a client and a game to start playing. Handles bet insertion and opens the
+ * Displays a list of clients and games in separate tables. Allows selecting a
+ * client and a game to start playing. Handles bet insertion and opens the
  * corresponding game window.
  * </p>
  * 
  * @author Davitroon
  * @since 3.0
  */
-public class PlayUI extends JFrame {
+public class PlayUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTable tableClients;
 	private JTable tableGames;
 
@@ -56,7 +51,7 @@ public class PlayUI extends JFrame {
 
 	private MainController controller;
 	private JButton btnPlay;
-	
+
 	private ViewController viewController;
 	private DataBaseController dbController;
 
@@ -67,7 +62,8 @@ public class PlayUI extends JFrame {
 	 * games. Adds event listeners for selection, button clicks, and window events.
 	 * </p>
 	 * 
-	 * @param controller The main controller handling UI actions and database operations
+	 * @param controller The main controller handling UI actions and database
+	 *                   operations
 	 * @since 3.0
 	 */
 	public PlayUI(MainController controller) {
@@ -76,29 +72,24 @@ public class PlayUI extends JFrame {
 		viewController = controller.getViewController();
 		dbController = controller.getDataBaseController();
 
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 716, 435);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setBounds(100, 100, 802, 433);
+		setLayout(null);
+		setBackground(new Color(220, 220, 220));
 
 		JLabel lblGame = new JLabel("Play", SwingConstants.CENTER);
-		lblGame.setFont(new Font("Stencil", Font.PLAIN, 28));
-		lblGame.setBounds(28, 28, 652, 31);
-		contentPane.add(lblGame);
+		lblGame.setFont(new Font("Segoe UI Black", Font.BOLD, 36));
+		lblGame.setBounds(138, 21, 525, 50);
+		add(lblGame);
 
 		JLabel lblClients = new JLabel("Clients", SwingConstants.CENTER);
-		lblClients.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblClients.setBounds(28, 82, 287, 31);
-		contentPane.add(lblClients);
+		lblClients.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblClients.setBounds(28, 109, 341, 23);
+		add(lblClients);
 
 		JScrollPane scrollPaneClients = new JScrollPane();
-		scrollPaneClients.setBounds(28, 124, 287, 166);
-		contentPane.add(scrollPaneClients);
+		scrollPaneClients.setBounds(28, 135, 341, 193);
+		scrollPaneClients.getViewport().setBackground(Color.WHITE);
+		add(scrollPaneClients);
 
 		modelClients = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Name", "Active", "Balance" }) {
 			private static final long serialVersionUID = 4840318942523039213L;
@@ -120,13 +111,14 @@ public class PlayUI extends JFrame {
 		scrollPaneClients.setViewportView(tableClients);
 
 		JLabel lblGames = new JLabel("Games", SwingConstants.CENTER);
-		lblGames.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblGames.setBounds(357, 86, 323, 23);
-		contentPane.add(lblGames);
+		lblGames.setFont(new Font("Segoe UI Black", Font.BOLD, 16));
+		lblGames.setBounds(428, 109, 341, 23);
+		add(lblGames);
 
 		JScrollPane scrollPaneGames = new JScrollPane();
-		scrollPaneGames.setBounds(357, 124, 323, 166);
-		contentPane.add(scrollPaneGames);
+		scrollPaneGames.setBounds(428, 135, 341, 193);
+		scrollPaneGames.getViewport().setBackground(Color.WHITE);
+		add(scrollPaneGames);
 
 		modelGames = new DefaultTableModel(new Object[][] {}, new String[] { "Id", "Type", "Active", "Money" }) {
 			private static final long serialVersionUID = -6299895431999927772L;
@@ -150,27 +142,28 @@ public class PlayUI extends JFrame {
 		btnPlay = new JButton("Play");
 		btnPlay.setBackground(new Color(128, 128, 255));
 		btnPlay.setEnabled(false);
-		btnPlay.setBounds(577, 327, 103, 31);
-		contentPane.add(btnPlay);
+		btnPlay.setBounds(660, 386, 132, 36);
+		btnPlay.setForeground(Color.WHITE);
+		btnPlay.setFocusPainted(false);
+		btnPlay.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnPlay.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnPlay.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		add(btnPlay);
 
 		JButton btnBack = new JButton("Back");
+		btnBack.setForeground(Color.WHITE);
+		btnBack.setFocusPainted(false);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+		btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBack.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnBack.setBackground(new Color(128, 128, 128));
-		btnBack.setBounds(28, 327, 103, 31);
-		contentPane.add(btnBack);
+		btnBack.setBounds(10, 386, 132, 36);
+		add(btnBack);
 
 		// Click the back button
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewController.switchWindow(PlayUI.this, viewController.getHomeUI());
-				btnPlay.setEnabled(false);
-			}
-		});
-
-		// When closing the window using the X
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				viewController.switchWindow(PlayUI.this, viewController.getHomeUI());
+				viewController.switchPanel(viewController.getHomeUI());
 				btnPlay.setEnabled(false);
 			}
 		});
@@ -188,7 +181,7 @@ public class PlayUI extends JFrame {
 				String gameType = (String) tableGames.getValueAt(tableGames.getSelectedRow(), 1);
 				double moneyPool = (double) tableGames.getValueAt(tableGames.getSelectedRow(), 3);
 				Game game = null;
-				
+
 				if (gameType.equals("Blackjack")) {
 					game = new Blackjack(gameId, moneyPool);
 
@@ -196,18 +189,8 @@ public class PlayUI extends JFrame {
 					game = new Slotmachine(gameId, moneyPool);
 				}
 
-				// Insert the bet
-				try {
-					double bet = controller.promptBet(client, game);
-
-					if (bet != 0) {
-						viewController.openGameWindow(PlayUI.this, game, client, bet);
-						btnPlay.setEnabled(false);
-					}
-
-				} catch (BetException ex) {
-					JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				viewController.openGameWindow(PlayUI.this, game, client);
+				btnPlay.setEnabled(false);
 			}
 		});
 
@@ -231,8 +214,8 @@ public class PlayUI extends JFrame {
 	/**
 	 * Updates the clients and games tables with current data from the database.
 	 * <p>
-	 * Queries the database and fills the table models. Throws a GameException
-	 * if there are no clients or no games registered.
+	 * Queries the database and fills the table models. Throws a GameException if
+	 * there are no clients or no games registered.
 	 * </p>
 	 * 
 	 * @throws GameException if no clients or games are available for playing
@@ -271,7 +254,6 @@ public class PlayUI extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * Checks whether rows have been selected in both the clients and games tables.

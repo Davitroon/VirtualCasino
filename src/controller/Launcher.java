@@ -84,8 +84,16 @@ public class Launcher {
 		// Initialize and start main controller
 		MainController controller = new MainController(session);
 		controller.initializeClasses(dbManager);
+		ViewController viewController = controller.getViewController();
 
 		// Check if a remembered login exists and start the session
-		session.checkStartup(controller.getDataBaseController(), controller);
+		if (session.isRememberLogin(controller.getDataBaseController())) {
+			viewController.switchPanel(viewController.getHomeUI());
+		
+		} else {
+			viewController.switchPanel(viewController.getConnectUI());
+		}
+		
+		viewController.getMainFrame().setVisible(true);
 	}
 }

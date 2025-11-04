@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import controller.DataBaseController;
-import controller.MainController;
-import controller.ViewController;
 
 /**
  * Manages user login sessions in the application.
@@ -22,21 +20,22 @@ public class Session {
 	private User currentUser;
 
 	/**
-	 * Checks at startup if any user has the "remember login" flag set.
+	 * Checks if there is any user with the "remember login" option enabled.
 	 * <p>
-	 * If such a user exists, this method will automatically log them in and open
-	 * the main menu window. Otherwise, it opens the login/connection window.
+	 * At application startup, this method queries the database to find a user whose
+	 * "remember login" flag is set. If such a user exists, their information is
+	 * loaded into the current session, allowing automatic login. If no user is found,
+	 * the application should proceed to the standard login/connection window.
 	 * </p>
-	 * 
-	 * @param dbController The database controller used to query the "remember
-	 *                     login" flag.
-	 * @param controller   The main controller of the application, used to access
-	 *                     the view manager.
+	 *
+	 * @param dbController The database controller used to query users with
+	 *                     "remember login" enabled.
+	 * @return {@code true} if a user with "remember login" was found and loaded;
+	 *         {@code false} otherwise.
 	 * @since 3.0
 	 */
-	public void checkStartup(DataBaseController dbController, MainController controller) {
+	public boolean isRememberLogin(DataBaseController dbController) {
 		ResultSet rset = dbController.checkRememberLogin();
-		ViewController viewManager = controller.getViewController();
 
 		try {
 			if (rset.next()) {
@@ -45,17 +44,15 @@ public class Session {
 						rset.getString("email"), rset.getString("last_access"), true);
 
 				rset.close();
-				viewManager.openWindow(viewManager.getHomeUI());
-
-			} else {
-				// No remembered user; show the login window
-				viewManager.openWindow(viewManager.getConnectUI());
+				return true;
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 
 		}
+		
+		return false;
 	}
 
 	/**

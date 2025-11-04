@@ -76,7 +76,7 @@ public class GameDAO {
 		ResultSet rset = null;
 
 		try {
-			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM games WHERE game_id = ?");
+			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM games WHERE id = ?");
 			stmt.setInt(1, gameId);
 			rset = stmt.executeQuery();
 

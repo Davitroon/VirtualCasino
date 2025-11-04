@@ -1,6 +1,8 @@
 package controller;
 
-import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import dao.DatabaseManager;
 import model.Blackjack;
@@ -16,6 +18,7 @@ import ui.GameEditUI;
 import ui.GameUI;
 import ui.HomeUI;
 import ui.LogInUI;
+import ui.MainFrame;
 import ui.ManagementUI;
 import ui.PlayUI;
 import ui.ProfileUI;
@@ -57,6 +60,7 @@ public class ViewController {
 	private ClientEditUI clientEditUI;
 	private GameEditUI gameEditUI;
 	private GameUI gameUI;
+	private MainFrame mainFrame;
 
 	/**
 	 * Initializes all user interface (UI) classes and links them with the main
@@ -87,6 +91,7 @@ public class ViewController {
 		gameUI = new GameUI(controller);
 		blackjackUI = new BlackjackUI(controller);
 		slotmachineUI = new SlotmachineUI(controller);
+		mainFrame = new MainFrame();
 
 		homeUI.initializeClassesUI();
 	}
@@ -94,26 +99,13 @@ public class ViewController {
 	// -------------------------- WINDOW CONTROL METHODS --------------------------
 
 	/**
-	 * Displays a specific window (JFrame) on screen.
+	 * Switches the currently displayed panel within the main frame.
 	 *
-	 * @param window The window to make visible.
+	 * @param newPanel The new panel to display inside the main frame.
 	 * @since 3.3
 	 */
-	public void openWindow(JFrame window) {
-		window.setVisible(true);
-	}
-
-	/**
-	 * Switches from one window to another by hiding the current one and displaying
-	 * the new one.
-	 *
-	 * @param currentWindow The currently visible window to hide.
-	 * @param newWindow     The new window to display.
-	 * @since 3.3
-	 */
-	public void switchWindow(JFrame currentWindow, JFrame newWindow) {
-		currentWindow.setVisible(false);
-		newWindow.setVisible(true);
+	public void switchPanel(JPanel newPanel) {
+		mainFrame.setView(newPanel);
 	}
 
 	/**
@@ -127,21 +119,20 @@ public class ViewController {
 	 * @param playWindow The Play UI window from which this method is called.
 	 * @param game       The game instance to be played.
 	 * @param client     The client who will play the game.
-	 * @param bet        The amount of money bet.
 	 * @since 3.0
 	 */
-	public void openGameWindow(PlayUI playWindow, Game game, Client client, double bet) {
+	public void openGameWindow(PlayUI playWindow, Game game, Client client) {
 
 		if (game instanceof Blackjack) {
-			blackjackUI.initializeData(client, (Blackjack) game, bet);
-			switchWindow(playWindow, blackjackUI);
-			blackjackUI.startGame();
+			blackjackUI.initializeData(client, (Blackjack) game);
+			switchPanel(blackjackUI);
+			blackjackUI.loadUI();
 		}
 
 		if (game instanceof Slotmachine) {
-			slotmachineUI.initializeData(client, (Slotmachine) game, bet);
-			switchWindow(playWindow, slotmachineUI);
-			slotmachineUI.startGame();
+			slotmachineUI.initializeData(client, (Slotmachine) game);
+			switchPanel(slotmachineUI);
+			slotmachineUI.loadUI();
 		}
 	}
 
@@ -158,8 +149,29 @@ public class ViewController {
 		profileUI.upateUserData(user);
 	}
 
-	// --------------------------------- GETTERS ----------------------------------
+	// ---------------------------- VISUAL METHODS ----------------------------
 
+	/**
+	 * Toggles the enabled/disabled status of the buttons from the bet menu in
+	 * games.
+	 *
+	 * @param newStatus True to enable, false to disable.
+	 * @param textField Optional text field to toggle (e.g., for custom bets). Can
+	 *                  be null.
+	 * @param buttons   The buttons to enable or disable.
+	 * @since 3.3
+	 */
+	public void alternateBetMenu(boolean newStatus, JTextField textField, JButton... buttons) {
+		for (JButton button : buttons) {
+			button.setEnabled(newStatus);
+		}
+
+		if (textField != null) {
+			textField.setEnabled(newStatus);
+		}
+	}
+
+	// --------------------------------- GETTERS ----------------------------------
 
 	/**
 	 * @return The application's home UI.
@@ -265,4 +277,9 @@ public class ViewController {
 	public MainController getController() {
 		return controller;
 	}
+
+	public MainFrame getMainFrame() {
+		return mainFrame;
+	}
+
 }
