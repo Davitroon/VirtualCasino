@@ -175,7 +175,7 @@ public class HomeUI extends JPanel {
 
 						Have fun and experiment!
 
-						~ Version: 3.1 ~
+						~ Version: 3.3 ~
 						""";
 				JOptionPane.showMessageDialog(null, message, "Application Guide", JOptionPane.INFORMATION_MESSAGE);
 			}
