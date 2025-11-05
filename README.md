@@ -8,12 +8,12 @@ Built with **Swing** and **MySQL**, it features an intuitive interface, multiple
 ---
 
 ## 📚 Table of Contents
-- [🧾 Project Overview](#project-overview "Learn more about the game's concept and purpose")
-- [🚀 How to Run](#how-to-run "Instructions to install and run the project locally")
-- [🕹️ Using the Application](#using-the-application "Step-by-step guide on how to play or use the game")
-- [🏗️ Architecture](#architecture "See the general structure and design of the project")
-- [⚙️ Technologies Used](#technologies-used "See which technologies were used to build the project")
-- [🔮 Future Additions](#future-additions "See features planned for the future")
+- [🧾 Project Overview](#-project-overview "Learn more about the game's concept and purpose")
+- [🚀 How to Run](#-how-to-run "Instructions to install and run the project locally")
+- [🕹️ Using the Application](#-using-the-application "Step-by-step guide on how to play or use the game")
+- [💾 Architecture](#-architecture "See the general structure and design of the project")
+- [⚙️ Technologies](#-technologies-used "See which technologies were used to build the project")
+- [🔮 Future Additions](#-future-additions "See features planned for the future")
 
 ## 🧾 Project Overview
 
