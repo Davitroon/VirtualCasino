@@ -154,6 +154,8 @@ public class GameUI extends JPanel {
 				}
 
 				clearFields();
+				managementUI.updateGamesTable();
+				managementUI.updateClientsTable();
 				viewController.switchPanel(managementUI);
 			}
 		});

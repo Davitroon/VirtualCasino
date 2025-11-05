@@ -148,7 +148,7 @@ public class StatsUI extends JPanel {
 		btnDeleteStatistics.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		btnDeleteStatistics.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
 		btnDeleteStatistics.setBackground(new Color(242, 77, 77));
-		btnDeleteStatistics.setBounds(660, 386, 132, 36);
+		btnDeleteStatistics.setBounds(649, 386, 143, 36);
 		add(btnDeleteStatistics);
 
 		// Back button
@@ -161,7 +161,7 @@ public class StatsUI extends JPanel {
 		// Delete button
 		btnDeleteStatistics.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete all statistics?",
+				int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete all your statistics?",
 						"Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 				if (option == JOptionPane.YES_OPTION) {
