@@ -12,7 +12,7 @@ Built with **Swing** and **MySQL**, it features an intuitive interface, multiple
 - [🚀 How to Run](#-how-to-run "Instructions to install and run the project locally")
 - [🕹️ Using the Application](#%EF%B8%8F-using-the-application "Step-by-step guide on how to play or use the game")
 - [🏗️ Architecture](#%EF%B8%8F-architecture "See the general structure and design of the project")
-- [⚙️ Technologies](#-technologies-used "See which technologies were used to build the project")
+- [⚙️ Technologies](#%EF%B8%8F-technologies "See which technologies were used to build the project")
 - [🔮 Future Additions](#-future-additions "See features planned for the future")
 
 ## 🧾 Project Overview
@@ -203,7 +203,7 @@ The package responsible using custom exceptions and hadling them
 
 ---
 
-## ⚙️ Technologies Used
+## ⚙️ Technologies
 
 - **Java 17+**
 - **Swing (Javax Swing)** — for building the graphical interface.
