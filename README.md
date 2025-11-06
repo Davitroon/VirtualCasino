@@ -81,7 +81,7 @@ After logging in, you'll enter the **main menu**, where you can access different
 
 ---
 
-### 🎮 Play
+### 1. 🎮 Play
 
 You can play various games using the clients you’ve created.  
 Each game affects your balance depending on your results — win to earn more, or lose and watch your funds decrease!
@@ -90,7 +90,7 @@ The application currently includes the following games:
 
 ---
 
-#### ♠️ Blackjack
+- #### ♠️ Blackjack
 ![Blackjack showcase](resources/blackjack-showcase.gif)
 
 Try your luck in **Blackjack**, the classic card game where your goal is to reach 21 without going over.  
@@ -98,7 +98,7 @@ You’ll face the dealer in turn-based rounds — make smart choices between *Hi
 
 ---
 
-#### 🎰 Slot Machine
+- #### 🎰 Slot Machine
 ![Slot Machine showcase](resources/slotmachine-showcase.gif)
 
 Spin the reels in the **Slot Machine** and test your fortune!  
@@ -106,7 +106,7 @@ Match symbols to earn credits and watch the balance update dynamically after eac
 
 ---
 
-### 🧩 Management
+### 2. 🧩 Management
 ![Management showcase](resources/management-showcase.gif)
 
 The **Management** section allows you to handle all user-related data within the application.  
@@ -116,7 +116,7 @@ This area provides a simple and visual **CRUD interface** connected directly to 
 
 ---
 
-### 📊 Statistics
+### 3. 📊 Statistics
 ![Statistics showcase](resources/statistics-showcase.png)
 
 The **Statistics** section provides a detailed overview of your activity within the casino.  
@@ -191,7 +191,7 @@ The package that provides the user interface for the application
 | **SlotmachineUI** | Panel where the Slot Machine game is played. |
 | **StatsUI** | Displays user-specific game statistics. |
 
-- ### 📦 Exceptions
+- ### 📦 exceptions
 The package responsible using custom exceptions and hadling them 
 
 | Class | Description |
@@ -201,16 +201,21 @@ The package responsible using custom exceptions and hadling them
 | **GameException** | Exception thrown when an attempt is made to open the games window without any existing user or game created beforehand. |
 | **MailException** | Exception thrown when an entered email is invalid or does not meet the expected format. |
 
+> You can see the full architecture in the [project documentation](https://davitroon.github.io/VirtualCasino/ "See the project's documentation").
+
 ---
 
-## ⚙️ Technologies
+## ⚙️ Technologies Used
 
-- **Java 17+**
-- **Swing (Javax Swing)** — for building the graphical interface.
-- **MySQL** — as the relational database.
-- **JDBC** — for database communication.
-- **MVC Architecture** — for clean separation of logic, data, and UI.
-- **DAO Pattern** — for structured and reusable database access.
+| Technology | Description |
+|-------------|-------------|
+| ![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=openjdk&logoColor=white) | ☕ Main programming language used to build the entire application. |
+| ![Swing](https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=java&logoColor=white) | 🖥️ Used to create the graphical user interface. |
+| ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white) | 🗄️ Relational database for storing users, games, and statistics. |
+| ![JDBC](https://img.shields.io/badge/JDBC-Connector-yellow?logo=java&logoColor=white) | 🔌 Enables communication between Java and the MySQL database. |
+| ![MVC](https://img.shields.io/badge/MVC-Architecture-green?logo=archlinux&logoColor=white) | 🧩 Separates logic, data, and interface layers for cleaner structure. |
+| ![DAO](https://img.shields.io/badge/DAO-Pattern-lightgrey?logo=databricks&logoColor=white) | 🧱 Provides reusable and structured database access. |
+
 
 ---
 
