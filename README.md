@@ -58,12 +58,14 @@ You can launch the application either from source or using the prebuilt launcher
 ---
 
 ### 🗃️ Database Setup
-When you launch the app for the first time:
+The application uses a **local SQLite database**, which means **no external installation or configuration** is required.
 
-- You’ll be prompted to enter your **MySQL root password**.
-- If the required database doesn’t exist, it will **automatically install** it using the included script.
+- When the program starts for the first time, it **automatically creates** the database file (and all necessary tables) if they don’t already exist.  
+- The database is stored locally in the project directory (for example: `/database/VirtualCasino.db`).  
+- All user profiles, clients, and game data are saved within this file.
 
-> ✅ **Tip:** You can modify the database connection settings in:
+> ✅ **Tip:**  
+> You can modify or relocate the database file by updating its path in:  
 
    ```bash
    /src/dao/DatabaseConnection.java
