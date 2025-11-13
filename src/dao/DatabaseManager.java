@@ -5,9 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-
 import exceptions.ExceptionMessage;
 
 /**
@@ -63,20 +60,10 @@ public class DatabaseManager {
 	 * @since 3.3
 	 */
 	public void initializeClasses() throws SQLException, ClassNotFoundException {
-	    JPasswordField passwordField = new JPasswordField();
-	    JOptionPane.showConfirmDialog(
-	        null,
-	        passwordField,
-	        "Enter MySQL root password",
-	        JOptionPane.OK_CANCEL_OPTION,
-	        JOptionPane.PLAIN_MESSAGE
-	    );
-
-	    String password = new String(passwordField.getPassword());
-	    
-		dbInitializer = new DatabaseInitializer();
-		dbInitializer.ensureDatabaseExists(password);
-		dbConnection = new DatabaseConnector(password);
+  
+		dbConnection = new DatabaseConnector();
+		dbInitializer = new DatabaseInitializer(dbConnection.getConnection());
+		dbInitializer.ensureDatabaseExists();
 		gameDAO = new GameDAO(exceptionMessage);
 		clientDAO = new ClientDAO(exceptionMessage);
 		gameSessionDAO = new GameSessionDAO(exceptionMessage);

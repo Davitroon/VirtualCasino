@@ -1,1222 +1,1165 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
  * Ensures that the required database and tables exist before connecting.
  * <p>
- * If the database "casino25" does not exist, this class creates it along with
- * all the required tables, relationships, and triggers.
+ * SQLite version (no MySQL dependencies)
  * </p>
  *
- * @author Davitroon
+ * @author
  * @since 3.3
  */
 public class DatabaseInitializer {
 
-	private static final String DB_NAME = "casino25";
-	private static final String URL = "jdbc:mysql://localhost/";
-	private static final String USER = "root";
+	private Connection connection;
+
+	public DatabaseInitializer(Connection connection) {
+		this.connection = connection;
+	}
 
 	/**
-	 * Ensures that the database and its structure exist. If not, it creates the whole database.
-	 *
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 * @since 3.3
+	 * Ensures that the database and its structure exist. If not, it creates the
+	 * whole database.
 	 */
-	public void ensureDatabaseExists(String PASSWORD) throws SQLException, ClassNotFoundException {
-		Class.forName("com.mysql.cj.jdbc.Driver");
-
-		try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-				Statement stmt = connection.createStatement()) {
-
-			// Check if database exists
-			ResultSet rs = stmt.executeQuery("SHOW DATABASES LIKE '" + DB_NAME + "';");
-			if (!rs.next()) {
-
-				// Create database
-				stmt.executeUpdate("CREATE DATABASE " + DB_NAME);
-				stmt.execute("USE " + DB_NAME);
-
-				// ---- TABLES ----
-				stmt.execute("""
-						    CREATE TABLE users (
-						        id INT PRIMARY KEY AUTO_INCREMENT,
-						        username VARCHAR(30) NOT NULL UNIQUE,
-						        password VARCHAR(39) NOT NULL,
-						        email VARCHAR(50) NOT NULL,
-						        last_access DATETIME DEFAULT NOW(),
-						        verified_email BOOLEAN NOT NULL DEFAULT TRUE,
-						        remember_login BOOLEAN NOT NULL DEFAULT FALSE
-						    );
-						""");
-
-				stmt.execute("""
-						    CREATE TABLE clients (
-						        id INT PRIMARY KEY AUTO_INCREMENT,
-						        client_name VARCHAR(30) NOT NULL,
-						        age INT NOT NULL,
-						        gender ENUM('M','F','O') NOT NULL,
-						        active_status BOOLEAN NOT NULL DEFAULT TRUE,
-						        balance DECIMAL(8,2) NOT NULL,
-						        user_profile INT NOT NULL,
-						        FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
-						    );
-						""");
-
-				stmt.execute("""
-						    CREATE TABLE games (
-						        id INT PRIMARY KEY AUTO_INCREMENT,
-						        game_type ENUM('Blackjack', 'SlotMachine') NOT NULL,
-						        active_status BOOLEAN NOT NULL DEFAULT TRUE,
-						        money_pool DECIMAL(8,2) NOT NULL,
-						        user_profile INT NOT NULL,
-						        FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
-						    );
-						""");
-
-				stmt.execute("""
-						    CREATE TABLE game_sessions (
-						        id INT PRIMARY KEY AUTO_INCREMENT,
-						        client_id INT,
-						        game_id INT,
-						        game_type ENUM('Blackjack', 'SlotMachine') NOT NULL,
-						        bet_result DECIMAL(8,2) NOT NULL,
-						        session_date DATETIME DEFAULT NOW(),
-						        user_profile INT NOT NULL,
-						        FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL,
-						        FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE SET NULL,
-						        FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
-						    );
-						""");
-
-				stmt.execute("""
-						    CREATE TABLE domains (
-						        domain_type VARCHAR(50),
-						        tld VARCHAR(20),
-						        manager VARCHAR(255)
-						    );
-						""");
-
-				// ---- TRIGGERS ----
-				stmt.execute("DROP TRIGGER IF EXISTS verify_email_insert;");
-				stmt.execute("DROP TRIGGER IF EXISTS verify_email_update;");
-
-				// Trigger: verify_email_insert
-				stmt.execute("""
-						    CREATE TRIGGER verify_email_insert
-						    BEFORE INSERT ON users
-						    FOR EACH ROW
-						    BEGIN
-						        DECLARE at_pos INT;
-						        DECLARE dot_after INT;
-						        DECLARE last_dot_pos INT;
-						        DECLARE domain VARCHAR(50);
-						        DECLARE valid_domain INT;
-
-						        SET at_pos = LOCATE('@', NEW.email);
-						        IF at_pos <= 0 THEN
-						            SET NEW.verified_email = FALSE;
-						        ELSE
-						            SET dot_after = LOCATE('.', NEW.email, at_pos);
-						            IF dot_after <= at_pos THEN
-						                SET NEW.verified_email = FALSE;
-						            ELSE
-						                SET last_dot_pos = CHAR_LENGTH(NEW.email) - LOCATE('.', REVERSE(NEW.email)) + 1;
-						                SET domain = CONCAT('.', SUBSTRING_INDEX(NEW.email, '.', -1));
-
-						                SELECT COUNT(*) INTO valid_domain FROM domains WHERE tld = domain;
+    public void ensureDatabaseExists() throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+
+			// ---- TABLES ----
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS users (
+					        id INTEGER PRIMARY KEY AUTOINCREMENT,
+					        username TEXT NOT NULL UNIQUE,
+					        password TEXT NOT NULL,
+					        email TEXT NOT NULL,
+					        last_access DATETIME DEFAULT CURRENT_TIMESTAMP,
+					        verified_email INTEGER NOT NULL DEFAULT 1,
+					        remember_login INTEGER NOT NULL DEFAULT 0
+					    );
+					""");
+
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS clients (
+					        id INTEGER PRIMARY KEY AUTOINCREMENT,
+					        client_name TEXT NOT NULL,
+					        age INTEGER NOT NULL,
+					        gender TEXT CHECK(gender IN ('M','F','O')) NOT NULL,
+					        active_status INTEGER NOT NULL DEFAULT 1,
+					        balance REAL NOT NULL,
+					        user_profile INTEGER NOT NULL,
+					        FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
+					    );
+					""");
+
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS games (
+					        id INTEGER PRIMARY KEY AUTOINCREMENT,
+					        game_type TEXT CHECK(game_type IN ('Blackjack','SlotMachine')) NOT NULL,
+					        active_status INTEGER NOT NULL DEFAULT 1,
+					        money_pool REAL NOT NULL,
+					        user_profile INTEGER NOT NULL,
+					        FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
+					    );
+					""");
+
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS game_sessions (
+					        id INTEGER PRIMARY KEY AUTOINCREMENT,
+					        client_id INTEGER,
+					        game_id INTEGER,
+					        game_type TEXT CHECK(game_type IN ('Blackjack','SlotMachine')) NOT NULL,
+					        bet_result REAL NOT NULL,
+					        session_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+					        user_profile INTEGER NOT NULL,
+					        FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE SET NULL,
+					        FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE SET NULL,
+					        FOREIGN KEY (user_profile) REFERENCES users(id) ON DELETE CASCADE
+					    );
+					""");
+
+			stmt.execute("""
+					    CREATE TABLE IF NOT EXISTS domains (
+					        domain_type TEXT,
+					        tld TEXT,
+					        manager TEXT
+					    );
+					""");
 
-						                IF valid_domain = 0 THEN
-						                    SIGNAL SQLSTATE '45000';
-						                END IF;
-						            END IF;
-						        END IF;
-						    END;
-						""");
+			// ---- TRIGGERS ----
+			stmt.execute("DROP TRIGGER IF EXISTS verify_email_insert;");
+			stmt.execute("DROP TRIGGER IF EXISTS verify_email_update;");
 
-				// Trigger: verify_email_update
-				stmt.execute("""
-						    CREATE TRIGGER verify_email_update
-						    BEFORE UPDATE ON users
-						    FOR EACH ROW
-						    BEGIN
-						        DECLARE at_pos INT;
-						        DECLARE dot_after INT;
-						        DECLARE last_dot_pos INT;
-						        DECLARE domain VARCHAR(50);
-						        DECLARE valid_domain INT;
+			stmt.execute("""
+					    CREATE TRIGGER verify_email_insert
+					    BEFORE INSERT ON users
+					    FOR EACH ROW
+					    BEGIN
+					        SELECT
+					            CASE
+					                WHEN INSTR(NEW.email, '@') = 0
+					                     OR INSTR(NEW.email, '.') = 0
+					                THEN RAISE(IGNORE)
+					            END;
+					    END;
+					""");
 
-						        SET at_pos = LOCATE('@', NEW.email);
-						        IF at_pos <= 0 THEN
-						            SET NEW.verified_email = FALSE;
-						        ELSE
-						            SET dot_after = LOCATE('.', NEW.email, at_pos);
-						            IF dot_after <= at_pos THEN
-						                SET NEW.verified_email = FALSE;
-						            ELSE
-						                SET last_dot_pos = CHAR_LENGTH(NEW.email) - LOCATE('.', REVERSE(NEW.email)) + 1;
-						                SET domain = CONCAT('.', SUBSTRING_INDEX(NEW.email, '.', -1));
+			stmt.execute("""
+					    CREATE TRIGGER verify_email_update
+					    BEFORE UPDATE OF email ON users
+					    FOR EACH ROW
+					    BEGIN
+					        SELECT
+					            CASE
+					                WHEN INSTR(NEW.email, '@') = 0
+					                     OR INSTR(NEW.email, '.') = 0
+					                THEN RAISE(IGNORE)
+					            END;
+					    END;
+					""");
 
-						                SELECT COUNT(*) INTO valid_domain FROM domains WHERE tld = domain;
+			// Insertar datos por defecto
+			String insertDefaults = """
+					INSERT INTO domains (domain_type, tld, manager) VALUES  ('generic', '.aaa', 'American Automobile Association, Inc.'),
 
-						                IF valid_domain > 0 THEN
-						                    SET NEW.verified_email = TRUE;
-						                ELSE
-						                    SET NEW.verified_email = FALSE;
-						                END IF;
-						            END IF;
-						        END IF;
-						    END;
-						""");
+					('generic', '.aarp', NULL),
 
-				// Insertar datos por defecto
-				String insertDefaults = """
-						INSERT INTO domains (domain_type, tld, manager) VALUES  ('generic', '.aaa', 'American Automobile Association, Inc.'),
+					('generic', '.abarth', NULL),
 
-						('generic', '.aarp', NULL),
+					('generic', '.abb', 'ABB Ltd'),
 
-						('generic', '.abarth', NULL),
+					('generic', '.abbott', 'Abbott Laboratories, Inc.'),
 
-						('generic', '.abb', 'ABB Ltd'),
+					('generic', '.abbvie', 'AbbVie Inc.'),
 
-						('generic', '.abbott', 'Abbott Laboratories, Inc.'),
+					('generic', '.abc', 'Disney Enterprises, Inc.'),
 
-						('generic', '.abbvie', 'AbbVie Inc.'),
+					('generic', '.able', NULL),
 
-						('generic', '.abc', 'Disney Enterprises, Inc.'),
+					('generic', '.abogado', 'Registry Services, LLC'),
 
-						('generic', '.able', NULL),
+					('generic', '.abudhabi', 'Abu Dhabi Systems and Information Centre'),
 
-						('generic', '.abogado', 'Registry Services, LLC'),
+					('country-code', '.ac', 'Internet Computer Bureau Limited'),
 
-						('generic', '.abudhabi', 'Abu Dhabi Systems and Information Centre'),
+					('generic', '.academy', 'Binky Moon, LLC'),
 
-						('country-code', '.ac', 'Internet Computer Bureau Limited'),
+					('generic', '.accenture', 'Accenture plc'),
 
-						('generic', '.academy', 'Binky Moon, LLC'),
+					('generic', '.accountant', 'dot Accountant Limited'),
 
-						('generic', '.accenture', 'Accenture plc'),
+					('generic', '.accountants', 'Binky Moon, LLC'),
 
-						('generic', '.accountant', 'dot Accountant Limited'),
+					('generic', '.aco', 'ACO Severin Ahlmann GmbH & Co. KG'),
 
-						('generic', '.accountants', 'Binky Moon, LLC'),
+					('generic', '.active', NULL),
 
-						('generic', '.aco', 'ACO Severin Ahlmann GmbH & Co. KG'),
+					('generic', '.actor', 'Dog Beach, LLC'),
 
-						('generic', '.active', NULL),
+					('country-code', '.ad', 'Andorra Telecom'),
 
-						('generic', '.actor', 'Dog Beach, LLC'),
+					('generic', '.adac', NULL),
 
-						('country-code', '.ad', 'Andorra Telecom'),
+					('generic', '.ads', 'Charleston Road Registry Inc.'),
 
-						('generic', '.adac', NULL),
+					('generic', '.adult', 'ICM Registry AD LLC'),
 
-						('generic', '.ads', 'Charleston Road Registry Inc.'),
+					('country-code', '.ae', 'Telecommunications and Digital Government Regulatory Authority'),
 
-						('generic', '.adult', 'ICM Registry AD LLC'),
+					 ('country-code', '.am', 'ISOC AM'),
 
-						('country-code', '.ae', 'Telecommunications and Digital Government Regulatory Authority'),
+					 ('country-code', '.americanexpress', 'American Express Travel Related Services Company, Inc.'),
 
-						 ('country-code', '.am', 'ISOC AM'),
+					 ('generic', '.americanfamily', 'AmFam, Inc.'),
 
-						 ('country-code', '.americanexpress', 'American Express Travel Related Services Company, Inc.'),
+					 ('generic', '.amex', 'American Express Travel Related Services Company, Inc.'),
 
-						 ('generic', '.americanfamily', 'AmFam, Inc.'),
+					 ('generic', '.amfam', 'AmFam, Inc.'),
 
-						 ('generic', '.amex', 'American Express Travel Related Services Company, Inc.'),
+					 ('generic', '.amica', 'Amica Mutual Insurance Company'),
 
-						 ('generic', '.amfam', 'AmFam, Inc.'),
+					 ('generic', '.amsterdam', 'Gemeente Amsterdam'),
 
-						 ('generic', '.amica', 'Amica Mutual Insurance Company'),
+					 ('country-code', '.an', 'Netherlands Antilles (Retired TLD)'),
 
-						 ('generic', '.amsterdam', 'Gemeente Amsterdam'),
+					 ('generic', '.analytics', 'Campus IP LLC'),
 
-						 ('country-code', '.an', 'Netherlands Antilles (Retired TLD)'),
+					 ('generic', '.android', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.analytics', 'Campus IP LLC'),
+					 ('generic', '.anquan', 'QIHOO 360 TECHNOLOGY CO. LTD.'),
 
-						 ('generic', '.android', 'Charleston Road Registry Inc.'),
+					 ('country-code', '.ao', 'Faculdade de Engenharia da Universidade Agostinho Neto'),
 
-						 ('generic', '.anquan', 'QIHOO 360 TECHNOLOGY CO. LTD.'),
+					 ('generic', '.aol', 'Oath Inc.'),
 
-						 ('country-code', '.ao', 'Faculdade de Engenharia da Universidade Agostinho Neto'),
+					 ('generic', '.apartments', 'Binky Moon, LLC'),
 
-						 ('generic', '.aol', 'Oath Inc.'),
+					 ('generic', '.app', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.apartments', 'Binky Moon, LLC'),
+					 ('generic', '.apple', 'Apple Inc.'),
 
-						 ('generic', '.app', 'Charleston Road Registry Inc.'),
+					 ('generic', '.aquarelle', 'Aquarelle.com'),
 
-						 ('generic', '.apple', 'Apple Inc.'),
+					 ('generic', '.arab', 'League of Arab States'),
 
-						 ('generic', '.aquarelle', 'Aquarelle.com'),
+					 ('generic', '.aramco', 'Aramco Services Company'),
 
-						 ('generic', '.arab', 'League of Arab States'),
+					 ('generic', '.archi', 'STARTING DOT LIMITED'),
 
-						 ('generic', '.aramco', 'Aramco Services Company'),
+					 ('generic', '.army', 'United TLD Holdco Ltd.'),
 
-						 ('generic', '.archi', 'STARTING DOT LIMITED'),
+					 ('generic', '.arpa', 'Internet Assigned Numbers Authority'),
 
-						 ('generic', '.army', 'United TLD Holdco Ltd.'),
+					 ('generic', '.art', 'UK Creative Ideas Limited'),
 
-						 ('generic', '.arpa', 'Internet Assigned Numbers Authority'),
+					 ('generic', '.arte', 'Association Relative à la Télévision Européenne G.E.I.E.'),
 
-						 ('generic', '.art', 'UK Creative Ideas Limited'),
+					 ('generic', '.asda', 'Wal-Mart Stores, Inc.'),
 
-						 ('generic', '.arte', 'Association Relative à la Télévision Européenne G.E.I.E.'),
+					 ('country-code', '.asia', 'DotAsia Organisation Ltd.'),
 
-						 ('generic', '.asda', 'Wal-Mart Stores, Inc.'),
+					 ('generic', '.associates', 'Binky Moon, LLC'),
 
-						 ('country-code', '.asia', 'DotAsia Organisation Ltd.'),
+					 ('generic', '.athleta', 'The Gap, Inc.'),
 
-						 ('generic', '.associates', 'Binky Moon, LLC'),
+					 ('country-code', '.attorney', 'Dog Beach, LLC'),
 
-						 ('generic', '.athleta', 'The Gap, Inc.'),
+					 ('generic', '.au', 'au Domain Administration (auDA)'),
 
-						 ('country-code', '.attorney', 'Dog Beach, LLC'),
+					 ('generic', '.auction', 'United TLD Holdco Ltd.'),
 
-						 ('generic', '.au', 'au Domain Administration (auDA)'),
+					 ('generic', '.audi', 'AUDI Aktiengesellschaft'),
 
-						 ('generic', '.auction', 'United TLD Holdco Ltd.'),
+					 ('generic', '.audible', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.audi', 'AUDI Aktiengesellschaft'),
+					 ('generic', '.audio', 'Uniregistry, Corp.'),
 
-						 ('generic', '.audible', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.auspost', 'Australian Postal Corporation'),
 
-						 ('generic', '.audio', 'Uniregistry, Corp.'),
+					 ('generic', '.author', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.auspost', 'Australian Postal Corporation'),
+					 ('generic', '.auto', 'Cars Registry Limited'),
 
-						 ('generic', '.author', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.autos', 'DERAutos, LLC'),
 
-						 ('generic', '.auto', 'Cars Registry Limited'),
+					 ('generic', '.avianca', 'Aerovias del Continente Americano S.A. Avianca'),
 
-						 ('generic', '.autos', 'DERAutos, LLC'),
+					 ('generic', '.aw', 'SETAR'),
 
-						 ('generic', '.avianca', 'Aerovias del Continente Americano S.A. Avianca'),
+					 ('generic', '.aws', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.aw', 'SETAR'),
+					 ('generic', '.ax', 'Ålands landskapsregering'),
 
-						 ('generic', '.aws', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.axa', 'AXA Group Operations SAS'),
 
-						 ('generic', '.ax', 'Ålands landskapsregering'),
+					 ('generic', '.az', 'IntraNS'),
 
-						 ('generic', '.axa', 'AXA Group Operations SAS'),
+					 ('generic', '.azure', 'Microsoft Corporation'),
 
-						 ('generic', '.az', 'IntraNS'),
+					('generic', '.baby', 'Johnson & Johnson Services, Inc.'),
 
-						 ('generic', '.azure', 'Microsoft Corporation'),
+					('generic', '.baidu', 'Baidu, Inc.'),
 
-						('generic', '.baby', 'Johnson & Johnson Services, Inc.'),
+					('generic', '.banamex', 'Citigroup Inc.'),
 
-						('generic', '.baidu', 'Baidu, Inc.'),
+					('generic', '.bananarepublic', 'The Gap, Inc.'),
 
-						('generic', '.banamex', 'Citigroup Inc.'),
+					 ('country-code', '.band', 'Binky Moon, LLC'),
 
-						('generic', '.bananarepublic', 'The Gap, Inc.'),
+					 ('generic', '.bank', 'fTLD Registry Services, LLC'),
 
-						 ('country-code', '.band', 'Binky Moon, LLC'),
+					 ('generic', '.bar', 'Punto 2012 Sociedad Anonima Promotora de Inversion de Capital Variable'),
 
-						 ('generic', '.bank', 'fTLD Registry Services, LLC'),
+					 ('generic', '.barcelona', 'Municipi de Barcelona'),
 
-						 ('generic', '.bar', 'Punto 2012 Sociedad Anonima Promotora de Inversion de Capital Variable'),
+					 ('generic', '.barclaycard', 'Barclays Bank PLC'),
 
-						 ('generic', '.barcelona', 'Municipi de Barcelona'),
+					 ('generic', '.barclays', 'Barclays Bank PLC'),
 
-						 ('generic', '.barclaycard', 'Barclays Bank PLC'),
+					 ('generic', '.barefoot', 'Gallo Vineyards, Inc.'),
 
-						 ('generic', '.barclays', 'Barclays Bank PLC'),
+					 ('generic', '.bargains', 'Binky Moon, LLC'),
 
-						 ('generic', '.barefoot', 'Gallo Vineyards, Inc.'),
+					 ('generic', '.baseball', 'MLB Advanced Media DH, LLC'),
 
-						 ('generic', '.bargains', 'Binky Moon, LLC'),
+					 ('generic', '.basketball', 'Fédération Internationale de Basketball (FIBA)'),
 
-						 ('generic', '.baseball', 'MLB Advanced Media DH, LLC'),
+					 ('generic', '.bauhaus', 'Werkhaus GmbH'),
 
-						 ('generic', '.basketball', 'Fédération Internationale de Basketball (FIBA)'),
+					 ('generic', '.bayern', 'Bayern Connect GmbH'),
 
-						 ('generic', '.bauhaus', 'Werkhaus GmbH'),
+					 ('generic', '.bbc', 'British Broadcasting Corporation'),
 
-						 ('generic', '.bayern', 'Bayern Connect GmbH'),
+					 ('generic', '.bbt', 'BB&T Corporation'),
 
-						 ('generic', '.bbc', 'British Broadcasting Corporation'),
+					 ('generic', '.bbva', 'BANCO BILBAO VIZCAYA ARGENTARIA, S.A.'),
 
-						 ('generic', '.bbt', 'BB&T Corporation'),
+					 ('generic', '.bcg', 'The Boston Consulting Group, Inc.'),
 
-						 ('generic', '.bbva', 'BANCO BILBAO VIZCAYA ARGENTARIA, S.A.'),
+					 ('generic', '.bcn', 'Municipi de Barcelona'),
 
-						 ('generic', '.bcg', 'The Boston Consulting Group, Inc.'),
+					 ('generic', '.beats', 'Beats Electronics, LLC'),
 
-						 ('generic', '.bcn', 'Municipi de Barcelona'),
+					 ('generic', '.beauty', 'LOréal'),
 
-						 ('generic', '.beats', 'Beats Electronics, LLC'),
+					 ('generic', '.beer', 'Minds + Machines Group Limited'),
 
-						 ('generic', '.beauty', 'LOréal'),
+					 ('generic', '.bentley', 'Bentley Motors Limited'),
 
-						 ('generic', '.beer', 'Minds + Machines Group Limited'),
+					 ('generic', '.berlin', 'dotBERLIN GmbH & Co. KG'),
 
-						 ('generic', '.bentley', 'Bentley Motors Limited'),
+					 ('generic', '.best', 'BestTLD Pty Ltd'),
 
-						 ('generic', '.berlin', 'dotBERLIN GmbH & Co. KG'),
+					 ('generic', '.bestbuy', 'BBY Solutions, Inc.'),
 
-						 ('generic', '.best', 'BestTLD Pty Ltd'),
+					 ('generic', '.bet', 'Afilias plc'),
 
-						 ('generic', '.bestbuy', 'BBY Solutions, Inc.'),
+					 ('generic', '.bharti', 'Bharti Enterprises (Holding) Private Limited'),
 
-						 ('generic', '.bet', 'Afilias plc'),
+					 ('generic', '.bible', 'American Bible Society'),
 
-						 ('generic', '.bharti', 'Bharti Enterprises (Holding) Private Limited'),
+					 ('generic', '.bid', 'dot Bid Limited'),
 
-						 ('generic', '.bible', 'American Bible Society'),
+					 ('generic', '.bike', 'Binky Moon, LLC'),
 
-						 ('generic', '.bid', 'dot Bid Limited'),
+					 ('generic', '.bing', 'Microsoft Corporation'),
 
-						 ('generic', '.bike', 'Binky Moon, LLC'),
+					 ('generic', '.bingo', 'Binky Moon, LLC'),
 
-						 ('generic', '.bing', 'Microsoft Corporation'),
+					 ('generic', '.bio', 'STARTING DOT LIMITED'),
 
-						 ('generic', '.bingo', 'Binky Moon, LLC'),
+					 ('generic', '.black', 'Afilias plc'),
 
-						 ('generic', '.bio', 'STARTING DOT LIMITED'),
+					 ('generic', '.blackfriday', 'UNR Corp.'),
 
-						 ('generic', '.black', 'Afilias plc'),
+					 ('generic', '.blanco', 'Blanco GmbH + Co KG'),
 
-						 ('generic', '.blackfriday', 'UNR Corp.'),
+					 ('generic', '.blockbuster', 'Dish DBS Corporation'),
 
-						 ('generic', '.blanco', 'Blanco GmbH + Co KG'),
+					 ('generic', '.blog', 'Automattic, Inc.'),
 
-						 ('generic', '.blockbuster', 'Dish DBS Corporation'),
+					 ('generic', '.bloomberg', 'Bloomberg IP Holdings LLC'),
 
-						 ('generic', '.blog', 'Automattic, Inc.'),
+					 ('generic', '.blue', 'Afilias plc'),
 
-						 ('generic', '.bloomberg', 'Bloomberg IP Holdings LLC'),
+					 ('generic', '.bms', 'Bristol-Myers Squibb Company'),
 
-						 ('generic', '.blue', 'Afilias plc'),
+					 ('generic', '.bmw', 'Bayerische Motoren Werke Aktiengesellschaft'),
 
-						 ('generic', '.bms', 'Bristol-Myers Squibb Company'),
+					 ('generic', '.bnl', 'Banca Nazionale del Lavoro'),
 
-						 ('generic', '.bmw', 'Bayerische Motoren Werke Aktiengesellschaft'),
+					 ('generic', '.bnpparibas', 'BNP Paribas'),
 
-						 ('generic', '.bnl', 'Banca Nazionale del Lavoro'),
+					 ('generic', '.boats', 'DERBoats, LLC'),
 
-						 ('generic', '.bnpparibas', 'BNP Paribas'),
+					 ('generic', '.boehringer', 'Boehringer Ingelheim International GmbH'),
 
-						 ('generic', '.boats', 'DERBoats, LLC'),
+					 ('generic', '.bofa', 'NMS Services, Inc.'),
 
-						 ('generic', '.boehringer', 'Boehringer Ingelheim International GmbH'),
+					 ('generic', '.bom', 'Núcleo de Informação e Coordenação do Ponto BR - NIC.br'),
 
-						 ('generic', '.bofa', 'NMS Services, Inc.'),
+					 ('generic', '.bond', 'Bond University Limited'),
 
-						 ('generic', '.bom', 'Núcleo de Informação e Coordenação do Ponto BR - NIC.br'),
+					 ('generic', '.boo', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.bond', 'Bond University Limited'),
+					 ('generic', '.book', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.boo', 'Charleston Road Registry Inc.'),
+					 ('generic', '.booking', 'Booking.com B.V.'),
 
-						 ('generic', '.book', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.bosch', 'Robert Bosch GMBH'),
 
-						 ('generic', '.booking', 'Booking.com B.V.'),
+					 ('generic', '.bostik', 'Bostik SA'),
 
-						 ('generic', '.bosch', 'Robert Bosch GMBH'),
+					 ('generic', '.boston', 'Boston TLD Management, LLC'),
 
-						 ('generic', '.bostik', 'Bostik SA'),
+					 ('generic', '.bot', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.boston', 'Boston TLD Management, LLC'),
+					 ('generic', '.boutique', 'Binky Moon, LLC'),
 
-						 ('generic', '.bot', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.box', 'Intercap Registry Inc.'),
 
-						 ('generic', '.boutique', 'Binky Moon, LLC'),
+					 ('generic', '.br', 'Comite Gestor da Internet no Brasil'),
 
-						 ('generic', '.box', 'Intercap Registry Inc.'),
+					 ('generic', '.bradesco', 'Banco Bradesco S.A.'),
 
-						 ('generic', '.br', 'Comite Gestor da Internet no Brasil'),
+					 ('generic', '.bridgestone', 'Bridgestone Corporation'),
 
-						 ('generic', '.bradesco', 'Banco Bradesco S.A.'),
+					 ('generic', '.broadway', 'Celebrate Broadway, Inc.'),
 
-						 ('generic', '.bridgestone', 'Bridgestone Corporation'),
+					 ('generic', '.broker', 'Dog Beach, LLC'),
 
-						 ('generic', '.broadway', 'Celebrate Broadway, Inc.'),
+					 ('generic', '.brother', 'Brother Industries, Ltd.'),
 
-						 ('generic', '.broker', 'Dog Beach, LLC'),
+					 ('generic', '.brussels', 'DNS.be vzw'),
 
-						 ('generic', '.brother', 'Brother Industries, Ltd.'),
+					 ('generic', '.budapest', 'Minds + Machines Group Limited'),
 
-						 ('generic', '.brussels', 'DNS.be vzw'),
+					 ('generic', '.bugatti', 'Bugatti International SA'),
 
-						 ('generic', '.budapest', 'Minds + Machines Group Limited'),
+					 ('generic', '.build', 'Plan Bee LLC'),
 
-						 ('generic', '.bugatti', 'Bugatti International SA'),
+					 ('generic', '.builders', 'Binky Moon, LLC'),
 
-						 ('generic', '.build', 'Plan Bee LLC'),
+					 ('generic', '.business', 'Binky Moon, LLC'),
 
-						 ('generic', '.builders', 'Binky Moon, LLC'),
+					 ('generic', '.buy', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.business', 'Binky Moon, LLC'),
+					 ('generic', '.buzz', 'DOTSTRATEGY CO.'),
 
-						 ('generic', '.buy', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.bzh', 'Association www.bzh'),
 
-						 ('generic', '.buzz', 'DOTSTRATEGY CO.'),
+					 ('generic', '.ca', 'Canadian Internet Registration Authority (CIRA) Autorité canadienne pour les enregistrements Internet (ACEI)'),
 
-						 ('generic', '.bzh', 'Association www.bzh'),
+					 ('generic', '.cab', 'Binky Moon, LLC'),
 
-						 ('generic', '.ca', 'Canadian Internet Registration Authority (CIRA) Autorité canadienne pour les enregistrements Internet (ACEI)'),
+					 ('generic', '.cafe', 'Binky Moon, LLC'),
 
-						 ('generic', '.cab', 'Binky Moon, LLC'),
+					 ('generic', '.cal', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.cafe', 'Binky Moon, LLC'),
+					 ('generic', '.call', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.cal', 'Charleston Road Registry Inc.'),
+					 ('generic', '.calvinklein', 'PVH gTLD Holdings LLC'),
 
-						 ('generic', '.call', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.cam', 'AC Webconnecting Holding B.V.'),
 
-						 ('generic', '.calvinklein', 'PVH gTLD Holdings LLC'),
+					 ('generic', '.camera', 'Binky Moon, LLC'),
 
-						 ('generic', '.cam', 'AC Webconnecting Holding B.V.'),
+					 ('generic', '.camp', 'Binky Moon, LLC'),
 
-						 ('generic', '.camera', 'Binky Moon, LLC'),
+					 ('generic', '.cancerresearch', 'Australian Cancer Research Foundation'),
 
-						 ('generic', '.camp', 'Binky Moon, LLC'),
+					 ('generic', '.canon', 'Canon Inc.'),
 
-						 ('generic', '.cancerresearch', 'Australian Cancer Research Foundation'),
+					 ('generic', '.capetown', 'ZA Central Registry NPC trading as ZA Central Registry'),
 
-						 ('generic', '.canon', 'Canon Inc.'),
+					 ('generic', '.capital', 'Binky Moon, LLC'),
 
-						 ('generic', '.capetown', 'ZA Central Registry NPC trading as ZA Central Registry'),
+					 ('generic', '.capitalone', 'Capital One Financial Corporation'),
 
-						 ('generic', '.capital', 'Binky Moon, LLC'),
+					 ('generic', '.car', 'Cars Registry Limited'),
 
-						 ('generic', '.capitalone', 'Capital One Financial Corporation'),
+					 ('generic', '.caravan', 'Caravan Club Limited'),
 
-						 ('generic', '.car', 'Cars Registry Limited'),
+					 ('generic', '.cards', 'Binky Moon, LLC'),
 
-						 ('generic', '.caravan', 'Caravan Club Limited'),
+					 ('generic', '.care', 'Binky Moon, LLC'),
 
-						 ('generic', '.cards', 'Binky Moon, LLC'),
+					 ('generic', '.career', 'dotCareer LLC'),
 
-						 ('generic', '.care', 'Binky Moon, LLC'),
+					 ('generic', '.careers', 'Binky Moon, LLC'),
 
-						 ('generic', '.career', 'dotCareer LLC'),
+					 ('generic', '.cars', 'Cars Registry Limited'),
 
-						 ('generic', '.careers', 'Binky Moon, LLC'),
+					 ('generic', '.casa', 'Dog Beach, LLC'),
 
-						 ('generic', '.cars', 'Cars Registry Limited'),
+					 ('generic', '.case', 'CASE Inc.'),
 
-						 ('generic', '.casa', 'Dog Beach, LLC'),
+					 ('generic', '.caseih', 'CNH Industrial N.V.'),
 
-						 ('generic', '.case', 'CASE Inc.'),
+					 ('generic', '.cash', 'Binky Moon, LLC'),
 
-						 ('generic', '.caseih', 'CNH Industrial N.V.'),
+					 ('generic', '.casino', 'Binky Moon, LLC'),
 
-						 ('generic', '.cash', 'Binky Moon, LLC'),
+					 ('generic', '.cat', 'Fundacio puntCAT'),
 
-						 ('generic', '.casino', 'Binky Moon, LLC'),
+					 ('generic', '.catering', 'Binky Moon, LLC'),
 
-						 ('generic', '.cat', 'Fundacio puntCAT'),
+					 ('generic', '.catholic', 'Pontificium Consilium de Comunicationibus Socialibus (PCCS) / Pontifical Council for Social Communication'),
 
-						 ('generic', '.catering', 'Binky Moon, LLC'),
+					 ('generic', '.cba', 'COMMONWEALTH BANK OF AUSTRALIA'),
 
-						 ('generic', '.catholic', 'Pontificium Consilium de Comunicationibus Socialibus (PCCS) / Pontifical Council for Social Communication'),
+					 ('generic', '.cbn', 'The Christian Broadcasting Network, Inc.'),
 
-						 ('generic', '.cba', 'COMMONWEALTH BANK OF AUSTRALIA'),
+					 ('generic', '.cbre', 'CBRE, Inc.'),
 
-						 ('generic', '.cbn', 'The Christian Broadcasting Network, Inc.'),
+					 ('generic', '.cbs', 'CBS Domains Inc.'),
 
-						 ('generic', '.cbre', 'CBRE, Inc.'),
+					 ('generic', '.center', 'Binky Moon, LLC'),
 
-						 ('generic', '.cbs', 'CBS Domains Inc.'),
+					 ('generic', '.ceo', 'CEOTLD Pty Ltd'),
 
-						 ('generic', '.center', 'Binky Moon, LLC'),
+					 ('generic', '.cern', 'European Organization for Nuclear Research ("CERN")'),
 
-						 ('generic', '.ceo', 'CEOTLD Pty Ltd'),
+					 ('generic', '.cfa', 'CFA Institute'),
 
-						 ('generic', '.cern', 'European Organization for Nuclear Research ("CERN")'),
+					 ('generic', '.cfd', 'DOTCFD REGISTRY LTD'),
 
-						 ('generic', '.cfa', 'CFA Institute'),
+					 ('generic', '.ch', 'SWITCH The Swiss Education & Research Network'),
 
-						 ('generic', '.cfd', 'DOTCFD REGISTRY LTD'),
+					 ('generic', '.chanel', 'Chanel International B.V.'),
 
-						 ('generic', '.ch', 'SWITCH The Swiss Education & Research Network'),
+					 ('generic', '.channel', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.chanel', 'Chanel International B.V.'),
+					 ('generic', '.charity', 'Corn Lake, LLC'),
 
-						 ('generic', '.channel', 'Charleston Road Registry Inc.'),
+					 ('generic', '.chase', 'JPMorgan Chase & Co.'),
 
-						 ('generic', '.charity', 'Corn Lake, LLC'),
+					 ('generic', '.chat', 'Binky Moon, LLC'),
 
-						 ('generic', '.chase', 'JPMorgan Chase & Co.'),
+					 ('generic', '.cheap', 'Binky Moon, LLC'),
 
-						 ('generic', '.chat', 'Binky Moon, LLC'),
+					 ('generic', '.chintai', 'CHINTAI Corporation'),
 
-						 ('generic', '.cheap', 'Binky Moon, LLC'),
+					 ('generic', '.christmas', 'Uniregistry, Corp.'),
 
-						 ('generic', '.chintai', 'CHINTAI Corporation'),
+					 ('generic', '.chrome', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.christmas', 'Uniregistry, Corp.'),
+					 ('generic', '.church', 'United TLD Holdco Ltd.'),
 
-						 ('generic', '.chrome', 'Charleston Road Registry Inc.'),
+					 ('generic', '.cipriani', 'Hotel Cipriani Srl'),
 
-						 ('generic', '.church', 'United TLD Holdco Ltd.'),
+					 ('generic', '.circle', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.cipriani', 'Hotel Cipriani Srl'),
+					 ('generic', '.cisco', 'Cisco Technology, Inc.'),
 
-						 ('generic', '.circle', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.citadel', 'Citadel Domain LLC'),
 
-						 ('generic', '.cisco', 'Cisco Technology, Inc.'),
+					 ('generic', '.citi', 'Citigroup Inc.'),
 
-						 ('generic', '.citadel', 'Citadel Domain LLC'),
+					 ('generic', '.citic', 'CITIC Group Corporation'),
 
-						 ('generic', '.citi', 'Citigroup Inc.'),
+					 ('generic', '.city', 'Binky Moon, LLC'),
 
-						 ('generic', '.citic', 'CITIC Group Corporation'),
+					 ('generic', '.cityeats', 'Lifestyle Domain Holdings, Inc.'),
 
-						 ('generic', '.city', 'Binky Moon, LLC'),
+					 ('generic', '.ck', 'Telecom Cook Islands Ltd.'),
 
-						 ('generic', '.cityeats', 'Lifestyle Domain Holdings, Inc.'),
+					 ('generic', '.claims', 'Binky Moon, LLC'),
 
-						 ('generic', '.ck', 'Telecom Cook Islands Ltd.'),
+					 ('generic', '.cleaning', 'Binky Moon, LLC'),
 
-						 ('generic', '.claims', 'Binky Moon, LLC'),
+					 ('generic', '.click', 'Uniregistry, Corp.'),
 
-						 ('generic', '.cleaning', 'Binky Moon, LLC'),
+					 ('generic', '.clinic', 'Binky Moon, LLC'),
 
-						 ('generic', '.click', 'Uniregistry, Corp.'),
+					 ('generic', '.clinique', 'The Estée Lauder Companies Inc.'),
 
-						 ('generic', '.clinic', 'Binky Moon, LLC'),
+					 ('generic', '.clothing', 'Binky Moon, LLC'),
 
-						 ('generic', '.clinique', 'The Estée Lauder Companies Inc.'),
+					 ('generic', '.cloud', 'ARUBA PEC S.p.A.'),
 
-						 ('generic', '.clothing', 'Binky Moon, LLC'),
+					 ('generic', '.club', '.CLUB DOMAINS, LLC'),
 
-						 ('generic', '.cloud', 'ARUBA PEC S.p.A.'),
+					 ('generic', '.clubmed', 'Club Méditerranée S.A.'),
 
-						 ('generic', '.club', '.CLUB DOMAINS, LLC'),
+					 ('generic', '.cm', 'Cameroon Telecommunications (CAMTEL)'),
 
-						 ('generic', '.clubmed', 'Club Méditerranée S.A.'),
+					 ('generic', '.cn', 'China Internet Network Information Center (CNNIC)'),
 
-						 ('generic', '.cm', 'Cameroon Telecommunications (CAMTEL)'),
+					 ('generic', '.co', '.CO Internet S.A.S.'),
 
-						 ('generic', '.cn', 'China Internet Network Information Center (CNNIC)'),
+					 ('generic', '.coach', 'Koko Island, LLC'),
 
-						 ('generic', '.co', '.CO Internet S.A.S.'),
+					 ('generic', '.codes', 'Binky Moon, LLC'),
 
-						 ('generic', '.coach', 'Koko Island, LLC'),
+					 ('generic', '.coffee', 'Binky Moon, LLC'),
 
-						 ('generic', '.codes', 'Binky Moon, LLC'),
+					 ('generic', '.college', 'XYZ.COM LLC'),
 
-						 ('generic', '.coffee', 'Binky Moon, LLC'),
+					 ('generic', '.cologne', 'NetCologne Gesellschaft für Telekommunikation mbH'),
 
-						 ('generic', '.college', 'XYZ.COM LLC'),
+					 ('generic', '.com', 'VeriSign Global Registry Services'),
 
-						 ('generic', '.cologne', 'NetCologne Gesellschaft für Telekommunikation mbH'),
+					 ('generic', '.comcast', 'Comcast IP Holdings I, LLC'),
 
-						 ('generic', '.com', 'VeriSign Global Registry Services'),
+					 ('generic', '.commbank', 'COMMONWEALTH BANK OF AUSTRALIA'),
 
-						 ('generic', '.comcast', 'Comcast IP Holdings I, LLC'),
+					 ('generic', '.community', 'Binky Moon, LLC'),
 
-						 ('generic', '.commbank', 'COMMONWEALTH BANK OF AUSTRALIA'),
+					 ('generic', '.company', 'Binky Moon, LLC'),
 
-						 ('generic', '.community', 'Binky Moon, LLC'),
+					 ('generic', '.compare', 'iSelect Ltd'),
 
-						 ('generic', '.company', 'Binky Moon, LLC'),
+					 ('generic', '.computer', 'Binky Moon, LLC'),
 
-						 ('generic', '.compare', 'iSelect Ltd'),
+					 ('generic', '.comsec', 'VeriSign, Inc.'),
 
-						 ('generic', '.computer', 'Binky Moon, LLC'),
+					 ('generic', '.condos', 'Binky Moon, LLC'),
 
-						 ('generic', '.comsec', 'VeriSign, Inc.'),
+					 ('generic', '.construction', 'Binky Moon, LLC'),
 
-						 ('generic', '.condos', 'Binky Moon, LLC'),
+					 ('generic', '.consulting', 'United TLD Holdco, LTD.'),
 
-						 ('generic', '.construction', 'Binky Moon, LLC'),
+					 ('generic', '.contact', 'Top Level Spectrum, Inc.'),
 
-						 ('generic', '.consulting', 'United TLD Holdco, LTD.'),
+					 ('generic', '.contractors', 'Binky Moon, LLC'),
 
-						 ('generic', '.contact', 'Top Level Spectrum, Inc.'),
+					 ('generic', '.cooking', 'Top Level Domain Holdings Limited'),
 
-						 ('generic', '.contractors', 'Binky Moon, LLC'),
+					 ('generic', '.cookingchannel', 'Lifestyle Domain Holdings, Inc.'),
 
-						 ('generic', '.cooking', 'Top Level Domain Holdings Limited'),
+					 ('generic', '.cool', 'Binky Moon, LLC'),
 
-						 ('generic', '.cookingchannel', 'Lifestyle Domain Holdings, Inc.'),
+					 ('generic', '.coop', 'DotCooperation LLC'),
 
-						 ('generic', '.cool', 'Binky Moon, LLC'),
+					 ('generic', '.corsica', 'Collectivité de Corse - Direction du Système Information'),
 
-						 ('generic', '.coop', 'DotCooperation LLC'),
+					 ('generic', '.country', 'Top Level Domain Holdings Limited'),
 
-						 ('generic', '.corsica', 'Collectivité de Corse - Direction du Système Information'),
+					 ('generic', '.coupon', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.country', 'Top Level Domain Holdings Limited'),
+					 ('generic', '.coupons', 'Binky Moon, LLC'),
 
-						 ('generic', '.coupon', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.courses', 'Open Universities Australia Pty Ltd'),
 
-						 ('generic', '.coupons', 'Binky Moon, LLC'),
+					 ('generic', '.credit', 'Binky Moon, LLC'),
 
-						 ('generic', '.courses', 'Open Universities Australia Pty Ltd'),
+					 ('generic', '.creditcard', 'Binky Moon, LLC'),
 
-						 ('generic', '.credit', 'Binky Moon, LLC'),
+					 ('generic', '.creditunion', 'CUNA Performance Resources, LLC'),
 
-						 ('generic', '.creditcard', 'Binky Moon, LLC'),
+					 ('generic', '.cricket', 'dot Cricket Limited'),
 
-						 ('generic', '.creditunion', 'CUNA Performance Resources, LLC'),
+					 ('generic', '.crown', 'Crown Equipment Corporation'),
 
-						 ('generic', '.cricket', 'dot Cricket Limited'),
+					 ('generic', '.crs', 'Federated Co-operatives Limited'),
 
-						 ('generic', '.crown', 'Crown Equipment Corporation'),
+					 ('generic', '.cruise', 'Binky Moon, LLC'),
 
-						 ('generic', '.crs', 'Federated Co-operatives Limited'),
+					 ('generic', '.cruises', 'Binky Moon, LLC'),
 
-						 ('generic', '.cruise', 'Binky Moon, LLC'),
+					 ('generic', '.csc', 'Alliance-One Services, Inc.'),
 
-						 ('generic', '.cruises', 'Binky Moon, LLC'),
+					 ('generic', '.cuisinella', 'SALM S.A.S.'),
 
-						 ('generic', '.csc', 'Alliance-One Services, Inc.'),
+					 ('generic', '.cx', 'Christmas Island Domain Administration Limited'),
 
-						 ('generic', '.cuisinella', 'SALM S.A.S.'),
+					 ('generic', '.cymru', 'Nominet UK'),
 
-						 ('generic', '.cx', 'Christmas Island Domain Administration Limited'),
+					 ('generic', '.cyou', 'Shortdot SA'),
 
-						 ('generic', '.cymru', 'Nominet UK'),
+					 ('generic', '.cz', 'CZ.NIC, z.s.p.o.'),
 
-						 ('generic', '.cyou', 'Shortdot SA'),
+					 ('generic', '.dabur', 'Dabur India Limited'),
 
-						 ('generic', '.cz', 'CZ.NIC, z.s.p.o.'),
+					 ('generic', '.dad', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.dabur', 'Dabur India Limited'),
+					 ('generic', '.dance', 'United TLD Holdco Ltd.'),
 
-						 ('generic', '.dad', 'Charleston Road Registry Inc.'),
+					 ('generic', '.data', 'Dish DBS Corporation'),
 
-						 ('generic', '.dance', 'United TLD Holdco Ltd.'),
+					 ('generic', '.date', 'dot Date Limited'),
 
-						 ('generic', '.data', 'Dish DBS Corporation'),
+					 ('generic', '.dating', 'Dog Beach, LLC'),
 
-						 ('generic', '.date', 'dot Date Limited'),
+					 ('generic', '.datsun', 'NISSAN MOTOR CO., LTD.'),
 
-						 ('generic', '.dating', 'Dog Beach, LLC'),
+					 ('generic', '.day', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.datsun', 'NISSAN MOTOR CO., LTD.'),
+					 ('generic', '.dclk', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.day', 'Charleston Road Registry Inc.'),
+					 ('generic', '.dds', 'Dog Beach, LLC'),
 
-						 ('generic', '.dclk', 'Charleston Road Registry Inc.'),
+					 ('generic', '.deal', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.dds', 'Dog Beach, LLC'),
+					 ('generic', '.dealer', 'Dealer Dot Com, Inc.'),
 
-						 ('generic', '.deal', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.deals', 'Binky Moon, LLC'),
 
-						 ('generic', '.dealer', 'Dealer Dot Com, Inc.'),
+					 ('generic', '.degree', 'United TLD Holdco, Ltd'),
 
-						 ('generic', '.deals', 'Binky Moon, LLC'),
+					 ('generic', '.delivery', 'Binky Moon, LLC'),
 
-						 ('generic', '.degree', 'United TLD Holdco, Ltd'),
+					 ('generic', '.dell', 'Dell Inc.'),
 
-						 ('generic', '.delivery', 'Binky Moon, LLC'),
+					 ('generic', '.deloitte', 'Deloitte Touche Tohmatsu'),
 
-						 ('generic', '.dell', 'Dell Inc.'),
+					 ('generic', '.delta', 'Delta Air Lines, Inc.'),
 
-						 ('generic', '.deloitte', 'Deloitte Touche Tohmatsu'),
+					 ('generic', '.democrat', 'United TLD Holdco, Ltd'),
 
-						 ('generic', '.delta', 'Delta Air Lines, Inc.'),
+					 ('generic', '.dental', 'United TLD Holdco, Ltd'),
 
-						 ('generic', '.democrat', 'United TLD Holdco, Ltd'),
+					 ('generic', '.dentist', 'United TLD Holdco, Ltd'),
 
-						 ('generic', '.dental', 'United TLD Holdco, Ltd'),
+					 ('generic', '.desi', 'Desi Networks LLC'),
 
-						 ('generic', '.dentist', 'United TLD Holdco, Ltd'),
+					 ('generic', '.design', 'Top Level Design, LLC'),
 
-						 ('generic', '.desi', 'Desi Networks LLC'),
+					 ('generic', '.dev', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.design', 'Top Level Design, LLC'),
+					 ('generic', '.dhl', 'Deutsche Post AG'),
 
-						 ('generic', '.dev', 'Charleston Road Registry Inc.'),
+					 ('generic', '.diamonds', 'Binky Moon, LLC'),
 
-						 ('generic', '.dhl', 'Deutsche Post AG'),
+					 ('generic', '.diet', 'Uniregistry, Corp.'),
 
-						 ('generic', '.diamonds', 'Binky Moon, LLC'),
+					 ('generic', '.digital', 'Binky Moon, LLC'),
 
-						 ('generic', '.diet', 'Uniregistry, Corp.'),
+					 ('generic', '.direct', 'Binky Moon, LLC'),
 
-						 ('generic', '.digital', 'Binky Moon, LLC'),
+					 ('generic', '.directory', 'Binky Moon, LLC'),
 
-						 ('generic', '.direct', 'Binky Moon, LLC'),
+					 ('generic', '.discount', 'Binky Moon, LLC'),
 
-						 ('generic', '.directory', 'Binky Moon, LLC'),
+					 ('generic', '.discover', 'Discover Financial Services'),
 
-						 ('generic', '.discount', 'Binky Moon, LLC'),
+					 ('generic', '.dish', 'Dish DBS Corporation'),
 
-						 ('generic', '.discover', 'Discover Financial Services'),
+					 ('generic', '.diy', 'Lifestyle Domain Holdings, Inc.'),
 
-						 ('generic', '.dish', 'Dish DBS Corporation'),
+					 ('generic', '.dj', 'Djibouti Telecom SA'),
 
-						 ('generic', '.diy', 'Lifestyle Domain Holdings, Inc.'),
+					 ('generic', '.dk', 'Dansk Internet Forum'),
 
-						 ('generic', '.dj', 'Djibouti Telecom SA'),
+					 ('generic', '.dm', 'DotDM Corporation'),
 
-						 ('generic', '.dk', 'Dansk Internet Forum'),
+					 ('generic', '.dnp', 'Dai Nippon Printing Co., Ltd.'),
 
-						 ('generic', '.dm', 'DotDM Corporation'),
+					 ('generic', '.do', 'Pontificia Universidad Católica Madre y MaestraRecinto Santo Tomás de Aquino'),
 
-						 ('generic', '.dnp', 'Dai Nippon Printing Co., Ltd.'),
+					 ('generic', '.docs', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.do', 'Pontificia Universidad Católica Madre y MaestraRecinto Santo Tomás de Aquino'),
+					 ('generic', '.doctor', 'Brice Trail, LLC'),
 
-						 ('generic', '.docs', 'Charleston Road Registry Inc.'),
+					 ('generic', '.dodge', 'FCA US LLC.'),
 
-						 ('generic', '.doctor', 'Brice Trail, LLC'),
+					 ('generic', '.dog', 'Binky Moon, LLC'),
 
-						 ('generic', '.dodge', 'FCA US LLC.'),
+					 ('generic', '.doha', 'Communications Regulatory Authority'),
 
-						 ('generic', '.dog', 'Binky Moon, LLC'),
+					 ('generic', '.domains', 'Binky Moon, LLC'),
 
-						 ('generic', '.doha', 'Communications Regulatory Authority'),
+					 ('generic', '.doosan', 'Doosan Corporation'),
 
-						 ('generic', '.domains', 'Binky Moon, LLC'),
+					 ('generic', '.dot', 'Dish DBS Corporation'),
 
-						 ('generic', '.doosan', 'Doosan Corporation'),
+					 ('generic', '.download', 'dot Support Limited'),
 
-						 ('generic', '.dot', 'Dish DBS Corporation'),
+					 ('generic', '.drive', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.download', 'dot Support Limited'),
+					 ('generic', '.dtv', 'Dish DBS Corporation'),
 
-						 ('generic', '.drive', 'Charleston Road Registry Inc.'),
+					 ('generic', '.dubai', 'Dubai Multi Commodities Centre Authority (DMCC)'),
 
-						 ('generic', '.dtv', 'Dish DBS Corporation'),
+					 ('generic', '.duck', 'Johnson Shareholdings, Inc.'),
 
-						 ('generic', '.dubai', 'Dubai Multi Commodities Centre Authority (DMCC)'),
+					 ('generic', '.dunlop', 'The Goodyear Tire & Rubber Company'),
 
-						 ('generic', '.duck', 'Johnson Shareholdings, Inc.'),
+					 ('generic', '.duns', 'The Dun & Bradstreet Corporation'),
 
-						 ('generic', '.dunlop', 'The Goodyear Tire & Rubber Company'),
+					 ('generic', '.dupont', 'E. I. du Pont de Nemours and Company'),
 
-						 ('generic', '.duns', 'The Dun & Bradstreet Corporation'),
+					 ('generic', '.durban', 'ZA Central Registry NPC trading as ZA Central Registry'),
 
-						 ('generic', '.dupont', 'E. I. du Pont de Nemours and Company'),
+					 ('generic', '.dvag', 'Deutsche Vermögensberatung Aktiengesellschaft DVAG'),
 
-						 ('generic', '.durban', 'ZA Central Registry NPC trading as ZA Central Registry'),
+					 ('generic', '.dvr', 'Dish DBS Corporation'),
 
-						 ('generic', '.dvag', 'Deutsche Vermögensberatung Aktiengesellschaft DVAG'),
+					 ('generic', '.dz', 'CERIST'),
 
-						 ('generic', '.dvr', 'Dish DBS Corporation'),
+					 ('generic', '.earth', 'Interlink Co., Ltd.'),
 
-						 ('generic', '.dz', 'CERIST'),
+					 ('generic', '.eat', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.earth', 'Interlink Co., Ltd.'),
+					 ('generic', '.eco', 'Big Room Inc.'),
 
-						 ('generic', '.eat', 'Charleston Road Registry Inc.'),
+					 ('generic', '.edeka', 'EDEKA Verband kaufmännischer Genossenschaften e.V.'),
 
-						 ('generic', '.eco', 'Big Room Inc.'),
+					 ('generic', '.edu', 'Educause'),
 
-						 ('generic', '.edeka', 'EDEKA Verband kaufmännischer Genossenschaften e.V.'),
+					 ('generic', '.education', 'Binky Moon, LLC'),
 
-						 ('generic', '.edu', 'Educause'),
+					 ('generic', '.email', 'Binky Moon, LLC'),
 
-						 ('generic', '.education', 'Binky Moon, LLC'),
+					 ('generic', '.emerck', 'Merck KGaA'),
 
-						 ('generic', '.email', 'Binky Moon, LLC'),
+					 ('generic', '.energy', 'Binky Moon, LLC'),
 
-						 ('generic', '.emerck', 'Merck KGaA'),
+					 ('generic', '.engineer', 'Binky Moon, LLC'),
 
-						 ('generic', '.energy', 'Binky Moon, LLC'),
+					 ('generic', '.engineering', 'Binky Moon, LLC'),
 
-						 ('generic', '.engineer', 'Binky Moon, LLC'),
+					 ('generic', '.enterprises', 'Binky Moon, LLC'),
 
-						 ('generic', '.engineering', 'Binky Moon, LLC'),
+					 ('generic', '.epson', 'Seiko Epson Corporation'),
 
-						 ('generic', '.enterprises', 'Binky Moon, LLC'),
+					 ('generic', '.equipment', 'Binky Moon, LLC'),
 
-						 ('generic', '.epson', 'Seiko Epson Corporation'),
+					 ('generic', '.ericsson', 'Telefonaktiebolaget L M Ericsson'),
 
-						 ('generic', '.equipment', 'Binky Moon, LLC'),
+					 ('generic', '.erni', 'Ernst & Young GmbH Wirtschaftsprüfungsgesellschaft'),
 
-						 ('generic', '.ericsson', 'Telefonaktiebolaget L M Ericsson'),
+					 ('generic', '.es', 'Red.es'),
 
-						 ('generic', '.erni', 'Ernst & Young GmbH Wirtschaftsprüfungsgesellschaft'),
+					 ('generic', '.esq', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.es', 'Red.es'),
+					 ('generic', '.estate', 'Binky Moon, LLC'),
 
-						 ('generic', '.esq', 'Charleston Road Registry Inc.'),
+					 ('generic', '.esurance', 'Esurance Insurance Company'),
 
-						 ('generic', '.estate', 'Binky Moon, LLC'),
+					 ('generic', '.etisalat', 'Emirates Telecommunications Corporation ("Etisalat")'),
 
-						 ('generic', '.esurance', 'Esurance Insurance Company'),
+					 ('generic', '.eu', 'EURid vzw/asbl'),
 
-						 ('generic', '.etisalat', 'Emirates Telecommunications Corporation ("Etisalat")'),
+					 ('generic', '.eurovision', 'European Broadcasting Union (EBU)'),
 
-						 ('generic', '.eu', 'EURid vzw/asbl'),
+					 ('generic', '.eus', 'PuntuEUS Fundazioa'),
 
-						 ('generic', '.eurovision', 'European Broadcasting Union (EBU)'),
+					 ('generic', '.events', 'Binky Moon, LLC'),
 
-						 ('generic', '.eus', 'PuntuEUS Fundazioa'),
+					 ('generic', '.exchange', 'Binky Moon, LLC'),
 
-						 ('generic', '.events', 'Binky Moon, LLC'),
+					 ('generic', '.expert', 'Binky Moon, LLC'),
 
-						 ('generic', '.exchange', 'Binky Moon, LLC'),
+					 ('generic', '.exposed', 'Binky Moon, LLC'),
 
-						 ('generic', '.expert', 'Binky Moon, LLC'),
+					 ('generic', '.express', 'Binky Moon, LLC'),
 
-						 ('generic', '.exposed', 'Binky Moon, LLC'),
+					 ('generic', '.extraspace', 'Extra Space Storage LLC'),
 
-						 ('generic', '.express', 'Binky Moon, LLC'),
+					 ('generic', '.fage', 'Fage International S.A.'),
 
-						 ('generic', '.extraspace', 'Extra Space Storage LLC'),
+					 ('generic', '.fail', 'Binky Moon, LLC'),
 
-						 ('generic', '.fage', 'Fage International S.A.'),
+					 ('generic', '.fairwinds', 'FairWinds Partners, LLC'),
 
-						 ('generic', '.fail', 'Binky Moon, LLC'),
+					 ('generic', '.faith', 'dot Faith Limited'),
 
-						 ('generic', '.fairwinds', 'FairWinds Partners, LLC'),
+					 ('generic', '.family', 'Dog Beach, LLC'),
 
-						 ('generic', '.faith', 'dot Faith Limited'),
+					 ('generic', '.fan', 'Dog Beach, LLC'),
 
-						 ('generic', '.family', 'Dog Beach, LLC'),
+					 ('generic', '.fans', 'Asiamix Digital Limited'),
 
-						 ('generic', '.fan', 'Dog Beach, LLC'),
+					 ('generic', '.farm', 'Binky Moon, LLC'),
 
-						 ('generic', '.fans', 'Asiamix Digital Limited'),
+					 ('generic', '.farmers', 'Farmers Insurance Exchange'),
 
-						 ('generic', '.farm', 'Binky Moon, LLC'),
+					 ('generic', '.fashion', 'Dog Beach, LLC'),
 
-						 ('generic', '.farmers', 'Farmers Insurance Exchange'),
+					 ('generic', '.fast', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.fashion', 'Dog Beach, LLC'),
+					 ('generic', '.fedex', 'Federal Express Corporation'),
 
-						 ('generic', '.fast', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.feedback', 'Top Level Spectrum, Inc.'),
 
-						 ('generic', '.fedex', 'Federal Express Corporation'),
+					 ('generic', '.ferrari', 'Fiat Chrysler Automobiles N.V.'),
 
-						 ('generic', '.feedback', 'Top Level Spectrum, Inc.'),
+					 ('generic', '.ferrero', 'Ferrero Trading Lux S.A.'),
 
-						 ('generic', '.ferrari', 'Fiat Chrysler Automobiles N.V.'),
+					 ('generic', '.fi', 'Finnish Transport and Communications Agency (Traficom)'),
 
-						 ('generic', '.ferrero', 'Ferrero Trading Lux S.A.'),
+					 ('generic', '.fiat', 'Fiat Chrysler Automobiles N.V.'),
 
-						 ('generic', '.fi', 'Finnish Transport and Communications Agency (Traficom)'),
+					 ('generic', '.fidelity', 'Fidelity Brokerage Services LLC'),
 
-						 ('generic', '.fiat', 'Fiat Chrysler Automobiles N.V.'),
+					 ('generic', '.fido', 'Rogers Communications Canada Inc.'),
 
-						 ('generic', '.fidelity', 'Fidelity Brokerage Services LLC'),
+					 ('generic', '.film', 'Motion Picture Domain Registry Pty Ltd'),
 
-						 ('generic', '.fido', 'Rogers Communications Canada Inc.'),
+					 ('generic', '.final', 'Núcleo de Informação e Coordenação do Ponto BR - NIC.br'),
 
-						 ('generic', '.film', 'Motion Picture Domain Registry Pty Ltd'),
+					 ('generic', '.finance', 'Binky Moon, LLC'),
 
-						 ('generic', '.final', 'Núcleo de Informação e Coordenação do Ponto BR - NIC.br'),
+					 ('generic', '.financial', 'Binky Moon, LLC'),
 
-						 ('generic', '.finance', 'Binky Moon, LLC'),
+					 ('generic', '.fire', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.financial', 'Binky Moon, LLC'),
+					 ('generic', '.firestone', 'Bridgestone Corporation'),
 
-						 ('generic', '.fire', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.firmdale', 'Firmdale Holdings Limited'),
 
-						 ('generic', '.firestone', 'Bridgestone Corporation'),
+					 ('generic', '.fish', 'Binky Moon, LLC'),
 
-						 ('generic', '.firmdale', 'Firmdale Holdings Limited'),
+					 ('generic', '.fishing', 'Top Level Domain Holdings Limited'),
 
-						 ('generic', '.fish', 'Binky Moon, LLC'),
+					 ('generic', '.fit', 'Minds + Machines Group Limited'),
 
-						 ('generic', '.fishing', 'Top Level Domain Holdings Limited'),
+					 ('generic', '.fitness', 'Binky Moon, LLC'),
 
-						 ('generic', '.fit', 'Minds + Machines Group Limited'),
+					 ('generic', '.fj', 'University of the South Pacific'),
 
-						 ('generic', '.fitness', 'Binky Moon, LLC'),
+					 ('generic', '.fk', 'Falkland Islands Government'),
 
-						 ('generic', '.fj', 'University of the South Pacific'),
+					 ('generic', '.flickr', 'Yahoo Assets LLC'),
 
-						 ('generic', '.fk', 'Falkland Islands Government'),
+					 ('generic', '.flights', 'Binky Moon, LLC'),
 
-						 ('generic', '.flickr', 'Yahoo Assets LLC'),
+					 ('generic', '.flir', 'FLIR Systems, Inc.'),
 
-						 ('generic', '.flights', 'Binky Moon, LLC'),
+					 ('generic', '.florist', 'Binky Moon, LLC'),
 
-						 ('generic', '.flir', 'FLIR Systems, Inc.'),
+					 ('generic', '.flowers', 'Uniregistry, Corp.'),
 
-						 ('generic', '.florist', 'Binky Moon, LLC'),
+					 ('generic', '.fly', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.flowers', 'Uniregistry, Corp.'),
+					 ('generic', '.fm', 'FSM Telecommunications Corporation'),
 
-						 ('generic', '.fly', 'Charleston Road Registry Inc.'),
+					 ('generic', '.fo', 'Føroya Tele P/F'),
 
-						 ('generic', '.fm', 'FSM Telecommunications Corporation'),
+					 ('generic', '.foo', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.fo', 'Føroya Tele P/F'),
+					 ('generic', '.food', 'Lifestyle Domain Holdings, Inc.'),
 
-						 ('generic', '.foo', 'Charleston Road Registry Inc.'),
+					 ('generic', '.foodnetwork', 'Lifestyle Domain Holdings, Inc.'),
 
-						 ('generic', '.food', 'Lifestyle Domain Holdings, Inc.'),
+					 ('generic', '.football', 'Binky Moon, LLC'),
 
-						 ('generic', '.foodnetwork', 'Lifestyle Domain Holdings, Inc.'),
+					 ('generic', '.ford', 'Ford Motor Company'),
 
-						 ('generic', '.football', 'Binky Moon, LLC'),
+					 ('generic', '.forex', 'Dotforex Registry Limited'),
 
-						 ('generic', '.ford', 'Ford Motor Company'),
+					 ('generic', '.forsale', 'Binky Moon, LLC'),
 
-						 ('generic', '.forex', 'Dotforex Registry Limited'),
+					 ('generic', '.forum', 'Fegistry, LLC'),
 
-						 ('generic', '.forsale', 'Binky Moon, LLC'),
+					 ('generic', '.foundation', 'Binky Moon, LLC'),
 
-						 ('generic', '.forum', 'Fegistry, LLC'),
+					 ('generic', '.fox', 'FOX Registry, LLC'),
 
-						 ('generic', '.foundation', 'Binky Moon, LLC'),
+					 ('generic', '.fr', 'Association Française pour le Nommage Internet en Coopération (A.F.N.I.C.)'),
 
-						 ('generic', '.fox', 'FOX Registry, LLC'),
+					 ('generic', '.free', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.fr', 'Association Française pour le Nommage Internet en Coopération (A.F.N.I.C.)'),
+					 ('generic', '.fresenius', 'Fresenius Immobilien-Verwaltungs-GmbH'),
 
-						 ('generic', '.free', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.frl', 'FRLregistry B.V.'),
 
-						 ('generic', '.fresenius', 'Fresenius Immobilien-Verwaltungs-GmbH'),
+					 ('generic', '.frogans', 'OP3FT'),
 
-						 ('generic', '.frl', 'FRLregistry B.V.'),
+					 ('generic', '.frontdoor', 'Lifestyle Domain Holdings, Inc.'),
 
-						 ('generic', '.frogans', 'OP3FT'),
+					 ('generic', '.frontier', 'Frontier Communications Corporation'),
 
-						 ('generic', '.frontdoor', 'Lifestyle Domain Holdings, Inc.'),
+					 ('generic', '.ftr', 'Frontier Communications Corporation'),
 
-						 ('generic', '.frontier', 'Frontier Communications Corporation'),
+					 ('generic', '.fujitsu', 'Fujitsu Limited'),
 
-						 ('generic', '.ftr', 'Frontier Communications Corporation'),
+					 ('generic', '.fujixerox', 'Xerox DNHC LLC'),
 
-						 ('generic', '.fujitsu', 'Fujitsu Limited'),
+					 ('generic', '.fun', 'DotSpace, Inc.'),
 
-						 ('generic', '.fujixerox', 'Xerox DNHC LLC'),
+					 ('generic', '.fund', 'Binky Moon, LLC'),
 
-						 ('generic', '.fun', 'DotSpace, Inc.'),
+					 ('generic', '.furniture', 'Binky Moon, LLC'),
 
-						 ('generic', '.fund', 'Binky Moon, LLC'),
+					 ('generic', '.futbol', 'Binky Moon, LLC'),
 
-						 ('generic', '.furniture', 'Binky Moon, LLC'),
+					 ('generic', '.fyi', 'Binky Moon, LLC'),
 
-						 ('generic', '.futbol', 'Binky Moon, LLC'),
+					 ('generic', '.ga', 'Agence des Technologies de l’Information et de la Communication (AGETIC)'),
 
-						 ('generic', '.fyi', 'Binky Moon, LLC'),
+					 ('generic', '.gal', 'Asociación puntoGAL'),
 
-						 ('generic', '.ga', 'Agence des Technologies de l’Information et de la Communication (AGETIC)'),
+					 ('generic', '.gallery', 'Binky Moon, LLC'),
 
-						 ('generic', '.gal', 'Asociación puntoGAL'),
+					 ('generic', '.gallo', 'Gallo Vineyards, Inc.'),
 
-						 ('generic', '.gallery', 'Binky Moon, LLC'),
+					 ('generic', '.gallup', 'Gallup, Inc.'),
 
-						 ('generic', '.gallo', 'Gallo Vineyards, Inc.'),
+					 ('generic', '.game', 'Uniregistry, Corp.'),
 
-						 ('generic', '.gallup', 'Gallup, Inc.'),
+					 ('generic', '.games', 'United TLD Holdco Ltd.'),
 
-						 ('generic', '.game', 'Uniregistry, Corp.'),
+					 ('generic', '.gap', 'The Gap, Inc.'),
 
-						 ('generic', '.games', 'United TLD Holdco Ltd.'),
+					 ('generic', '.garden', 'Binky Moon, LLC'),
 
-						 ('generic', '.gap', 'The Gap, Inc.'),
+					 ('generic', '.gay', 'Top Level Design, LLC'),
 
-						 ('generic', '.garden', 'Binky Moon, LLC'),
+					 ('generic', '.gb', 'Reserved Domain - IANA'),
 
-						 ('generic', '.gay', 'Top Level Design, LLC'),
+					 ('generic', '.gbiz', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.gb', 'Reserved Domain - IANA'),
+					 ('generic', '.gd', 'The National Telecommunications Regulatory Commission (NTRC)'),
 
-						 ('generic', '.gbiz', 'Charleston Road Registry Inc.'),
+					 ('generic', '.gdn', 'Joint Stock Company "Navigation-information systems"'),
 
-						 ('generic', '.gd', 'The National Telecommunications Regulatory Commission (NTRC)'),
+					 ('generic', '.ge', 'Caucasus Online'),
 
-						 ('generic', '.gdn', 'Joint Stock Company "Navigation-information systems"'),
+					 ('generic', '.gea', 'Géant Association'),
 
-						 ('generic', '.ge', 'Caucasus Online'),
+					 ('generic', '.gent', 'Combell NV'),
 
-						 ('generic', '.gea', 'Géant Association'),
+					 ('generic', '.genting', 'Resorts World Inc. Pte. Ltd.'),
 
-						 ('generic', '.gent', 'Combell NV'),
+					 ('generic', '.george', 'Wal-Mart Stores, Inc.'),
 
-						 ('generic', '.genting', 'Resorts World Inc. Pte. Ltd.'),
+					 ('generic', '.gf', 'Net Plus'),
 
-						 ('generic', '.george', 'Wal-Mart Stores, Inc.'),
+					 ('generic', '.gg', 'Island Networks Ltd.'),
 
-						 ('generic', '.gf', 'Net Plus'),
+					 ('generic', '.ggee', 'GMO Internet, Inc.'),
 
-						 ('generic', '.gg', 'Island Networks Ltd.'),
+					 ('generic', '.gh', 'Network Computer Systems Ltd.'),
 
-						 ('generic', '.ggee', 'GMO Internet, Inc.'),
+					 ('generic', '.gi', 'Sapphire Networks'),
 
-						 ('generic', '.gh', 'Network Computer Systems Ltd.'),
+					 ('generic', '.gift', 'Uniregistry, Corp.'),
 
-						 ('generic', '.gi', 'Sapphire Networks'),
+					 ('generic', '.gifts', 'Binky Moon, LLC'),
 
-						 ('generic', '.gift', 'Uniregistry, Corp.'),
+					 ('generic', '.gives', 'Dog Beach, LLC'),
 
-						 ('generic', '.gifts', 'Binky Moon, LLC'),
+					 ('generic', '.giving', 'Giving Limited'),
 
-						 ('generic', '.gives', 'Dog Beach, LLC'),
+					 ('generic', '.gl', 'TELE Greenland A/S'),
 
-						 ('generic', '.giving', 'Giving Limited'),
+					 ('generic', '.glass', 'Binky Moon, LLC'),
 
-						 ('generic', '.gl', 'TELE Greenland A/S'),
+					 ('generic', '.gle', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.glass', 'Binky Moon, LLC'),
+					 ('generic', '.global', 'Dot Global Domain Registry Limited'),
 
-						 ('generic', '.gle', 'Charleston Road Registry Inc.'),
+					 ('generic', '.globo', 'Globo Comunicação e Participações S.A'),
 
-						 ('generic', '.global', 'Dot Global Domain Registry Limited'),
+					 ('generic', '.gmail', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.globo', 'Globo Comunicação e Participações S.A'),
+					 ('generic', '.gmbh', 'Binky Moon, LLC'),
 
-						 ('generic', '.gmail', 'Charleston Road Registry Inc.'),
+					 ('generic', '.gmo', 'GMO Internet, Inc.'),
 
-						 ('generic', '.gmbh', 'Binky Moon, LLC'),
+					 ('generic', '.gmx', '1&1 Mail & Media GmbH'),
 
-						 ('generic', '.gmo', 'GMO Internet, Inc.'),
+					 ('generic', '.gn', 'Centre National des Sciences Halieutiques de Boussoura'),
 
-						 ('generic', '.gmx', '1&1 Mail & Media GmbH'),
+					 ('generic', '.godaddy', 'Go Daddy East, LLC'),
 
-						 ('generic', '.gn', 'Centre National des Sciences Halieutiques de Boussoura'),
+					 ('generic', '.gold', 'Binky Moon, LLC'),
 
-						 ('generic', '.godaddy', 'Go Daddy East, LLC'),
+					 ('generic', '.goldpoint', 'YODOBASHI CAMERA CO.,LTD.'),
 
-						 ('generic', '.gold', 'Binky Moon, LLC'),
+					 ('generic', '.golf', 'Binky Moon, LLC'),
 
-						 ('generic', '.goldpoint', 'YODOBASHI CAMERA CO.,LTD.'),
+					 ('generic', '.goo', 'NTT Resonant Inc.'),
 
-						 ('generic', '.golf', 'Binky Moon, LLC'),
+					 ('generic', '.goodyear', 'The Goodyear Tire & Rubber Company'),
 
-						 ('generic', '.goo', 'NTT Resonant Inc.'),
+					 ('generic', '.goog', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.goodyear', 'The Goodyear Tire & Rubber Company'),
+					 ('generic', '.google', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.goog', 'Charleston Road Registry Inc.'),
+					 ('generic', '.gop', 'Republican State Leadership Committee, Inc.'),
 
-						 ('generic', '.google', 'Charleston Road Registry Inc.'),
+					 ('generic', '.got', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.gop', 'Republican State Leadership Committee, Inc.'),
+					 ('generic', '.gov', 'Cybersecurity and Infrastructure Security Agency'),
 
-						 ('generic', '.got', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.gp', 'Networking Technologies Group'),
 
-						 ('generic', '.gov', 'Cybersecurity and Infrastructure Security Agency'),
+					 ('generic', '.gq', 'GETESA'),
 
-						 ('generic', '.gp', 'Networking Technologies Group'),
+					 ('generic', '.gr', 'ICS-FORTH GR'),
 
-						 ('generic', '.gq', 'GETESA'),
+					 ('generic', '.grainger', 'Grainger Registry Services, LLC'),
 
-						 ('generic', '.gr', 'ICS-FORTH GR'),
+					 ('generic', '.graphics', 'Binky Moon, LLC'),
 
-						 ('generic', '.grainger', 'Grainger Registry Services, LLC'),
+					 ('generic', '.gratis', 'Binky Moon, LLC'),
 
-						 ('generic', '.graphics', 'Binky Moon, LLC'),
+					 ('generic', '.green', 'Afilias Limited'),
 
-						 ('generic', '.gratis', 'Binky Moon, LLC'),
+					 ('generic', '.gripe', 'Binky Moon, LLC'),
 
-						 ('generic', '.green', 'Afilias Limited'),
+					 ('generic', '.grocery', 'Wal-Mart Stores, Inc.'),
 
-						 ('generic', '.gripe', 'Binky Moon, LLC'),
+					 ('generic', '.group', 'Binky Moon, LLC'),
 
-						 ('generic', '.grocery', 'Wal-Mart Stores, Inc.'),
+					 ('generic', '.gs', 'Government of South Georgia and South Sandwich Islands (GSGSSI)'),
 
-						 ('generic', '.group', 'Binky Moon, LLC'),
+					 ('generic', '.gt', 'Universidad del Valle de Guatemala'),
 
-						 ('generic', '.gs', 'Government of South Georgia and South Sandwich Islands (GSGSSI)'),
+					 ('generic', '.gucci', 'Guccio Gucci S.p.a.'),
 
-						 ('generic', '.gt', 'Universidad del Valle de Guatemala'),
+					 ('generic', '.guge', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.gucci', 'Guccio Gucci S.p.a.'),
+					 ('generic', '.guide', 'Binky Moon, LLC'),
 
-						 ('generic', '.guge', 'Charleston Road Registry Inc.'),
+					 ('generic', '.guitars', 'Uniregistry, Corp.'),
 
-						 ('generic', '.guide', 'Binky Moon, LLC'),
+					 ('generic', '.guru', 'Binky Moon, LLC'),
 
-						 ('generic', '.guitars', 'Uniregistry, Corp.'),
+					 ('generic', '.gw', 'Autoridade Reguladora Nacional - Tecnologias de Informação e Comunicação da Guiné-Bissau'),
 
-						 ('generic', '.guru', 'Binky Moon, LLC'),
+					 ('generic', '.gy', 'University of Guyana'),
 
-						 ('generic', '.gw', 'Autoridade Reguladora Nacional - Tecnologias de Informação e Comunicação da Guiné-Bissau'),
+					 ('generic', '.hamburg', 'Hamburg Top-Level-Domain GmbH'),
 
-						 ('generic', '.gy', 'University of Guyana'),
+					 ('generic', '.hangout', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.hamburg', 'Hamburg Top-Level-Domain GmbH'),
+					 ('generic', '.haus', 'United TLD Holdco Ltd.'),
 
-						 ('generic', '.hangout', 'Charleston Road Registry Inc.'),
+					 ('generic', '.hbo', 'HBO Registry Services, Inc.'),
 
-						 ('generic', '.haus', 'United TLD Holdco Ltd.'),
+					 ('generic', '.hdfc', 'HOUSING DEVELOPMENT FINANCE CORPORATION LIMITED'),
 
-						 ('generic', '.hbo', 'HBO Registry Services, Inc.'),
+					 ('generic', '.hdfcbank', 'HDFC Bank Limited'),
 
-						 ('generic', '.hdfc', 'HOUSING DEVELOPMENT FINANCE CORPORATION LIMITED'),
+					 ('generic', '.health', 'DotHealth, LLC'),
 
-						 ('generic', '.hdfcbank', 'HDFC Bank Limited'),
+					 ('generic', '.healthcare', 'Binky Moon, LLC'),
 
-						 ('generic', '.health', 'DotHealth, LLC'),
+					 ('generic', '.help', 'Uniregistry, Corp.'),
 
-						 ('generic', '.healthcare', 'Binky Moon, LLC'),
+					 ('generic', '.helsinki', 'City of Helsinki'),
 
-						 ('generic', '.help', 'Uniregistry, Corp.'),
+					 ('generic', '.here', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.helsinki', 'City of Helsinki'),
+					 ('generic', '.hermes', 'Hermes International'),
 
-						 ('generic', '.here', 'Charleston Road Registry Inc.'),
+					 ('generic', '.hgtv', 'Lifestyle Domain Holdings, Inc.'),
 
-						 ('generic', '.hermes', 'Hermes International'),
+					 ('generic', '.hiphop', 'Uniregistry, Corp.'),
 
-						 ('generic', '.hgtv', 'Lifestyle Domain Holdings, Inc.'),
+					 ('generic', '.hisamitsu', 'Hisamitsu Pharmaceutical Co.,Inc.'),
 
-						 ('generic', '.hiphop', 'Uniregistry, Corp.'),
+					 ('generic', '.hitachi', 'Hitachi, Ltd.'),
 
-						 ('generic', '.hisamitsu', 'Hisamitsu Pharmaceutical Co.,Inc.'),
+					 ('generic', '.hiv', 'Uniregistry, Corp.'),
 
-						 ('generic', '.hitachi', 'Hitachi, Ltd.'),
+					 ('generic', '.hk', 'Hong Kong Internet Registration Corporation Ltd.'),
 
-						 ('generic', '.hiv', 'Uniregistry, Corp.'),
+					 ('generic', '.hkt', 'PCCW-HKT DataCom Services Limited'),
 
-						 ('generic', '.hk', 'Hong Kong Internet Registration Corporation Ltd.'),
+					 ('generic', '.hm', 'HM Domain Registry'),
 
-						 ('generic', '.hkt', 'PCCW-HKT DataCom Services Limited'),
+					 ('generic', '.hn', 'Red de Desarrollo Sostenible Honduras'),
 
-						 ('generic', '.hm', 'HM Domain Registry'),
+					 ('generic', '.hockey', 'Binky Moon, LLC'),
 
-						 ('generic', '.hn', 'Red de Desarrollo Sostenible Honduras'),
+					 ('generic', '.holdings', 'Binky Moon, LLC'),
 
-						 ('generic', '.hockey', 'Binky Moon, LLC'),
+					 ('generic', '.holiday', 'Binky Moon, LLC'),
 
-						 ('generic', '.holdings', 'Binky Moon, LLC'),
+					 ('generic', '.homedepot', 'Home Depot Product Authority, LLC'),
 
-						 ('generic', '.holiday', 'Binky Moon, LLC'),
+					 ('generic', '.homegoods', 'The TJX Companies, Inc.'),
 
-						 ('generic', '.homedepot', 'Home Depot Product Authority, LLC'),
+					 ('generic', '.homes', 'DERHomes, LLC'),
 
-						 ('generic', '.homegoods', 'The TJX Companies, Inc.'),
+					 ('generic', '.homesense', 'The TJX Companies, Inc.'),
 
-						 ('generic', '.homes', 'DERHomes, LLC'),
+					 ('generic', '.honda', 'Honda Motor Co., Ltd.'),
 
-						 ('generic', '.homesense', 'The TJX Companies, Inc.'),
+					 ('generic', '.horse', 'Binky Moon, LLC'),
 
-						 ('generic', '.honda', 'Honda Motor Co., Ltd.'),
+					 ('generic', '.hospital', 'Binky Moon, LLC'),
 
-						 ('generic', '.horse', 'Binky Moon, LLC'),
+					 ('generic', '.host', 'DotHost Inc.'),
 
-						 ('generic', '.hospital', 'Binky Moon, LLC'),
+					 ('generic', '.hosting', 'United TLD Holdco Ltd.'),
 
-						 ('generic', '.host', 'DotHost Inc.'),
+					 ('generic', '.hot', 'Amazon Registry Services, Inc.'),
 
-						 ('generic', '.hosting', 'United TLD Holdco Ltd.'),
+					 ('generic', '.hoteles', 'Travel Reservations SRL'),
 
-						 ('generic', '.hot', 'Amazon Registry Services, Inc.'),
+					 ('generic', '.hotels', 'Booking.com B.V.'),
 
-						 ('generic', '.hoteles', 'Travel Reservations SRL'),
+					 ('generic', '.hotmail', 'Microsoft Corporation'),
 
-						 ('generic', '.hotels', 'Booking.com B.V.'),
+					 ('generic', '.house', 'Binky Moon, LLC'),
 
-						 ('generic', '.hotmail', 'Microsoft Corporation'),
+					 ('generic', '.how', 'Charleston Road Registry Inc.'),
 
-						 ('generic', '.house', 'Binky Moon, LLC'),
+					 ('generic', '.hr', 'CARNet - Croatian Academic and Research Network'),
 
-						 ('generic', '.how', 'Charleston Road Registry Inc.'),
+					 ('generic', '.hsbc', 'HSBC Global Services');
+					                """;
 
-						 ('generic', '.hr', 'CARNet - Croatian Academic and Research Network'),
-
-						 ('generic', '.hsbc', 'HSBC Global Services');
-						                """;
-
-				stmt.executeUpdate(insertDefaults);
-			} else {
-			}
+			stmt.execute(insertDefaults);
 		}
 	}
 }
