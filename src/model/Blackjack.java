@@ -25,7 +25,7 @@ public class Blackjack extends Game {
 	 * @since 2.0
 	 */
 	public Blackjack(double money) {
-		super(money, "BlackJack");
+		super(money, "Blackjack");
 	}
 
 	/**
