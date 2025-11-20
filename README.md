@@ -22,7 +22,7 @@ A Java desktop application that brings the excitement of a casino to your screen
 
 ## 🧾 Project Overview
 
-This project was developed as part of a **Higher Vocational Training Program in Web Development**.  
+This project was first developed as part of a **Higher Vocational Training Program in Web Development**, but I kept updating it as a personal proyect.  
 Its main objective was to create a fully functional **CRUD system** connected to a **MySQL** database, integrated within a graphical user interface built with **Java Swing**.  
 
 The application simulates a small casino management system where users can **register, log in, manage their data, and play interactive casino games** in a self-contained environment.
