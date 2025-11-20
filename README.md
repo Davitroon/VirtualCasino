@@ -1,8 +1,7 @@
 <h1 align="center">Virtual Casino</h1>
 
 <p align="center">
-<strong>Virtual Casino</strong> is a Java desktop application that brings the excitement of a casino to your screen.<br>
-Built with <strong>Swing</strong> and <strong>MySQL</strong>, it features an intuitive interface, multiple classic games such as <strong>Blackjack</strong> and <strong>Slot Machines</strong>, and a dynamic money system that updates based on the player's results.
+A Java desktop application that brings the excitement of a casino to your screen.
 </p>
 
 <p align="center">
