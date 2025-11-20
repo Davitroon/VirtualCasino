@@ -193,7 +193,7 @@ The package responsible using custom exceptions and hadling them
 | **GameException** | Exception thrown when an attempt is made to open the games window without any existing user or game created beforehand. |
 | **MailException** | Exception thrown when an entered email is invalid or does not meet the expected format. |
 
-> You can see the full architecture in the [project documentation](https://davitroon.github.io/VirtualCasino/ "See the project's documentation").
+> You can see the full architecture in the <a href="https://davitroon.github.io/VirtualCasino/" target="_blank" title="See the project's documentation">project documentation</a>.
 
 ---
 
