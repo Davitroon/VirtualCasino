@@ -1,9 +1,15 @@
-# Virtual Casino
+<h1 align="center">Virtual Casino</h1>
 
-**Virtual Casino** is a Java desktop application that brings the excitement of a casino to your screen.  
-Built with **Swing** and **MySQL**, it features an intuitive interface, multiple classic games such as **Blackjack** and **Slot Machines**, and a dynamic money system that updates based on the player's results.  
+<p align="center">
+<strong>Virtual Casino</strong> is a Java desktop application that brings the excitement of a casino to your screen.<br>
+Built with <strong>Swing</strong> and <strong>MySQL</strong>, it features an intuitive interface, multiple classic games such as <strong>Blackjack</strong> and <strong>Slot Machines</strong>, and a dynamic money system that updates based on the player's results.
+</p>
 
-
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17%2B-orange?logo=openjdk&logoColor=white" alt="Java" />
+  <img src="https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=java&logoColor=white" alt="Swing" />
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white" alt="MySQL" />
+</p>
 
 ---
 
@@ -25,7 +31,8 @@ The application simulates a small casino management system where users can **reg
 ---
 
 ## 🚀 How to Run
-> ⚠️ **Note:** MySQL must be installed on your system before running the application.
+
+> ℹ️ **Note:** The application uses a **local SQLite database**, which means no **external installation or configuration** is required.
 
 You can launch the application either from source or using the prebuilt launcher.
 
@@ -54,22 +61,6 @@ You can launch the application either from source or using the prebuilt launcher
 1. **Download** the latest release from the [Releases section](https://github.com/Davitroon/VirtualCasino/releases).  
 2. **Unzip** the downloaded file.  
 3. **Double-click** `VirtualCasino.exe` to start the game.
-
----
-
-### 🗃️ Database Setup
-The application uses a **local SQLite database**, which means **no external installation or configuration** is required.
-
-- When the program starts for the first time, it **automatically creates** the database file (and all necessary tables) if they don’t already exist.  
-- The database is stored locally in the project directory (for example: `/database/VirtualCasino.db`).  
-- All user profiles, clients, and game data are saved within this file.
-
-> ✅ **Tip:**  
-> You can modify or relocate the database file by updating its path in:  
-
-   ```bash
-   /src/dao/DatabaseConnection.java
-   ```
 
 ---
 
@@ -207,7 +198,7 @@ The package responsible using custom exceptions and hadling them
 
 ---
 
-## ⚙️ Technologies Used
+## ⚙️ Technologies
 
 | Technology | Description |
 |-------------|-------------|
