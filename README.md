@@ -9,6 +9,7 @@ A Java desktop application that brings the excitement of a casino to your screen
   <img src="https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=java&logoColor=white" alt="Swing" />
   <img src="https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white" alt="MySQL" />
 </p>
+<br>
 
 ---
 
@@ -19,6 +20,8 @@ A Java desktop application that brings the excitement of a casino to your screen
 - [🏗️ Architecture](#%EF%B8%8F-architecture "See the general structure and design of the project")
 - [⚙️ Technologies](#%EF%B8%8F-technologies "See which technologies were used to build the project")
 - [🔮 Future Additions](#-future-additions "See features planned for the future")
+
+---
 
 ## 🧾 Project Overview
 
