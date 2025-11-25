@@ -3,7 +3,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>C:\Users\deivi\Documents\GitHub\CasinoVirtual\installer\app.jar</jar>
-  <outfile>C:\Users\deivi\Desktop\VirtualCasino.exe</outfile>
+  <outfile>C:\Users\deivi\Documents\GitHub\CasinoVirtual\installer\VirtualCasino.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>

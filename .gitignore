@@ -1,4 +1,5 @@
 *.class
 *.db
+*.exe
 /bin/
 runtime/
