@@ -2,7 +2,7 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>C:\Users\deivi\Documents\GitHub\CasinoVirtual\installer\app.jar</jar>
+  <jar>C:\Users\deivi\Documents\GitHub\CasinoVirtual\installer\app-virtualcasino.jar</jar>
   <outfile>C:\Users\deivi\Documents\GitHub\CasinoVirtual\installer\VirtualCasino.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
@@ -13,9 +13,9 @@
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>C:\Users\deivi\Documents\GitHub\CasinoVirtual\installer\icon.ico</icon>
+  <icon>C:\Users\deivi\Documents\GitHub\CasinoVirtual\installer\icon-virtualcasino.ico</icon>
   <jre>
-    <path>runtime</path>
+    <path>runtime-virtualcasino</path>
     <requiresJdk>false</requiresJdk>
     <requires64Bit>false</requires64Bit>
     <minVersion></minVersion>
