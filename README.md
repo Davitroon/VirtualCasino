@@ -1,7 +1,7 @@
 <h1 align="center">Virtual Casino</h1>
 
 <p align="center">
-A Java desktop application that brings the excitement of a casino to your screen.
+<em>A Java desktop application that brings the excitement of a casino to your screen.</em>
 </p>
 
 <p align="center">
@@ -205,12 +205,12 @@ The package responsible using custom exceptions and hadling them
 
 | Technology | Description |
 |-------------|-------------|
-| ![Java](https://img.shields.io/badge/Java-21%2B-orange?logo=openjdk&logoColor=white) | ☕ Main programming language used to build the entire application. |
-| ![Swing](https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=java&logoColor=white) | 🖥️ Used to create the graphical user interface. |
-| ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white) | 🗄️ Relational database for storing users, games, and statistics. |
-| ![JDBC](https://img.shields.io/badge/JDBC-Connector-yellow?logo=java&logoColor=white) | 🔌 Enables communication between Java and the MySQL database. |
-| ![MVC](https://img.shields.io/badge/MVC-Architecture-green?logo=archlinux&logoColor=white) | 🧩 Separates logic, data, and interface layers for cleaner structure. |
-| ![DAO](https://img.shields.io/badge/DAO-Pattern-lightgrey?logo=databricks&logoColor=white) | 🧱 Provides reusable and structured database access. |
+| ![Java](https://img.shields.io/badge/Java-21%2B-orange?logo=openjdk&logoColor=white) | Main programming language used to build the entire application. |
+| ![Swing](https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=java&logoColor=white) | Used to create the graphical user interface. |
+| ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white) | Relational database for storing users, games, and statistics. |
+| ![JDBC](https://img.shields.io/badge/JDBC-Connector-yellow?logo=java&logoColor=white) | Enables communication between Java and the MySQL database. |
+| ![MVC](https://img.shields.io/badge/MVC-Architecture-green?logo=archlinux&logoColor=white) | Separates logic, data, and interface layers for cleaner structure. |
+| ![DAO](https://img.shields.io/badge/DAO-Pattern-lightgrey?logo=databricks&logoColor=white) | Provides reusable and structured database access. |
 
 
 ---
