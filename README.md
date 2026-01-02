@@ -6,7 +6,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Java-21%2B-orange?logo=openjdk&logoColor=white" alt="Java" />
-  <img src="https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=java&logoColor=white" alt="Swing" />
+  <img src="https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=openjdk&logoColor=white" alt="Swing" />
   <img src="https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white" alt="MySQL" />
 </p>
 <br>
@@ -198,7 +198,6 @@ The package responsible using custom exceptions and hadling them
 
 > You can see the full architecture in the [project documentation](https://davitroon.github.io/VirtualCasino/ "See the project's documentation").
 
-
 ---
 
 ## ⚙️ Technologies
@@ -206,12 +205,9 @@ The package responsible using custom exceptions and hadling them
 | Technology | Description |
 |-------------|-------------|
 | ![Java](https://img.shields.io/badge/Java-21%2B-orange?logo=openjdk&logoColor=white) | Main programming language used to build the entire application. |
-| ![Swing](https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=java&logoColor=white) | Used to create the graphical user interface. |
+| ![Swing](https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=openjdk&logoColor=white) | Used to create the graphical user interface. |
 | ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white) | Relational database for storing users, games, and statistics. |
-| ![JDBC](https://img.shields.io/badge/JDBC-Connector-yellow?logo=java&logoColor=white) | Enables communication between Java and the MySQL database. |
-| ![MVC](https://img.shields.io/badge/MVC-Architecture-green?logo=archlinux&logoColor=white) | Separates logic, data, and interface layers for cleaner structure. |
-| ![DAO](https://img.shields.io/badge/DAO-Pattern-lightgrey?logo=databricks&logoColor=white) | Provides reusable and structured database access. |
-
+| ![JDBC](https://img.shields.io/badge/JDBC-Connector-yellow?logo=openjdk&logoColor=white) | Enables communication between Java and the MySQL database. |
 
 ---
 
