@@ -4,12 +4,11 @@
 <em>A Java desktop application that brings the excitement of a casino to your screen.</em>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Java-21%2B-orange?logo=openjdk&logoColor=white" alt="Java" />
-  <img src="https://img.shields.io/badge/Javax%20Swing-UI-blue?logo=openjdk&logoColor=white" alt="Swing" />
-  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white" alt="MySQL" />
-</p>
-<br>
+<div align="center">
+    <img src="https://img.shields.io/badge/Java-E65100?style=for-the-badge&logo=openjdk&logoColor=black" alt="Java used">
+    <img src="https://img.shields.io/badge/Java Swing-E65100?style=for-the-badge&logo=openjdk&logoColor=black" alt="Java Swing used">
+    <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL used">
+</div>
 
 ---
 
