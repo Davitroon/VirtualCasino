@@ -220,3 +220,14 @@ The project is still under development, and several features are planned for fut
 - 🌍 **Multi-language Support:** Introduce translation files to make the application accessible in multiple languages.  
 - 🐞 **Debug Mode:** Add an optional developer mode to log events and errors for easier debugging.
 
+---
+
+<div align="center">
+<sub>
+
+This project is licensed under the MIT License.  
+
+Copyright (c) 2025 Davitroon
+
+</sub>
+</div>
