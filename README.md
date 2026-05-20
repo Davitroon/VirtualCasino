@@ -227,7 +227,7 @@ The project is still under development, and several features are planned for fut
 
 This project is licensed under the MIT License.  
 
-Copyright (c) 2025 Davitroon
+Copyright (c) 2025 DavidForero22
 
 </sub>
 </div>
